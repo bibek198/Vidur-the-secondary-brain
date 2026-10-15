@@ -1,0 +1,25 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# data: raw API dumps are not republished; seed is committed
+data/raw/*
+!data/raw/.gitkeep
+data/cache/
+
+# local
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# stray empty clone of the GitHub repo (safe to delete)
+/decision-brain/
