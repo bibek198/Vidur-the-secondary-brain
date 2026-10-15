@@ -161,6 +161,8 @@ def summarize(ev: dict) -> str:
         return f"{p['login']} {verb} {p['role'].replace('_', ' ')} of {k}"
     if ev["kind"] == "kep_created":
         return f"{k} created: {p.get('title')} ({p.get('status')})"
+    if ev["kind"] in ("subproject_added", "subproject_removed"):
+        return f"{k} subproject {p.get('subproject')} {ev['kind'].split('_')[1]}"
     if "added" in p or "removed" in p:
         return f"{k} {ev['kind'].removeprefix('kep_').replace('_', ' ')}: +{p.get('added')} -{p.get('removed')}"
     return f"{k} {ev['kind'].replace('_', ' ')}"
