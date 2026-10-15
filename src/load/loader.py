@@ -9,7 +9,7 @@ Order:
   4. teams, subprojects, code areas and code owners (current registry), people's companies
   5. tickets, PRs, comments and reviews created up to the cutoff
   6. text chunks with embeddings (vector index), for chunks whose source exists at the cutoff
-  7. derived edges: component -> code area, reviewer -> author weights (REVIEWED_FOR)
+  7. derived: release dates, component -> code area, reviewer -> author weights (REVIEWED_FOR)
 
 Every step is idempotent: loading twice gives identical counts.
 Usage: python -m src.load.loader [--graph brain_eval] [--cutoff 2026-09-15 | --cutoff now]
@@ -158,6 +158,8 @@ def load_chunks(g, cutoff_ts: int) -> dict:
 
 @step("derived edges")
 def load_derived(g) -> dict:
+    if (SEED / "releases.jsonl").exists():
+        upserts.releases(g, list(read_jsonl(SEED / "releases.jsonl")))
     rows = [{"component": c, "area": a} for c, areas in COMPONENT_CODE.items() for a in areas]
     upserts.run_batches(g, """UNWIND $rows AS r
                               MATCH (c:Component {name: r.component}), (a:CodeArea {id: r.area})

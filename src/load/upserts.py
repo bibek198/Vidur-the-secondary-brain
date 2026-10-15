@@ -276,6 +276,14 @@ def reviews(g, rows):
         SET e.state = r.state""", rows)
 
 
+def releases(g, rows):
+    """rows: {version, date, ts, url} (Kubernetes minor releases)"""
+    return run_batches(g, """
+        UNWIND $rows AS r
+        MERGE (x:Release {version: r.version})
+        SET x.date = r.date, x.ts = r.ts, x.url = r.url""", rows)
+
+
 # ---------- chunks (vector search) ----------
 
 def chunks(g, rows):
