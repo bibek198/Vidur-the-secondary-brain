@@ -70,6 +70,8 @@ RELATIONSHIPS = [
     "ASKED_ABOUT",      # Question -> any entity
     "OUTDATED_BY",      # Question -> Event
     "WATCHES",          # Watch -> any entity
+    "ROUTED_TO",        # Question -> Person {reason} (route_question action)
+    "ABOUT",            # Draft -> KEP (draft_decision_brief action)
     "REVIEWED_FOR",     # Person -> Person {weight} (derived, for PageRank)
 ]
 

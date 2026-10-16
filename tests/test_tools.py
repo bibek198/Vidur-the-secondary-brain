@@ -121,3 +121,21 @@ def test_registry_rejects_unknown_arguments():
 def test_every_tool_has_description_and_schema():
     for name, spec in TOOLS.items():
         assert len(spec["description"]) > 80 and spec["schema"]["type"] == "object", name
+
+
+# ---------- gold labels (hand-verified, eval/gold_decisions.csv): the graph is checked against them ----------
+
+from eval import gold  # noqa: E402
+
+GOLD_ROWS = gold.load()
+
+
+@pytest.mark.parametrize("row", GOLD_ROWS, ids=[r["kep"] for r in GOLD_ROWS])
+def test_gold_outcome_matches_graph(row):
+    r = run("trace_decision", kep_or_query=row["kep"])
+    assert r["found"] and r["data"]["kep"] == row["kep"]
+    assert r["data"]["status"] == row["graph_status"], f"gold says {row['outcome']}"
+    if row["graph_status"] in ("withdrawn", "rejected", "replaced", "deferred"):
+        assert any("NOT adopted" in n for n in r["notes"])
+    if row["replaced_by"]:
+        assert row["replaced_by"] in {x["kep"] for x in r["data"]["replaced_by"]}

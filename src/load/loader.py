@@ -171,6 +171,8 @@ def load_decisions(g) -> dict:
     n = upserts.decisions(g, rows)
     review = ROOT / "eval" / "supersession_review.csv"
     claims = [r for r in csv.DictReader(review.open()) if r["verdict"].strip().lower() != "no"] if review.exists() else []
+    # the review sheet is the truth for LLM-proposed edges: drop them all, then add back the ones not rejected
+    g.query("MATCH ()-[s:SUPERSEDES]->() WHERE s.source = 'llm' DELETE s")
     decided = {r["kep"] for r in rows}
     upserts.run_batches(g, """UNWIND $rows AS r
                               MATCH (a:KEP {id: r.newer}), (b:KEP {id: r.older})

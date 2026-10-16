@@ -41,8 +41,28 @@ def _items(value) -> list[dict]:
     return [v for v in value or [] if isinstance(v, dict)]
 
 
+_LEAK = re.compile(r'\s*</\w+>\s*<parameter name="(\w+)">')
+
+
+def _unleak(output: dict) -> dict:
+    """Some outputs (13%) have the next fields written inside a string, e.g.
+    rationale = 'text</rationale>\n<parameter name="outcome_reason">null'. Split them back into fields."""
+    out = dict(output)
+    for field, value in output.items():
+        if not isinstance(value, str) or not _LEAK.search(value):
+            continue
+        parts = _LEAK.split(value)            # [text, name1, value1, name2, value2, ...]
+        out[field] = parts[0].strip()
+        for name, extra in zip(parts[1::2], parts[2::2]):
+            extra = re.sub(r"\s*</\w+>\s*$", "", extra).strip()
+            if name not in output or output[name] in (None, "", []):
+                out[name] = None if extra == "null" else extra
+    return out
+
+
 def validate_one(row: dict, inp: dict, known_keps: set) -> dict:
-    out = {**row["output"], **{f: _items(row["output"].get(f)) for f in ("evidence", "alternatives", "supersession_claims")}}
+    raw = _unleak(row["output"])
+    out = {**raw, **{f: _items(raw.get(f)) for f in ("evidence", "alternatives", "supersession_claims")}}
     evidence = [e | {"ok": quote_ok(e["quote"], inp["sources"], e["ref"])} for e in out["evidence"] if "ref" in e and "quote" in e]
     claims = [c | {"ok": quote_ok(c["quote"], inp["sources"], c["ref"]) and c["kep"] in known_keps
                    and c["kep"] != row["kep"]} for c in out["supersession_claims"] if {"kep", "relation", "ref", "quote"} <= set(c)]

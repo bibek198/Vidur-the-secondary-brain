@@ -5,16 +5,16 @@ Usage:
   python -m src.tools.cli who_owns kubelet
   python -m src.tools.cli what_changed 2026-09-01 --team sig-node
   python -m src.tools.cli connect derekwaynecarr KEP-753
+  python -m src.tools.cli recommend_reviewers KEP-4381
+Multi-word arguments need quotes: who_knows "dynamic resource allocation".
 Options: --graph NAME, --as_of DATE|vX.Y, --full (also print path and cypher trace)
 """
 import json
 import sys
 
-from src.tools import read
+from src.tools.registry import TOOLS as REGISTRY
 
-TOOLS = {"resolve": read.resolve, "trace_decision": read.trace_decision, "who_owns": read.who_owns,
-         "who_knows": read.who_knows, "impact_of": read.impact_of, "timeline": read.timeline,
-         "what_changed": read.what_changed, "connect": read.connect, "influence": read.influence}
+TOOLS = {name: spec["fn"] for name, spec in REGISTRY.items()}
 
 
 def main(argv: list[str]) -> None:

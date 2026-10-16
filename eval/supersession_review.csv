@@ -1,5 +1,5 @@
 newer,older,claimed_in,ref,quote,verdict,note
-KEP-2339,KEP-2342,KEP-2342,comment:2611393572,"#2339 was meant to replace this KEP, since clients like SVM could use the storage version API to drive creation of `StorageVersionMigration` API objects to automate migration.",,
-KEP-4381,KEP-3063,KEP-3063,readme,Now the roles are reversed: #4381 defines the base functionality and this KEP is an optional extension.,,
-KEP-3570,KEP-375,KEP-3570,readme,This KEP supersedes and replaces `kubernetes/enhancements/keps/sig-node/375-cpumanager/README.md`.,,
-KEP-5593,KEP-4603,KEP-4603,readme,"Originally, this KEP included a proposal to lower the maximum CrashLoopBackOff duration. This has been split into [KEP-5593: Configure the max CrashLoopBackOff delay]",,
+KEP-2339,KEP-2342,KEP-2342,comment:2611393572,"#2339 was meant to replace this KEP, since clients like SVM could use the storage version API to drive creation of `StorageVersionMigration` API objects to automate migration.",Yes,Explicitly stated that KEP-2339 replaces KEP-2342.
+KEP-4381,KEP-3063,KEP-3063,readme,"Now the roles are reversed: #4381 defines the base functionality and this KEP is an optional extension.",No,KEP-3063 is not replaced or deprecated; it remains active as an optional extension to the new base (KEP-4381).
+KEP-3570,KEP-375,KEP-3570,readme,"This KEP supersedes and replaces `kubernetes/enhancements/keps/sig-node/375-cpumanager/README.md`.",Yes,Explicitly stated that KEP-3570 supersedes and replaces KEP-375.
+KEP-5593,KEP-4603,KEP-4603,readme,"Originally, this KEP included a proposal to lower the maximum CrashLoopBackOff duration. This has been split into [KEP-5593: Configure the max CrashLoopBackOff delay]",No,KEP-4603 is not replaced; KEP-5593 was simply split off to handle a specific sub-feature independently.

@@ -142,11 +142,42 @@ def resolve(text: str, kinds: list[str] | None = None, limit: int = 5, graph_nam
         except Exception as e:  # noqa: BLE001 - no vector index / no chunks yet: full-text only
             call.notes.append(f"vector search unavailable: {str(e)[:80]}")
 
+    # 4) a distinctive word the graph has never seen ("holographic volume driver") means the thing is not
+    #    here, however well the other words match: fuzzy candidates are capped below the match bar
+    unknown = _unknown_words(call, words)
+    if unknown:
+        call.notes.append(f"{', '.join(repr(w) for w in unknown)} appears nowhere in the graph, so no candidate "
+                          "below is a real match.")
+        for r in found.values():
+            if not r["via"].startswith("exact"):
+                r["score"] = min(r["score"], 0.45)
+
     ranked = sorted(found.values(), key=lambda r: -r["score"])[:limit]
     if _call is None:
         call.source([r["url"] for r in ranked])
-        return call.result({"query": text, "candidates": ranked}, found=bool(ranked))
+        if not any(r["score"] >= 0.5 for r in ranked):   # same bar as _resolve_one: weak candidates are not a match
+            call.notes.append("Nothing in the graph matches this well; the candidates are only distant guesses.")
+        return call.result({"query": text, "candidates": ranked}, found=any(r["score"] >= 0.5 for r in ranked))
     return {"query": text, "candidates": ranked}
+
+
+def _unknown_words(call: ToolCall, words: list[str]) -> list[str]:
+    """Query words (5+ letters) with no full-text hit (prefix or close spelling) anywhere: titles, design-doc
+    chunks, comments, components or feature gates. Typos still hit through the fuzzy term."""
+    unknown = []
+    for w in words:
+        if len(w) < 5 or not w.isalpha():
+            continue
+        q = f"{w.lower()}*|%{w.lower()}%"
+        hits = 0
+        for label in ("KEP", "Chunk", "Comment", "Component", "FeatureGate"):
+            hits += call.q(f"""CALL db.idx.fulltext.queryNodes('{label}', $q) YIELD node
+                               RETURN count(node)""", {"q": q}, False)[0][0]
+            if hits:
+                break
+        if not hits:
+            unknown.append(w)
+    return unknown
 
 
 def _resolve_one(call: ToolCall, text: str, kinds: list[str], min_score: float = 0.5):
@@ -361,10 +392,18 @@ def impact_of(entity: str, depth: int = 2, graph_name: str | None = None) -> dic
         related = call.q(f"""MATCH path=(k:KEP {{id:$key}})-[:SEE_ALSO|SUPERSEDES*1..{depth}]-(o:KEP) WHERE o <> k
                              RETURN o.id, o.title, o.status, min(length(path)) AS hops, path ORDER BY hops, o.id LIMIT 15""", p)
         teams = call.q("""MATCH (tm:Team)-[r:OWNS|PARTICIPATES_IN]->(k:KEP {id:$key}) RETURN tm.id, type(r), tm, r, k""", p)
+        by_comp, by_kep = {}, {}
+        for gate, comp, areas, approvers, *_ in comps:  # one row per (gate, component): group by component
+            c = by_comp.setdefault(comp, {"component": comp, "via_gates": [], "code_areas": areas,
+                                          "code_approvers": approvers})
+            c["via_gates"].append(gate)
+        for kid, title, status, hops, _ in related:     # one row per path: keep the shortest per KEP
+            if kid not in by_kep or hops < by_kep[kid]["hops"]:
+                by_kep[kid] = {"kep": kid, "title": title, "status": status, "hops": hops}
         data.update({
             "feature_gates": sorted({r[0] for r in comps}),
-            "components": [{"component": r[1], "code_areas": r[2], "code_approvers": r[3]} for r in comps],
-            "related_keps": [{"kep": r[0], "title": r[1], "status": r[2], "hops": r[3]} for r in related],
+            "components": list(by_comp.values()),
+            "related_keps": sorted(by_kep.values(), key=lambda r: (r["hops"], r["kep"])),
             "teams": [{"team": r[0], "role": "owner" if r[1] == "OWNS" else "participant"} for r in teams],
         })
         if not comps:

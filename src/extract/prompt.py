@@ -161,7 +161,8 @@ def build_input(kid: str, graph_name: str = "brain_eval", commit: str | None = N
 
 def request_params(inp: dict, model: str) -> dict:
     """Messages API parameters for one KEP (used for both the direct call and the Batch API)."""
-    return {"model": model, "max_tokens": 1500, "system": SYSTEM, "tools": [TOOL],
+    # strict: the batch run (without it) wrote later fields inside strings in 13% of outputs (see validate._unleak)
+    return {"model": model, "max_tokens": 1500, "system": SYSTEM, "tools": [{**TOOL, "strict": True}],
             "tool_choice": {"type": "tool", "name": "record_decision"},
             "messages": [{"role": "user", "content": inp["text"]}]}
 

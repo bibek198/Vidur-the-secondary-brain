@@ -1,0 +1,40 @@
+{"id": "A1", "split": "dev", "category": "who_knows", "question": "Who knows the most about dynamic resource allocation?", "expected_tools": ["who_knows"]}
+{"id": "A2", "split": "dev", "category": "who_knows", "question": "Who should I talk to about gang scheduling?", "expected_tools": ["who_knows", "route_question"]}
+{"id": "A3", "split": "dev", "category": "who_knows", "question": "Which people are experts on KYAML?", "expected_tools": ["who_knows"]}
+{"id": "A4", "split": "holdout", "category": "who_knows", "question": "Who has the deepest knowledge of ordered namespace deletion?", "expected_tools": ["who_knows"]}
+{"id": "B1", "split": "dev", "category": "why", "question": "Why was classic DRA (KEP-3063) withdrawn?", "expected_tools": ["trace_decision"]}
+{"id": "B2", "split": "dev", "category": "why", "question": "Why did the project reject KEP-3037 Alternative Services?", "expected_tools": ["trace_decision"]}
+{"id": "B3", "split": "dev", "category": "why", "question": "What problem does Comparable Resource Version solve, and why was it built?", "expected_tools": ["trace_decision"]}
+{"id": "B4", "split": "dev", "category": "why", "question": "Is the xdg-base-dir proposal for kubectl still going ahead?", "expected_tools": ["trace_decision"]}
+{"id": "B5", "split": "holdout", "category": "why", "question": "Why was publishing versioning information in OpenAPI withdrawn?", "expected_tools": ["trace_decision"]}
+{"id": "C1", "split": "dev", "category": "impact", "question": "What does KEP-4381 DRA Structured Parameters affect?", "expected_tools": ["impact_of"]}
+{"id": "C2", "split": "dev", "category": "impact", "question": "Which KEPs affect the kube-scheduler?", "expected_tools": ["impact_of"]}
+{"id": "C3", "split": "dev", "category": "impact", "question": "If gang scheduling changes, which components and teams are impacted?", "expected_tools": ["impact_of"]}
+{"id": "C4", "split": "holdout", "category": "impact", "question": "What parts of Kubernetes does Pod Generation (KEP-5067) touch?", "expected_tools": ["impact_of"]}
+{"id": "D1", "split": "dev", "category": "what_changed", "question": "What changed in sig-node since August 2026?", "expected_tools": ["what_changed"]}
+{"id": "D2", "split": "dev", "category": "what_changed", "question": "What happened to KEP-2699 recently?", "expected_tools": ["what_changed", "timeline", "trace_decision"]}
+{"id": "D3", "split": "dev", "category": "what_changed", "question": "How did KEP-4671 gang scheduling evolve over time?", "expected_tools": ["timeline"]}
+{"id": "D4", "split": "dev", "category": "what_changed", "question": "What has changed across the project since v1.36?", "expected_tools": ["what_changed"]}
+{"id": "D5", "split": "holdout", "category": "what_changed", "question": "What changed in sig-scheduling during September 2026?", "expected_tools": ["what_changed"]}
+{"id": "E1", "split": "dev", "category": "lure", "question": "Who approved the quantum teleport scheduler?", "expected_tools": ["trace_decision", "resolve", "who_owns"], "lure": true}
+{"id": "E2", "split": "dev", "category": "lure", "question": "Why was blockchain-based pod billing rejected?", "expected_tools": ["trace_decision", "resolve"], "lure": true}
+{"id": "E3", "split": "dev", "category": "lure", "question": "What is the status of KEP-99999?", "expected_tools": ["trace_decision", "resolve"], "lure": true}
+{"id": "E4", "split": "dev", "category": "lure", "question": "What has zorblax9000 worked on in sig-node?", "expected_tools": ["resolve", "connect", "who_knows", "what_changed"], "lure": true}
+{"id": "E5", "split": "holdout", "category": "lure", "question": "Who owns the holographic volume driver?", "expected_tools": ["who_owns", "resolve"], "lure": true}
+{"id": "F1", "split": "dev", "category": "as_of", "question": "What was the status of KEP-2699 as of v1.30?", "expected_tools": ["trace_decision", "timeline"], "as_of": true}
+{"id": "F2", "split": "dev", "category": "as_of", "question": "Who were the sig-node leads in January 2022?", "expected_tools": ["who_owns"], "as_of": true}
+{"id": "F3", "split": "dev", "category": "as_of", "question": "Was classic DRA still active at the v1.30 release?", "expected_tools": ["trace_decision", "timeline"], "as_of": true}
+{"id": "F4", "split": "holdout", "category": "as_of", "question": "What release targets did KEP-4381 have as of v1.31?", "expected_tools": ["timeline", "trace_decision"], "as_of": true}
+{"id": "G1", "split": "dev", "category": "ownership", "question": "Who owns the kubelet?", "expected_tools": ["who_owns"]}
+{"id": "G2", "split": "dev", "category": "ownership", "question": "Who approves changes to pkg/scheduler?", "expected_tools": ["who_owns"]}
+{"id": "G3", "split": "dev", "category": "ownership", "question": "Which team owns KEP-5295 KYAML, and who leads that team?", "expected_tools": ["who_owns"]}
+{"id": "G4", "split": "holdout", "category": "ownership", "question": "Who is responsible for kube-apiserver code?", "expected_tools": ["who_owns"]}
+{"id": "H1", "split": "dev", "category": "connect", "question": "How is deads2k connected to KEP-4381?", "expected_tools": ["connect"]}
+{"id": "H2", "split": "dev", "category": "influence", "question": "Who are the most influential reviewers in sig-scheduling?", "expected_tools": ["influence"]}
+{"id": "H3", "split": "holdout", "category": "influence", "question": "Which people bridge different groups of reviewers across the project?", "expected_tools": ["influence"]}
+{"id": "I1", "split": "dev", "category": "action", "question": "Who should review a change to KEP-4381?", "expected_tools": ["recommend_reviewers"]}
+{"id": "I2", "split": "dev", "category": "action", "question": "Write a short decision brief on KEP-3063 that I can share with my team.", "expected_tools": ["draft_decision_brief"]}
+{"id": "I3", "split": "dev", "category": "action", "question": "I have a question about whether DRA drivers can support cluster autoscaling. Who should I ask?", "expected_tools": ["route_question", "who_knows"]}
+{"id": "I4", "split": "dev", "category": "action", "question": "Notify me when anything changes on KEP-2699.", "expected_tools": ["watch"]}
+{"id": "I5", "split": "holdout", "category": "action", "question": "Suggest reviewers for a pull request touching pkg/kubelet.", "expected_tools": ["recommend_reviewers"]}
+{"id": "I6", "split": "holdout", "category": "action", "question": "Draft a memo explaining the status of Gang Scheduling for leadership.", "expected_tools": ["draft_decision_brief"]}

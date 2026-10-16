@@ -9,6 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from src.brain.db import graph  # noqa: E402
 from src.tools.base import reset_trace  # noqa: E402
 from src.tools.registry import TOOLS, call_tool  # noqa: E402
 
@@ -22,6 +23,10 @@ EXAMPLES = {
     "connect": {"a": "derekwaynecarr", "b": "KEP-753"},
     "influence": {"metric": "pagerank", "limit": 5},
     "resolve": {"text": "graceful node shutdown"},
+    "recommend_reviewers": {"kep_or_path": "KEP-4381"},
+    "draft_decision_brief": {"kep": "KEP-3063"},
+    "route_question": {"question": "Can DRA drivers support cluster autoscaling?", "topic": "dynamic resource allocation"},
+    "watch": {"entity": "KEP-2699"},
 }
 OUT = Path(__file__).resolve().parents[1] / "docs" / "tools.md"
 
@@ -52,6 +57,8 @@ def main(graph_name: str) -> None:
         data = json.dumps(result["data"], default=str, indent=1)
         lines += ["```", "", "<details><summary>Example output (data)</summary>", "", "```json",
                   data[:2500] + ("\n..." if len(data) > 2500 else ""), "```", "</details>", ""]
+    # the action examples wrote Draft/Question/Watch nodes: remove them so the eval graph stays frozen
+    graph(graph_name).query("MATCH (n) WHERE n:Draft OR n:Watch OR n:Question DETACH DELETE n")
     OUT.write_text("\n".join(lines))
     print(f"wrote {OUT} ({len(TOOLS)} tools)")
 

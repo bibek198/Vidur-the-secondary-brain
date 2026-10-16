@@ -2,8 +2,9 @@
 
 The agent (Claude tool calling) and the MCP server both expose exactly these tools.
 Descriptions are written as prompts: when to use, when not to, and example arguments.
+Read tools never write. Action tools (last four) only write Draft, Question and Watch nodes.
 """
-from src.tools import read
+from src.tools import act, read
 
 _AS_OF = {"type": "string", "description": "Optional point in time: a date (2024-06-01) or a release (v1.29). "
                                             "Omit for the current state."}
@@ -98,6 +99,42 @@ TOOLS = {
             "candidates and how each matched. Example: {\"text\": \"DRA\"}."),
         "schema": {"type": "object", "properties": {"text": {"type": "string"}},
                    "required": ["text"], "additionalProperties": False},
+    },
+    "recommend_reviewers": {
+        "fn": act.recommend_reviewers,
+        "description": (
+            "ACTION. Use when the user wants REVIEWERS for a change to a KEP, component or code path: ranks people "
+            "by current approver roles on the affected code and KEP plus expertise, excluding the KEP's authors, "
+            "each with reasons. Example: {\"kep_or_path\": \"KEP-4381\"}, {\"kep_or_path\": \"pkg/scheduler\"}."),
+        "schema": {"type": "object", "properties": {
+            "kep_or_path": {"type": "string"}, "limit": {"type": "integer", "minimum": 1, "maximum": 10}},
+            "required": ["kep_or_path"], "additionalProperties": False},
+    },
+    "draft_decision_brief": {
+        "fn": act.draft_decision_brief,
+        "description": (
+            "ACTION. Use when the user asks to WRITE, DRAFT or SUMMARIZE a brief/memo/update about one decision for "
+            "others: builds a markdown brief (status, why with quotes, impact, who to tell, sources) and saves it "
+            "as a draft. Show the returned markdown. Example: {\"kep\": \"KEP-4381\"}."),
+        "schema": {"type": "object", "properties": {"kep": {"type": "string"}},
+                   "required": ["kep"], "additionalProperties": False},
+    },
+    "route_question": {
+        "fn": act.route_question,
+        "description": (
+            "ACTION. Use when the user wants to know WHO TO ASK or wants a question passed on: picks experts and "
+            "the owning team's tech lead for the topic and records the question routed to them (nothing is sent). "
+            "Example: {\"question\": \"Can DRA drivers support autoscaling?\", \"topic\": \"dynamic resource allocation\"}."),
+        "schema": {"type": "object", "properties": {"question": {"type": "string"}, "topic": {"type": "string"}},
+                   "required": ["question", "topic"], "additionalProperties": False},
+    },
+    "watch": {
+        "fn": act.watch,
+        "description": (
+            "ACTION. Use when the user wants to FOLLOW, WATCH or BE NOTIFIED about a KEP, team, component or person. "
+            "Changes then appear in the live feed. Example: {\"entity\": \"KEP-2699\"}."),
+        "schema": {"type": "object", "properties": {"entity": {"type": "string"}},
+                   "required": ["entity"], "additionalProperties": False},
     },
 }
 

@@ -60,3 +60,15 @@ def test_llm_supersessions_never_feed_back_into_the_input():
         pytest.skip("no LLM-proposed supersession loaded")
     newer, older = llm[0]
     assert f"is replaced by {newer}" not in build_input(older)["text"]
+
+
+@pytest.mark.skipif("brain_eval" not in client().list_graphs(), reason="brain_eval not loaded")
+def test_rejected_llm_supersessions_are_not_in_the_graph():
+    import csv
+    from pathlib import Path
+    from src.brain.db import graph
+    review = Path(__file__).resolve().parents[1] / "eval" / "supersession_review.csv"
+    rejected = [(r["newer"], r["older"]) for r in csv.DictReader(review.open()) if r["verdict"].strip().lower() == "no"]
+    edges = {(a, b) for a, b in graph("brain_eval").query(
+        "MATCH (a:KEP)-[s:SUPERSEDES]->(b:KEP) WHERE s.source = 'llm' RETURN a.id, b.id").result_set}
+    assert not set(rejected) & edges

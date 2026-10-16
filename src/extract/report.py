@@ -22,7 +22,7 @@ AUDIT = ROOT / "eval" / "extraction_audit.csv"
 GOLD = ROOT / "eval" / "gold_decisions.csv"
 REVIEW = ROOT / "eval" / "supersession_review.csv"
 REPORT = ROOT / "eval" / "extraction_report.md"
-FIELDS = ["kep", "sample", "status", "summary", "rationale", "outcome_reason", "sources", "verdict", "note"]
+FIELDS = ["kep", "sample", "status", "summary", "rationale", "outcome_reason", "kep_url", "evidence_urls", "verdict", "note"]
 
 
 def _decisions() -> dict:
@@ -35,15 +35,23 @@ def _csv(path: Path) -> list[dict]:
 
 def audit() -> None:
     decs = _decisions()
-    gold = [r["kep"] for r in _csv(GOLD)]
+    from eval.gold import load as load_gold
+    gold = [r["kep"] for r in load_gold()]
     sample = random.Random(42).sample(sorted(decs, key=lambda k: int(k.split("-")[1])), 20)
     previous = {r["kep"]: r for r in _csv(AUDIT)}
+    from src.brain.db import graph
+    g = graph("brain_eval")
+    urls = dict(g.query("MATCH (c:Comment) WHERE c.id IN $ids RETURN c.id, c.url",
+                        {"ids": [e["ref"] for d in decs.values() for e in d["evidence"] if e["ref"] != "readme"]}).result_set)
+    kep_urls = dict(g.query("MATCH (k:KEP) RETURN k.id, k.readme_url").result_set)
     rows = []
     for kep, why in [(k, "random") for k in sample] + [(k, "gold") for k in gold if k not in sample and k in decs]:
         d, prev = decs[kep], previous.get(kep, {})
         rows.append({"kep": kep, "sample": why, "status": d["outcome"], "summary": d["summary"],
                      "rationale": d["rationale"], "outcome_reason": d["outcome_reason"] or "",
-                     "sources": " ".join(f"{e['ref']}" for e in d["evidence"]),
+                     "kep_url": kep_urls.get(kep) or "",
+                     "evidence_urls": " ".join(dict.fromkeys(urls.get(e["ref"], kep_urls.get(kep) or "")
+                                                             for e in d["evidence"])),
                      "verdict": prev.get("verdict", ""), "note": prev.get("note", "")})
     with AUDIT.open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=FIELDS)
@@ -82,10 +90,14 @@ def report() -> None:
         f"| Cost | ${cost:.2f} | budget $5 total |", "",
         "## Human audit", "",
         f"Rows audited: {len(audit_rows)} of {len(_csv(AUDIT))} in `eval/extraction_audit.csv` "
-        "(20 random decisions, seed 42, plus the gold KEPs).", "",
+        "(20 random decisions, seed 42, plus the gold KEPs). Method: the participant graded every row against the "
+        "KEP's design doc and the quoted comments; AI helped word some of the notes. Verdict scale: right, partly, wrong.", "",
         "| Verdict | Count |", "|---|---|",
         *[f"| {v} | {n} |" for v, n in verdicts.items()],
         f"| right or partly right | {100 * ok / max(len(audit_rows), 1):.0f}% (target ≥80%) |", "",
+        *([f"With {len(audit_rows)} rows and no 'wrong' verdict, the 95% upper bound on the share of wrong "
+           f"rationales is about {300 / len(audit_rows):.1f}% (rule of three): a small sample, not proof of zero errors."]
+          if audit_rows and verdicts["wrong"] == 0 else []), "",
         "## LLM-proposed supersessions", "",
         f"{len(review)} claims not already in `kep.yaml` (`eval/supersession_review.csv`): "
         f"{sup['yes']} confirmed, {sup['no']} rejected, {len(review) - sup['yes'] - sup['no']} not reviewed yet. "
