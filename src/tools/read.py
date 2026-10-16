@@ -167,7 +167,7 @@ def trace_decision(kep_or_query: str, as_of: str | None = None, graph_name: str 
         if cands:
             call.notes.append("Closest KEPs: " + "; ".join(f"{c['key']} {c['name']}" for c in cands[:3]))
         return call.result({"query": kep_or_query, "closest": cands[:3]}, found=False)
-    if best["via"] != "exact id":
+    if not best["via"].startswith("exact id"):
         call.notes.append(f"Matched by {best['via']}: '{kep_or_query}' -> {best['key']} {best['name']}. "
                           f"Say which KEP you matched; it may not be what the user meant.")
     kid = best["key"]
@@ -195,8 +195,10 @@ def trace_decision(kep_or_query: str, as_of: str | None = None, graph_name: str 
                          RETURN c.url, w.login, c.at_ts, substring(c.body, 0, 400), c, w
                          ORDER BY c.at_ts DESC LIMIT 4""", {"tickets": tickets, "words": DECISION_WORDS}) if tickets else []
     decision = call.q("""MATCH (d:Decision)-[:DECIDED]->(k:KEP {id:$id})
-                         OPTIONAL MATCH (d)-[:EVIDENCED_BY]->(c:Comment)
-                         RETURN d.summary, d.rationale, d.alternatives, d.confidence, d.stale, collect(c.url), d""", p)
+                         OPTIONAL MATCH (d)-[e:EVIDENCED_BY]->(c:Comment)<-[:WROTE]-(w:Person)
+                         RETURN d.summary, d.rationale, d.alternatives, d.confidence, d.stale,
+                                collect({url: c.url, by: w.login, quote: e.quote}), d.outcome_reason,
+                                d.readme_quotes, d.readme_url, d.verified, d""", p)
 
     status = status_at[0] if status_at else None
     data = {
@@ -212,11 +214,17 @@ def trace_decision(kep_or_query: str, as_of: str | None = None, graph_name: str 
     }
     if decision:
         d = decision[0]
-        data["rationale"] = {"summary": d[0], "rationale": d[1], "alternatives": d[2], "confidence": d[3],
-                             "evidence": d[5]}
+        quotes = [q for q in d[5] if q["url"]] + [{"url": d[8], "by": "design doc", "quote": q} for q in d[7] or []]
+        data["rationale"] = {"summary": d[0], "rationale": d[1], "outcome_reason": d[6], "alternatives": d[2],
+                             "confidence": d[3], "quotes": quotes}
+        call.notes.append("The rationale was written by an LLM from the sources; each quote was checked word for "
+                          "word against its source." + ("" if d[9] else " Some of its quotes failed that check and "
+                                                        "were dropped, so treat it with care."))
+        if d[3] == "low":
+            call.notes.append("The sources say little about why; say that the reason is not well documented.")
         if d[4]:
             call.stale.append(f"The rationale for {kid} is being re-checked after a new change.")
-        call.source(d[5])
+        call.source([q["url"] for q in quotes])
     call.source(kp.get("url"), kp.get("readme_url"), kp.get("issue_url"), [h[3] for h in history],
                 [e[0] for e in evidence])
     if status is None:

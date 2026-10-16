@@ -9,11 +9,14 @@ Order:
   4. teams, subprojects, code areas and code owners (current registry), people's companies
   5. tickets, PRs, comments and reviews created up to the cutoff
   6. text chunks with embeddings (vector index), for chunks whose source exists at the cutoff
-  7. derived: release dates, component -> code area, reviewer -> author weights (REVIEWED_FOR)
+  7. decisions: LLM-extracted rationale with quote-checked evidence (data/seed/decisions.jsonl)
+     and LLM-proposed supersessions as reviewed in eval/supersession_review.csv
+  8. derived: release dates, component -> code area, reviewer -> author weights (REVIEWED_FOR)
 
 Every step is idempotent: loading twice gives identical counts.
 Usage: python -m src.load.loader [--graph brain_eval] [--cutoff 2026-09-15 | --cutoff now]
 """
+import csv
 import gzip
 import json
 import sys
@@ -156,6 +159,29 @@ def load_chunks(g, cutoff_ts: int) -> dict:
     return {"chunks": upserts.chunks(g, rows), "without_vector": sum(1 for _ in read_jsonl(CHUNKS)) - len(vectors)}
 
 
+@step("decisions (LLM rationale)")
+def load_decisions(g) -> dict:
+    """Decision nodes from data/seed/decisions.jsonl (validated quotes only), plus LLM-proposed
+    supersessions from eval/supersession_review.csv: 'yes' rows count as verified by a person,
+    blank rows load as unverified (the agent must hedge), 'no' rows are skipped."""
+    path = SEED / "decisions.jsonl"
+    if not path.exists():
+        return {"skipped": "no data/seed/decisions.jsonl (run: python -m src.extract.validate)"}
+    rows = list(read_jsonl(path))
+    n = upserts.decisions(g, rows)
+    review = ROOT / "eval" / "supersession_review.csv"
+    claims = [r for r in csv.DictReader(review.open()) if r["verdict"].strip().lower() != "no"] if review.exists() else []
+    decided = {r["kep"] for r in rows}
+    upserts.run_batches(g, """UNWIND $rows AS r
+                              MATCH (a:KEP {id: r.newer}), (b:KEP {id: r.older})
+                              MERGE (a)-[s:SUPERSEDES]->(b)
+                              SET s.source = coalesce(s.source, 'llm'),
+                                  s.verified = CASE WHEN s.source = 'yaml' THEN true ELSE r.yes END""",
+                        [{"newer": c["newer"], "older": c["older"], "yes": c["verdict"].strip().lower() == "yes"}
+                         for c in claims if c["claimed_in"] in decided])
+    return {"decisions": n, "llm_supersessions": len(claims)}
+
+
 @step("derived edges")
 def load_derived(g) -> dict:
     if (SEED / "releases.jsonl").exists():
@@ -194,6 +220,7 @@ def load(graph_name: str, cutoff: str) -> dict:
     load_org(g)
     load_threads(g, cutoff_ts)
     load_chunks(g, cutoff_ts)
+    load_decisions(g)
     load_derived(g)
     g.query("MERGE (m:Meta {key:'snapshot'}) SET m.cutoff = $c, m.cutoff_ts = $ts, m.loaded_at = $now",
             {"c": cutoff_iso, "ts": cutoff_ts, "now": now_iso()})

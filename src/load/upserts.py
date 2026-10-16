@@ -317,3 +317,26 @@ def event_node(g, ev: dict, label: str, key: str, value: str) -> None:
             {"id": ev["event_id"], "kind": ev["kind"], "source": ev["source"], "occurred_at": ev["occurred_at"],
              "ts": ev["ts"], "observed_at": ev["observed_at"], "url": ev["payload"].get("url"),
              "summary": ev.get("summary"), "value": value})
+
+
+# ---------- decisions (LLM rationale layer) ----------
+
+def decisions(g, rows):
+    """rows: validated decisions from data/seed/decisions.jsonl. Comment quotes become EVIDENCED_BY edges;
+    design-doc quotes stay on the Decision (readme_quotes) with the KEP's readme_url as their source."""
+    for r in rows:
+        r["readme_quotes"] = [e["quote"] for e in r["evidence"] if e["ref"] == "readme"]
+        r["comment_quotes"] = [{"id": e["ref"], "quote": e["quote"]} for e in r["evidence"] if e["ref"] != "readme"]
+    return run_batches(g, """
+        UNWIND $rows AS r
+        MATCH (k:KEP {id: r.kep})
+        MERGE (d:Decision {id: r.id})
+        SET d.outcome = r.outcome, d.summary = r.summary, d.rationale = r.rationale,
+            d.outcome_reason = r.outcome_reason, d.alternatives = r.alternatives, d.readme_quotes = r.readme_quotes,
+            d.readme_url = k.readme_url, d.confidence = r.confidence, d.verified = r.verified,
+            d.model = r.model, d.input_hash = r.input_hash, d.extracted_at = r.extracted_at, d.stale = false
+        MERGE (d)-[:DECIDED]->(k)
+        WITH d, r UNWIND r.comment_quotes AS q
+        MATCH (c:Comment {id: q.id})
+        MERGE (d)-[e:EVIDENCED_BY]->(c)
+        SET e.quote = q.quote""", rows)

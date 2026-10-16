@@ -1,0 +1,5 @@
+newer,older,claimed_in,ref,quote,verdict,note
+KEP-2339,KEP-2342,KEP-2342,comment:2611393572,"#2339 was meant to replace this KEP, since clients like SVM could use the storage version API to drive creation of `StorageVersionMigration` API objects to automate migration.",,
+KEP-4381,KEP-3063,KEP-3063,readme,Now the roles are reversed: #4381 defines the base functionality and this KEP is an optional extension.,,
+KEP-3570,KEP-375,KEP-3570,readme,This KEP supersedes and replaces `kubernetes/enhancements/keps/sig-node/375-cpumanager/README.md`.,,
+KEP-5593,KEP-4603,KEP-4603,readme,"Originally, this KEP included a proposal to lower the maximum CrashLoopBackOff duration. This has been split into [KEP-5593: Configure the max CrashLoopBackOff delay]",,
