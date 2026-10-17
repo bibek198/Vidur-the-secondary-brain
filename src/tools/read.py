@@ -254,7 +254,8 @@ def trace_decision(kep_or_query: str, as_of: str | None = None, graph_name: str 
         if d[3] == "low":
             call.notes.append("The sources say little about why; say that the reason is not well documented.")
         if d[4]:
-            call.stale.append(f"The rationale for {kid} is being re-checked after a new change.")
+            call.stale.append(f"New discussion arrived after the explanation of {kid} was written; it may be out of date "
+                              "until it is re-checked.")
         call.source([q["url"] for q in quotes])
     call.source(kp.get("url"), kp.get("readme_url"), kp.get("issue_url"), [h[3] for h in history],
                 [e[0] for e in evidence])

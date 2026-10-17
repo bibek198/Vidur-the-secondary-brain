@@ -142,6 +142,14 @@ def valid_at(alias: str, as_of: int | None) -> str:
     return f"({alias}.valid_from <= $as_of AND ({alias}.valid_to IS NULL OR {alias}.valid_to > $as_of))"
 
 
+def data_as_of(g) -> dict:
+    """How current the graph is: its snapshot cutoff and, if the real-time engine runs, the last applied change."""
+    rows = g.query("""OPTIONAL MATCH (s:Meta {key:'snapshot'}) OPTIONAL MATCH (f:Meta {key:'freshness'})
+                      RETURN s.cutoff, f.last_event_at, f.last_applied_at""").result_set
+    cutoff, last_event, applied = rows[0] if rows else (None, None, None)
+    return {"snapshot": cutoff, "last_change": last_event, "applied_at": applied}
+
+
 def snapshot_cutoff(g) -> str | None:
     rows = run(g, "MATCH (m:Meta {key:'snapshot'}) RETURN m.cutoff", tool="meta").result_set
     return rows[0][0] if rows else None
@@ -184,4 +192,4 @@ class ToolCall:
             self.notes.append(f"graph view shows {MAX_PATH_NODES} of {view['total_nodes']} nodes")
         return {"tool": self.name, "found": found, "data": data, "notes": self.notes, "sources": self.sources,
                 "path": view, "cypher_trace": trace()[self.start:], "as_of": self.as_of_label,
-                "stale_flags": self.stale}
+                "stale_flags": self.stale, "data_as_of": data_as_of(self.g)}

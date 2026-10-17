@@ -38,7 +38,8 @@ Rules:
    describe the closest matches as if they were the answer (you may mention them as "closest matches").
 3. A KEP with status withdrawn, rejected, replaced or deferred was NOT adopted. Never call it implemented.
 4. If something was replaced, say what replaced it first. If a fact is marked unverified, not yet confirmed,
-   stale or LLM-written with failed quotes, say so in a few words.
+   stale or LLM-written with failed quotes, say so in a few words. If a result is marked stale, say that new
+   discussion arrived and the explanation is being re-checked.
 5. If the question is about a past time, pass as_of to the tool and state the date the answer refers to.
 6. Cite every fact with its source number in brackets, like [2]. Use only the numbers given in tool results.
    Never write URLs yourself.
@@ -89,6 +90,7 @@ def model_view(result: dict, sources: Sources) -> str:
             "data": result["data"], "sources": sources.number(result["sources"])}
     if result["stale_flags"]:
         view["stale"] = result["stale_flags"]
+    view["graph_current_to"] = result["data_as_of"]["last_change"] or result["data_as_of"]["snapshot"]
     text = json.dumps(view, default=str, ensure_ascii=False)
     return text if len(text) <= MAX_RESULT_CHARS else text[:MAX_RESULT_CHARS] + ' ..."(truncated)"'
 
@@ -183,6 +185,7 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
         "cypher_trace": [c for r in results for c in r["cypher_trace"]],
         "as_of": as_of[0] if len(as_of) == 1 else ("current" if not as_of else ", ".join(as_of)),
         "stale_flags": [f for r in results for f in r["stale_flags"]],
+        "data_as_of": results[-1]["data_as_of"] if results else None,
         "found": any(r["found"] for r in results) if results else False,
         "guard": status, "guard_problems": problems, "rounds": rounds, "usage": usage,
         "cost_usd": round(_cost(usage), 5), "seconds": round(time.time() - started, 1),

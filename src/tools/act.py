@@ -45,9 +45,14 @@ def recommend_reviewers(kep_or_path: str, limit: int = 5, graph_name: str | None
         call.notes.append("Nothing in the graph matches this. Do not suggest reviewers.")
         return call.result({"query": kep_or_path, "closest": cands[:3]}, found=False)
     people: dict[str, dict] = {}
+    # a current approver of the KEP outranks breadth: code points are capped, expertise is capped
+    W_KEP_APPROVER, W_CODE, CODE_CAP, EXPERT_CAP = 8, 3, 6, 4
 
-    def add(login, points, reason):
-        p = people.setdefault(login, {"login": login, "score": 0, "reasons": []})
+    def add(login, points, reason, kind):
+        p = people.setdefault(login, {"login": login, "score": 0, "reasons": [], "code": 0})
+        if kind == "code":
+            points = min(points, CODE_CAP - p["code"])
+            p["code"] += points
         p["score"] += points
         if reason not in p["reasons"]:
             p["reasons"].append(reason)
@@ -60,31 +65,34 @@ def recommend_reviewers(kep_or_path: str, limit: int = 5, graph_name: str | None
         _absorb(call, impact)
         for c in impact["data"].get("components", []):
             for login in c["code_approvers"]:
-                add(login, 3, f"approves {c['component']} code")
+                add(login, W_CODE, f"approves {c['component']} code", "code")
         owners = read.who_owns(best["key"], graph_name=graph_name)
         _absorb(call, owners)
         for ka in owners["data"]["kep_approvers"]:
             for login in ka["approvers"]:
-                add(login, 4, f"current approver of {ka['kep']}")
+                add(login, W_KEP_APPROVER, f"current approver of {ka['kep']}", "kep")
         topic = best["name"].split(" ", 1)[-1]
     else:
         owners = read.who_owns(best["key"], graph_name=graph_name)
         _absorb(call, owners)
         for area in owners["data"]["code_areas"]:
             for login in area["approvers"]:
-                add(login, 4, f"approves {area['area'].split(':')[-1]}")
+                add(login, W_CODE, f"approves {area['area'].split(':')[-1]}", "code")
         topic = best["name"]
     experts = read.who_knows(topic, limit=5, graph_name=graph_name)
     _absorb(call, experts)
     for e in experts["data"].get("people", []):
-        add(e["login"], min(e["score"], 6), f"expert on related KEPs ({', '.join(x['kep'] for x in e['evidence'][:2])})")
+        add(e["login"], min(e["score"], EXPERT_CAP), f"expert on related KEPs ({', '.join(x['kep'] for x in e['evidence'][:2])})",
+            "expert")
     for login in authors:
         people.pop(login, None)
-    ranked = sorted(people.values(), key=lambda p: -p["score"])[:limit]
+    ranked = sorted(people.values(), key=lambda p: (-p["score"], p["login"]))[:limit]
     if authors:
         call.notes.append(f"Authors excluded (they cannot review their own change): {', '.join(sorted(authors))}.")
-    call.notes.append("Ranked by: 4 per current approver role, 3 per approved code area affected, plus expertise score.")
-    return call.result({"for": best, "reviewers": [{**p, "score": round(p["score"], 1)} for p in ranked]},
+    call.notes.append("Ranked by: 8 for a current approver of the KEP, 3 per affected component whose code they approve "
+                      "(max 6), plus expertise (max 4).")
+    return call.result({"for": best, "reviewers": [{"login": p["login"], "score": round(p["score"], 1),
+                                                    "reasons": p["reasons"]} for p in ranked]},
                        found=bool(ranked))
 
 

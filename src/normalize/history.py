@@ -47,11 +47,13 @@ class BlobReader:
         self.p.wait()
 
 
-def first_parent_commits(repo: Path, pathspec: str):
-    """Yield (sha, iso_date, pr_number, [(status, path, old_path)]) oldest first."""
+def first_parent_commits(repo: Path, pathspec: str, rev_range: str | None = None):
+    """Yield (sha, iso_date, pr_number, [(status, path, old_path)]) oldest first.
+    rev_range ("old..new") limits it to new commits (the live git diff); None = the whole history."""
     out = subprocess.run(
         ["git", "log", "--reverse", "--first-parent", "-m", "--format=C %H %cI %s", "--name-status",
-         "-M", "--", pathspec], cwd=repo, check=True, capture_output=True, text=True).stdout
+         "-M", *([rev_range] if rev_range else []), "--", pathspec],
+        cwd=repo, check=True, capture_output=True, text=True).stdout
     commit = None
     for line in out.splitlines():
         if line.startswith("C "):
@@ -72,53 +74,70 @@ TRACKED = ("status", "stage", "latest_milestone", "owning_sig", "title")
 SETS = ("approvers", "superseded_by", "replaces")
 
 
-def kep_events() -> list[Event]:
+def diff_kep(kid: str, prev: dict | None, rec: dict, when: str, src: dict, observed: str | None = None) -> list[Event]:
+    """Events between two parsed versions of one kep.yaml (prev None = the KEP is new).
+    Shared by the history backfill, the live git diff and the sandbox webhook."""
+    observed = observed or when
+    if prev is None:
+        snapshot = {k: rec[k] for k in TRACKED + SETS + ("milestones", "authors", "path")}
+        return [Event("git", "kep_created", kid, when, {**src, **snapshot}, observed)]
+    events = []
+    for field in TRACKED:
+        if rec[field] != prev[field] and rec[field] is not None:
+            events.append(Event("git", f"kep_{field}_changed", kid, when,
+                                {**src, "from": prev[field], "to": rec[field]}, observed))
+    for stage in sorted(set(rec["milestones"]) | set(prev["milestones"])):
+        a, b = prev["milestones"].get(stage), rec["milestones"].get(stage)
+        if a != b:
+            events.append(Event("git", "kep_milestone_changed", kid, when,
+                                {**src, "stage": stage, "from": a, "to": b}, observed))
+    for field in SETS:
+        added = [x for x in rec[field] if x not in prev[field]]
+        removed = [x for x in prev[field] if x not in rec[field]]
+        if added or removed:
+            events.append(Event("git", f"kep_{field}_changed", kid, when,
+                                {**src, "added": added, "removed": removed}, observed))
+    return events
+
+
+def parse_kep_text(text: str | None, path: str) -> dict | None:
+    try:
+        return parse_kep(load_yaml(text), path.rsplit("/", 1)[0]) if text else None
+    except Exception:  # noqa: BLE001 - unparseable version: skip it, keep the previous state
+        return None
+
+
+def kep_events(rev_range: str | None = None, base: str | None = None, observed: str | None = None) -> list[Event]:
+    """kep.yaml change events, oldest first. With rev_range/base (live git diff), the state before the
+    range is read at commit `base` the first time each file is seen."""
     repo = REPOS / "enhancements"
     reader = BlobReader(repo)
     state: dict[str, dict] = {}       # KEP id -> last parsed record
     path_to_id: dict[str, str] = {}
     events = []
-    for sha, when, pr, changes in first_parent_commits(repo, "keps/*/*/kep.yaml"):
+    for sha, when, pr, changes in first_parent_commits(repo, "keps/*/*/kep.yaml", rev_range):
         src = {"commit": sha, "pr": pr,
                "url": f"https://github.com/kubernetes/enhancements/pull/{pr}" if pr else
                       f"https://github.com/kubernetes/enhancements/commit/{sha}"}
         for status, path, old_path in changes:
+            if base and path not in path_to_id and (old_path or path) not in path_to_id:
+                before = parse_kep_text(reader.read(base, old_path or path), old_path or path)
+                if before:
+                    state.setdefault(before["id"], before)
+                    path_to_id[old_path or path] = before["id"]
             if status == "D":
                 kid = path_to_id.pop(path, None)
                 if kid and kid in state:
-                    events.append(Event("git", "kep_file_removed", kid, when, {**src, "path": path}, when))
+                    events.append(Event("git", "kep_file_removed", kid, when, {**src, "path": path}, observed or when))
                 continue
-            text = reader.read(sha, path)
-            try:
-                rec = parse_kep(load_yaml(text), path.rsplit("/", 1)[0]) if text else None
-            except Exception:  # noqa: BLE001 - unparseable version: skip it, keep the previous state
-                rec = None
+            rec = parse_kep_text(reader.read(sha, path), path)
             if not rec:
                 continue
             kid = rec["id"]
             path_to_id[path] = kid
             if old_path:
                 path_to_id.pop(old_path, None)
-            prev = state.get(kid)
-            if prev is None:
-                snapshot = {k: rec[k] for k in TRACKED + SETS + ("milestones", "authors", "path")}
-                events.append(Event("git", "kep_created", kid, when, {**src, **snapshot}, when))
-            else:
-                for field in TRACKED:
-                    if rec[field] != prev[field] and rec[field] is not None:
-                        events.append(Event("git", f"kep_{field}_changed", kid, when,
-                                            {**src, "from": prev[field], "to": rec[field]}, when))
-                for stage in sorted(set(rec["milestones"]) | set(prev["milestones"])):
-                    a, b = prev["milestones"].get(stage), rec["milestones"].get(stage)
-                    if a != b:
-                        events.append(Event("git", "kep_milestone_changed", kid, when,
-                                            {**src, "stage": stage, "from": a, "to": b}, when))
-                for field in SETS:
-                    added = [x for x in rec[field] if x not in prev[field]]
-                    removed = [x for x in prev[field] if x not in rec[field]]
-                    if added or removed:
-                        events.append(Event("git", f"kep_{field}_changed", kid, when,
-                                            {**src, "added": added, "removed": removed}, when))
+            events += diff_kep(kid, state.get(kid), rec, when, src, observed)
             state[kid] = rec
     reader.close()
     return events
@@ -140,12 +159,46 @@ def _groups(text: str) -> dict[str, dict]:
             for g in (data.get(kind) or []) if isinstance(g, dict) and g.get("dir")}
 
 
-def sig_events() -> list[Event]:
+def diff_sigs(prev: dict | None, cur: dict, when: str, src: dict, observed: str | None = None) -> list[Event]:
+    """Events between two parsed versions of sigs.yaml (prev None = everything is new)."""
+    observed = observed or when
+    events = []
+    if prev is None:  # first version: everything that exists is "created" at that date
+        for team, g in sorted(cur.items()):
+            events.append(Event("git", "team_created", team, when, {**src, "name": g.get("name")}, observed))
+            for login, role in sorted(_leads(g)):
+                events.append(Event("git", "team_lead_added", team, when, {**src, "login": login, "role": role}, observed))
+        return events
+    for team in sorted(set(cur) | set(prev)):
+        if team not in prev:
+            events.append(Event("git", "team_created", team, when, {**src, "name": cur[team].get("name")}, observed))
+        elif team not in cur:
+            events.append(Event("git", "team_retired", team, when, src, observed))
+            continue
+        before = _leads(prev.get(team, {}))
+        after = _leads(cur[team])
+        for login, role in sorted(after - before):
+            events.append(Event("git", "team_lead_added", team, when, {**src, "login": login, "role": role}, observed))
+        for login, role in sorted(before - after):
+            events.append(Event("git", "team_lead_removed", team, when, {**src, "login": login, "role": role}, observed))
+        sp_before = {s["name"] for s in prev.get(team, {}).get("subprojects") or [] if isinstance(s, dict)}
+        sp_after = {s["name"] for s in cur[team].get("subprojects") or [] if isinstance(s, dict)}
+        for name in sorted(sp_after - sp_before):
+            events.append(Event("git", "subproject_added", team, when, {**src, "subproject": name}, observed))
+        for name in sorted(sp_before - sp_after):
+            events.append(Event("git", "subproject_removed", team, when, {**src, "subproject": name}, observed))
+    return events
+
+
+def sig_events(rev_range: str | None = None, base: str | None = None, observed: str | None = None) -> list[Event]:
     repo = REPOS / "community"
     reader = BlobReader(repo)
     prev: dict[str, dict] | None = None
+    if base:
+        text = reader.read(base, "sigs.yaml")
+        prev = _groups(text) if text else None
     events = []
-    for sha, when, pr, _ in first_parent_commits(repo, "sigs.yaml"):
+    for sha, when, pr, _ in first_parent_commits(repo, "sigs.yaml", rev_range):
         text = reader.read(sha, "sigs.yaml")
         try:
             cur = _groups(text) if text else None
@@ -156,30 +209,7 @@ def sig_events() -> list[Event]:
         src = {"commit": sha, "pr": pr,
                "url": f"https://github.com/kubernetes/community/pull/{pr}" if pr else
                       f"https://github.com/kubernetes/community/commit/{sha}"}
-        if prev is not None:
-            for team in sorted(set(cur) | set(prev)):
-                if team not in prev:
-                    events.append(Event("git", "team_created", team, when, {**src, "name": cur[team].get("name")}, when))
-                elif team not in cur:
-                    events.append(Event("git", "team_retired", team, when, src, when))
-                    continue
-                before = _leads(prev.get(team, {}))
-                after = _leads(cur[team])
-                for login, role in sorted(after - before):
-                    events.append(Event("git", "team_lead_added", team, when, {**src, "login": login, "role": role}, when))
-                for login, role in sorted(before - after):
-                    events.append(Event("git", "team_lead_removed", team, when, {**src, "login": login, "role": role}, when))
-                sp_before = {s["name"] for s in prev.get(team, {}).get("subprojects") or [] if isinstance(s, dict)}
-                sp_after = {s["name"] for s in cur[team].get("subprojects") or [] if isinstance(s, dict)}
-                for name in sorted(sp_after - sp_before):
-                    events.append(Event("git", "subproject_added", team, when, {**src, "subproject": name}, when))
-                for name in sorted(sp_before - sp_after):
-                    events.append(Event("git", "subproject_removed", team, when, {**src, "subproject": name}, when))
-        else:  # first version: everything that exists is "created" at that date
-            for team, g in sorted(cur.items()):
-                events.append(Event("git", "team_created", team, when, {**src, "name": g.get("name")}, when))
-                for login, role in sorted(_leads(g)):
-                    events.append(Event("git", "team_lead_added", team, when, {**src, "login": login, "role": role}, when))
+        events += diff_sigs(prev, cur, when, src, observed)
         prev = cur
     reader.close()
     return events

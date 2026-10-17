@@ -55,6 +55,31 @@ def _mentions(text: str, known: set[str]) -> list[str]:
     return sorted(found & known)
 
 
+def comment_row(c: dict, number, keps: set[str]) -> dict:
+    """One issue/PR conversation comment (GitHub JSON) as a normalized row. Also used by the live poller."""
+    return {"id": f"comment:{c['id']}", "kind": "issue", "thread": f"{REPO}#{number}",
+            "author": _author(c), "at": c["created_at"], "at_ts": _ts(c["created_at"]),
+            "url": c["html_url"], "body": _body(c["body"]), "mentions": _mentions(c["body"], keps)}
+
+
+def thread_row(it: dict, keps: set[str], pr_keps: set[str] = frozenset()) -> tuple[str, dict]:
+    """One issue or PR (GitHub JSON) as ("Ticket" | "PR", normalized row). Also used by the live poller."""
+    n = it["number"]
+    labels = [lab["name"] for lab in it.get("labels") or []]
+    row = {"id": f"{REPO}#{n}", "number": n, "title": it["title"], "state": it["state"],
+           "author": _author(it), "created_at": it["created_at"], "created_ts": _ts(it["created_at"]),
+           "closed_at": it.get("closed_at"), "closed_ts": _ts(it.get("closed_at")), "url": it["html_url"],
+           "sigs": sorted(lab.split("/", 1)[1] for lab in labels if lab.startswith("sig/")),
+           "labels": [lab for lab in labels if not lab.startswith("sig/") and not _PROCESS.match(lab)],
+           "process_labels": [lab for lab in labels if _PROCESS.match(lab)],
+           "body": _body(it.get("body"), ITEM_BODY_MAX), "comment_count": it.get("comments", 0)}
+    if "pull_request" in it:
+        merged = (it["pull_request"] or {}).get("merged_at")
+        linked = set(pr_keps) | set(_mentions(it["title"], keps))
+        return "PR", {**row, "merged": bool(merged), "merged_at": merged, "keps": sorted(linked)}
+    return "Ticket", {**row, "state_reason": it.get("state_reason"), "kep": kep_id(n) if kep_id(n) in keps else None}
+
+
 def main() -> None:
     keps = {json.loads(line)["id"] for line in (SEED / "keps.jsonl").open()}
     # PR -> KEPs it changed, from the git history (exact) ...
@@ -74,10 +99,7 @@ def main() -> None:
         for c in page:
             login = _author(c)
             if login:
-                comments.append({"id": f"comment:{c['id']}", "kind": "issue", "thread": f"{REPO}#{number}",
-                                 "author": login, "at": c["created_at"], "at_ts": _ts(c["created_at"]),
-                                 "url": c["html_url"], "body": _body(c["body"]),
-                                 "mentions": _mentions(c["body"], keps)})
+                comments.append(comment_row(c, number, keps))
     for number, page in _pages("reviews"):
         for r in page:
             login = _author(r)
@@ -105,21 +127,8 @@ def main() -> None:
 
     tickets, prs = [], []
     for n, it in sorted(items.items()):
-        labels = [lab["name"] for lab in it.get("labels") or []]
-        row = {"id": f"{REPO}#{n}", "number": n, "title": it["title"], "state": it["state"],
-               "author": _author(it), "created_at": it["created_at"], "created_ts": _ts(it["created_at"]),
-               "closed_at": it.get("closed_at"), "closed_ts": _ts(it.get("closed_at")), "url": it["html_url"],
-               "sigs": sorted(lab.split("/", 1)[1] for lab in labels if lab.startswith("sig/")),
-               "labels": [lab for lab in labels if not lab.startswith("sig/") and not _PROCESS.match(lab)],
-               "process_labels": [lab for lab in labels if _PROCESS.match(lab)],
-               "body": _body(it.get("body"), ITEM_BODY_MAX), "comment_count": it.get("comments", 0)}
-        if "pull_request" in it:
-            merged = (it["pull_request"] or {}).get("merged_at")
-            linked = pr_keps.get(n, set()) | set(_mentions(it["title"], keps))
-            prs.append({**row, "merged": bool(merged), "merged_at": merged, "keps": sorted(linked)})
-        else:
-            tickets.append({**row, "state_reason": it.get("state_reason"),
-                            "kep": kep_id(n) if kep_id(n) in keps else None})
+        label, row = thread_row(it, keps, pr_keps.get(n, set()))
+        (prs if label == "PR" else tickets).append(row)
 
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in (("tickets", tickets), ("prs", prs), ("comments", comments), ("reviews", reviews)):

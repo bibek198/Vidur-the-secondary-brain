@@ -22,7 +22,7 @@ class Event:
 
     def __post_init__(self):
         if not self.observed_at:
-            self.observed_at = now_iso()
+            self.observed_at = now_iso(ms=True)   # milliseconds: the engine's lag is measured from this
         if not self.event_id:
             self.event_id = make_event_id(self.source, self.kind, self.entity_key,
                                           self.occurred_at, self.payload)
@@ -40,8 +40,9 @@ def make_event_id(source: str, kind: str, entity_key: str, occurred_at: str, pay
     return hashlib.sha256(raw.encode()).hexdigest()[:20]
 
 
-def now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+def now_iso(ms: bool = False) -> str:
+    now = datetime.now(timezone.utc)
+    return now.strftime("%Y-%m-%dT%H:%M:%S") + (f".{now.microsecond // 1000:03d}Z" if ms else "Z")
 
 
 def to_utc_iso(value: str) -> str:
@@ -54,4 +55,9 @@ def to_utc_iso(value: str) -> str:
 
 def iso_to_ts(value: str) -> int:
     """ISO timestamp to epoch seconds (for fast range filters in Cypher)."""
-    return int(datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp())
+    return int(iso_to_seconds(value))
+
+
+def iso_to_seconds(value: str) -> float:
+    """ISO timestamp (optionally with milliseconds) to epoch seconds as a float."""
+    return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()

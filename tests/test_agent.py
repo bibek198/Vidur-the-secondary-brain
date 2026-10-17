@@ -181,3 +181,13 @@ def test_mcp_server_lists_every_registry_tool():
     from src.mcp_server import server
     tools = asyncio.run(server.list_tools())
     assert {t.name for t in tools} == set(TOOLS)
+
+
+@needs_graph
+def test_current_kep_approvers_rank_above_code_breadth():
+    r = call_tool("recommend_reviewers", {"kep_or_path": "KEP-4381"}, graph_name=G)
+    approvers = {x[0] for x in db_client().select_graph(G).query(
+        "MATCH (p:Person)-[a:APPROVES]->(:KEP {id:'KEP-4381'}) WHERE a.valid_to IS NULL RETURN p.login").result_set}
+    ranked = [p["login"] for p in r["data"]["reviewers"]]
+    top = [x for x in ranked if x in approvers]
+    assert top and ranked.index(top[0]) == 0, ranked
