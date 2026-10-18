@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3866",
+ "input_hash": "fefb65c401c84ef6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3866 proposes a new, officially supported nftables-based backend for kube-proxy on Linux, alongside the existing iptables and ipvs backends. Its status is implemented, stage stable.",
+  "rationale": "iptables has stopped receiving new features and performance work, while nftables has become the successor in the Linux kernel. The KEP proposes a supported nftables backend and explicitly defers replacing iptables or ipvs as the default to a separate future KEP. Its goals also include documenting incompatible behavior and ensuring users can switch modes without manual rule cleanup.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the iptables backend as the only default and do nothing",
+    "why_not": "The Drawbacks section says doing nothing would leave many users unable to use the default proxy implementation eventually."
+   },
+   {
+    "option": "Replace iptables and ipvs with nftables in this KEP and make nftables the default",
+    "why_not": "The summary says replacing or deprecating the existing backends would be handled in a separate future KEP, and the Non-Goals exclude making nftables the default."
+   },
+   {
+    "option": "Keep the ipvs backend and avoid adding a new backend",
+    "why_not": "The readme does not compare this option directly; it only notes ipvs as an existing backend and does not explain why it was rejected."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes the creation of a new official/supported nftables backend for kube-proxy."
+   },
+   {
+    "ref": "readme",
+    "quote": "that replacement/deprecation would be handled in a separate future KEP"
+   },
+   {
+    "ref": "readme",
+    "quote": "Development on iptables has mostly stopped, with new features and performance improvements primarily going into nftables instead."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, doing nothing would result in a situation where, eventually, many users would be unable to use the default proxy implementation."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3341,
+  "output": 774
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

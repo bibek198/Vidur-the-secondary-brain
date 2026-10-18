@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3107",
+ "input_hash": "eb139e420887c51c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3107 adds a secretRef field to the CSI PersistentVolume source so kubelet can pass per-PVC secrets to CSI drivers in the NodeExpandVolume request. Status is implemented, stage stable.",
+  "rationale": "CSI drivers had no way to use a secret during node-side operations, because the NodeExpandVolume request carried no credentials, while the controller-side ControllerExpandVolume already had a secretRef. The KEP adds NodeExpandSecretRef to CSIPersistentVolumeSource so the request can carry per-PVC secrets. The alternative of drivers storing secrets elsewhere in the cluster was judged hacky by the authors.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "CSI drivers store the secrets somewhere in the cluster and read them during node expansion",
+    "why_not": "The KEP calls this a really hacky way and says CSI driver authors do not want it."
+   },
+   {
+    "option": "Also add secretRef to other CSI calls such as NodeStageVolume",
+    "why_not": "These are explicit non-goals; the secretRef is limited to the NodeExpandVolume operation."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, the CSI drivers dont have a method to make use of secretRef at time of Node operation (ex: nodeExpansion) as the subjected csi request does not carry a secret or credentials in the request."
+   },
+   {
+    "ref": "readme",
+    "quote": "Other CSI calls e.g. `NodeStageVolume` will not have the secretRef in the request, this is limited to `NodeExpandVolume` operation."
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead of fetching secretRef from the nodeExpansion request, CSI drivers can store those somewhere in the cluster and make use of it while doing nodeExpansion, however this is really a hacky way and not the CSI driver authors want."
+   },
+   {
+    "ref": "comment:1490000000",
+    "quote": "@humblec we are targeting beta with 1.27 release Ref # https://github.com/kubernetes/enhancements/pull/3531"
+   },
+   {
+    "ref": "comment:1894678474",
+    "quote": "Hello 👋 1.30 Enhancements Lead here, I'm closing milestone 1.29 now"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13405,
+  "output": 902
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-2579",
+ "input_hash": "11ce4c65c9b1dd55",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2579 proposed replacing PodSecurityPolicy with a built-in, validating-only admission controller that enforces the three Pod Security Standards profiles (privileged, baseline, restricted), configured per namespace through labels in enforce, audit, and warn modes. The KEP is implemented and at stable stage.",
+  "rationale": "PodSecurityPolicy was deprecated in v1.21 because of its dual authorization model, its fail-closed rollout, and its inconsistent, unbounded API. The KEP still required a built-in way to stop create-pod permission from being equivalent to root-on-node, and it needed a rollout path that is safe to enable in new and upgraded clusters. The readme's goals call for validating-only behaviour, dry-run and audit-only modes, and a built-in in-tree controller.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep PodSecurityPolicy and promote it to GA",
+    "why_not": "The readme lists PSP's authorization model, rollout challenges, and inconsistent API as reasons it was deprecated rather than promoted to GA."
+   },
+   {
+    "option": "Fields on a namespace or a dedicated cluster-scoped API object instead of labels",
+    "why_not": "The discussion records this as a trade-off that was raised; label selectors were kept, and the reviewer noted the loss would be the label-selector UX. The readme does not record a firm rejection reason."
+   },
+   {
+    "option": "Nodeselector-based exemptions for Windows pods",
+    "why_not": "The discussion says 'I definitively do not want to add generic nodeSelector based exceptions'; RuntimeClass-based exemptions were planned instead."
+   },
+   {
+    "option": "A webhook extension point for mutating or customizing policy",
+    "why_not": "The maintainer said 'I'd really like to avoid turning this into another webhook extension point'; custom policy is handled by running separate admission webhooks alongside."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Replace PodSecurityPolicy with a new built-in admission controller that enforces the [Pod Security Standards]."
+   },
+   {
+    "ref": "readme",
+    "quote": "Pod Security Policy is deprecated as of Kubernetes v1.21. There were numerous problems with PSP that lead to the decision to deprecate it"
+   },
+   {
+    "ref": "readme",
+    "quote": "Validating only (i.e. no changing pods to make them comply with policy)"
+   },
+   {
+    "ref": "rcomment:617105381",
+    "quote": "I definitely do not want to add generic nodeSelector based exceptions."
+   },
+   {
+    "ref": "comment:818305133",
+    "quote": "I'd really like to avoid turning this into another webhook extension point."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11756,
+  "output": 1015
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

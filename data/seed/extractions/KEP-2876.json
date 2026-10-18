@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2876",
+ "input_hash": "a0a529c209d81ecd",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2876 proposed adding CEL-based validation expressions (x-kubernetes-validations) to CRD structural schemas so many validation rules can run in kube-apiserver without webhooks. The KEP is marked implemented, stage stable.",
+  "rationale": "Complex CRD validation, especially cross-field rules, previously needed admission webhooks, which complicate CRD development and operations. CEL was chosen because it is lightweight and safe to run in kube-apiserver, and it supports pre-parsing and type checking so syntax and type errors surface at CRD registration. Reviewers also favored self-contained, field-scoped rules that take effect with the CRD manifest, and the design restricts field access to `self` for consistency.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "General-purpose CEL admission for any resource type (raised by liggitt as a possible later mechanism)",
+    "why_not": "The discussion says being self-contained, better scoped, and easier to type-check still has value even if general expression admission were added later, so the CRD-embedded approach was kept and the alternative was to be listed in an alternatives section."
+   },
+   {
+    "option": "Keep webhooks for all validation",
+    "why_not": "The summary states webhooks significantly complicate the development and operability of CRDs, and the non-goals say webhooks are still needed only for cases such as network calls."
+   },
+   {
+    "option": "Allow indexing access to arbitrary property names (e.g. spec[\"wacky field name\"])",
+    "why_not": "jpbetz noted CEL properties are only accessible via field selection, and indexing would lose static type checking; the chosen option 2 limits accessible property names and uses __dot__-style escaping."
+   },
+   {
+    "option": "Access the previous object (oldSelf) for transition rules in the first alpha",
+    "why_not": "jpbetz said access to the previous version was punted to a separate PR because many things needed to be figured out, and liggitt was skeptical of ratcheting via this route."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes that an inline expression language be integrated directly into CRDs such that a much larger portion of validation use cases can be solved without the use of webhooks."
+   },
+   {
+    "ref": "readme",
+    "quote": "It is sufficiently lightweight and safe to be run directly in the kube-apiserver (since CRD creation is a privileged operation), has a straight-forward and unsurprising grammar"
+   },
+   {
+    "ref": "rcomment:747774046",
+    "quote": "From offline discussions, there seems to be consensus that we should require all fields be accessed via `self`."
+   },
+   {
+    "ref": "comment:965984742",
+    "quote": "No, the KEP still refers to it as `oldObject`. I'd like to take a pass on the support for access to the previous version in a separate PR from this one"
+   },
+   {
+    "ref": "comment:1211264705",
+    "quote": "We intensively changed to return type instead of the object in https://github.com/kubernetes/kubernetes/pull/107090 to address the concern of returning too large object back to the user."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11792,
+  "output": 1140
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

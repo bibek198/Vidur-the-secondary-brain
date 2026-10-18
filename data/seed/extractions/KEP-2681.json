@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2681",
+ "input_hash": "4e620fb379b943b7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2681 adds a status.hostIPs field to Pod (plus Downward API support for status.hostIPs), modeled on the existing PodIPs field. The KEP is marked implemented and stable.",
+  "rationale": "The goal is to let a Pod learn the addresses of the node it runs on, via a new status.hostIPs field and Downward API support. Reviewers debated whether hostIPs should be a plain string list or a struct with metadata, and whether one IP per family was the right model. The thread settled on a struct with no metadata yet, with the singular hostIP populated alongside the plural, and the feature gate was later removed once the feature went GA. The source does not spell out the full reasoning for the final GA step beyond the cleanup discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use []v1.NodeAddress for hostIPs, reusing the Node address type",
+    "why_not": "Reviewers argued the extra metadata would not reach the Downward API and only helps API clients who could fetch the Node. Thockin's tie-break kept a struct but added no metadata yet."
+   },
+   {
+    "option": "Use []string for hostIPs, matching the singular HostIP string",
+    "why_not": "aojea argued the plural should keep the same type as the singular, so a []string was proposed. The final decision was a struct, per thockin's tie-break on 2021-09-07, so the source does not say this option was rejected outright."
+   },
+   {
+    "option": "Add metadata to hostIPs entries, such as NodeAddressType",
+    "why_not": "khenidak suggested metadata, but thockin decided not to add metadata yet, noting that multi-NIC and multi-net futures are uncertain."
+   },
+   {
+    "option": "Open a separate KEP for hostIPs rather than extend the existing Pod IP KEP",
+    "why_not": "This was the suggested course (thockin, danwinship), not a rejected option; it is listed here because the KEP was a separate track."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:703900976",
+    "quote": "Let's leave it a struct but not add any sort of metadata yet. Maybe we never will, but with all the discussions around multi-NIC and multi-net"
+   },
+   {
+    "ref": "rcomment:703905300",
+    "quote": "I think we should treat this like ClusterIPs - if you specify plural you MUST specify the singular also. This is the burden on consumers of the new API."
+   },
+   {
+    "ref": "rcomment:628503777",
+    "quote": "if the PodHostIPs feature gate is disabled, then in addition to status.hostIPs being null, the downward API field will not be recognized."
+   },
+   {
+    "ref": "comment:2396882416",
+    "quote": "It seems the work remaining is to remove teh code completely PodHostIPs: { {Version: version.MustParse(\"1.28\"), Default: false, PreRelease: featuregate.Alpha}"
+   },
+   {
+    "ref": "comment:2451000225",
+    "quote": "Once 32 goes out, we can close this. Yay! kep.yaml still indicates \"implementable\", though"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11704,
+  "output": 1143
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

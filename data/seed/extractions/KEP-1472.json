@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1472",
+ "input_hash": "55335b6290bfe341",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1472 adds a CSIStorageCapacity API so the Kubernetes scheduler can take per-topology, per-storage-class free capacity from CSI drivers into account when placing pods with WaitForFirstConsumer PVCs or ephemeral inline volumes. The KEP reached implemented and stable status (implementable 2020-05-19, implemented 2022-06-01).",
+  "rationale": "Today the scheduler picks nodes without knowing whether the storage system has room for the requested volume, so volume creation can fail and pod creation gets stuck. The KEP exposes capacity at a level Kubernetes can compare against requested sizes and uses it during scheduling to raise the chance of a successful placement. Discussion settled on keeping the scope to scheduling and avoiding a full storage-pool model, with the name changed from CSIStoragePool to CSIStorageCapacity.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "CSIStoragePool object model (one object per pool with per-class entries)",
+    "why_not": "Discussion raised that the scheduler would need to retrieve many objects per scheduling decision, and the team renamed it to CSIStorageCapacity while keeping the per-class list; the pool term was avoided because of unresolved controversy."
+   },
+   {
+    "option": "Flat CSIStorageCapacity per storage class with no pool object",
+    "why_not": "Pohly preferred keeping the pool-level object because he expected flat objects to add more apiserver load, though he said the flat form works for the KEP's purpose."
+   },
+   {
+    "option": "Explicit storageCapacity boolean field on CSIDriver.spec",
+    "why_not": "Pohly later proposed dropping it: the scheduler can instead block when at least one CSIStorageCapacity object exists for the driver and none has enough capacity, with no loss of functionality."
+   },
+   {
+    "option": "Splitting into two KEPs (WaitForFirstConsumer vs ephemeral inline volumes)",
+    "why_not": "Suggested by satoru-takeuchi for simplicity; the sources do not record it being adopted, and the Summary still covers both volume types."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A new API for exposing storage capacity currently available via CSI drivers and a scheduler enhancement that uses this information will reduce the risk of that happening."
+   },
+   {
+    "ref": "readme",
+    "quote": "Increase the chance of choosing a node for which volume creation will succeed by tracking the currently available capacity available through a CSI driver and using that information during pod scheduling."
+   },
+   {
+    "ref": "comment:626611011",
+    "quote": "At that point it will have to be renamed back to `CSIStoragePool` to match its extended semantic."
+   },
+   {
+    "ref": "rcomment:434833509",
+    "quote": "The scheduler blocks pod scheduling if it finds at least one CSIStorageCapacity object for the CSI driver and none that has enough capacity."
+   },
+   {
+    "ref": "comment:626327531",
+    "quote": "So let me propose a path forward with this KEP: we rename `CSIStoragePool` to `CSIStorageCapacity` and avoid the term \"pool\" as much as possible in the text."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10390,
+  "output": 1196
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

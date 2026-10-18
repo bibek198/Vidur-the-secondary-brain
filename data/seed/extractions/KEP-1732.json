@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-1732",
+ "input_hash": "88bb5dd1d51f844e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1732 proposes a global HTTP redirector (artifacts.k8s.io) that sends binary and container image downloads to geo-located mirrors, with artifacts promoted from project staging areas to production via reviewed configuration files. The KEP is in provisional status.",
+  "rationale": "The motivation is that image distribution is ad hoc and limited to people holding repository keys, so access to the same artifacts under the same names is not standardized. The design uses a single redirector service plus declarative promotion config (PR-approved, then automated copy), which also allows rollback and deletion through the same process. The status is provisional, so this is a proposal and not an accepted final design.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Ad hoc distribution by people holding repository keys",
+    "why_not": "The readme describes this as the current state that is ad hoc and limited to an arbitrary set of people, which the KEP aims to replace."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, the process by which images is both ad hoc in nature and limited to an arbitrary set of people who have the keys to the relevant repositories."
+   },
+   {
+    "ref": "readme",
+    "quote": "The top level design will be to set up a global redirector HTTP service (`artifacts.k8s.io`) which knows how to serve HTTP and redirect requests to an appropriate mirror."
+   },
+   {
+    "ref": "readme",
+    "quote": "When a project wants to promote an image, they will file a PR in this repository to update their image promotion configuration to promote an artifact from staging to production."
+   },
+   {
+    "ref": "readme",
+    "quote": "Importantly, if a project needs to roll-back or remove an artifact, the same process will occur, so that the promotion tool needs to be capable of deleting images and artifacts as well as promoting them."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2284,
+  "output": 734
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

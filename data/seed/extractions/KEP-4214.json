@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4214",
+ "input_hash": "7ea944224b81df33",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4214 proposes that kubeadm stop binding the admin.conf credential to system:masters. Instead, admin.conf gets a regular cluster-admin credential via a new kubeadm:cluster-admins group, and a separate super-admin.conf holds the break-glass credential bound to system:masters. The KEP is in status implementable, stage alpha.",
+  "rationale": "The system:masters group bypasses RBAC, so its permissions cannot be removed, and Kubernetes lacks certificate revocation. The only way to revoke such a credential is a CA rotation. Splitting the credential lets admin.conf be revoked with RBAC while a break-glass super-admin.conf remains for disruptive cases.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep admin.conf bound to system:masters",
+    "why_not": "The readme states that a credential bound to system:masters can bypass RBAC and that its permissions cannot be removed, so a compromised admin.conf can only be revoked by CA rotation."
+   },
+   {
+    "option": "Use the existing system:masters or kubeadm:cluster-admins groups for additional users",
+    "why_not": "The proposal says using the existing system:masters or kubeadm:cluster-admins Groups will not be recommended; new users should get their own ClusterRoleBinding per User or Group."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Binding an admin credential to the`system:masters` group means it can [bypass RBAC](https://github.com/kubernetes/kubeadm/issues/2414#issue-836108390) - i.e. its permissions cannot be removed."
+   },
+   {
+    "ref": "readme",
+    "quote": "A general purpose `admin.conf` must be created that does not bind to `system:masters`. This credential can be shared by kubeadm deployed control plane nodes."
+   },
+   {
+    "ref": "readme",
+    "quote": "A separate \"break-glass\", super-user credential can be managed in `super-admin.conf`. This credential can be used to restore the cluster to a normal state in case of disruptive admin user activity."
+   },
+   {
+    "ref": "readme",
+    "quote": "To preserve the existing behavior where `admin.conf` has full cluster access, a new ClusterRoleBinding will be created called `kubeadm:cluster-admins`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2929,
+  "output": 901
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

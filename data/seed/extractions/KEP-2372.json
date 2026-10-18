@@ -1,0 +1,38 @@
+{
+ "kep": "KEP-2372",
+ "input_hash": "5c64adf379455d17",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2372 proposes allowing Resource Quota to apply to pods based on their node selector configuration, so administrators can limit namespaces to specific hardware types, zones, node pools, or compliance-labelled nodes. Its status is provisional.",
+  "rationale": "Administrators need to restrict which namespaces consume particular node types (for example, cheap versus expensive GPUs, zones, dedicated node pools, or FIPS/HIPAA-compliant nodes). The proposal addresses this by scoping Resource Quota using node labels, aiming to do so without adding much complexity to core Kubernetes. The status is provisional, and the sources show the KEP was moved to the new format in 2021 and revived in 2025 due to AI GPU demand.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Allowing Resource Quota to be applied on pods based on their node selector configuration opens up a flexible interface for addressing some immediate and potential future use cases."
+   },
+   {
+    "ref": "readme",
+    "quote": "A concrete example - An intern should only use the cheapest GPU available in my cluster, while researchers can consume the latest or most expensive GPUs."
+   },
+   {
+    "ref": "comment:770059862",
+    "quote": "I am creating this so that we move the existing KEP to the new format."
+   },
+   {
+    "ref": "comment:3530310935",
+    "quote": "We wrote the KEP 7 years ago, but the recent surge of GPU usage for AI workloads has motivated the need for this KEP again."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1938,
+  "output": 655
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

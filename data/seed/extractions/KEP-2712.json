@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2712",
+ "input_hash": "60f3535e6ac57065",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2712 makes kubelet graceful node shutdown order and budget pods by priority value rather than only critical vs. regular, using configurable priority-range shutdown periods. Status is implementable at stage beta.",
+  "rationale": "The existing graceful node shutdown only distinguished critical and regular pods, which gave little control over shutdown order. Kubernetes API conventions discourage hard-coding behavior by name, so the design uses priority class values instead. Maintainers discussed ranges with no pods being skipped immediately and bounded wait times that pod authors cannot control.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep only critical vs. regular pod handling from KEP-2000",
+    "why_not": "The readme says there is a need for finer control over shutdown order beyond critical and regular pods."
+   },
+   {
+    "option": "Look up pod priority class names to decide shutdown order",
+    "why_not": "The readme says kubernetes API design discourages hard coding anything by instances of name, so values are used instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "there is a need to allow more fine grained control over the pod shutdown order beyond _critical_ and _regular_ pods"
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead of looking at the pod priority class names, we can instead look at the pod priority class values to allow more control over pod shutdown order."
+   },
+   {
+    "ref": "rcomment:631228992",
+    "quote": "If we allocate 2 minutes for pods in a 1000 - 10000 range and there are no actual pods then we don't artificially wait for 2 minutes but move on to the next range."
+   },
+   {
+    "ref": "rcomment:630493948",
+    "quote": "Maybe add something along the lines of \"If neither are specified, then Graceful Node Shutdown feature is disabled.\""
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8349,
+  "output": 744
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

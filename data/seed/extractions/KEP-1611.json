@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1611",
+ "input_hash": "1bf8a0ed19ddeca3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1611 proposed rearchitecting the sig-network NetworkPolicy e2e tests around a truth-table reachability matrix and a DSL, so that tests are faster, more complete, and easier to read and extend. The KEP is marked implemented and stage stable.",
+  "rationale": "The existing suite of 25 NetworkPolicy tests takes 30 minutes to an hour and has gaps: negative cases are not confirmed, positive connectivity is not checked before policies are applied, and there is heavy duplication. The proposal reuses persistent pods and namespaces and defines connectivity through a reachability matrix. The design excerpt says its concrete goals are \"the endpoint for this specific KEP\".",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the existing 25 hand-written NetworkPolicy tests and fix them in place",
+    "why_not": "The readme says the tests are hard to reason about because of inconsistency and duplication, and that extending them creates more sprawl, which is the problem the KEP targets. The sources do not record a reason this option was rejected explicitly."
+   },
+   {
+    "option": "Make tests specific to CNI providers or change the NetworkPolicy API",
+    "why_not": "The readme lists both as non-goals."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The mechanism we propose for this includes building a \"Reachability matrix\" for evaluating all pod connectivities, while also building reusable APIs for designing tests in a more modular way for the future."
+   },
+   {
+    "ref": "readme",
+    "quote": "Increase performance of tests by using persistent Deployments. - *Increase understandability* by defining network scenario objects which can easily by modified and reused between tests"
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-goals - Make tests specific to CNI providers - Change NetworkPolicy APIs"
+   },
+   {
+    "ref": "readme",
+    "quote": "Network policy tests can take 30 minutes or longer."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3474,
+  "output": 794
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

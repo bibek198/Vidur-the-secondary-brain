@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-177",
+ "input_hash": "8b68e9fa380cdac4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-177 CSI Snapshot is recorded as implemented and stage stable. The KEP was written after the original CSI volume snapshot design doc was approved and implemented, and it adds the missing test plan, graduation criteria, and production readiness questionnaire.",
+  "rationale": "The original design was already approved and implemented, so this KEP documents the remaining required information. The surrounding discussion (PR #1902) centers on tightening VolumeSnapshot/VolumeSnapshotContent validation through a webhook and a phased CRD version rollout. The sources do not give a clear final rationale for the stable status beyond that phased plan.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the v1beta1 CRD and tighten validation without a version bump",
+    "why_not": "The discussion says the tightening is a non-backwards-compatible API change. @andili99 asked: \"Since the validation is tightening is considered an api change which is non backwards compatible, we will probably need a v1beta2 or v1.\""
+   },
+   {
+    "option": "Automatically delete or fix existing invalid VSC/VS objects in the controller",
+    "why_not": "@yuxiangqian said this was considered dangerous: \"automatic cleaning up of already existing invalid CRs(which by the way is considered to be dangerous as it might cause data loss)\"."
+   },
+   {
+    "option": "Wait for CRD immutable fields before moving to GA",
+    "why_not": "@andili99 wrote: \"No. We won't wait for immutable fields in CRDs for snapshot to GA.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP is written after the original design doc has been approved and implemented."
+   },
+   {
+    "ref": "rcomment:471841051",
+    "quote": "No. We won't wait for immutable fields in CRDs for snapshot to GA. It's more like a final step after both are GA, the webhook can be removed."
+   },
+   {
+    "ref": "rcomment:462521847",
+    "quote": "In the controller side, not trying to delete/fix invalid existing CRs to avoid potential data loss, however, log error messages"
+   },
+   {
+    "ref": "rcomment:470886763",
+    "quote": "The first two will be as described before, except in phase 2 we will keep the storage version as v1beta1. In the last release / phase the storage version is changed to v1."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10205,
+  "output": 909
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-135",
+ "input_hash": "7202d2f9a631976a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-135 proposed promoting seccomp to GA by replacing the seccomp pod annotations with API fields and deprecating the annotations, doing the minimum needed to clean up the feature. The status is implemented, stage stable.",
+  "rationale": "Seccomp was controlled by alpha-named annotations that had been unchanged since v1.3 and were usable on production clusters, leaving the feature in limbo. The KEP argued that blocking GA on functional enhancements would leave it stuck indefinitely, so it limited scope to moving annotations to fields and documenting the feature. Later discussion deferred annotation removal to a later release so that a deprecation warning could gain visibility first.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep seccomp in alpha/beta and block GA on functional enhancements such as changing the default profile or adding a logging profile",
+    "why_not": "The KEP says that blocking GA on those enhancements would leave the feature stuck in its current state indefinitely, so it chose the minimal scope instead."
+   },
+   {
+    "option": "Change the default seccomp profile from unconfined as part of a feature gate",
+    "why_not": "Comment 420172679 reports that the feature gate attempt was dropped due to backward compatibility concerns, and the plan was to push seccomp to stable as an opt-in feature."
+   },
+   {
+    "option": "Remove the annotation support immediately in v1.23 as originally planned",
+    "why_not": "Comment 897042579 says the annotation-to-field behavior should be kept for a few releases so the user-facing deprecation warning, added in 1.22, gets visibility; a removal target of 1.25 was proposed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This is a proposal to upgrade the seccomp annotation on pods to a field, and mark the feature as GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "Despite the `alpha` label, I think this feature needs to be treated as GA, and we're doing our users a disservice by leaving it in this weird limbo state."
+   },
+   {
+    "ref": "comment:698006750",
+    "quote": "The KEP has been updated to implemented (PR finally merged!) Please feel free to close this issue"
+   },
+   {
+    "ref": "comment:897042579",
+    "quote": "If the cost to keep the annotation → field behavior on pod creation is low, I'd like to keep that in place for a few releases for the warning to get visibility."
+   },
+   {
+    "ref": "comment:420384501",
+    "quote": "The best approach I currently think is to push seccomp to stable and it still has to be an opt-in feature rather than opt-out."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11840,
+  "output": 994
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

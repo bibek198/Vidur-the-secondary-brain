@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-4444",
+ "input_hash": "df5f4058729adced",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4444 adds a new Service spec field, trafficDistribution, as a non-binding routing preference (initially PreferClose, preferring same-zone endpoints) that supersedes the service.kubernetes.io/topology-mode annotation and the deprecated topologyKeys field. The KEP reached implemented status and stable stage.",
+  "rationale": "The existing topology-mode annotation and topologyKeys field (deprecated since Kubernetes 1.21) are the precursors this KEP replaces. The design gives users a hint rather than a strict guarantee, so implementations can apply best-effort routing while strict locality stays with internalTrafficPolicy and externalTrafficPolicy. The status is implemented and stable as recorded.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Strict routing guarantees enforced by the field",
+    "why_not": "Listed as a non-goal: the field \"will not enforce deterministic routing paths\" and serves only as hints and preferences."
+   },
+   {
+    "option": "Replacing internalTrafficPolicy and externalTrafficPolicy",
+    "why_not": "Non-goal: the new field \"is complementary to internalTrafficPolicy and externalTrafficPolicy\" and does not substitute their role in enforcing strict locality."
+   },
+   {
+    "option": "Adding Local (node-local preference) as an initial heuristic",
+    "why_not": "Deferred: the initial implementation focuses on a core set, and Local \"could be explored in future refinements\" (see KEP-3015)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It will supersede the functionality currently provided by the `service.kubernetes.io/topology-mode` annotation and it’s precursor `topologyKeys` field"
+   },
+   {
+    "ref": "readme",
+    "quote": "The `trafficDistribution` field will not enforce deterministic routing paths. It serves as a mechanism for expressing hints and preferences"
+   },
+   {
+    "ref": "readme",
+    "quote": "The new field is complementary to `internalTrafficPolicy` and `externalTrafficPolicy`. It does not aim to substitute their role in enforcing strict traffic locality."
+   },
+   {
+    "ref": "readme",
+    "quote": "This field will serve as preference or hint for the underlying implementation to consider while making routing decisions."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-4444",
+    "relation": "replaces",
+    "ref": "readme",
+    "quote": "It will supersede the functionality currently provided by the `service.kubernetes.io/topology-mode` annotation and it’s precursor `topologyKeys` field"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2348,
+  "output": 995
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

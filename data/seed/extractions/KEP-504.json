@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-504",
+ "input_hash": "f6cc9298a4edcbb0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-504 adds a PodSpec field `dnsConfig` that overlays additional nameservers, search paths, and options onto the settings chosen by `dnsPolicy`, and adds a `DnsPolicy: Custom` for fully user-defined resolver configuration. Status is implemented, stage stable.",
+  "rationale": "Kubelet generates pod /etc/resolv.conf from dnsPolicy, and ClusterFirst's search paths and ndots:5 cause roughly 5-10x query amplification for non-cluster names, loading kube-dns. Users who do not need the name aliases have no way to tune this per pod. The KEP lets users merge overrides into the existing policy, with option values overriding same-named defaults, rather than configuring DNS cluster-wide, which is a stated non-goal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Configure Pod DNS options at the cluster level",
+    "why_not": "The readme lists this as a non-goal: \"Giving users a way to configure Pod DNS options on a Cluster level.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This order of magnitude increase of query rate imposes a large load on the kube-dns service."
+   },
+   {
+    "ref": "readme",
+    "quote": "A new PodSpec field `dnsConfig` will contains fields that are merged with the settings currently selected with `DnsPolicy`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Options will override if their names coincide, i.e, if the `DnsPolicy` sets `ndots:5` and `ndots:1` appears in the `Spec`, then the final value will be `ndots:1`."
+   },
+   {
+    "ref": "readme",
+    "quote": "we add a new `DnsPolicy: Custom` that does not define any settings."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2343,
+  "output": 735
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

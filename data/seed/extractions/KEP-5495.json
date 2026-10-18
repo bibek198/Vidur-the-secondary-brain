@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5495",
+ "input_hash": "11657ed2998e0216",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5495 proposes deprecating the ipvs mode of kube-proxy and eventually removing it from the tree, with no separate repo. The KEP is at status implementable, stage deprecated.",
+  "rationale": "sig-network lacks maintainers familiar with the ipvs backend and has been steering ipvs bug reports to nftables. The nftables mode was designed to eventually replace ipvs and iptables, and already fixes many ipvs bugs. Moving ipvs to a separate repo was rejected because nobody would maintain it, so the code will be removed via a Deprecated feature gate.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Move the ipvs backend to a separate repo (e.g. kubernetes-sigs/kube-proxy-ipvs) as proposed in KEP-5343",
+    "why_not": "The KEP says there would be no intention of maintaining that repo or doing security fixes for it, so it would have to be created and immediately archived."
+   },
+   {
+    "option": "Get active maintainers for ipvs",
+    "why_not": "The readme lists this only as a short-term alternative and points to KEP-3866 for why ipvs will not save us; it does not state a rejection reason beyond that."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "sig-network currently lacks maintainers who are familar with the `ipvs` backend code, and as such, has been encouraging users"
+   },
+   {
+    "ref": "readme",
+    "quote": "The goal of this new backend mode has always been to eventually replace `ipvs` and `iptables`[^1], as it solve the performance issues of iptables"
+   },
+   {
+    "ref": "readme",
+    "quote": "we would have no intention of maintaining this repo, and wouldn't want to be responsible for doing security fixes for it"
+   },
+   {
+    "ref": "readme",
+    "quote": "Thus, we will simply remove the IPVS proxy from the tree, and not copy it anywhere else. This will be done via a `Deprecated` feature gate."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2617,
+  "output": 796
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

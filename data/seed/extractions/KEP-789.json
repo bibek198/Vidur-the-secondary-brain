@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-789",
+ "input_hash": "582f11c251be88b5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-789 proposed removing the system:unauthenticated subject from the default system:discovery and system:basic-user ClusterRoleBindings, and adding a new public-info-viewer ClusterRole/ClusterRoleBinding so that /healthz, /version and /version/ stay unauthenticated. The KEP is marked implemented at stable stage.",
+  "rationale": "The CVE-2018-1002105 post-mortem and privacy concerns about CRD exposure through default discovery bindings motivated hardening the defaults. The KEP keeps unauthenticated access to a small set of non-sensitive endpoints that legitimate use cases depend on. The sources do not explain the implementation history in detail; the discussion mainly covers the later status-label cleanup.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep unauthenticated access to discovery and basic-user bindings",
+    "why_not": "The motivation section says the goal is to remove discovery from the APIs allowing unauthenticated access by default, to improve privacy for CRDs and default security posture."
+   },
+   {
+    "option": "Disable anonymous access entirely with --anonymous-auth=false",
+    "why_not": "The non-goals say this is already achievable that way, but the KEP does not aim to protect default clusters from unauthenticated access entirely, and legitimate non-sensitive uses such as /healthz and kubectl version should not break."
+   },
+   {
+    "option": "Fix the other discovery bugs from CVE-2018-1002105 (issues 72113, 72117)",
+    "why_not": "The non-goals list these as separate, more fundamental discovery bugs that this KEP does not address."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The aim of this change is to remove the `system:unauthenticated` subjects from the `system:discovery` and `system:basic-user` ClusterRoleBindings, while preserving unauthenticated access"
+   },
+   {
+    "ref": "readme",
+    "quote": "Remove discovery from the set of APIs which allow for unauthenticated access by default, improving privacy for CRDs and the default security posture of default clusters in general."
+   },
+   {
+    "ref": "readme",
+    "quote": "Create a new default ClusterRole which prominently, explicitly documents its intent to freely disclose information (e.g. `system:public-info-viewer`) and contains the `GET /healthz`, `/version` and `/version/` PolicyRules."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5861,
+  "output": 1021
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

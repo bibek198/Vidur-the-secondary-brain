@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-964",
+ "input_hash": "af6bda7f03affc18",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-964 extends the RequestedToCapacityRatio priority function with a new optional `resources` argument so the scheduler can bin-pack extended resources (such as accelerators) as well as CPU and memory. The KEP is in status implementable, stage alpha.",
+  "rationale": "The default scheduler spreads pods across nodes, which fragments scarce extended resources and leaves pods with large device requests pending. The proposal adds a `resources` map with per-resource weights to requested_to_capacity_ratio, defaulting to CPU and memory with weight 1 each. Discussion shows the implementation PR kubernetes/kubernetes#77688 was merged in 2019, and a maintainer then judged no feature gate was needed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the default spreading behaviour and rely on users to manage device fragmentation",
+    "why_not": "The motivation states that this default spreading causes fragmentation that prevents scheduling pods with larger device requirements."
+   },
+   {
+    "option": "Add a separate new priority function for extended resources",
+    "why_not": "The sources do not discuss this alternative; the proposal chose to modify the existing requested_to_capacity_ratio function instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The plan is to modify `requested_to_capacity_ratio` priority function to support `resource_bin_packing` of extended resources."
+   },
+   {
+    "ref": "readme",
+    "quote": "While running workloads on kubernetes which use accelerator devices the default scheduler spreads pods across nodes resulting in fragmentation of extended resources."
+   },
+   {
+    "ref": "comment:532125635",
+    "quote": "As kubernetes/kubernetes#77688 was merged, and it's not necessary to have a feature gate; so I'm going to close this."
+   },
+   {
+    "ref": "comment:515256044",
+    "quote": "yes this will be in 1.16 as alpha release, I'll update the KEP to indicate that today itself."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4995,
+  "output": 796
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

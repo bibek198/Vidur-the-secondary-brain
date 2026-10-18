@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5313",
+ "input_hash": "a61faa9f615c28c0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5313 proposes a vendor-neutral, namespaced, data-only PlacementDecision API that standardizes the \"which clusters\" output of multicluster schedulers, so consumers (GitOps engines, orchestrators, rollout controllers, AI/ML pipelines) can read one format from any scheduler. Its status is provisional at alpha stage, since 2025-11-25.",
+  "rationale": "Each multicluster scheduler publishes its own placement-decision API, so every consumer needs custom integration code per scheduler, which the KEP calls an integration explosion. The KEP scopes the standard to the decision output only: it leaves placement requests and workload deployment vendor-specific, and it requires each cluster reference to map to a ClusterProfile. The status is provisional, and the sources do not describe any review outcome or acceptance beyond that.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Status quo: each scheduler ships its own placement API",
+    "why_not": "The KEP says this leads to consumer bloat and vendor lock-in, with each consumer writing separate code for every scheduler."
+   },
+   {
+    "option": "Extend the Work API to carry scheduling details",
+    "why_not": "The KEP says this overloads a workload syncing API with scheduling details, coupling the where with the what."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP introduces a vendor neutral `PlacementDecision` API that standardizes the output of multicluster placement calculations."
+   },
+   {
+    "ref": "readme",
+    "quote": "Example: 10 consumers with 10 schedulers needs 100 separate integrations today, but only 20 integrations with this API"
+   },
+   {
+    "ref": "readme",
+    "quote": "What this API standardizes: The \"which clusters\" answer (the decision output)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Extending `Work API`: overloads a workload syncner API with scheduling details which couples the where with the what."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4681,
+  "output": 789
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

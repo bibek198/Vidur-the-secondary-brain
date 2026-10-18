@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-853",
+ "input_hash": "853a28e3b3292333",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-853 adds an algorithm-agnostic `behavior` object to the HPA with `scaleUp` and `scaleDown` sections, letting users configure stabilization windows, selectPolicy (Min/Max/Disabled), and per-period policies (Pods or Percent) to control scale velocity. The KEP is recorded as implemented, stage stable.",
+  "rationale": "Users could not control how fast HPA scales, because only a cluster-wide downscale stabilization window and hard-coded scale-up limits existed. The readme states the goal is to \"Allow the user to be able to manage the scale velocity\". The sources do not explain the implementation details beyond the design proposal, and the discussion concerns only the KEP status metadata rather than the feature itself.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Rely only on the cluster-level --horizontal-pod-autoscaler-downscale-stabilization-window flag",
+    "why_not": "The readme says this is the only cluster-level parameter and that users cannot influence scale velocity per application, which the motivation names as a problem."
+   },
+   {
+    "option": "Add a tolerance parameter to the new behavior section for scaleUp and scaleDown",
+    "why_not": "The readme lists adding a tolerance parameter to the behavior section as a non-goal."
+   },
+   {
+    "option": "Persist scaling events so HPA behavior stays consistent across controller restarts",
+    "why_not": "The readme lists persisting scaling events as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal adds scale velocity configuration parameters to the HPA to control the rate of scaling in both directions."
+   },
+   {
+    "ref": "readme",
+    "quote": "As a result, users cannot influence scale velocity, and that is a problem for many applications."
+   },
+   {
+    "ref": "readme",
+    "quote": "We need to introduce an algorithm-agnostic HPA object configuration that will allow configuration of individual HPAs."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `Max` value is used by default. - `policies` a list of policies which regulate the amount of scaling."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5603,
+  "output": 908
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

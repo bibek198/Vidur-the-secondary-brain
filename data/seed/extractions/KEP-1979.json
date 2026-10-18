@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1979",
+ "input_hash": "02c8e63949e649bb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1979 proposes the Container Object Storage Interface (COSI), a standard for provisioning and consuming object storage in Kubernetes covering automated bucket creation/deletion, access credential generation/revocation, and bucket reuse. Current status is implementable at alpha stage.",
+  "rationale": "Object storage lacks a portable standard equivalent to CSI for file and block storage, so workloads cannot be moved across clusters without changing manifests. The KEP targets automated bucket lifecycle and credential management in a vendor-neutral way, with self-service for non-admin users. The discussion shows the design was still being revised (per-BucketClaim secrets, env-var naming, split access modes), so the sources describe an evolving design rather than a settled one.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep BucketAccessRequest and BucketAccess as two separate resource types",
+    "why_not": "A reviewer asked for flattening to reduce API surface: \"I didn't see any reason we need 2 objects here.\" The sources do not record a final resolution on this point."
+   },
+   {
+    "option": "Pass full BucketClaim metadata and spec to the COSI driver in DriverCreateBucketRequest",
+    "why_not": "The maintainer chose not to pass the full Kubernetes object to keep a minimal driver contract and avoid security risk from user-specified bucket names."
+   },
+   {
+    "option": "Single shared Secret referencing all Buckets/BucketClaims",
+    "why_not": "The author moved to one Secret per referenced BucketClaim because a single Secret would need very long data key names, which hurts usability and portability."
+   },
+   {
+    "option": "Typed BucketInfo JSON blob in the Secret (v1alpha1 style)",
+    "why_not": "Users reported they could not translate the JSON blob into environment variables for their applications, so the design moved to env-var style keys."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "An equivalent standard does not exist for Object storage. Object storage has been rising in popularity in the recent years as an alternative form of storage to filesystems and block devices."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support automated **Bucket Creation** - Support automated **Bucket Deletion** - Support automated **Access Credential Generation** - Support automated **Access Credential Revocation**"
+   },
+   {
+    "ref": "comment:914583419",
+    "quote": "I didn't see any reason we need 2 objects here. Less API is easier to approve, so I'm asking to either find an argument that justifies an new type or squash them."
+   },
+   {
+    "ref": "rcomment:2377035189",
+    "quote": "the current proposal is to use a different Secret for each referenced BucketClaim. The intent is to ensure that Secret fields are consistent (and thus portable) and as simple to use as possible for users."
+   },
+   {
+    "ref": "comment:2866161351",
+    "quote": "intentionally avoid passing the full Kubernetes object, to maintain a clear separation of concerns and adhere to the principle of single responsibility."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10167,
+  "output": 1140
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

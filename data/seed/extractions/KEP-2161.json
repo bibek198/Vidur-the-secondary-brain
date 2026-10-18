@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2161",
+ "input_hash": "d4d15dd48aa58369",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2161 proposes that the API server always labels every namespace with an immutable \"kubernetes.io/metadata.name\" label set to the namespace's name, so label selectors (including notIn) can select namespaces by name. The status is implemented, stage stable.",
+  "rationale": "Namespaces lack a guaranteed identifying label, so selecting a namespace by name in NetworkPolicy and other namespaceSelector APIs required field selectors that these APIs do not support. Reviewers accepted a default label as the lightest option, noting it works for all in- and out-of-tree policy mechanisms without changes and avoids policies being misread by clients unaware of new fields. Reviewers also agreed the label should be forced to the namespace name, with stomping of differing values preferred over rejecting requests, and that skipping alpha was justified because the change is non-disruptive and cannot be feature-gated for external actors.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add new select-by-name capabilities to the policy APIs (restructure NetworkPolicy)",
+    "why_not": "Reviewers noted it would break the old API or add nesting complexity, and Thockin estimated a reorganization would take at least a year."
+   },
+   {
+    "option": "Use a virtual in-memory label that is not stored on the object",
+    "why_not": "Listed as an alternative by lavalamp in review; the sources do not record a specific reason it was rejected beyond the chosen design being preferred."
+   },
+   {
+    "option": "Backfill controller or admission webhook for older clusters",
+    "why_not": "deads2k said a backfill controller would not give the same guarantees, since in previous releases it would still be possible to lie."
+   },
+   {
+    "option": "Reject requests that set a differing value instead of overriding it",
+    "why_not": "liggitt argued stomping the value avoids failing requests that currently persist, and that failed requests depend on callers behaving well and are not API-visible."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "namespaces are always ensured, by the API server, to have a *immutable label matching the metadata.name of the namespace*"
+   },
+   {
+    "ref": "comment:733840074",
+    "quote": "A few things won me over: * the in/not-in constructions seem useful * enabling all in- and out-of-tree policy mechanisms"
+   },
+   {
+    "ref": "rcomment:537589111",
+    "quote": "Failing the request means: 1. the failure is not API-visible (since the write is disallowed) 2. we're depending on the rejected caller behaving well"
+   },
+   {
+    "ref": "comment:775938798",
+    "quote": "In this case, the most compelling reason is that you have no way to indicate to external actors whether the feature is on or off"
+   },
+   {
+    "ref": "comment:760296817",
+    "quote": "A backfill controller won't have the same guarantees that this mechanism provides. In previous releases, it will still be possible to lie."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10690,
+  "output": 1080
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

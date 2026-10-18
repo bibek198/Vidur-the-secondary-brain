@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-585",
+ "input_hash": "80eb562316f8d577",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-585 introduced RuntimeClass, a cluster-scoped resource that surfaces container runtime properties to the control plane and is assigned to pods via a runtimeClass PodSpec field. The KEP is recorded as implemented and at stable stage, with GA targeted for Kubernetes 1.20.",
+  "rationale": "The design addresses growing interest in running multiple runtimes (e.g. sandboxes like Kata containers and gVisor) in one cluster, requiring a way to select among them and surface their properties. Graduation to stable was gated on adding graduation criteria and a test plan to the KEP, and on conformance tests for the GA API, which were completed after a code freeze exception. The sources do not state a single explicit rationale for the stable promotion beyond the feature being in production use and needing GA status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep RuntimeClass in beta without promoting to stable",
+    "why_not": "The sources show the 1.20 plan was to go GA; a maintainer confirmed 'Yep, still planned for v1.20' and the enhancements lead asked the KEP to add stable graduation criteria, but no source explains a rejection of this path."
+   },
+   {
+    "option": "Revert RuntimeClass GA from the 1.20 release due to missing conformance tests",
+    "why_not": "Discussed by release team as a possibility if the conformance tests were not in place; the sources say a PR merged (kubernetes/kubernetes#96551) and promotion to conformance was pending, so the revert was not the path taken."
+   },
+   {
+    "option": "Make a Windows/OS reserved label part of the scope",
+    "why_not": "Raised in review; the sources say it stays in the non-goals section for this graduation effort, with no other label-reservation effort identified."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "`RuntimeClass` is a new cluster-scoped resource that surfaces container runtime properties to the control plane."
+   },
+   {
+    "ref": "comment:694444207",
+    "quote": "Yep, still planned for v1.20. See https://docs.google.com/document/d/17nROj6ayPsUpx09mhLrzOkRLgo-8sn6Vgfyy-gmyuo4/edit#heading=h.3qoppsm7jdvw for planning."
+   },
+   {
+    "ref": "review:502479180",
+    "quote": "This will need graduation criteria (you have alpha beta, but not stable) and a test plan. Please update and merge the KEP by tomorrow's (October 6th) enhancements freeze."
+   },
+   {
+    "ref": "comment:727270162",
+    "quote": "As an update: https://github.com/kubernetes/kubernetes/pull/96551 has merged and we are waiting for sufficient runs to promote to conformance via another pr"
+   },
+   {
+    "ref": "comment:742173177",
+    "quote": "Since this is now GA and the KEP has an implemented status, you can close this tracking issue."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12524,
+  "output": 1096
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

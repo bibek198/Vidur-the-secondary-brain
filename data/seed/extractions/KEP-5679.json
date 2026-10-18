@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5679",
+ "input_hash": "6f02a00b32fef4d6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5679 proposes an optional `fallback` field on ExternalMetricSource in the HPA API that sets a static desired replica count, used after an external metric has failed to be retrieved for a configured duration. Status is implementable, stage alpha.",
+  "rationale": "External metrics come from systems outside cluster control and can fail, leaving the HPA holding its current replica count during outages. The proposal adds a duration-based threshold (measured from the first consecutive failure) and a fallback replica count per external metric, combined with other metrics by the standard maximum rule. Duration is chosen over a failure count because the reconciliation interval varies between clusters.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Count-based failure threshold (e.g., 3 failures)",
+    "why_not": "Behavior would vary with the poll or sync frequency; for example 3 failures is 45 seconds at 15s polling but 90 seconds at 30s polling."
+   },
+   {
+    "option": "Fallback for resource, pods, object, or custom metrics too",
+    "why_not": "These are listed as non-goals: resource metrics are in-cluster and should be fixed at the infrastructure level, and the others use in-cluster APIs; custom metrics may be considered later based on alpha feedback."
+   },
+   {
+    "option": "Last-known-good metric value caching or automatic fallback value calculation",
+    "why_not": "Both are explicit non-goals of the proposal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This enhancement allows users to specify a desired replica count that the HPA should use after a configurable number of consecutive failures to retrieve an external metric."
+   },
+   {
+    "ref": "readme",
+    "quote": "The duration is measured from the first consecutive failure, ensuring consistent and understandable semantics"
+   },
+   {
+    "ref": "readme",
+    "quote": "A count-based threshold (e.g., \"3 failures\") would result in inconsistent behavior"
+   },
+   {
+    "ref": "readme",
+    "quote": "Add optional fallback configuration to the existing [ExternalMetricSource]"
+   },
+   {
+    "ref": "readme",
+    "quote": "Fallback for resource metrics (CPU, memory from metrics-server) - these are in-cluster and should be addressed at the infrastructure level if unavailable"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3616,
+  "output": 888
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

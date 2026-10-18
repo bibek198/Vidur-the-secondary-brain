@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2221",
+ "input_hash": "2462fac82639edc0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2221 proposed deprecating and then removing dockershim (the built-in Docker CRI) from the kubelet code base. The KEP is recorded as implemented, stage stable, with implemented-from date 2022-08-09.",
+  "rationale": "Dockershim ran inside kubelet and was tightly coupled to its lifecycle, so kubelet depended on a specific container runtime and runtime CVEs burdened sig-node and administrators. The design aims to deprecate and remove it. The discussion shows the removal was tracked for the 1.24 release, and a 2022-05-10 comment states the KEP was fully implemented in 1.24.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep dockershim built into kubelet",
+    "why_not": "The readme says the built-in shim is a maintenance burden: \"This is not ideal as kubelet then has dependency on specific container runtime which leads to maintenance burden for not only developers in sig-node, but also cluster administrators\"."
+   },
+   {
+    "option": "Maintain dockershim-style support outside Kubernetes",
+    "why_not": "The discussion points to cri-dockerd, which Mirantis and Docker agreed to maintain standalone outside Kubernetes. This is an external path the sources mention, not a rejected alternative; the readme lists the alternatives as \"None.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This is not ideal as kubelet then has dependency on specific container runtime which leads to maintenance burden for not only developers in sig-node"
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal aims at a deprecation and subsequent removal of dockershim from kubelet."
+   },
+   {
+    "ref": "rcomment:1122391424",
+    "quote": "This KEP was **fully implemented** in K8s version 1.24. Please update the [kep.yaml]"
+   },
+   {
+    "ref": "comment:1074129664",
+    "quote": "I'm marking this enhancements as `tracked` with referenced to the merged PR: https://github.com/kubernetes/kubernetes/pull/97252"
+   },
+   {
+    "ref": "comment:989628749",
+    "quote": "a cri-dockerd can be maintained independently by folks who are interested in keeping this functionality."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4616,
+  "output": 886
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

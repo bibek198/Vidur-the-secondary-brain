@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-2718",
+ "input_hash": "eaa308f1b2a12596",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2718 proposed a client exec proxy extension to Kubernetes client libraries so that a client-side proxy process, configured solely from kubeconfig, could modify requests (e.g. request signing, hardware-protected mTLS keys) before they reach the API server. The KEP was withdrawn at alpha stage on 2024-07-05.</summary>\n<parameter name=\"rationale\">Existing client auth mechanisms (exec credential plugins, static tokens/certs, external HTTP proxies via environment variables) cannot easily sign whole requests, and running and securing an external proxy is operationally poor. The design went through many review rounds in PR #2693, where the reviewer enj rejected the proposed API structure and asked for an extension of ExecCredentialStatus instead. The sources do not record the reason for the eventual withdrawal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the proposed standalone exec proxy config (ExecProxyConfig in ExecConfig, or a per-user proxy field in kubeconfig)",
+    "why_not": "enj disagreed with the structure: \"I disagree with effectively the entire structure of this API. I expect this to be an extension to the existing client-go credential plugin API, specifically as extension to `ExecCredentialStatus`.\""
+   },
+   {
+    "option": "Use an existing HTTP proxy via HTTP_PROXY/HTTPS_PROXY environment variables or kubeconfig proxy URL",
+    "why_not": "The proposal says this \"is not ideal for a generic request signing solution across all client configurations\" because it needs a long running external proxy process and adds operational complexity."
+   },
+   {
+    "option": "Keep UDS only and drop Windows alternatives",
+    "why_not": "Discussion ended with unnamed pipes added as a third alternative with the final choice deferred to implementation, so no single socket type was fixed in the design."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The problem with this solution is that the operator experience of setting up and managing an external proxy is poor."
+   },
+   {
+    "ref": "rcomment:794645004",
+    "quote": "I disagree with effectively the entire structure of this API. I expect this to be an extension to the existing client-go credential plugin API, specifically as extension to `ExecCredentialStatus`."
+   },
+   {
+    "ref": "comment:1302832501",
+    "quote": "Pushing this out to next release as we are out of time in v1.26."
+   },
+   {
+    "ref": "comment:1409610612",
+    "quote": "This enhancement is targeting for stage `alpha` for v1.27 (correct me, if otherwise)"
+   },
+   {
+    "ref": "comment:2143352824",
+    "quote": "I would like to pick this up, can someone add me as a collaborator to this issue?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 13083,
+  "output": 1038
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

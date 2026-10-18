@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-695",
+ "input_hash": "59f5f5ebc2c944da",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-695 adds a pod-level field pod.Spec.SecurityContext.FSGroupChangePolicy so users can skip the recursive ownership and permission change on volumes whose permissions are already correct. The KEP is in implementable status at stable stage (stated status, not contradicted by the sources).",
+  "rationale": "Recursive chown/chmod to fsGroup before bind-mounting can take very long on large volumes and can make permission-sensitive applications (such as many databases) fail when a volume moves between nodes. The proposal lets users opt in to skipping that change when the volume already has the right permissions. The thread shows the feature was repeatedly deferred across releases (alpha in 1.18, kept in alpha for 1.19 to align with a SELinux KEP, beta and GA work in 1.20 to 1.24).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use a shiftfs-like solution to mount volumes without changing host permissions",
+    "why_not": "The readme says such a solution is technically not feasible until Linux kernel support improves."
+   },
+   {
+    "option": "Redesign the volume permission API to be less Linux-specific",
+    "why_not": "The readme says any redesign must be backward compatible and there is no clear API yet, so the team was not ready to do it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose that an user can optionally opt-in to skip recursive ownership(and permission) change on the volume if volume already has right permissions."
+   },
+   {
+    "ref": "readme",
+    "quote": "This change in ownership can take an excessively long time to complete, especially for very large volumes (>=1TB)"
+   },
+   {
+    "ref": "comment:641677053",
+    "quote": "we are going to leave this enhancement in alpha state in 1.19 and not going to move to beta. This is to ensure that this enhancement could be considered properly with selinux enhancement"
+   },
+   {
+    "ref": "comment:725667747",
+    "quote": "The Kubernetes PR that moves the feature gate to beta - https://github.com/kubernetes/kubernetes/pull/96376"
+   },
+   {
+    "ref": "comment:1008230961",
+    "quote": "Could you please update this enhancements's KEP status to `implemented`, then close this issue?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12195,
+  "output": 877
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

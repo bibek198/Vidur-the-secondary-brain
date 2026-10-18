@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2384",
+ "input_hash": "979af4fb176429ce",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2384 integrates kustomize directly into cli-runtime file processing so kubectl commands accept a new -k/--kustomize flag, instead of requiring users to pipe `kubectl kustomize` output into `kubectl <command> -f -`. Its status is implemented, stage stable.",
+  "rationale": "The KEP aims to give a cleaner UX and better error handling, such as errors referencing original file line numbers and correct exit codes, which piping cannot provide. The readme says the -k flag is registered alongside other file processing flags and is on by default for tools using cli-runtime, with an opt-out. The status discussion in the comments concerns the PR that moved the KEP to implemented and the PRR process, not the feature design.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep requiring users to pipe kustomize output into kubectl commands",
+    "why_not": "The readme says piping gives no line-number-referencing errors or correct exit codes on kustomization failure, and needs more typing than the proposed flag."
+   },
+   {
+    "option": "Mark the KEP as implementable rather than implemented",
+    "why_not": "The comments discuss this for the status change of KEP-2384 and related KEPs, with johnbelamaric saying perma-beta or implemented status implies no work remains, but the sources do not clearly state the final choice for this KEP beyond the given status."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Integrate kustomize directly into libraries that enable file processing for cli-runtime (e.g. resource builder)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Doing so will provide a cleaner, simpler UX and provide a path for addressing issues around error handling and messaging."
+   },
+   {
+    "ref": "readme",
+    "quote": "Cli-runtime will add the flags `-k, --kustomize`, which will be registered along side the other file processing flags."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4867,
+  "output": 814
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

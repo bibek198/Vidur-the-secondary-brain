@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-24",
+ "input_hash": "f4a97d4f08c66002",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-24 proposes adding an AppArmor profile field to the Pod security context so Pods can run with AppArmor confinement, aiming to bring the feature from beta to GA with the minimum changes. The KEP's status is implementable, stage stable.",
+  "rationale": "AppArmor was stuck in beta using annotations, and the KEP proposes a new Pod API field to clean it up for GA. Reviewers noted that API review capacity was a bottleneck in 2020 and that the API changes and GA graduation were later split across releases. The discussion shows the team decided to hold the feature in beta one more release after implementing the planned changes, and later reviewers recorded it as graduated to stable.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep AppArmor configured only through annotations",
+    "why_not": "The readme says the proposal adds a new field to the Pod API. The annotations are the beta mechanism being cleaned up, and the sources do not describe a reason to keep them as the GA interface."
+   },
+   {
+    "option": "Ship the API fields and GA in one step",
+    "why_not": "A reviewer (sftim) argued that a beta release should introduce the API fields first so users can opt out. The sources do not record the final resolution of that suggestion beyond the team holding the feature in beta for another release."
+   },
+   {
+    "option": "Drop the field and treat type Runtime as runtime/default",
+    "why_not": "tallclair floated this in rcomment:405124120, but the sources do not say it was adopted; the readme still proposes the new field."
+   },
+   {
+    "option": "Validate AppArmor settings within Pod templates",
+    "why_not": "sftim suggested listing this as an alternative in the KEP, but the sources contain no recorded rejection of it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add a new field to the Pod API that allows defining the AppArmor profile. The new field should be part of the security context."
+   },
+   {
+    "ref": "comment:2035542261",
+    "quote": "we implemented all the planned changes, but decided to hold the feature in beta for another release."
+   },
+   {
+    "ref": "comment:3303563071",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`"
+   },
+   {
+    "ref": "comment:622284963",
+    "quote": "This KEP will not be part of 1.19 because we don’t have enough resources in SIG architecture to provide the API reviews."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11545,
+  "output": 950
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

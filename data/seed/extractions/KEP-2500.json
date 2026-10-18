@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2500",
+ "input_hash": "2bbff7537c49a2b2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2500 introduces the `kubeadm join --control-plane` workflow so that kubeadm can bootstrap a cluster with multiple control plane instances, as an upstream alternative to ad hoc HA scripts. The KEP is implemented and at stable stage.",
+  "rationale": "HA was a frequently requested kubeadm feature, and prior HA setups required scripts or external automation. The design defines a dedicated join workflow for adding control plane nodes, supporting parallel node creation, dynamic and static bootstrap layouts, and stacked or external etcd. A separate join workflow was preferred over re-running kubeadm init, since it allows control-plane-specific steps and validation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Execute `kubeadm init` on each control plane candidate node",
+    "why_not": "The design says there is no real control on parameters passed to `kubeadm init` on different nodes, which may lead to inconsistent configurations, and the init sequence does not go through TLS bootstrap."
+   },
+   {
+    "option": "Provide API server load balancing within this KEP",
+    "why_not": "Listed as a non-goal: \"This proposal doesn't include a solution for API server load balancing\"."
+   },
+   {
+    "option": "Include automated transfer of CA key and certs in this KEP",
+    "why_not": "Non-goal; the design says this \"is addressed in a separated KEP\" (Certificates copy for join --control-plane)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Defining a generic and extensible flow for bootstrapping a cluster with multiple control plane instances, the `kubeadm join --control-plane` workflow."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support for high availability is one of the most requested features for kubeadm."
+   },
+   {
+    "ref": "readme",
+    "quote": "Additionally, by having a separated `kubeadm join --control-plane` workflow instead of a single `kubeadm init` workflow we can provide better support for"
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal doesn't provide an automated solution for transferring the CA key and other required certs from one control-plane instance to the other."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3137,
+  "output": 854
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-1748",
+ "input_hash": "b9db371686a86c7d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1748 proposes standard Prometheus metrics for pod resource requests and limits (kube_pod_resources style, scheduled/active pods) so users can answer capacity, contention and eviction questions. Its status is implementable (stage stable), reached after the PR was updated on 2020-10-16.",
+  "rationale": "The cluster's existing metrics make accurate capacity dashboards and alerts hard to build, and the resource model is hard for users to grasp. The KEP argues the metrics should reflect the scheduler's own calculations to avoid drift from kube-state-metrics recording rules. Reviewers debated placement (scheduler vs. apiserver vs. kubelet) and phase naming, and the team narrowed the design to a single kube_pod_resources metric so the pending-to-running transition is represented by node assignment.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Extend kube-state-metrics to represent all data needed for the pod resource lifecycle calculation",
+    "why_not": "The implementation would require a significant number of new metric cardinality and a very complex recording rule that would be difficult in some engines and likely not be completely accurate."
+   },
+   {
+    "option": "Separate metric for the Running phase / kube_pod_scheduled_resource_(request|limit) naming",
+    "why_not": "Reviewers said 'Scheduled' conflicts with the existing Running phase meaning; the author then explored using only kube_pod_resources, since node-label presence marks the transition from pending."
+   },
+   {
+    "option": "Make the metrics optional behind a flag in the scheduler",
+    "why_not": "A reviewer proposed exposing them on an endpoint such as /metrics/resources instead, which needs no flags and adds cost only when scraped."
+   },
+   {
+    "option": "Place the metric in the kubelet",
+    "why_not": "The author disagreed, saying the scheduler is responsible for tracking running pods to calculate available capacity, which matches the goal of tracking schedulable capacity."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubernetes should define a set of standard metrics that allow a user who works with the Kubernetes resource model to easily answer via instrumentation several important queries"
+   },
+   {
+    "ref": "readme",
+    "quote": "We considered extending `kube-state-metrics` to represent all of the data necessary to perform the pod resource lifecycle calculation as described above."
+   },
+   {
+    "ref": "comment:704996975",
+    "quote": "This sounds good to me and aligns with the suggestion in https://github.com/kubernetes/enhancements/pull/1916#issuecomment-704889412"
+   },
+   {
+    "ref": "rcomment:505715088",
+    "quote": "As we've refined the kep and dropped the metric that showed that difference between initializing and running there is no need to clarify here."
+   },
+   {
+    "ref": "comment:704444301",
+    "quote": "I am ok with merging this and continue the discussion on placement. I do think the scheduler is good candidate"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9337,
+  "output": 1108
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

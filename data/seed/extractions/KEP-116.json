@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-116",
+ "input_hash": "cc80ce21fd02aada",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-116 added Windows compute node support to Kubernetes so Windows Server containers can be scheduled on clusters. The KEP is recorded as implemented at stage stable, with status history starting 2020-12-23.",
+  "rationale": "The problem was that Kubernetes only supported Linux-based nodes, while many enterprise workloads run on Windows. The proposal allowed Windows nodes to join clusters as compute nodes, with kubelet and kube-proxy adapted for Windows Server. The discussion shows GA was pushed through several releases (1.12, then 1.13, then 1.14) over conformance and test coverage concerns. The announcement in 2019 said Windows stable support shipped in v1.14. The 2021 PR review then moved the KEP's status to implemented, which the sources describe as a retroactive bookkeeping change.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep GA targeted at Kubernetes 1.12 or 1.13",
+    "why_not": "The sources say GA was not ready for 1.12 and that the 1.13 target was moved: \"Per discussion with Sig Arch, we decided to move Windows GA to 1.14\"."
+   },
+   {
+    "option": "Keep the KEP at beta or alpha stage",
+    "why_not": "The 2019 announcement said stable support would ship in v1.14 with green test runs, and the 2021 status change recorded the KEP as stable."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:474577473",
+    "quote": "3 years after the forming of SIG-Windows, we are pleased to announce that Kubernetes v1.14 will include stable support for windows"
+   },
+   {
+    "ref": "comment:439178622",
+    "quote": "Per discussion with Sig Arch, we decided to move Windows GA to 1.14 @PatrickLang @michmike @kacole2 @marpaia @kbarnard10 @tfogo"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "readme",
+    "quote": "Both `kubelet` and `kube-proxy` have been adapted to work on Windows Server, and so the first goal of this KEP is largely already complete."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9145,
+  "output": 899
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

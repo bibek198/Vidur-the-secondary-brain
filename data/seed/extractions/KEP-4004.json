@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4004",
+ "input_hash": "fae3f1d4b333158e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4004 deprecates the status.nodeInfo.kubeProxyVersion field of v1.Node and has kubelet stop setting it (set to empty string instead), protected by a feature gate. Status is implemented with the feature gate disabled by default.",
+  "rationale": "The field is inaccurate because kubelet sets it but does not know the kube-proxy version or whether kube-proxy runs. The KEP marks it deprecated and has kubelet write an empty string, using a feature gate until other components stop depending on it. Default-enabling was delayed because the field is in a stable API, so the removal period from the 1.29 announcement had to pass (liggitt's comment).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Have kube-proxy itself set status.nodeInfo.kubeProxyVersion",
+    "why_not": "Listed as a non-goal; components should not infer Service features from the kube-proxy version because some clusters run alternative service proxies."
+   },
+   {
+    "option": "Change v1.Node validation to require the field be unset",
+    "why_not": "Listed as a non-goal in the KEP."
+   },
+   {
+    "option": "Promote to beta and default-enable in 1.31",
+    "why_not": "liggitt noted that clearing a stable API field requires a minimum one-year period from the 1.29 announcement, so 1.33 was the earliest default-on; the 1.31 enablement was reverted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposal is to deprecate the `kubeProxyVersion` field of `NodeStatus`, and to have kubelet set it to an empty string, rather than the kubelet version, in the future."
+   },
+   {
+    "ref": "readme",
+    "quote": "Thus, we will use a feature gate to protect it until all components are fixed."
+   },
+   {
+    "ref": "comment:2291482423",
+    "quote": "because this is clearing population of a stable API field, the minimum period from announcement (in 1.29) is 1 year, so 1.33 is the earliest this can default to clearing."
+   },
+   {
+    "ref": "comment:2315398195",
+    "quote": "I think it would stay as-is for 1.32 and default-enable in 1.33"
+   },
+   {
+    "ref": "comment:2898108965",
+    "quote": "the Feature Gates status has already been updated in PR https://github.com/kubernetes/website/pull/50783"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10441,
+  "output": 911
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

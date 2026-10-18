@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5975",
+ "input_hash": "8e17d178b157846d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5975 proposes that API directories contain only the code that differs from the standard pattern, with a trivial storage registration (registry.NewREST with a RESTConfig) and generated or default wiring for codegen, validation, field wiping, generation management, and feature-gated field dropping. Status is provisional (stage stable).",
+  "rationale": "Every strategy file in pkg/registry/ reimplements the same ~12 methods across 67 files (~12,000 lines), and this has caused costly mistakes. The KEP builds on declarative validation (KEP-4153, KEP-5073) and declarative defaulting (KEP-1929) to drive standard behavior from types.go tags. It keeps backward compatibility: external users must opt in to the new behaviors.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Declarative tags for all strategy behavior",
+    "why_not": "Tags break down for complex validation options, cross-field generation tracking, custom warnings, and injected dependencies; the KEP keeps strategy and storage definitions in Go for type safety."
+   },
+   {
+    "option": "Enabling generators via a per-directory apigroup.yaml-style config file",
+    "why_not": "Not chosen as the KEP text; the author removed references to YAML files after review feedback. Discussion treated it as a separate, related change (kubernetes PR 138657)."
+   },
+   {
+    "option": "Merging the narrower enforcement change in kubernetes PR 138577",
+    "why_not": "Mentioned by the author as the alternative to this broader change, which would consume more review bandwidth; the sources do not state why it was not taken."
+   },
+   {
+    "option": "Reflection for generic field wiping",
+    "why_not": "Raised by the author as an alternative to the current generic wiping approach; the sources do not record a decision on it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Every strategy file in `pkg/registry/` implements the same ~12 methods: status clearing, generation bumping, validation delegation, and feature-gate field dropping."
+   },
+   {
+    "ref": "readme",
+    "quote": "All changes will be backwards compatible. External users of API frameworks and code generators will need to opt-in to the new behaviors."
+   },
+   {
+    "ref": "readme",
+    "quote": "These behaviors should be driven by information already available in the API definition (types.go files) such as declarative validation and feature gate tags."
+   },
+   {
+    "ref": "rcomment:3189469209",
+    "quote": "Existing generator usage is unchanged. All flags/args/tags will continue to be supported."
+   },
+   {
+    "ref": "comment:4595563887",
+    "quote": "I've removed the reference to yaml files and responded to all feedback."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5477,
+  "output": 998
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

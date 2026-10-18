@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-580",
+ "input_hash": "70f1ebb28af51442",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-580 Pod Ready++ adds extensibility to pod readiness so that external feedback, not only container readiness from kubelet probes, can be injected into PodStatus and influence whether a pod is considered ready. The KEP is implemented and at stable stage.",
+  "rationale": "Pod readiness is set only by kubelet readiness probes, yet Services, endpoints, and rolling updates depend on it, so a new pod can be reported ready before its load balancer or network path is programmed, risking disruption. The proposal lets external signals feed into pod readiness so higher-level controllers and services wait for them. The design excerpt rejects fixing every workload controller as too large a change, and rejects extending container readiness because it ties external feedback to low-level runtime constructs.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Fix each workload controller to handle the readiness gap",
+    "why_not": "Source says: \"Solving this problem in all workload controllers would require much bigger change than this proposal.\""
+   },
+   {
+    "option": "Extend container readiness with external feedback",
+    "why_not": "Source says: \"Injecting external feedback into container status would complicate the abstraction and control flow.\""
+   },
+   {
+    "option": "Provide a generic framework for all transition problems such as blue green deployment",
+    "why_not": "Listed as a non-goal in the design document; the KEP is scoped to extra signals for pod readiness only."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Besides container readiness, external feedback can be injected into PodStatus and influence pod readiness."
+   },
+   {
+    "ref": "readme",
+    "quote": "Pod readiness is dictated by kubelet with user specified readiness probe."
+   },
+   {
+    "ref": "readme",
+    "quote": "Solving this problem in all workload controllers would require much bigger change than this proposal."
+   },
+   {
+    "ref": "readme",
+    "quote": "Injecting external feedback into container status would complicate the abstraction and control flow."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2210,
+  "output": 785
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

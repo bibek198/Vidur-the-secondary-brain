@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2504",
+ "input_hash": "8c3863e5238cdba2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2504 proposes adding structured output (JSON, YAML, Go template, plus buffered and unbuffered modes) to kubeadm commands such as alpha certs, config images list, init, token create/list, upgrade plan, and version. Its status is implementable at alpha stage.",
+  "rationale": "Tools such as Terraform and Cluster API depend on kubeadm's output, so any change to the text output could break them. Structured output gives those consumers a stable format to parse. The status is implementable from 2021-02-17, and the sources do not give further reasoning for the decision.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep text-only output",
+    "why_not": "The readme says that without structured output, even seemingly innocuous changes could break Terraform, Cluster API, or other software that relies on kubeadm results."
+   },
+   {
+    "option": "Parity with kubectl's -o/--output flag and versioned output",
+    "why_not": "Listed as a non-goal in the readme, which defers parity with kubectl and versioned output and the use of cli-runtime printers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Without structured output, even the most seemingly innocuous changes could break Terraform, Cluster API, or other software that relies on the results of kubeadm."
+   },
+   {
+    "ref": "readme",
+    "quote": "Kubeadm should support structured output, such as JSON, YAML, or a [Go template](https://golang.org/pkg/text/template/)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Popular systems management software, such as Terraform, rely on kubeadm in order to deploy Kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2033,
+  "output": 682
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1819",
+ "input_hash": "7a751b6d08896960",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1819 documents the Kubernetes scheduler extender, a mechanism where the default kube-scheduler makes HTTP calls to external webhooks to tweak scheduling decisions. The KEP was written retrospectively from the original extender proposal, and its status is implemented, stage stable.",
+  "rationale": "The scheduler needed a way to make contextual decisions about resources managed outside Kubernetes, and the readme says there was no mechanism for this. Extenders trade latency and cache consistency for the ability to customize scheduling without recompiling kube-scheduler, and the readme recommends plugins when performance matters most. Reviewers in the discussion judged the feature GA because it cannot be disabled and has no feature gate, so the stage was set to stable.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Scheduler plugins written in Go and compiled into kube-scheduler",
+    "why_not": "The readme says plugins must be written in Go and compiled with the scheduler code, which is a high bar for beginners; the extender is preferred when latency and cache consistency are not concerns and the user does not want to maintain a custom build."
+   },
+   {
+    "option": "Implementing a separate scheduler that runs instead of or alongside the default scheduler",
+    "why_not": "The readme says replacing the default scheduler requires a lot of effort if all features such as spreading, affinity, and taints must be supported."
+   },
+   {
+    "option": "Keeping the stage at beta or using a feature gate",
+    "why_not": "The discussion says that under the feature gate definitions it is GA because it cannot be disabled now and no feature gate is needed, so it was updated to stable."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposal is to make kubernetes scheduler extensible by adding the capability to make http calls out to another endpoint to help achieve this functionality."
+   },
+   {
+    "ref": "rcomment:433861193",
+    "quote": "according to the definitions described here, it's GA because it can't be disabled now and feature gate is not needed."
+   },
+   {
+    "ref": "readme",
+    "quote": "If you don't care about latency and cache consistency and don't want to maintain your own build of the default scheduler, then this approach is likely the better choice."
+   },
+   {
+    "ref": "rcomment:433876743",
+    "quote": "updated it to stable (GA) according to the definition, I think we can still make improvements no matter what stage it is"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4767,
+  "output": 925
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

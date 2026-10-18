@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-3141",
+ "input_hash": "80283bf4e51ab59f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3141 proposes preventing unauthorized volume mode conversion when a PVC is created from a VolumeSnapshot. It adds a field on VolumeSnapshotContent recording the source volume mode, and an annotation (snapshot.storage.kubernetes.io/allowVolumeModeChange) that a trusted user must set to permit the conversion. The KEP is now implemented, at stable stage.",
+  "rationale": "Creating a PVC from a VolumeSnapshot with a different volume mode is not validated, so a malicious user could convert a block volume with malformed ext4 data into a filesystem volume that the kernel then mounts. Blocking the conversion outright would break valid backup workflows that convert modes for efficiency. The design therefore gates conversion on a permission-controlled annotation so existing user access rights decide who may convert.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Block volume mode conversion entirely",
+    "why_not": "Some backup vendors need conversion for efficiency, per the readme: \"We cannot simply block this operation as some backup vendors try to create a volume with the exact same mode as the original volume but may need to do the conversion for efficiency.\""
+   },
+   {
+    "option": "Add allowVolumeModeChange as a field in the API instead of an annotation",
+    "why_not": "The authors chose an annotation as simpler; xing-yang wrote \"We did think about adding this to API as well, but thought an annotation is simpler.\" A field was raised as a possible later change, not adopted in the sources."
+   },
+   {
+    "option": "Use a feature gate for the new behaviour",
+    "why_not": "Reviewers said a gate was not appropriate because the change is out-of-tree: \"Since we are only trying to change external-provisioner and external-snapshotter, both are completely out-of-tree, we can probably just use a flag, but not a feature gate to control this new behavior.\" Later the sources refer to feature gates being removed at GA."
+   },
+   {
+    "option": "A more generic security mechanism",
+    "why_not": "Reviewers judged the design too specific but the KEP scope was kept narrow: \"I think the current design is very specific, not really extendable to other security issues.\" The Non-Goals state generic extension is out of scope."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a solution to prevent unauthorized conversion of the volume mode during such an operation."
+   },
+   {
+    "ref": "readme",
+    "quote": "We cannot simply block this operation as some backup vendors try to create a volume with the exact same mode as the original volume but may need to do the conversion for efficiency."
+   },
+   {
+    "ref": "readme",
+    "quote": "By introducing these changes, we will leverage existing user access rights to determine whether the volume mode of a volume can be altered when a `PVC` is being created from a `VolumeSnapshot`."
+   },
+   {
+    "ref": "comment:2692804335",
+    "quote": "The motivation for this KEP is to prevent malicious user from exploiting it while allowing valid use cases such as backup/restore and the KubeVirt use case you mentioned."
+   },
+   {
+    "ref": "comment:1979068640",
+    "quote": "may you please update the status field in the kep.yaml file to `implemented` as the code PRs are merged and the feature gates are removed."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13353,
+  "output": 1218
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

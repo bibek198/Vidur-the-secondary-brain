@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-3037",
+ "input_hash": "e1813adb5c064c12",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3037 proposed extending client-go so clients can connect to multiple control-plane nodes, with API servers announcing alternative service addresses via an Alt-Svc style mechanism, removing the need for external load balancers or Services for bootstrap and HA. The KEP was rejected and merged in a rejected state for historical record.",
+  "rationale": "The problem is that clients depend on external load balancers or Services for HA and bootstrap, including the chicken-and-egg issue for kube-proxy and in-cluster clients. The apimachinery leads concluded that the design does not remove the need for a load balancer or fixed IP for the first request, so operational complexity increases rather than decreasing. They also found that the design requires either the apiserver to know which IPs each client can reach, or to return addresses that may not be kube-apiservers in the client's environment.",
+  "outcome_reason": "The apimachinery leads (deads2k) decided that this particular design is not worth the additional complexity. They wanted to merge the KEP as rejected so there is a history for future attempts.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Custom dialer or round-tripper wrapper outside client-go (aojea/client-go-multidialer)\", \"why_not\": \"The KEP lists it as an alternative that needs a first connection to succeed and an extra request to fetch the Endpoints object; the proposal was judged harder to maintain long term.\"}, {\"option\": \"Embedded in-memory DNS server to resolve API endpoints\", \"why_not\": \"The KEP states it needs a first connection to succeed, adds an extra Endpoints request, and is harder to maintain, with possible interference with current behavior.\"}, {\"option\": \"Client-side config with multiple AlternativeHosts addresses in RESTClient config (static)\", \"why_not\": \"Discussed as a second option within the KEP; lavalamp noted that static addresses in kubeconfig conflict with a dynamic cache and only make sense if addresses never change. The sources do not record a decision to adopt it separately.\"}, {\"option\": \"Limit scope to client-side load balancing for kubernetes.default.svc only\", \"why_not\": \"Suggested by deads2k as a narrower option; the sources do not say it was adopted, and the KEP was rejected as a whole.\"}]",
+  "evidence": [
+   {
+    "ref": "comment:1023450727",
+    "quote": "This design does not remove the need to have a load balancer, meta-server, or fixed IP of some kind that is always available to handle the first request."
+   },
+   {
+    "ref": "comment:1023450727",
+    "quote": "On balance, we (apimachinery leads) think that this particular design is not worth the additional complexity."
+   },
+   {
+    "ref": "comment:1023450727",
+    "quote": "To provide a more complete history for future attempts, we'd like to merge this KEP in a `rejected` state with an explanation of why."
+   },
+   {
+    "ref": "comment:1016964143",
+    "quote": "this proposal doesn't solve the problem where the first time you go to connect, the server you know about happens to be the one that is down."
+   },
+   {
+    "ref": "comment:1020332936",
+    "quote": "IMO putting all addresses in the config file only makes sense if the addresses are static and never change."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9974,
+  "output": 1173
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

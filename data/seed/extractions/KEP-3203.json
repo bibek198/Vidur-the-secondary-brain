@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3203",
+ "input_hash": "2f7a1b519d76ecc5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3203 proposes a periodically auto-refreshing, machine-readable feed of official Kubernetes CVEs, implemented by labeling related closed issues or PRs with the \"official-cve-feed\" label via automation. Status is implementable, stage beta.",
+  "rationale": "Users cannot currently filter issues or PRs related to Kubernetes CVEs, and there is no single place to programmatically fetch fixed CVEs. The KEP addresses this by automatically labeling in-scope issues (closed, with a CVE ID, officially announced by SRC). Triage and disclosure remain with SRC, and CVEProject integration is out of scope for now.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use existing CVE data sources (current options)",
+    "why_not": "The readme states current options are either broken or incomplete, which is the motivation for the KEP."
+   },
+   {
+    "option": "Integration with CVEProject/cvelist",
+    "why_not": "The readme says it may happen at a future stage but is currently not planned or scoped."
+   },
+   {
+    "option": "Listing CVEs found in build-time dependencies and container images in the feed",
+    "why_not": "The readme lists this as a non-goal; only official CVEs announced by the Kubernetes SRC are published in the feed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP addresses this concern by labeling these issues or PRs with the new label **official-cve-feed** using the automation."
+   },
+   {
+    "ref": "readme",
+    "quote": "there is no single place for the end users of Kubernetes to programmatically subscribe or pull the data of fixed CVEs."
+   },
+   {
+    "ref": "readme",
+    "quote": "Only official CVEs announced by the Kubernetes SRC will be published in the feed."
+   },
+   {
+    "ref": "readme",
+    "quote": "Integration with [CVEProject](https://github.com/CVEProject/cvelist) may happen at a future stage but currently is not planned or scoped."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1929,
+  "output": 789
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

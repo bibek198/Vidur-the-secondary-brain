@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3857",
+ "input_hash": "508b8436cfaffb5e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3857 proposed making read-only volumes recursively read-only (RRO) via the OCI \"rro\" bind mount option, which calls mount_setattr(2) with MOUNT_ATTR_RDONLY and AT_RECURSIVE, requiring kernel >= 5.12 and runc >= 1.1 or crun >= 1.4. The KEP is recorded as implemented and stable.",
+  "rationale": "A readOnly volume's submounts (e.g. /mnt/usbstorage under /mnt) remain writable, which can compromise data. The design uses the OCI rro option so that read-only bind mounts become recursively read-only, and the reviewers stressed that the default behavior must not change silently because that would break existing workloads. The status is implemented at stable, so the sources support the approach being adopted, though the excerpt does not show the final API shape.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Plan B: keep Kubernetes and CRI APIs unmodified and have the CRI runtime treat readOnly as recursive read-only",
+    "why_not": "The KEP says it would be a breaking change for a small portion of users. Reviewers said 'The default HAS TO BE the historical behavior, codified' and that RO cannot be changed to mean RRO because that would break users who depend on current behavior. containerd merged Plan B on its main branch, which led to a dispute over whether it was a breaking change."
+   },
+   {
+    "option": "Silently convert readOnly into RRO when possible, with a warning when not possible",
+    "why_not": "A reviewer wrote that this would make an app work on one day and fail the next after a node upgrade, and that 'our tolerance for silently breaking people ... is approximately zero'."
+   },
+   {
+    "option": "Use a tri-state readOnlyMode or recursivelyReadOnly enum (Disabled/IfPossible/Required) instead of a boolean",
+    "why_not": "Discussion went back and forth on this. The thread notes that 'status is mostly needed because there is no guarantee that it will be applied' and that an IfPossible option would need status reporting. The thread concluded with a simpler proposal: keep readOnly as a bool and add an RRO enum field that is set only when readOnly is true."
+   },
+   {
+    "option": "Use a ReadOnlyOptions list of named values or a list of feature names reported by the runtime",
+    "why_not": "A reviewer said it was 'harder to validate'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The \"rro\" bind mount options is implemented by calling [`mount_setattr(2)`](https://man7.org/linux/man-pages/man2/mount_setattr.2.html) with `MOUNT_ATTR_RDONLY` and `AT_RECURSIVE`"
+   },
+   {
+    "ref": "rcomment:1102038347",
+    "quote": "We can't make \"Maybe\" be the default because RRO is a user-visible behavior change, which could break workloads. The default HAS TO BE the historical behavior, codified."
+   },
+   {
+    "ref": "rcomment:1220055489",
+    "quote": "1) leave `readOnly` as (non-pointer) bool 2) add RRO as enum-string with default value when `readOnly` is true"
+   },
+   {
+    "ref": "comment:1579284831",
+    "quote": "we can't change RO to mean RRO because that would break someone who deopends on the current behavior."
+   },
+   {
+    "ref": "comment:1925414885",
+    "quote": "We decided that this was a potentially breaking change, and that we could not just do it by default."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10397,
+  "output": 1302
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

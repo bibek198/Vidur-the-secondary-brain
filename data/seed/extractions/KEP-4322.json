@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4322",
+ "input_hash": "8da9f56fb71b03fd",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4322 proposes a universal ClusterProfile API as a standard cluster inventory, defining a common status-reporting interface that multiple multi-cluster management implementations can support. The KEP is currently provisional at alpha stage.",
+  "rationale": "There is no standard way to access a cluster inventory, even though most multi-cluster management solutions include one. Consumers such as schedulers, GitOps tools, and operators must currently learn each project's own cluster APIs. The KEP proposes a shared interface for discovering clusters, their properties, and status, while allowing multiple implementations. The status is provisional, so the design is still a proposal and not yet an accepted decision.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Each multi-cluster project keeps its own cluster API and consumers adapt to each one",
+    "why_not": "The readme says consumers 'either need to build the cluster concept by themselves or understand APIs representing a cluster from each cluster management project', which the proposed common API is meant to avoid."
+   },
+   {
+    "option": "Provide a standard reference implementation of the cluster inventory",
+    "why_not": "This is listed as a non-goal: 'Provide a standard reference implementation.'"
+   },
+   {
+    "option": "Define the Consumer registration API as part of this KEP",
+    "why_not": "This is listed as a non-goal: 'Define the Consumer registration API'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "there is not a standard way to access such an inventory; as we see more and more users embrace the cloud-native approach"
+   },
+   {
+    "ref": "readme",
+    "quote": "The objective is to establish a shared interface for cluster inventory, defining a standard for status reporting while allowing for multiple implementations."
+   },
+   {
+    "ref": "readme",
+    "quote": "GitOps tools (ArgoCD, flux etc) are having the requirement to deploy workload to multiple clusters."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals * Provide a standard reference implementation. * Define specific implementation details beyond general API behavior."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2645,
+  "output": 821
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

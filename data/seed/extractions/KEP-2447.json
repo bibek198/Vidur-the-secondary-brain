@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2447",
+ "input_hash": "9bd051f5b3408223",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2447 proposed letting kube-proxy skip the service abstraction (iptables/IPVS rules) for Services reached only through a service mesh, to reduce kube-proxy and backend load. The KEP is recorded as implemented, stage stable.",
+  "rationale": "In clusters with a service mesh, kube-proxy work for mesh-only Services is redundant. The KEP aims to cut the load kube-proxy spends deserializing and processing services and endpoints, and the load on its backend. The sources do not explain the design choices in depth. The discussion in the sources is about the KEP's status label and PRR (production readiness review) paperwork, not the feature itself.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the service abstraction for all Services in kube-proxy",
+    "why_not": "The sources do not say why this was rejected. The KEP's stated goal is to reduce kube-proxy and backend load for services that service-mesh traffic never uses, which this option does not address."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "services that are only reached via other services in the mesh will never use the service abstraction implemented by kube-proxy in iptables (or ipvs)"
+   },
+   {
+    "ref": "readme",
+    "quote": "The goal is to reduce the load on: * The kube-proxy having to deserialize and process all services and endpoints"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4420,
+  "output": 666
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

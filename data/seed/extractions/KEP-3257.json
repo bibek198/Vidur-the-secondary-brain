@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3257",
+ "input_hash": "8e71ff6ae5eb5881",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3257 introduces a cluster-scoped ClusterTrustBundle object in certificates.k8s.io so in-cluster signers can publish X.509 trust anchors, plus a kubelet clusterTrustBundle projected volume source to deliver them to workloads. Status is implemented, stage stable.",
+  "rationale": "Kubernetes had no standard way for signers to distribute trust anchors; the kube-root-ca.crt ConfigMap required over-broad permissions to create ConfigMaps in all namespaces, and static anchors embedded in webhook/aggregated API configs complicate rotation. A dedicated cluster-scoped type allows separate RBAC (wide read, locked-down write) and a projected volume gives workloads filesystem access. The status is implemented, so the design was carried through.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use ConfigMaps for trust bundles (status quo kube-root-ca.crt pattern)",
+    "why_not": "Creating a ConfigMap in every namespace requires granting over-broad permissions to the responsible controller (create ConfigMaps in all namespaces)."
+   },
+   {
+    "option": "Keep static trust anchor sets embedded in webhook/aggregated API configuration",
+    "why_not": "Static trust anchor sets embedded directly in configuration complicate the job of rotating the backing CA's roots of trust."
+   },
+   {
+    "option": "Use a cluster-scoped CRD per signer, as one signer implementation does",
+    "why_not": "CRDs work well, but are inappropriate for use by core APIs."
+   },
+   {
+    "option": "Federation via multiple trust anchor sets within one object",
+    "why_not": "The author dropped the federation piece, converting ClusterTrustBundle to a single set of trust anchors, and said federation can be handled with a note or version field in spec."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Each of these approaches has downsides: * Creating a ConfigMap in every namespace requires granting over-broad permissions to the responsible controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP introduces the certificates.k8s.io ClusterTrustBundle cluster-scoped object, a vehicle for in-cluster certificate signers to communicate their trust anchors to workloads."
+   },
+   {
+    "ref": "comment:1161260070",
+    "quote": "ClusterTrustBundles have an optional `spec.signerName` field that associates them to a signer. Admission control is used to prevent spoofing."
+   },
+   {
+    "ref": "rcomment:981906264",
+    "quote": "I'm going to drop the federation piece --- convert ClusterTrustBundle to just be a single set of trust anchors."
+   },
+   {
+    "ref": "rcomment:988261962",
+    "quote": "We decided to not read them in the kube-apiserver for alpha. reassess at beta."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11994,
+  "output": 1083
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

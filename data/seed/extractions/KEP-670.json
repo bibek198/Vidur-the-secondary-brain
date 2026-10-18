@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-670",
+ "input_hash": "afc8fa041859370c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-670 proposed building support for the out-of-tree vSphere cloud-controller-manager with feature parity to kube-controller-manager. The KEP is recorded as implemented at stage stable, a status set during a 2021 enhancements-tracking cleanup (PR #3007).",
+  "rationale": "The KEP captures mostly implemented work already completed in the cloud-provider-vsphere repository, with the next step being migration of in-tree users to the external provider. Its status was set to implemented retroactively and was then debated in PR #3007 because the PRR (production readiness review) step was skipped. Sources do not record a final resolution of that PRR question for this KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep KEP-670 at implementable/alpha without a PRR-backed implemented status",
+    "why_not": "Sources say the KEP was retroactively declared beta and then implemented via PR #2598 and #2867 without PRR; the sources do not state this option was considered further."
+   },
+   {
+    "option": "Treat the KEP as perma-beta (leave at beta indefinitely)",
+    "why_not": "A maintainer noted perma-beta is discouraged: 'we really shouldn't be leaving stuff in a perma-beta state.' This applied to a different KEP, and the sources do not apply it to KEP-670."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP captures mostly implemented work already completed in the [Cloud Provider vSphere repository]"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle. Given that this KEP is related to prow"
+   },
+   {
+    "ref": "rcomment:729118026",
+    "quote": "I think this is out of tree so maybe not explicitly covered by PRR"
+   },
+   {
+    "ref": "review:775399557",
+    "quote": "Generally \"implemented\" status comes after a kep was \"implementable\" as \"stable\" in a release and is updated after the fact and so should have a PRR."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4513,
+  "output": 832
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

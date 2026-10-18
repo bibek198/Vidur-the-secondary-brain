@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3668",
+ "input_hash": "63d3b4e6538301ad",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3668 proposes subdividing the NodePort service port range into a reserved block for static port assignment and a dynamic block, so users can create NodePort Services with static ports with less risk of conflict. The KEP is implemented and stable.",
+  "rationale": "Users need well-known, predefined NodePort numbers, but dynamic allocation can already have taken a port before a static NodePort Service is created. The design splits the NodePort range so static and dynamic allocations do not collide, modeled on KEP-3070 for Cluster IPs. The stated goal is to allow a static NodePort with less risk of port conflict, and the non-goals exclude changing the allocator implementation or adding new configuration flags.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a single shared NodePort range for static and dynamic allocation",
+    "why_not": "The summary notes that without a split, there is no way to know before creating a static NodePort Service whether another dynamic NodePort has already taken the port."
+   },
+   {
+    "option": "Change the allocator implementation (bitmaps, etc.)",
+    "why_not": "Listed as a non-goal of the KEP."
+   },
+   {
+    "option": "Add new configuration options or flags",
+    "why_not": "Listed as a non-goal of the KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The NodePort Service port range can be logically subdivided to avoid the risk of conflict between NodePort that use static and dynamic port allocation."
+   },
+   {
+    "ref": "readme",
+    "quote": "The idea is mostly the same with [Reserve Service IP Ranges (KEP-3070)](https://github.com/kubernetes/enhancements/tree/master/keps/sig-network/3070-reserved-service-ip-range#release-signoff-checklist) did."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently, there is no possibility, before creating a NodePort Service with a static port, to know if the port has been chosen already by any other NodePort using dynamic allocation."
+   },
+   {
+    "ref": "readme",
+    "quote": "- allow to create a Service with a static NodePort with less risk of port conflict."
+   },
+   {
+    "ref": "readme",
+    "quote": "## Non-Goals\n- changing the allocators implementation (bitmaps, ...). - add new configuration options or flags."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2241,
+  "output": 899
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

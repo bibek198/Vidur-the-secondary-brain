@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4265",
+ "input_hash": "71a6d81df817cd56",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4265 adds a `procMount` field to the Pod/container security context so a user can opt out of the container runtime masking and read-only-setting certain /proc paths (value `Unmasked`), with `Default` as the default. The KEP is currently at implementable status, stage stable.",
+  "rationale": "Some users want unprivileged containers nested inside a Kubernetes container using user namespaces, and the default /proc masking blocks this. The proposal lets the kubelet pass an empty masked-path list to the CRI when Unmasked is set, and restricts the option to the privileged Pod Security Admission level because an unmasked /proc can expose host /proc to root in the container. Reviewers pushed for the KEP to be retargeted at alpha and tied to user namespaces, which is why the status shows that the work depends on user namespaces rather than being a standalone graduation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add an explicit Masked ProcMountType option",
+    "why_not": "Maintainer haircommander was less inclined, calling it syntactic sugar since default already means masked and PSS can enforce default."
+   },
+   {
+    "option": "Use --oci-worker-no-process-sandbox like BuildKit",
+    "why_not": "Not broadly supported with other container runtimes or builders."
+   },
+   {
+    "option": "Ask the kernel to allow mounting a new procfs with masks",
+    "why_not": "Proposed in 2018 but denied in the kernel; no known effort to allow it since."
+   },
+   {
+    "option": "Give all hostUsers:false pods access to unmasked mounts by default",
+    "why_not": "Opens an argument that user-namespaced pods are less secure, so weakening boundaries should be opt-in."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "having an Unmasked ProcMountType is a privileged operation, and thus is part of the [privileged]"
+   },
+   {
+    "ref": "readme",
+    "quote": "When the kubelet is presented with a pod that has a ProcMountType as Unmasked, it will edit the default list of masked paths it passes down to the CRI"
+   },
+   {
+    "ref": "rcomment:1483456464",
+    "quote": "if this ends up impractical in practice a unit test showing the field stripping will be sufficient along with a manual test of disablement."
+   },
+   {
+    "ref": "comment:2967588722",
+    "quote": "deferring to 1.35, as user namespaces is not going GA in 1.34"
+   },
+   {
+    "ref": "rcomment:1349411832",
+    "quote": "pushing this to beta is a bit early when the only safe way to use it is with user namespaces, which are still alpha"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14201,
+  "output": 998
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

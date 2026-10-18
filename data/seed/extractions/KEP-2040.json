@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-2040",
+ "input_hash": "496be8dcd08cd1f9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2040 (Kubelet CRI support) aims to graduate the CRI API from alpha to beta and then to stable (v1alpha2 -> v1beta -> v1). Its status is implementable at stage beta, so the decision recorded here is the scope and staging plan the sources describe, not a final GA outcome.",
+  "rationale": "CRI runtimes such as CRI-O and containerd have run in production for over a year on the alpha API, and the KEP is meant to signal that the API is production ready so users can move off dockershim. The KEP was retitled to track beta-to-stable as well as alpha-to-beta, and the API version is to evolve per milestone. Maintainers expected the beta and GA work to be recorded in the same KEP document with separate sections for each step.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Track only alpha-to-beta in this KEP",
+    "why_not": "Derek Carr asked to use this KEP for beta to stable too: \"Let's use this issue to not just track the API from alpha->beta but beta->stable.\""
+   },
+   {
+    "option": "Keep the image-service-endpoint flag experimental",
+    "why_not": "The sources say it was kept experimental only pending evaluation: \"I think we should keep the image-service-endpoint experimental and evaluate if it makes sense or not to just remove it\""
+   },
+   {
+    "option": "Promote CRI to beta as a reason to drop cadvisor for stats",
+    "why_not": "Rejected by dchen1107: \"promoting CRI to beta doesn't mean the node completely switch away from cadvisor for stats. They should be orthogonal.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:702207239",
+    "quote": "Let's use this issue to not just track the API from alpha->beta but beta->stable. As a result, I am retitling the issue and updating the milestones."
+   },
+   {
+    "ref": "readme",
+    "quote": "Evolve the CRI API version as we address feedback in each milestone towards stable. - v1alpha2 (alpha, current state) - v1beta (beta, proposed 1.20) - v1 (stable, TBD)"
+   },
+   {
+    "ref": "rcomment:498339212",
+    "quote": "let's title this section: changes between v1alpha1 and v1beta1 we can just add a new section then in 1.21 for v1beta1 to v1 while updating the same kep."
+   },
+   {
+    "ref": "comment:726242333",
+    "quote": "Because of a chicken-and-egg situation, we are going to land https://github.com/kubernetes/kubernetes/pull/96387 in 1.20 and follow up with the rest in 1.21."
+   },
+   {
+    "ref": "comment:1299196719",
+    "quote": "I don't think this is fully stable and graduated yet? /reopen /remove-lifecycle rotten"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8157,
+  "output": 1058
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

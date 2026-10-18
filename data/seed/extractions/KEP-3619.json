@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3619",
+ "input_hash": "f51ce7ab1b790ad0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3619 proposes a new SupplementalGroupsPolicy API field so users can control which supplemental groups (including those from /etc/group in the image) are attached to the first container process, instead of changing the existing default behavior. The KEP is recorded as implemented and stable.",
+  "rationale": "Container runtimes (containerd, CRI-O) merge groups from the image's /etc/group into the first process, which is not OCI-compliant and lets image authors bypass supplemental group policy. Maintainers rejected a cluster-wide feature gate and a breaking default change, so the KEP adds an opt-in per-pod field plus detection guidance. The sources show the design discussion and approval; they do not show the implementation rollout details beyond the status history.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Fix the container runtimes (containerd, CRI-O) to match the OCI spec",
+    "why_not": "Thockin noted it would be a breaking change: \"Changing the behavior would be a breaking change, same as we are debating here, so I would expect that it would be rejected.\""
+   },
+   {
+    "option": "Cluster-wide feature gate (e.g. OCICompatibleSupplementalGroups) to change the default",
+    "why_not": "Thockin said \"Feature gates are bounded-lifetime. They have to go away. At that point it's just a breaking change.\""
+   },
+   {
+    "option": "Runtime-level configuration toggled per cluster, as proposed by mrunal patel",
+    "why_not": "Thockin called it \"very fragile\"; the source also notes it is not portable across k8s distros."
+   },
+   {
+    "option": "Users modify their images to control supplemental groups",
+    "why_not": "The KEP alternatives note the con is that it is more work and users won't always have an option to do that."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP proposes a new API field named `SupplementalGroupsPolicy` that enables users to control supplemental groups attached to the first container process"
+   },
+   {
+    "ref": "readme",
+    "quote": "To mitigate this, the cluster administrators will need to deploy a custom low-level container runtime"
+   },
+   {
+    "ref": "comment:1412753901",
+    "quote": "Feature gates are bounded-lifetime. They have to go away. At that point it's just a breaking change."
+   },
+   {
+    "ref": "comment:1412957524",
+    "quote": "That sounds very fragile to me"
+   },
+   {
+    "ref": "review:1290198712",
+    "quote": "from API perspective (actually I suspect we will debate names, but we can do that in the PR rather than block this KEP further)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11325,
+  "output": 987
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

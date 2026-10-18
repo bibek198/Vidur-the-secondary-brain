@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5471",
+ "input_hash": "b9891e620c9feca8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5471 extends core/v1 Toleration with numeric comparison operators Lt and Gt so pods can match node taints such as node.kubernetes.io/sla=950 by threshold. The KEP is at status implementable, stage alpha, behind a feature gate, and its scope is limited to the TaintToleration plugin.",
+  "rationale": "Platform teams want to keep most workloads off lower-SLA (spot/preemptible) nodes while letting specific workloads opt in with thresholds like SLA ≥ 95%. Existing Equal and Exists tolerations cannot express \"any value above a threshold\" without enumerating every value. The design keeps the taint/toleration safety model, including NoExecute eviction, and reuses operators already known from NodeAffinity.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "New SLAPolicy CRD",
+    "why_not": "Creates new API surface and breaks the unified taint/toleration model, per the Alternatives section."
+   },
+   {
+    "option": "Custom out-of-tree scheduler plugin",
+    "why_not": "Requires maintaining an out-of-tree plugin and does not use the existing taint/toleration infrastructure."
+   },
+   {
+    "option": "Separate NumValue int64 field on Taint/Toleration",
+    "why_not": "Dual fields are unaesthetic and error-prone; reviewers agreed reusing Value is better and the field can be added later if needed."
+   },
+   {
+    "option": "Use Equal with numeric values only",
+    "why_not": "Pods must enumerate exact values and cannot express ranges like SLA > 950 or accept any low-SLA node."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Extend **core/v1 Toleration** to support **numeric comparison operators** when matching **Node Taints**: - New operators: `Lt`, `Gt`"
+   },
+   {
+    "ref": "readme",
+    "quote": "Primary motivation: allow pods to opt‑in to nodes by `SLA/failure‑probability` values published as taints"
+   },
+   {
+    "ref": "rcomment:2294855077",
+    "quote": "Is it fair to add a goal to ensure that the addition of new operators has zero operational effect on existing pod scheduling outcomes"
+   },
+   {
+    "ref": "rcomment:2300471816",
+    "quote": "As we agreed on [this](https://github.com/kubernetes/enhancements/pull/5473#discussion_r2269966442) feedback, we removed the `Ge` and `Le` operators."
+   },
+   {
+    "ref": "rcomment:2432586132",
+    "quote": "The [current validation](https://github.com/kubernetes/kubernetes/blob/master/pkg/apis/core/validation/validation.go#L4326-L4339) is strict and it explicity rejects any operator that isn't `Equal` or `Exists`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13277,
+  "output": 1070
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

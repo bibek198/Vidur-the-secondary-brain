@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2330",
+ "input_hash": "e7fe650f908f7fbe",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2330 proposes a vendor-agnostic tool to migrate stored Kubernetes API objects to the latest storage version, covering built-in APIs, custom resources, and aggregated APIs. Its status is implementable at alpha stage, with implementable status dated 2021-02-09.",
+  "rationale": "Objects created in one Kubernetes version can remain in an old stored version through upgrades until a later version cannot interpret them. The KEP proposes a migration tool that rewrites stored objects, with goals including low apiserver load, progress under flaky conditions, and progress tracking. The sources show only an approval comment on the revised PR; they do not record detailed reasoning for the implementable decision.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse the existing oc adm migrate storage command as-is",
+    "why_not": "The sources say the tool 'extends and improves based on the oc adm migrate storage command', so the KEP builds on it rather than adopting it unchanged; no further reasoning is given."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose a solution to migrate the stored API objects in Kubernetes clusters. In 2018 Q4, we will deliver a tool of alpha quality."
+   },
+   {
+    "ref": "readme",
+    "quote": "Today it is possible to create API objects (e.g., HPAs) in one version of Kubernetes, go through multiple upgrade cycles without touching those objects"
+   },
+   {
+    "ref": "readme",
+    "quote": "We will deliver a vendor-agnostic solution to automatically detect and migrate resources when the default storage version has changed."
+   },
+   {
+    "ref": "comment:775734599",
+    "quote": "Since you approved the original one, I will simply lgtm this one :) /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2077,
+  "output": 726
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

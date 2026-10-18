@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-365",
+ "input_hash": "b34539f469b7975d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-365 (Paginated API Lists) was promoted to stable and marked implemented; the 1.29 work targeted promoting the existing pagination as-is to GA, with the main code PR (kubernetes/kubernetes#119503) merged for code freeze.",
+  "rationale": "Large LIST requests returned in one response were too costly for the API server and clients at high cluster scale, so the KEP added server-side pagination. Over time the feature was held back from promotion until conformance and testing were settled. For the final stage, sig-api-machinery reviewers said the change promoted the existing pagination to GA, with testing as the main effort. The status is implemented as of 2024-01-31, per the status history.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Implement pagination in the watch cache as part of this KEP",
+    "why_not": "wojtek-t agreed it is a separate effort that should be tracked in a dedicated KEP and should not block GA."
+   },
+   {
+    "option": "Require clients to use pagination for large LISTs and reject unpaginated requests",
+    "why_not": "smarterclayton noted that a non-transient error would not let a simple client know to retry, so it would break compatibility; lavalamp suggested only rejecting lists that can never succeed."
+   },
+   {
+    "option": "Send paginated requests with RV=0 directly to etcd once reflectors use watches",
+    "why_not": "wojtek-t said older clients will be in clusters for years and sending those requests to etcd would break scalability."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:1662747441",
+    "quote": "Looks like this targets promoting the existing pagination, as-is, to GA. I think this will primarily be a testing effort: I don't think we have e2e tests today."
+   },
+   {
+    "ref": "comment:1645251211",
+    "quote": "I agree that it sounds like a separate thing that should be tracked in a dedicated KEP. And it shouldn't block GA."
+   },
+   {
+    "ref": "comment:1879456602",
+    "quote": "As it has graduated to `Stable` and the KEP status is still `implementable`, may you please update the status to `implemented`"
+   },
+   {
+    "ref": "rcomment:1092733050",
+    "quote": "the important motivation that I have are older clients. I've seen a number of clusters that are using some custom components"
+   },
+   {
+    "ref": "comment:1788274262",
+    "quote": "With https://github.com/kubernetes/kubernetes/pull/119503 merged, all the implementation(code related) PRs are now merged"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10778,
+  "output": 954
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

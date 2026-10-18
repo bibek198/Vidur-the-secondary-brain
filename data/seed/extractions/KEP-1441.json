@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1441",
+ "input_hash": "ee1af7c1ed5ea32a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1441 proposed adding a `kubectl debug` command with several debugging modes (ephemeral debug container, pod copy with modified PodSpec, privileged node debugging). The KEP is now implemented at stable stage, after graduating to beta and then GA.",
+  "rationale": "The goal was a first-class troubleshooting facility that does not require tools in container images or node admin access, while mirroring existing kubectl workflows. Graduation was repeatedly deferred: sig-cli chose beta in 1.20, and it stayed in beta for 1.22 because of open feature requests and the ephemeral containers API change. The GA promotion was proposed in PR #4408 and closed the tracking issue once promoted.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep the feature in beta for 1.22",
+    "why_not": "The 1.22 cycle left it in beta because of open feature requests and the ephemeral containers API change; the sources do not say why it later moved on, beyond the GA promotion in PR #4408."
+   },
+   {
+    "option": "Use a kubectl plugin (the old kubectl-debug plugin) for custom debugging needs",
+    "why_not": "Once kubectl debug graduates it masks the kubectl-debug plugin, and maintainers suggested a plugin only as a workaround before 1.23 for a missing security-context option."
+   },
+   {
+    "option": "Amend the existing KEP to add NET_RAW to the netadmin profile instead of a new KEP",
+    "why_not": "This was chosen, not rejected: verb said NET_RAW is more of a bugfix and amending the existing KEP would be quicker. Custom profiles were deferred to a new KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "User journeys supported by the initial release of `kubectl debug` are: 1. Create an Ephemeral Container in a running Pod"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP seeks to minimize this burden by mirroring the existing `kubectl` workflows where possible."
+   },
+   {
+    "ref": "comment:841248176",
+    "quote": "Given these open FRs and the API change for ephemeral containers, we'll leave this feature in beta for 1.22."
+   },
+   {
+    "ref": "comment:1484966305",
+    "quote": "Agree about custom profiles with a new KEP. I think `NET_RAW` is more of a bugfix and it would reasonable to amend the existing KEP"
+   },
+   {
+    "ref": "comment:2035084214",
+    "quote": "We have promoted this to GA and can close this issue as completed; /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12428,
+  "output": 985
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

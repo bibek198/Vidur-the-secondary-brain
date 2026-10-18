@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3836",
+ "input_hash": "b0794a6e049d1fcb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3836 proposes that kube-proxy fail its healthz (and the cloud load balancer health check) for terminating Nodes, signalled by the ToBeDeletedByClusterAutoscaler taint, so load balancers can drain connections; it also adds a /livez path that keeps the old healthz semantics. The KEP is implemented and stable.",
+  "rationale": "For externalTrafficPolicy: Cluster services, kube-proxy's healthz only reports whether data-plane programming is stale, so a terminating Node keeps receiving load-balancer traffic and in-flight connections are cut off. The KEP makes kube-proxy report unhealthy when the Node is being deleted, using the cluster autoscaler taint as the signal because .spec.unschedulable would break ingress for cordoned clusters. A separate /livez endpoint lets vendors keep a liveness probe that is unaffected by node termination.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use .spec.unschedulable as the termination signal",
+    "why_not": "Users can cordon all nodes at a given moment, which would cause ingress traffic for all eTP:Cluster services to break."
+   },
+   {
+    "option": "Align cloud provider health checks for eTP:Cluster services",
+    "why_not": "Non-goal: cloud providers have valid reasons to implement health checks differently; the KEP instead proposes a guidance document."
+   },
+   {
+    "option": "Include healthz state in eTP:Local health check answers",
+    "why_not": "Treated as a bug to fix directly rather than through the KEP cycle, per the non-goals section."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Given that the CA taints the Node which is to be downscaled and deleted, with the taint: `ToBeDeletedByClusterAutoscaler` it would seem most appropriate to use that here."
+   },
+   {
+    "ref": "readme",
+    "quote": "Using `.spec.unschedulable` as this signal would cause ingress traffic for all `eTP:Cluster` services to break."
+   },
+   {
+    "ref": "readme",
+    "quote": "adds a `/livez` path to its health check server (`proxier_health.go`) corresponding to the old healthz semantics"
+   },
+   {
+    "ref": "readme",
+    "quote": "if we modify `/healthz` to fail when this taint gets added on the Node, then the `livenessProbe` will fail, causing the Kubelet to restart the Pod until the Node is deleted."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4024,
+  "output": 951
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-3031",
+ "input_hash": "981fb626119a9d90",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3031 defines sigstore, with cosign as the chosen tool, as the technology the Kubernetes community uses to sign release artifacts. The KEP is implementable at stage beta.",
+  "rationale": "The project wants a unified way to sign release artifacts that gives end users a way to verify integrity and mitigate man-in-the-middle attacks. The proposal relies on sigstore and names cosign as the tool of choice, and it is tied to the SLSA compliance effort (KEP-3027). Integration into k/release is explicitly out of scope and left to the Release Engineering subproject.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Using the OCI Registry As Storage (ORAS) project",
+    "why_not": "Listed only under Alternatives in the readme; the excerpt gives no reason for not choosing it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will be done by relying on the tools of the Linux Foundations digital signing project [sigstore]"
+   },
+   {
+    "ref": "readme",
+    "quote": "[cosign](https://github.com/sigstore/cosign) will be the tool of our choice when speaking about the technical aspects of the solution."
+   },
+   {
+    "ref": "readme",
+    "quote": "How we integrate the projects into our build process in k/release is out of scope of this KEP and will be discussed in the Release Engineering subproject of SIG Release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2337,
+  "output": 606
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

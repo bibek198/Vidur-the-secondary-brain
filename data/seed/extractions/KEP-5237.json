@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-5237",
+ "input_hash": "faba096ace9f9036",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5237 switches the route controller in k8s.io/cloud-provider from a fixed 10-second full reconciliation loop to a watch-based model using informers. Reconciliation is triggered by node add/remove and changes to node.status.addresses or PodCIDRs, with a full reconciliation still running at a less frequent interval.",
+  "rationale": "The route controller reconciles every ten seconds, causing unnecessary API requests to infrastructure providers and up to ten seconds of delay when a node is added. Service and node controllers already use watches, so the proposal applies the same mechanism to routes. The stated goals are fewer infrastructure API requests and faster route reconciliation for new nodes; the reconciliation logic itself is out of scope.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep the fixed-interval reconciliation loop",
+    "why_not": "The sources say it causes unnecessary API requests to infrastructure providers and delays route reconciliation for new nodes by up to ten seconds; the sources do not record any other reason it was rejected."
+   },
+   {
+    "option": "Change the reconciliation logic itself",
+    "why_not": "Listed as a non-goal: the design explicitly keeps the reconciliation process logic unchanged."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The route controller in the cloud-controller-manager is currently reconciling in a fixed interval (default: 10s). This leads to unnecessary API requests towards the infrastructure providers."
+   },
+   {
+    "ref": "readme",
+    "quote": "Related controllers, such as the service or node controller are already using a watch-based mechanism. We propose to switch the route controller to a similar solution."
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose to instead reconcile whenever there is a new node added, removed, or certain fields are updated."
+   },
+   {
+    "ref": "readme",
+    "quote": "Additionally, the route controller will run a full reconciliation at a less frequent interval."
+   },
+   {
+    "ref": "readme",
+    "quote": "Change the logic of the reconciliation process itself."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1882,
+  "output": 819
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

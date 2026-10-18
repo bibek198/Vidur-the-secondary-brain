@@ -1,0 +1,46 @@
+{
+ "kep": "KEP-2915",
+ "input_hash": "e01a665a55d13b6b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2915 proposes replacing the versioned kubeadm kubelet ConfigMap and RBAC names (kubelet-config-x.y) with an unversioned kubelet-config, deprecating the old format over a one-year GA deprecation period and gating the switch behind a kubeadm feature gate, UnversionedKubeletConfigMap. Status is implementable, stage beta.",
+  "rationale": "kubeadm writes kubelet-config-x.y using the control plane version, which is misleading given N-1 kubelet skew, and upgrades leave old ConfigMaps behind. The versioned names add redundant complexity for maintainers and users. The KEP keeps the old format for a deprecation period while introducing kubelet-config as the source of truth, with a feature gate to allow gradual adoption.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Hard switch to the new naming after a GA deprecation period without a feature gate",
+    "why_not": "The KEP states this is 'less desired'; a feature gate gives users who are slower to adapt a way to opt out during the Beta period."
+   },
+   {
+    "option": "Keep the kubelet-config-x.y naming",
+    "why_not": "The motivation describes it as faulty and redundant: the encoded version is the control plane version, not the kubelet version, and upgrades leave old objects uncleaned."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Simplify the naming of the default kubelet configuration ConfigMap and related RBAC rules that kubeadm manages to the format `kubelet-config`, which does not include a version in the name."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently the overall design is faulty as `kubeadm init`, despite supporting a version skew with the kubelet of N-1, writes a single ConfigMap `kubelet-config-x.y`"
+   },
+   {
+    "ref": "readme",
+    "quote": "The switch will be controlled by a new kubeadm specific feature gate (not a core one, stored in kubeadm's ClusterConfiguration) called `UnversionedKubeletConfigMap`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Not using a feature gate has been considered, but the alternative of performing a hard switch to the new format after a GA deprecation period is less desired."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3109,
+  "output": 893
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

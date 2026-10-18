@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3541",
+ "input_hash": "83a9222bc32984af",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3541 proposes a new `Recreate` update strategy for StatefulSets, mirroring Deployments' Recreate strategy: delete all pods, wait for full termination, then create new pods according to podManagementPolicy. The KEP is at implementable status, stage alpha.",
+  "rationale": "With RollingUpdate, a pod that never reaches Ready (bad config, resource limits) halts the update, and the controller does not replace it even after a corrected config is applied, forcing manual deletion. The Recreate strategy gives a simple, predictable way to recover stuck pods for workloads that can tolerate downtime. It is opt-in and explicitly leaves the default update behavior unchanged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep RollingUpdate and rely on maxUnavailable or Parallel podManagementPolicy",
+    "why_not": "The readme says that with maxUnavailable the controller still requires each pod to reach Ready, and with Parallel 'stuck pods remain and are not automatically replaced.'"
+   },
+   {
+    "option": "Add timeout-based progressive failure detection",
+    "why_not": "The KEP lists it as a non-goal: 'Add timeout-based progressive failure detection (use Recreate for simplicity)'."
+   },
+   {
+    "option": "Change default StatefulSet update behavior to recover automatically",
+    "why_not": "The KEP lists as a non-goal changing default behavior; the new strategy is opt-in via explicit type: Recreate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes adding a new `Recreate` update strategy to StatefulSets, mirroring the behavior of Deployments' Recreate strategy."
+   },
+   {
+    "ref": "readme",
+    "quote": "Change default behavior of StatefulSet updates (opt-in via explicit `type: Recreate` configuration)"
+   },
+   {
+    "ref": "readme",
+    "quote": "Even after applying a corrected configuration, the controller will not automatically replace the broken pods, requiring manual intervention to delete stuck pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add timeout-based progressive failure detection (use Recreate for simplicity)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11877,
+  "output": 873
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

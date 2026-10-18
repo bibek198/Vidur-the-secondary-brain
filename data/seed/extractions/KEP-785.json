@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-785",
+ "input_hash": "b0a60de709908dd1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-785 graduates the kube-scheduler component config API (kubescheduler.config.k8s.io) from alpha through v1beta1, v1beta2, v1beta3 to GA v1 in 1.25, with planned deprecation and removal of the beta versions. Status is implemented, stage stable.",
+  "rationale": "The config API was in alpha for several releases, and a configuration API lets administrators build, validate and version configs more robustly than command-line flags. The KEP steps through versioned iterations (v1beta1 as a copy of v1alpha2, v1beta2 with plugin removals, v1beta3 with plugin weight changes, v1 GA). Deprecation timing was revised during review to follow the component config deprecation policy, which keeps beta versions available for multiple releases.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep v1beta1 and v1beta2 removal on the earlier, faster schedule (v1beta2 removed in 1.26)",
+    "why_not": "Reviewers pointed out that component config APIs follow the REST API deprecation policy, requiring beta versions to be supported for 9 months or 3 releases, so the removal was pushed to 1.28 and 1.29."
+   },
+   {
+    "option": "Graduate to beta in 1.16 with the existing v1alpha1 shape",
+    "why_not": "A maintainer said fields needed to be made optional first (via KEP PR #1173), so the scheduler config could not be promoted to beta in 1.16; it was later dropped from that milestone."
+   },
+   {
+    "option": "Remove v1beta1 and the legacy policy config API in v1beta3 (as proposed)",
+    "why_not": "The proposal included this removal, and it was implemented; the sources do not describe it being rejected."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The `v1beta2` was marked as deprecated in 1.25 and will be removed in 1.28. `v1beta3` will be marked as deprecated in 1.26 and removed in 1.29."
+   },
+   {
+    "ref": "comment:1237389012",
+    "quote": "Component config APIs are treated like REST APIs for deprecation purposes: https://kubernetes.io/docs/reference/using-api/deprecation-policy/#component-config-structures and"
+   },
+   {
+    "ref": "comment:516208145",
+    "quote": "Initially we didn't plan to make any changes, but now we should make sure that fields are optional as is proposed by"
+   },
+   {
+    "ref": "rcomment:966256065",
+    "quote": "in 1.28. `v1beta3` will be marked as deprecated in 1.26 and removed in 1.29."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12703,
+  "output": 1008
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

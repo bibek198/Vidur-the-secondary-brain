@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4816",
+ "input_hash": "7b53e9d5a8b7aef7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4816 adds a prioritized list to DRA ResourceClaims so a workload can list alternative device requests ranked by preference; the scheduler uses the first satisfiable entry. The KEP is marked implemented, stage stable.",
+  "rationale": "Workloads that need a GPU may fail to schedule when only a preferred model is available, and packaged workloads want to list alternatives without editing manifests. The design adds a FirstAvailable list (v1beta1, then Exactly/FirstAvailable in v1beta2) and a limited scoring step so nodes that satisfy higher-ranked subrequests are preferred. Reviewers debated the API shape (one-of semantics, backward compatibility with older clients) and whether cluster-autoscaler could support scoring, which was deferred.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Sibling RankedDeviceRequests field next to Requests in DeviceClaim",
+    "why_not": "Older clients would see a partial but valid request and not know it was incomplete; the one-of approach was chosen instead, per the discussion (rcomment:1795698383)."
+   },
+   {
+    "option": "Creating multiple ResourceClaims behind an indirection layer",
+    "why_not": "Raised by aojea as an idea (rcomment:1773821253); the sources do not record it being adopted."
+   },
+   {
+    "option": "Cluster-autoscaler scoring as a non-goal or alpha requirement",
+    "why_not": "Scoring was made a beta criterion; CA integration was judged a major effort and to be evaluated for feasibility rather than committed (rcomment:1793928065, rcomment:1792637408)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The order listed is considered a priority order, such that the scheduler will only try to use the second item in the list if it is unable to satisfy the first item"
+   },
+   {
+    "ref": "rcomment:1792637408",
+    "quote": "Made scoring a beta criteria; for alpha, it would not prefer one node over the other. Maybe we'll try to do that in alpha but for now it's a beta criteria."
+   },
+   {
+    "ref": "rcomment:1795698383",
+    "quote": "To make it a one-of, we would force people to use either regular `Requests` OR `RankedRequests` in a given claim."
+   },
+   {
+    "ref": "comment:4651662467",
+    "quote": "It was the ResourceClaim status which was left in beta, in contrast to what we had planned."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12580,
+  "output": 947
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-34",
+ "input_hash": "0063240ae39c4a77",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-34 promotes the sysctl annotations (used to set namespaced kernel parameters per pod) to first-class pod spec fields. Its status is implemented, stage stable.",
+  "rationale": "Sysctls were previously set through annotations, which the design says are no longer recommended for alpha features. The excerpt argues that separating annotation from sysctl control lets operators distinguish experimental from supported use. The provided sources do not give more detail on the decision's full reasoning beyond this.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep sysctls set through annotations",
+    "why_not": "The readme says annotations to set sysctl are no longer necessary and that the ability to annotate should be separated from the ability to change sysctl settings."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The annotations as a means to set `sysctl` are no longer necessary. The original intent of annotations was to provide additional description"
+   },
+   {
+    "ref": "readme",
+    "quote": "The preferred approach adds an alpha field to the existing object, and ensures it is disabled by default"
+   },
+   {
+    "ref": "rcomment:573118169",
+    "quote": "This was done, but it was done post-beta so I will keep it in GA criteria and add it into implementation history."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9521,
+  "output": 558
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

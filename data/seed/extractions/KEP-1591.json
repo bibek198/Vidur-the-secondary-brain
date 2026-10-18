@@ -1,0 +1,46 @@
+{
+ "kep": "KEP-1591",
+ "input_hash": "db6e0dd3267b4468",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1591 adds Surge (maxSurge) support to the DaemonSet RollingUpdate strategy so a node can run old and new DaemonSet pods during an update. The KEP reached implementable status, was in alpha in 1.20 then delayed to 1.21, moved to beta, and was graduated to stable with the feature gate later dropped.</summary>\n<parameter name=\"rationale\">DaemonSets only supported MinAvailable without Surge, so node-level integrations could not hand off between old and new pods without higher-level orchestration. The KEP adds Surge so a DaemonSet can offer zero-downtime upgrades. The discussion shows the work slipping from 1.19 and 1.20 to later releases because the implementation needed more tests, then graduating to stable in 1.25.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Run two DaemonSets and round-robin updates between them",
+    "why_not": "The readme describes this as complex and as requiring higher level orchestration, which the KEP aims to avoid."
+   },
+   {
+    "option": "Use the OnDelete strategy and orchestrate pod deletes manually",
+    "why_not": "The readme says this also needs higher level orchestration, for example when nodes will be rebooted."
+   },
+   {
+    "option": "Ship the 1.20 alpha on schedule without more tests",
+    "why_not": "The comment from smarterclayton says the impl needs more tests and he does not want to rush it, so it was delayed to 1.21."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "RollingUpdate which supports MinAvailable like Deployments but not Surge. Daemonsets should support Surge in order to minimize DaemonSet downtime on nodes."
+   },
+   {
+    "ref": "comment:726188989",
+    "quote": "Giving timing I'm going to delay this to 1.21 since the impl needs more tests and I don't want to rush it."
+   },
+   {
+    "ref": "comment:1380696170",
+    "quote": "This is all fully ready and the feature gates was dropped in https://github.com/kubernetes/kubernetes/pull/114410, so I'm closing this as completed."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7138,
+  "output": 832
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

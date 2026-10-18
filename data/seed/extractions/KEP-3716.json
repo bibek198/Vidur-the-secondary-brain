@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3716",
+ "input_hash": "6548b9ebcd0fcc31",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3716 adds \"match conditions\" (CEL expressions) to admission webhook configurations, extending `rules` so a webhook is only called when every expression evaluates to true; otherwise the request is implicitly allowed. The KEP is implemented and at stable stage.",
+  "rationale": "Admission webhooks are a reliability and latency problem: webhooks sit in the critical request path even when they do no work, and existing scoping (rules, namespace selectors) is insufficient for some cases such as excluding managed components. Match conditions narrow which requests reach a webhook, and the KEP keeps them consistent with ValidatingAdmissionPolicy's CEL model. Reviewers agreed the feature is an optimization, with the core business logic remaining in the webhook backend.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "An `exclusions:` field with inverted CEL expressions",
+    "why_not": "Reviewers said \"We should _not_ use `exclusions`\" because it \"inverts the meaning of the CEL expressions in a way that makes them more confusing\"; the author chose matchConditions instead."
+   },
+   {
+    "option": "Rely on namespace selectors or existing scoping mechanisms",
+    "why_not": "The KEP states the existing criteria \"are insufficient for many use cases\", and a reviewer noted namespace scoping only partly covers the need (\"With careful use of namespace, I would expect this to be possible today\")."
+   },
+   {
+    "option": "Use ValidatingAdmissionPolicy for these cases",
+    "why_not": "The KEP says ValidatingAdmissionPolicy \"is intentionally not attempting to cover every possible use case\", and this proposal \"aims to improve the situation for those webhooks that cannot be migrated.\""
+   },
+   {
+    "option": "Cross-webhook match conditions applied globally",
+    "why_not": "The author made this out of scope: \"I decided to make this out-of-scope for this KEP, since I think it expands the scope quite a bit\", and it was listed as future work."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A `matchCondition` is a [CEL](https://github.com/google/cel-spec) expression that must evaluate to true for the admission request to be sent to the webhook."
+   },
+   {
+    "ref": "readme",
+    "quote": "If a `matchCondition` evaluates to false, the webhook is skipped for that request (implicitly allowed)."
+   },
+   {
+    "ref": "rcomment:1066896135",
+    "quote": "Yes. We should _not_ use `exclusions`; we should (I propose) list it as an alternative that we rejected, and explain why."
+   },
+   {
+    "ref": "rcomment:1100818163",
+    "quote": "I decided to make this out-of-scope for this KEP, since I think it expands the scope quite a bit, but we should definitely discuss it in the future."
+   },
+   {
+    "ref": "comment:1581574065",
+    "quote": "Since this feature is intended as an optimization, if the matchCondition is not run (e.g. on old clusters that don't support the field) the behavior is expected to be equivalent"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12338,
+  "output": 1153
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

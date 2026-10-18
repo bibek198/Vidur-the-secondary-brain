@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2485",
+ "input_hash": "b2b439fb6373cf09",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2485 introduces a ReadWriteOncePod PersistentVolume access mode that restricts a volume to a single pod on a single node, distinct from ReadWriteOnce which allows many pods on one node. The KEP is implemented and at stage stable.",
+  "rationale": "Existing ReadWriteOnce allows simultaneous access from many pods on one node, so a single-pod guarantee was missing. The KEP adds the new access mode and CSI spec changes (SINGLE_NODE_SINGLE_WRITER) while keeping ReadWriteOnce working. Reviewers pushed for scheduler-time enforcement and version-skew analysis, and the scheduler enforcement was added during the alpha/beta work.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Not introducing a SINGLE_NODE_MULTI_WRITER access mode in the CSI spec and keeping SINGLE_NODE_WRITER",
+    "why_not": "The readme says SINGLE_NODE_WRITER has conflicting definitions, and introducing SINGLE_NODE_SINGLE_WRITER was the chance to fix that confusion."
+   },
+   {
+    "option": "Keep the feature in alpha for one more release, then target beta in 1.27",
+    "why_not": "Maintainer msau42 said tests had to be implemented and running before beta promotion, so beta was moved from 1.26 to 1.27 rather than skipped."
+   },
+   {
+    "option": "Tracking a selected-pod annotation on PVCs to speed up PVC protection checks",
+    "why_not": "Chrishenzie said it was not GA-blocking for this feature and that the problem is not unique to this access mode, so it was decoupled."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP introduces a new ReadWriteOncePod access mode for PersistentVolumes that restricts access to a single pod on a single node."
+   },
+   {
+    "ref": "readme",
+    "quote": "This access mode differs from the existing ReadWriteOnce (RWO) access mode, which restricts access to a single node, but allows simultaneous access from many pods on that node."
+   },
+   {
+    "ref": "comment:1255616376",
+    "quote": "Beta graduation will need to happen in 1.27, see here for more context: https://github.com/kubernetes/enhancements/pull/3537#discussion_r978120310"
+   },
+   {
+    "ref": "comment:1638548122",
+    "quote": "it looks like we can consider this project independently of ReadWriteOncePod (we're not considering it GA-blocking for this feature)."
+   },
+   {
+    "ref": "rcomment:1088570525",
+    "quote": "Would it halt? I think from the comment above, it looks like scheduler will not enforce if the feature gate is disabled."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13797,
+  "output": 1052
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5607",
+ "input_hash": "351dc2b64e5e3e4d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5607 proposes a new alpha feature gate, UserNamespacesHostNetworkSupport, that relaxes kube-apiserver Pod validation so that Pods may set both hostNetwork: true and hostUsers: false. The KEP is in implementable status at alpha stage.",
+  "rationale": "Control plane components such as kube-apiserver and kube-controller-manager run as static Pods with hostNetwork: true, and a validation rule blocks combining that with hostUsers: false. The authors chose a separate gate rather than extending UserNamespacesSupport because that gate is nearing GA and the new behavior depends on external runtime support. Reviewers noted that container runtimes (containerd, runc, CRI-O) need changes before the feature is usable, so alpha is being used for experimentation and to clarify limitations.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add the behavior to the existing UserNamespacesSupport feature gate",
+    "why_not": "Rejected because UserNamespacesSupport is approaching GA and adding an immature, externally-dependent behavior would add risk and delay, so the gates are kept separate."
+   },
+   {
+    "option": "Do not implement; users use hostPort instead of hostNetwork",
+    "why_not": "The KEP says hostPort may disrupt existing environments, since some privileged containers need direct host network access, and hostPort requires a pre-configured CNI, which static control plane Pods cannot rely on."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Introduce a new, separate alpha feature gate: `UserNamespacesHostNetworkSupport`. * When this feature gate is enabled, modify the Pod validation logic"
+   },
+   {
+    "ref": "readme",
+    "quote": "Keeping the two feature gates separate is cleaner and safer. Do not implement this feature"
+   },
+   {
+    "ref": "rcomment:2410677223",
+    "quote": "crun supports it. I am not sure about CRI-O but I don't see any explicit check to prevent that combination"
+   },
+   {
+    "ref": "comment:3498792694",
+    "quote": "The Next stage of this KEP must still be ALPHA (e.g. 1.36) and must use NodeDeclaredFeatures library"
+   },
+   {
+    "ref": "rcomment:2440407799",
+    "quote": "Since I haven't implemented it in the container runtime and the underlying container runtime yet, I haven't included the implementation details for now."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12544,
+  "output": 944
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5866",
+ "input_hash": "8ba8693ac22a4048",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5866 proposes server-side sharded LIST and WATCH in the Kubernetes API server, letting clients request only the events in a hash range via a new selector-style parameter. The KEP is at status implementable, stage alpha.",
+  "rationale": "Client-side sharding still delivers the full event stream to every replica, so each replica pays the network and deserialization cost of discarded events. The KEP moves filtering to the API server so each replica receives only its shard, while clients still choose their own hash ranges. Reviewers accepted the alpha scope, and the exact request syntax was deferred to API review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Label-based sharding (client writes shard info into object labels and filters on them)",
+    "why_not": "Reviewers said labels need admission or another controller to set them, leak controller topology into object state, and are hard to reshard. The readme says: \"persisting the sharding information into the object state seems like a slippery slope because of admission/controller and also being super difficult to reshard later.\""
+   },
+   {
+    "option": "Modulo-based partitioning (hash % ShardingCount == ShardingIndex)",
+    "why_not": "The KEP chose consistent hash ranges so clients can reshard without moving every key. The reviewer said: \"fixing the partitioning to be modulo % is also not ideal for controllers wanting reshards to not move every key around\"."
+   },
+   {
+    "option": "Extending fieldSelector or using CEL expressions such as fieldSelector=range(...) or selector=0 < hash(...) < 100",
+    "why_not": "The author argued that extending fieldSelector would push toward CEL and that complex CEL makes parsing and validation harder for normal GET requests. The author said: \"Having more complex CEL expressions seems like extra overhead as it would make parsing and validating the field more difficult\"."
+   },
+   {
+    "option": "Separate ListOptions fields for sharding (ShardingIndex, ShardingCount, ShardingLabelKey, HashFunc)",
+    "why_not": "Listed in alternatives with the con that it increases the surface area of meta/v1.ListOptions with watch-specific fields and makes future evolution less flexible. The exact grammar was left to API review."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "client-side sharding has a critical limitation: it does not reduce the incoming event volume per replica. Every replica still receives the full stream of events"
+   },
+   {
+    "ref": "readme",
+    "quote": "Clients specify a new `selector` parameter utilizing specific grammar (e.g., `selector=shardRange(object.metadata.uid, start, end)`) in their `ListOptions`."
+   },
+   {
+    "ref": "rcomment:2794224240",
+    "quote": "I think we should fully resolve the decision between the main options during API review. The main two options I see are"
+   },
+   {
+    "ref": "comment:3886122440",
+    "quote": "We'll decide HOW to represent the client request during API review, but we have two concrete options"
+   },
+   {
+    "ref": "rcomment:2790564488",
+    "quote": "persisting the sharding information into the object state seems like a slippery slope because of admission/controller and also being super difficult to reshard later."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10830,
+  "output": 1181
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

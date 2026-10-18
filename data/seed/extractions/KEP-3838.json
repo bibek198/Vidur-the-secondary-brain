@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3838",
+ "input_hash": "8971bc47d00df737",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3838 proposes relaxing Pod node selector and node affinity immutability so that gated pods (blocked on a scheduling readiness gate) can have their scheduling directives further constrained. Status is implementable, stage stable.",
+  "rationale": "External resource controllers need to influence where a pod lands while leaving pod-to-node binding to kube-scheduler. Node affinity and selector were immutable, so the KEP allows changes only for pods still blocked by a scheduling gate and only when the change further constrains placement. Reviewers narrowed the rule to appending to existing matchExpressions/fieldExpressions and to new preferred terms, and required nodeName/schedulingGates validation to be unconditional.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Allow mutating node affinity/selector of pods unconditionally",
+    "why_not": "Listed as a non-goal; the KEP restricts the change to pods blocked on a scheduling readiness gate."
+   },
+   {
+    "option": "Allow mutating pod (anti)affinity constraints",
+    "why_not": "Non-goal: \"It is not clear how this can be done without potentially violating a policy check that was previously done at pod CREATE.\""
+   },
+   {
+    "option": "Restrict adding tolerations on scheduling gates",
+    "why_not": "Non-goal: tolerations are already allowed unconditionally, so restricting them to gated pods would not be backward compatible."
+   },
+   {
+    "option": "Introduce a separate feature gate for this change",
+    "why_not": "A reviewer proposed depending on the same flag: \"we can depend on the same flag, we don't need to introduce a new one.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "make the pod scheduling directives node selector and node affinity mutable as long as the pod is gated and the update to node selector/affinity further limits the existing constraints"
+   },
+   {
+    "ref": "rcomment:1096788701",
+    "quote": "We will only allow additions, no changes to existing terms will be allowed. This is easier to reason about."
+   },
+   {
+    "ref": "rcomment:1097621036",
+    "quote": "looks like BindingREST#setPodHostAndAnnotations and ValidatePodCreate both need to be updated to do their validation unconditionally"
+   },
+   {
+    "ref": "comment:1965476282",
+    "quote": "this feature is actually under the umbrella of #3521, it makes more sense to just fold this into #3521."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10615,
+  "output": 937
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

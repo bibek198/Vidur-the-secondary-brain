@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2625",
+ "input_hash": "d1b19af6c8ffd6b9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2625 adds a CPUManager static-policy option (later named reject-non-smt-aligned in discussion) that rejects pods whose CPU request does not cover whole physical cores, so no physical core is shared between containers. The KEP is implemented and at stable stage.",
+  "rationale": "Latency-sensitive workloads on SMT systems can have their hardware threads spread across physical cores shared with other containers, causing interference such as shared first-level caches. The proposal prevents this by rejecting pods that request CPUs not forming full physical cores, instead of adding new policies or new resource units. Reviewers preferred policy options over new policy names, and a later discussion added a feature gate split so new options can be introduced separately.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add an extended resource alongside cpu to represent physical CPUs",
+    "why_not": "Having two resources for the same hardware is confusing, and using only an extended resource would prevent the pod from being in the Guaranteed QoS class."
+   },
+   {
+    "option": "Add a new CPU unit qualifier (e.g. \"3p\") for physical CPUs",
+    "why_not": "The virtual-to-physical CPU ratio depends on hardware and configuration, so it is not predictable, and the unit would only apply to CPU resources."
+   },
+   {
+    "option": "Use a separate policy name (e.g. smt-aligned-static) instead of an option",
+    "why_not": "Suggested by kad during review to avoid breaking consumers that read only the policy name; the thread records that the KEP went with policy options, with a new policy-name alias proposed and then removed at derekwaynecarr's request."
+   },
+   {
+    "option": "Allocate extra CPUs so the container footprint covers whole cores (e.g. 5 requested becomes 6 allocated)",
+    "why_not": "The footprint would differ from the request, which would require cascading changes across Kubernetes, so the requirement was pushed to the pod to request whole cores."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Prevent workloads from requesting cores that don't consume a full CPU by rejecting them. This guarantees that no physical core is shared among different containers"
+   },
+   {
+    "ref": "readme",
+    "quote": "Representing a footprint bigger than a request (AFAICT) would cause cascading changes all across kubernetes"
+   },
+   {
+    "ref": "rcomment:628887117",
+    "quote": "This new option simply prevents pods from being admitted if the number of cores requested isn't a multiple of the number of cores-per-cpu."
+   },
+   {
+    "ref": "rcomment:631978063",
+    "quote": "note for others that cpu manager static policy can already reject pods, this just adds another reason for said rejection."
+   },
+   {
+    "ref": "comment:914793744",
+    "quote": "So a total of two feature gates regardless of number of options - and then options themselves can graduate from alpha to beta and just move out of the protection of that feature gate."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11242,
+  "output": 1098
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

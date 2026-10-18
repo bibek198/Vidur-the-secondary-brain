@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5307",
+ "input_hash": "0432fe006a332dc1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5307 adds per-container restartRules so kubelet restarts a container on specified exit codes, even when the Pod has restartPolicy=Never. The KEP is at status implementable, stage beta.",
+  "rationale": "AI/ML training Pods must distinguish retryable failures (restart in place) from hardware failures (reschedule the Pod), which restartPolicy alone cannot express. The design adds a container-level restartRules field, with the Job controller unaffected because kubelet restarts keep the Pod Running. Reviewers pushed for a coherent restart story across pod restartPolicy, container restartPolicy and rules, and the PR was approved as an incremental step.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a new RestartPolicy enum value such as RuleBased",
+    "why_not": "Reviewer thockin noted RestartPolicy overloads the meaning to include sidecar, and the thread concluded a new enum value could not be added; the restartRules name was kept instead."
+   },
+   {
+    "option": "Use restartPolicy OnFailure at the Pod level",
+    "why_not": "The readme says OnFailure does not work because hardware failures must produce a Pod failure and rescheduling, and the pod failure policy is not compatible with OnFailure."
+   },
+   {
+    "option": "Redesign restart semantics first with a new exitCodes-based restartPolicy model",
+    "why_not": "The sources show this was proposed by thockin as a broader design, but the PR was narrowed to restartRules as a targeted per-container addition; the sources do not record a final decision to adopt that model."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will allow users to configure special exit codes of the container to be treated as non-failure and restart the container in-place even if the Pod has a restartPolicy=Never."
+   },
+   {
+    "ref": "comment:2956775053",
+    "quote": "this PR only introduces `restartRules` as a targeted, per-container override and does not change the existing `restartPolicy`."
+   },
+   {
+    "ref": "review:2922832416",
+    "quote": "API LGTM overall - all my comments are minor and this doesn't have to be final API /approve"
+   },
+   {
+    "ref": "comment:2985137816",
+    "quote": "I remain some concerns, but those concerns shouldn't block we move forward this alpha feature."
+   },
+   {
+    "ref": "comment:2968349832",
+    "quote": "So I accept that I am going to be grumpy. I think we CAN get to a place where container `restartPolicy` is less restricted"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11639,
+  "output": 966
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,61 @@
+{
+ "kep": "KEP-3299",
+ "input_hash": "69309c76f8c2b78a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3299 proposed a v2 KeyManagementService gRPC contract for KMS encryption providers, adding DEK reuse, a status RPC, hot reload of EncryptionConfiguration, per-operation transaction IDs, and partially automated key rotation. Its status is implemented, stage stable.",
+  "rationale": "The v1 KMS flow forced a 1:1 DEK-to-KMS call pattern that hit external rate limits at startup and during bursts, and rotation required multiple API server restarts and config edits. The v2 contract addresses these with key_id-based rotation, a separate status call for health, and UID-tagged operations for observability. The discussion shows the design was refined in PR #3302 (for example, moving UID into the proto and switching to annotations), and the feature went through alpha, beta, and stable across releases.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "cacheSize field in EncryptionConfiguration",
+    "why_not": "The KEP says a larger cache does not solve the number of KMS plugin calls when encryption traffic is bursty."
+   },
+   {
+    "option": "Key hierarchy inside the KMS plugin, keeping 1:1 DEK mapping in the API server",
+    "why_not": "In CI testing the gRPC calls to the plugin added significant overhead, with latency on the order of 0.1s."
+   },
+   {
+    "option": "Using the AuditID from the request for correlation",
+    "why_not": "AuditID can be set by users via the Audit-ID header and shared across requests, and not every envelope operation maps to an audit entry, so correlation is incomplete."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes the new v2 `KeyManagementService` service contract to: - enable partially automated key rotation for the latest key without API server restarts"
+   },
+   {
+    "ref": "readme",
+    "quote": "The current rotation process requires multiple restarts of all kube-apiserver processes to ensure each server can decrypt and then encrypt using the new key."
+   },
+   {
+    "ref": "readme",
+    "quote": "We tested this approach and the metrics in CI indicated the gRPC calls to the KMS plugin added significant overhead."
+   },
+   {
+    "ref": "rcomment:894184289",
+    "quote": "We decided to keep UID as part of the proto since it is a core change we are introducing in v2 and it's not optional."
+   },
+   {
+    "ref": "comment:1786283713",
+    "quote": "With all the following implementation(code related) PRs merged into k/k, this enhancement is now marked as `tracked for code freeze` for the 1.29 Code Freeze!"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-3130",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-3299 replaces KEP-3130 KMS Observability"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 18563,
+  "output": 1059
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

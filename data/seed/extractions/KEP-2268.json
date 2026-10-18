@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2268",
+ "input_hash": "bd420c5876e20151",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2268 proposes a user-applied `out-of-service` taint (NoExecute) so that the Pod GC controller force-deletes pods stuck terminating on a shut-down or non-recoverable node, letting StatefulSet pods and their volume attachments move to a healthy node. The KEP reached implemented status and stable stage.",
+  "rationale": "When a node is shut down without Kubelet's Node Shutdown Manager detecting it, StatefulSet pods stay in terminating state on that node, and their VolumeAttachments are not removed, so replacement pods cannot start elsewhere. The design has the user confirm the node is off and apply the out-of-service taint, which triggers forced pod deletion and volume detachment, avoiding automatic detection that the authors judged unreliable. Reviewers raised concerns about fencing, CSI burden, and taint semantics, and the scope was narrowed to manual tainting for alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Node fencing (power off or fence the node before force-detaching volumes)",
+    "why_not": "The KEP says 'the fencing approach is too intrusive' and that it depends on the user to enter shutdown commands that differ by environment; fencing was listed as a future consideration instead."
+   },
+   {
+    "option": "Cloud provider automatically applies the taint when it detects shutdown",
+    "why_not": "xing-yang wrote that the earlier version was removed 'because otherwise we would have two different code path, one for Cloud Provider and one for others'; jingxu97 noted the concern that a provider cannot reliably tell shutdown from rebooting."
+   },
+   {
+    "option": "Use a NoSchedule taint or an annotation to signal the state",
+    "why_not": "xing-yang argued NoSchedule should not force eviction, so a new effect or label was suggested; jingxu97 said annotations are 'not recommended due to its limitations'. The final design uses a NoSchedule taint for scheduling plus a label for the GC step, per the proposal's later revision."
+   },
+   {
+    "option": "Reuse the existing node-shutdown taint key",
+    "why_not": "dashpole and yastij's discussion led to deprecating the existing node-shutdown taint and introducing a new one, to avoid breaking clients and honor the deprecation policy."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When users verify that a node is already in shutdown or power off state (not in the middle of restarting), either user intentionally shut it down or node is down due to hardware failures"
+   },
+   {
+    "ref": "readme",
+    "quote": "the Pod GC Controller will forcefully delete the pods on the node if there are no matching tolation on the pods"
+   },
+   {
+    "ref": "comment:1021832185",
+    "quote": "I think it's better that we create a new taint effect, maybe something like NoExecuteForce, to control this new behavior, rather than special casing a taint key with behavior that doesn't match the effect."
+   },
+   {
+    "ref": "rcomment:798068743",
+    "quote": "Later on we decided to remove it and ask user to add/remove taint manually because otherwise we would have two different code path, one for Cloud Provider and one for others."
+   },
+   {
+    "ref": "comment:906489371",
+    "quote": "I think the \"fencing\" approach is too intrusive. Also I believe it depends on the user to enter what commands are required to shut down a node as the commands differ in different environment."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10655,
+  "output": 1239
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

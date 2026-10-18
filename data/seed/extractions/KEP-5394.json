@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5394",
+ "input_hash": "cc011bfcc5e32ac3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5394 proposes having the kubelet report node conditions based on node-level PSI (pressure stall information) metrics for memory, CPU and IO, so that pods are not scheduled onto nodes under significant resource constraint. Status is implementable at alpha.",
+  "rationale": "PSI gives early warning of resource shortage, and the KEP uses it to set node conditions and taints. The maintainers split the work: KEP-4205 tracks exposing PSI metrics, while KEP-5394 tracks the net-new feature of PSI-based node conditions. The KEP was marked implementable for v1.34 but was deferred from that release, and later moved to v1.35 as best effort and then to v1.36. The v1.36 code PRs missed code freeze, so the item was removed from the milestone.",
+  "outcome_reason": "The sources do not say that the KEP was withdrawn or rejected. They record that it was deferred from v1.34, and that its v1.36 implementation PRs were not merge-ready by code freeze, so it was removed from the v1.36 milestone. The current status is implementable at alpha, as stated.",
+  "alternatives": [
+   {
+    "option": "Use PSI metrics for pod evictions, userspace OOM kills, and similar actions in this KEP",
+    "why_not": "Listed as a non-goal: \"Invest in more opportunities to further use PSI metric for pod evictions, userspace OOM kills, and so on, for future KEPs.\""
+   },
+   {
+    "option": "Keep exposure of PSI metrics and node-condition use in one KEP",
+    "why_not": "Maintainers asked for a split. The existing KEP tracks exposure of PSI metrics (4205) and this KEP tracks the net-new node-condition feature."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes enabling kubelet to report node conditions which will be utilized to prevent scheduling of pods on nodes experiencing significant resource constraints."
+   },
+   {
+    "ref": "comment:2978609844",
+    "quote": "Existing KEP continues to track the exposure of PSI metrics: https://github.com/kubernetes/enhancements/issues/4205"
+   },
+   {
+    "ref": "comment:2978609844",
+    "quote": "New KEP tracks the net new feature of PSI-based node conditions: https://github.com/kubernetes/enhancements/issues/5394"
+   },
+   {
+    "ref": "comment:3115431767",
+    "quote": "will set this to Deferred for 1.34 /milestone clear"
+   },
+   {
+    "ref": "comment:4089722486",
+    "quote": "the implementation (code-related) PRs associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.36 milestone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10099,
+  "output": 1045
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

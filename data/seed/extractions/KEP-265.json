@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-265",
+ "input_hash": "e9dbebc46f0b55ed",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-265 proposed a new kube-proxy implementation built on IPVS (IP Virtual Server) to improve service scalability. The KEP's status is recorded as implemented, stage stable, from 2020-12-16.",
+  "rationale": "The readme says iptables struggles to scale to tens of thousands of services because it is built for firewalling with in-kernel rule chains, while IPVS is designed for load balancing with more efficient data structures. The stated goal is to improve service performance. The discussion does not explain why this KEP was marked implemented; it concerns the status and stage rules applied to it during the PR #3007 review, which the sources say was a retroactive status update.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using iptables for ClusterIP and NodePort services",
+    "why_not": "The readme states iptables struggles to scale to tens of thousands of services, which is the problem this KEP addresses."
+   },
+   {
+    "option": "Mark the KEP as implementable (permanent beta) instead of implemented",
+    "why_not": "The sources show this was discussed for other KEPs (for example the perma-beta KEP, comment by johnbelamaric), but the sources do not say this option was considered for KEP-265 specifically."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "iptables struggles to scale to tens of thousands of services because it is designed purely for firewalling purposes"
+   },
+   {
+    "ref": "readme",
+    "quote": "IPVS is specifically designed for load balancing and uses more efficient data structures under the hood"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4468,
+  "output": 803
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,38 @@
+{
+ "kep": "KEP-1672",
+ "input_hash": "6e3cfef9a0a45563",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1672 proposes keeping terminating pods in EndpointSlice endpoints and adding an API field indicating whether each endpoint is terminating, so consumers can track terminating state by watching only EndpointSlice. The KEP is implemented and at stable stage.",
+  "rationale": "Today terminating endpoints are treated as not ready regardless of their actual readiness, and consumers must watch Pods to learn whether an endpoint is terminating. The KEP keeps terminating pods in the EndpointSlice set and adds a terminating indicator, so consumers such as kube-proxy can make smarter decisions from the EndpointSlice API alone. The readiness criteria are unchanged; consumers may prefer endpoints that are both ready and not terminating.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to keep \"terminating\" pods in the set of endpoints in EndpointSlice with additions to the API to indicate whether a given endpoint is terminating or not."
+   },
+   {
+    "ref": "readme",
+    "quote": "Today, terminating endpoints are considered \"not ready\" regardless of their actual readiness."
+   },
+   {
+    "ref": "readme",
+    "quote": "The criteria for a ready endpoint (pod phase + readiness probe) will not change based on the terminating state of pods"
+   },
+   {
+    "ref": "readme",
+    "quote": "There are some scalability draw backs as tracking terminating endpoints requires at least 1 additional write per endpoint."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1963,
+  "output": 650
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

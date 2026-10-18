@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4785",
+ "input_hash": "cb5dd237df776d79",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4785 proposes Resource State Metrics, a separate Kubernetes controller that generates metrics for custom resources from a cluster-scoped ResourceMetricsMonitor config, intended to replace Kube State Metrics' Custom Resource State API. Current status is provisional, alpha.",
+  "rationale": "The Custom Resource State API in Kube State Metrics has limited scalability and its parsing logic is fragile, and its custom-resource behavior can crash Kube State Metrics and disrupt native metrics. The maintainers moved that API to maintenance-only mode and want a separate controller that can be deprecated and dropped from KSM. The KEP is still provisional, so no final decision beyond this proposal is recorded in the sources.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Refactoring the Kube State Metrics Custom Resource State API",
+    "why_not": "The readme says this has been done multiple times before and ended up in the same position owing to its limited scalability."
+   },
+   {
+    "option": "In-house effort tracked in kubernetes/kube-state-metrics#1978",
+    "why_not": "The readme mentions it only as an effort with similar goals; it gives no reason for not choosing it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the maintainers agreed on putting this on a \"maintenance-only\" mode in favor of a better solution that prioritizes scalability in the long run"
+   },
+   {
+    "ref": "readme",
+    "quote": "Such a \"solution\" should allow the maintainers to deprecate and drop the Custom Resource State API from Kube State Metrics"
+   },
+   {
+    "ref": "readme",
+    "quote": "We considered refactoring the Kube State Metrics' Custom Resource State API, but that has actually been done multiple times in the past which often amounts to us ending up in the same position"
+   },
+   {
+    "ref": "readme",
+    "quote": "Resource State Metrics is a Kubernetes controller that builds on Kube State Metrics' Custom Resource State's ideology and generates metrics for custom resources"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3024,
+  "output": 819
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

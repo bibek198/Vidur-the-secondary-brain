@@ -1,0 +1,34 @@
+{
+ "kep": "KEP-2495",
+ "input_hash": "e6c589df94c7e920",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2495 proposes a set of declarative, Kubernetes-style cluster management APIs to handle cluster lifecycle operations (install, upgrade, repair, delete) across different environments. The KEP is currently in provisional status.",
+  "rationale": "The problem is that deployment mechanisms each have unique APIs for lifecycle events, and components like the cluster-autoscaler must reimplement cloud provider logic to add or remove machines. The proposal models nodes and infrastructure as Kubernetes-style API objects so higher-level controllers can declare desired state and reconcile it with cloud providers. The provided excerpt states goals and non-goals but leaves Drawbacks and Alternatives as TODO, and the sources give no reasoning for the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We represent nodes and other infrastructure in Kubernetes-style APIs to enable higher level controllers to update the desired state of the cluster"
+   },
+   {
+    "ref": "readme",
+    "quote": "As a result, the deployment mechanisms that manage Kubernetes clusters each have unique APIs and implementations for how to handle lifecycle events"
+   },
+   {
+    "ref": "readme",
+    "quote": "The cluster management APIs should be declarative, Kubernetes-style APIs that follow our existing API Conventions."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2673,
+  "output": 602
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

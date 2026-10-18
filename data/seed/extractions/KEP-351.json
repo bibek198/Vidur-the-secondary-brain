@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-351",
+ "input_hash": "c8a4c9883d462463",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-351 (Raw Block Volumes) added a persistent volume source API for consuming raw block devices without a filesystem. Its status is implemented, stage stable, from 2020-12-16.",
+  "rationale": "Previously every storage request was fulfilled with a formatted filesystem, even for block storage, so high-performance workloads such as databases could not use block devices directly. The design was merged before the KEP process existed, and the KEP was created later so the feature could graduate to GA. Block volume support shipped in v1.9 as alpha, moved to beta around v1.13, and was pushed from 1.17 to 1.18 so it could reach GA together with CSI raw block.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate in-tree raw block to GA independently in 1.17",
+    "why_not": "Maintainers chose to align it with CSI raw block (KEP-565) so both reach GA at the same time; the sources say independent GA would only be reconsidered if CSI raw block slipped past 1.18."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:554085529",
+    "quote": "We want to align moving both this (in-tree) and CSI raw block (https://github.com/kubernetes/enhancements/issues/565) to GA at the same time."
+   },
+   {
+    "ref": "comment:539464013",
+    "quote": "We're aiming at GA in 1.17. Created KEP for the feature: https://github.com/kubernetes/enhancements/pull/1288 (it was designed before KEP was a thing)."
+   },
+   {
+    "ref": "readme",
+    "quote": "By extending the API for volumes to specifically request a raw block device, we provide an explicit method for volume consumption"
+   },
+   {
+    "ref": "comment:359675185",
+    "quote": "Block volume support was introduced in v1.9. For 1.10, it will remain in alpha and add support for additional volume plugins"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11870,
+  "output": 749
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

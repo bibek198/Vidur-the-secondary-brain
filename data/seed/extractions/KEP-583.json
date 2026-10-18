@@ -1,0 +1,64 @@
+{
+ "kep": "KEP-583",
+ "input_hash": "a7f49b887a3dec87",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-583 proposed defining Coscheduling: a PodGroup-based API and scheduler behaviour so that all tasks of a job start together, implemented first out of tree in kube-batch via CRDs. Its status is provisional, and kep.yaml records it as replaced by KEP-4671 and KEP-5832.",
+  "rationale": "Distributed ML jobs (TF/MPI) need all tasks to start together, otherwise jobs deadlock when resources are partial. The design proposed implementing coscheduling in kube-batch with CRDs rather than in k/k. Discussion mostly concerned the name: the community settled on \"coscheduling\" over \"gang scheduling\" and the design was deferred to 1.13 and then not tracked in the release.",
+  "outcome_reason": "The sources say the KEP is replaced by KEP-4671 Gang Scheduling and by KEP-5832 Decouple PodGroup API, as recorded in kep.yaml. The sources do not explain why these replacements were made.",
+  "alternatives": [
+   {
+    "option": "Keep the name 'Gang Scheduling'",
+    "why_not": "Community discussion favoured 'Coscheduling' because the 'gang' term confuses users, though bsalamat argued for 'Gang Scheduling' and the team later chose 'coscheduling'."
+   },
+   {
+    "option": "Use 'Group scheduling' or 'Aggregate scheduling'",
+    "why_not": "Maintainers judged these too generic or to have conflicting meanings; bgrant0607 said 'group' is generic and 'aggregate' might be a better choice, but the team chose coscheduling."
+   },
+   {
+    "option": "Land the implementation in kubernetes/kubernetes for 1.13",
+    "why_not": "k82cn said no k/k changes would land; the feature would be implemented in kube-batch and the design doc alone was committed for 1.13."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we decide to implement Coscheduling in [kube-batch](https://github.com/kubernetes-sigs/kube-batch) by CRDs."
+   },
+   {
+    "ref": "comment:432205591",
+    "quote": "we'll implement this feature in https://github.com/kubernetes-sigs/kube-batch/ for now. We only commit design doc here (1.13)"
+   },
+   {
+    "ref": "comment:417508064",
+    "quote": "Yes, I think \"coscheduling\" is our best option for this feature"
+   },
+   {
+    "ref": "comment:417504078",
+    "quote": "the term \"gang scheduling\" IS the established technical term for this feature and has been widely used for decades"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-4671",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-583 is replaced by KEP-4671 Gang Scheduling"
+   },
+   {
+    "kep": "KEP-5832",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-583 is replaced by KEP-5832 Decouple PodGroup API"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8931,
+  "output": 1138
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

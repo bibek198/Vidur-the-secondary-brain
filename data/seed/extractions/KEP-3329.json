@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-3329",
+ "input_hash": "fcddc0eb31b6249b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3329 extends the Job API with a pod failure policy so that Job authors can mark some pod failures as retriable (ignored, not counted toward backoffLimit) and others as non-retriable (terminate the Job early), based on container exit codes and on Pod conditions set by control-plane components. The KEP reached implemented status, stage stable.</summary>\n<parameter name=\"rationale\">Jobs with backoffLimit > 0 restart every failed pod regardless of cause, wasting time and compute when failures are caused by software bugs or when infrastructure failures should not count against the limit. The proposal lets the Job controller classify failures by exit code and by a dedicated Pod condition (e.g. DisruptionTarget) instead. Discussion narrowed scope during alpha: kubelet changes were removed and the API moved from a status.reason field to pod conditions and exit-code matching.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Store the termination reason in the Pod status.reason field set by multiple controllers",
+    "why_not": "Reviewers said a single field shared by kubelet, controller-manager and the new feature would conflict; the team moved to pod conditions instead."
+   },
+   {
+    "option": "Add a reason to the delete API (DeleteOptions)",
+    "why_not": "api-machinery reviewer lavalamp recommended against changing the generic delete API and advised setting a status condition before deleting."
+   },
+   {
+    "option": "Include kubelet-initiated evictions (node pressure, resource limits) in the alpha scope",
+    "why_not": "Kubelet modifications were removed from the alpha scope because it is hard to tell whether a kubelet-initiated failure is a software bug or infrastructure issue."
+   },
+   {
+    "option": "Retry only on an enumerated list of infrastructure conditions (opt-in Retry)",
+    "why_not": "liggitt noted the infrastructure failure set is unbounded and may grow; the design instead opts out via Terminate and an explicit condition type match."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the extension allows determining some of pod failures as caused by infrastructure errors and to retry them without incrementing the counter towards `backoffLimit`"
+   },
+   {
+    "ref": "rcomment:903960779",
+    "quote": "We remove kubelet modifications from the KEP (at least for Alpha). The reason being that in many scenarios it is hard to be helpful in recognizing"
+   },
+   {
+    "ref": "rcomment:899330053",
+    "quote": "If the intent is to retry only on infrastructure errors, that is not a well-defined set of conditions. Currently, that includes things like Evicted, Orphaned, Preempted"
+   },
+   {
+    "ref": "rcomment:897007636",
+    "quote": "I recommend not changing the delete api, since it's not reasonable to do this specially for specific apis (such as pods)."
+   },
+   {
+    "ref": "rcomment:897117508",
+    "quote": "I think you should add a new field, or make a new condition. The api is intended to help controllers set *different parts* of the object"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11710,
+  "output": 1108
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

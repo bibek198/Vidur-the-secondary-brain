@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3294",
+ "input_hash": "3caca741b7ebda4a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3294 proposes letting a PersistentVolumeClaim provision a volume from a VolumeSnapshot in another namespace, gated by a ReferenceGrant check performed by the CSI external provisioner or a separate populator. Its status is implementable at alpha stage.",
+  "rationale": "Today a PVC can only use a VolumeSnapshot in its own namespace, and several KEPs need snapshots shared across namespaces. The proposal uses the ReferenceGrant CRD to restrict which cross-namespace snapshots may be consumed. Reviewers debated where the logic should live (external-provisioner vs. separate populator) and whether to add a VolumeSnapshotLink object or change the core API, and the sources do not record a final resolution of the core API question.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Separate populator for alpha (lib-volume-populator or a forked provisioner)",
+    "why_not": "Xing Yang suggested it to avoid making external-provisioner more complicated, but msau42 preferred implementing in external-provisioner behind a feature gate because each driver would otherwise implement its own populator and another component must be released."
+   },
+   {
+    "option": "Core API change: add a namespace-aware DataSourceRef field to PersistentVolumeClaimSpec instead of a VolumeSnapshotLink object",
+    "why_not": "ttakahashi21 noted it is a big core API change needing compatibility work; msau42 suggested starting with the SnapshotLink approach and revisiting later, so it was not adopted for alpha."
+   },
+   {
+    "option": "Grant the PVC direct access to the Snapshot object (no SnapshotLink)",
+    "why_not": "The sources say DataSourceRef is a TypedLocalObjectReference that can only point to the same namespace, so a direct reference needs the core API change; the sources do not record a further reason beyond that."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To restrict only allowed `VolumeSnapshot` to be consumed from other namespaces, [`ReferenceGrant` CRD (formerly `ReferencePolicy`)]"
+   },
+   {
+    "ref": "rcomment:884267874",
+    "quote": "It's better to implement this as a separate populator in the alpha stage to avoid making external-provisioner more complicated."
+   },
+   {
+    "ref": "rcomment:977046135",
+    "quote": "I prefer implementing in the external-provisioner with a feature gate, which is what we've done with other features."
+   },
+   {
+    "ref": "rcomment:980465061",
+    "quote": "We would be able to change it to `ObjectReference` and allow direct access to PVC. It will be much simpler from UX viewpoint. However, it will be a big core API change"
+   },
+   {
+    "ref": "rcomment:989343248",
+    "quote": "I think we should start with this approach initially. Once the ReferenceGrant model has been more proven then I think we can consider merging the two."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13271,
+  "output": 1102
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

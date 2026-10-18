@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2523",
+ "input_hash": "27563ddf17dd229e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2523 proposed making list resourceVersion semantics consistent regardless of pagination, so that a list with a resourceVersion and a limit gets the same \"Not older than\" semantics as one without a limit. The KEP is marked implemented and stable.",
+  "rationale": "With a resourceVersion and no limit, list uses \"Not older than\" semantics, but with a limit it uses \"Exact\" semantics. Clients expecting \"Not older than\" are not prepared for the 410 Gone responses that \"Exact\" can produce, and the limit may be set in code separate from the list request (e.g. layered ListerWatchers). The goal was to fix this while keeping backward compatibility with old servers.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the inconsistent behavior and rely on callers to know that a limit changes resourceVersion semantics",
+    "why_not": "The readme says the inconsistency is confusing and problematic, and that the code making the list request might be separated from the code setting the limit."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When a list request is made with a resourceVersion but no limit, “Not older than” semantics apply, but once a limit is set, “Exact” semantics apply."
+   },
+   {
+    "ref": "readme",
+    "quote": "A client expecting “Not older than” semantics has no reason to expect the “410 Gone” HTTP responses from the server"
+   },
+   {
+    "ref": "readme",
+    "quote": "Backward compaibility. In particular, support the case of a client making a request using the updated API against an server serving the old API."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2220,
+  "output": 654
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

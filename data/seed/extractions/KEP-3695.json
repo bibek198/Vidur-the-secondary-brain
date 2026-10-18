@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3695",
+ "input_hash": "e8f6f89ca33fc345",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3695 extends the kubelet PodResources API so that node monitoring agents can see resources allocated to pods by Dynamic Resource Allocation (DRA). The KEP is recorded as implemented and at stable stage.",
+  "rationale": "Node monitoring agents had no way to learn which DRA-allocated resources pods on a node hold. The KEP extends the PodResources API from 2043 and 2403 to expose that data. It explicitly excludes changing GetAllocatableResources(), because DRA has no standard way to report capacity. Reviewers also asked for the Get() behavior on non-running pods to be specified, and the author agreed to add that in a follow-up.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change GetAllocatableResources() to account for DRA-managed resources",
+    "why_not": "Excluded as a non-goal: \"With DRA there is no standard way to get the capacity, for example.\""
+   },
+   {
+    "option": "Delay the KEP until DRA reaches beta",
+    "why_not": "Klueska argued that \"I don't want to block this work on DRA reaching beta, because these APIs are needed for an important use-case of DRA\". The feature gate was instead chained to the DRA gate."
+   },
+   {
+    "option": "Have Get() return an error for terminated but non-deleted pods",
+    "why_not": "Proposed by ffromani as one option for the semantics; the sources do not record a final choice between the two options, and the discussion closed with a request to document one of them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose an enhancement to the PodResources API to include resources allocated by Dynamic Resource Allocation (DRA)"
+   },
+   {
+    "ref": "readme",
+    "quote": "To enhance the GetAllocatableResources() call in the PodResources API to account for resources managed by DRA. With DRA there is no standard way to get the capacity, for example."
+   },
+   {
+    "ref": "comment:1416186748",
+    "quote": "I don’t want to block this work on DRA reaching beta, because these APIs are needed for an important use-case of DRA and are therefore useful in their own right"
+   },
+   {
+    "ref": "rcomment:2156197748",
+    "quote": "we need to decide what `Get` does when the phase is not `Running`. A one-liner is sufficient for me, but it has to be there"
+   },
+   {
+    "ref": "comment:2992730964",
+    "quote": "Thank all you for getting this merged. I have opened a follow-up PR to address the comments"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10785,
+  "output": 955
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-382",
+ "input_hash": "567e65702d498989",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-382 proposed graduating TaintNodeByCondition to GA so the scheduler makes decisions based on node taints instead of node conditions. The recorded status is implemented, stage stable.",
+  "rationale": "The feature had been beta since 1.12 and the design excerpt states the plan to promote it to stable without changing the API. Earlier GA attempts were deferred over race-condition concerns, and k82cn later agreed there were no blocking items for GA in 1.15. The feature was ultimately graduated to GA in 1.17 per the discussion, and the KEP was moved to implemented in January 2020.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate to GA in 1.15",
+    "why_not": "Target was dropped: the enhancement freeze passed without a merged KEP, and the enhancement was removed from the 1.15 milestone."
+   },
+   {
+    "option": "Hold GA until kubernetes/kubernetes issue 72129 is resolved",
+    "why_not": "k82cn held GA in December 2018 because of that issue, but later agreed the Bobby and Liggit solution was good enough for the target use case."
+   },
+   {
+    "option": "Keep the KEP at implementable status after GA",
+    "why_not": "Reviewers asked for the KEP to be updated to implemented once the feature had graduated in 1.17."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We wish to graduate TaintNodeByCondition feature to make scheduling decisions based on taints instead of node conditions in the scheduler."
+   },
+   {
+    "ref": "comment:486155451",
+    "quote": "There's no blocking items, agree to graduate this to GA in 1.15."
+   },
+   {
+    "ref": "comment:570601012",
+    "quote": "Since this graduated to GA in 1.17, I'd like to close this issue out but the KEP is still marked as implementable."
+   },
+   {
+    "ref": "comment:488291280",
+    "quote": "Enhancement Freeze for Kubernetes 1.15 has passed and this did not meet the deadline. This is now being removed from the 1.15 milestone and the tracking sheet."
+   },
+   {
+    "ref": "comment:486435239",
+    "quote": "I believe we have to address them before graduating this feature to GA."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11690,
+  "output": 875
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

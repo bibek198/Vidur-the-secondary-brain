@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2336",
+ "input_hash": "0ec76b3676a723ad",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2336 proposes adding an optional `resource` field to Kubernetes OwnerReferences so garbage collection can identify the referent's REST resource directly, instead of deriving it from `kind` through discovery. Status is implementable, stage alpha, since 2021-02-09.",
+  "rationale": "Today OwnerReferences carry only `kind`, and mapping kind to a URL requires a discovery sweep of upwards of 20 calls that is inefficient and fragile under network partitions. The KEP adds an optional `resource` field that, when set, is treated as authoritative with no lookup; when unset, `kind` is used as before, so existing clients keep working. The only behavioral change is for new clusters where both fields are set. The discussion records only an approval comment from wojtek-t on the PR, so the sources do not give a detailed reasoning trail beyond the design document.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make discovery faster",
+    "why_not": "Per the design doc, this doesn't solve the network partition issue."
+   },
+   {
+    "option": "Cache discovery longer",
+    "why_not": "The doc says the existing cache doesn't cover all cases like cold starts and expired data."
+   },
+   {
+    "option": "Stop looking for RESTMappings once any match is found",
+    "why_not": "The doc says this results in missing the intended referent in multi-match cases and doesn't solve cold starts and expired data."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes adding an optional `resource` field to OwnerReferences. If provided, this will be the authoritative value and no lookup or approximation of user intent will be required."
+   },
+   {
+    "ref": "readme",
+    "quote": "If not provided, the `kind` will be used as it is today. If both are provided, old clusters continue to work and new clusters will be more efficient and resilient."
+   },
+   {
+    "ref": "readme",
+    "quote": "In this case, the new cluster does not have to perform any lookups and will trust the client's specification of `resource`."
+   },
+   {
+    "ref": "readme",
+    "quote": "This doesn't solve the network partition issue."
+   },
+   {
+    "ref": "comment:775734599",
+    "quote": "Since you approved the original one, I will simply lgtm this one :) /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2421,
+  "output": 877
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

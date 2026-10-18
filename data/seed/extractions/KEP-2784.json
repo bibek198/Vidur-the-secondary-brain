@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2784",
+ "input_hash": "971336fc8f548f03",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2784 extends the Certificates API CSR spec with an optional expirationSeconds field so clients can request a specific duration for the issued certificate. The KEP is implemented and at stable stage.",
+  "rationale": "Certificates issued via the CSR API were not revocable, and clients had no per-CSR way to control certificate duration; built-in signers used one fixed lifespan. The proposal adds a new spec field for clients to request a duration, with signers not required to honor it. The design was accepted, a feature gate was agreed during review so the field could be turned off in a running cluster, and the work was marked implemented on 2022-03-23.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add an optional but critical x509 extension to the PEM-encoded CSR in spec.request to carry the desired duration",
+    "why_not": "The KEP says this approach offers no benefits over the new field and would make it harder to adopt in the Kubernetes ecosystem."
+   },
+   {
+    "option": "Drop the feature gate and enable the behavior unconditionally",
+    "why_not": "Reviewers (deads2k) wanted a gate so that a cluster could turn the behavior off if a controller or approver failed on the field, without rolling back."
+   },
+   {
+    "option": "Use an unsigned integer type for the field",
+    "why_not": "Reviewers noted there are no uint examples in the REST API and preferred int32 so negative values can be validated."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add a new field to the `spec` of the certificate signing requests API called `expirationSeconds` that allows a client to request a desired duration for the issued certificate."
+   },
+   {
+    "ref": "readme",
+    "quote": "Requiring signers to honor the requested duration - Configuring existing in-tree consumers of the CSR API (i.e. kubelets) to make use of this feature"
+   },
+   {
+    "ref": "rcomment:655340826",
+    "quote": "Yes. That gives us a way to turn it off in a running cluster without rolling back."
+   },
+   {
+    "ref": "comment:1076559766",
+    "quote": "all code, docs, etc for this KEP are complete and it is marked as implemented."
+   },
+   {
+    "ref": "rcomment:654980272",
+    "quote": "IMO, it is a non-goal but I could see part of the GA requirements being some kind of validation that the kubelet CSR flow could use this"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 6376,
+  "output": 913
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

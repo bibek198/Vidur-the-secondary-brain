@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2339",
+ "input_hash": "02cf7f904453423c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2339 proposes a StorageVersion API that shows which storage versions all API servers in an HA cluster are using, so the storage migrator can defer migration until they agree. The KEP is marked implementable at stage beta, though later discussion shows the CRD part of the work stalled.",
+  "rationale": "During a rolling upgrade of an HA master, API servers may encode a resource with different storage versions, and the discovery storageVersionHash does not expose this, so migration can pollute storage. The KEP adds an API that exposes the per-server storage versions so an external controller can wait for agreement. Later comments show that for CRDs the team hit unresolvable race conditions between CRD updates and CR writes and ceased development in April 2024.",
+  "outcome_reason": "The sources do not record a formal withdrawal. The 2024 comment says development ceased \"for now\" because of unresolvable race conditions for CRDs. The 2025 comment says the issue is \"not being actively worked on\". The status stays implementable, stage beta, as given.",
+  "alternatives": [
+   {
+    "option": "Treat storageVersionHash in discovery as sufficient",
+    "why_not": "The KEP summary says the storageVersionHash in the discovery document 'does not expose this disagreement', so it cannot show that API servers agree."
+   },
+   {
+    "option": "Use CR-write-triggered storage version updates for CRDs",
+    "why_not": "A reviewer in the PR discussion said storage version updates 'will not be triggered by CR write requests' in the older approach, and the later design moved to CRD watch events and server startup. The team then found race conditions it could not resolve."
+   },
+   {
+    "option": "Run storage migration automatically",
+    "why_not": "The KEP lists 'Automatically running storage migration' as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "As a result, the storage migrator may proceed with migration with the false belief that all API server instances are encoding objects using the same storage version"
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose a way to show what storage versions all API servers are using, so that the storage migrator can defer migration until an agreement has been reached."
+   },
+   {
+    "ref": "comment:2078585486",
+    "quote": "After exhaustive exploration of various approaches, we consistently encountered different unresolvable race conditions between the CRD updates and CR writes."
+   },
+   {
+    "ref": "comment:2078585486",
+    "quote": "Due to this, we have decided to cease further development for now."
+   },
+   {
+    "ref": "comment:2605583156",
+    "quote": "This issue is not being actively worked on afaik, see this comment for details/reasons."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11166,
+  "output": 991
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

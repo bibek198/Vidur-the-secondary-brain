@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2365",
+ "input_hash": "53a518efdf0ecbd4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2365 adds Scope and Namespace fields to the IngressClass ParametersRef so IngressClass can reference namespace-scoped parameter resources, not only cluster-scoped ones. The KEP reached stable stage and is implemented.",
+  "rationale": "Users wanted IngressClass to point at namespace-scoped parameter CRs, for example to describe how a controller should be provisioned, as GatewayClass already could. The KEP was approved as a parallel change to the Service APIs work. Making namespace-scoped references opt-in keeps cluster-scoped references working without requiring all parameters to be namespaced.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Each controller assumes all parameters live in a predefined namespace",
+    "why_not": "The readme says this would likely lead to more confusion since it would differ for each implementation."
+   },
+   {
+    "option": "Do not support namespace-scoped parameters references",
+    "why_not": "The readme says this would be simplest but would rule out some compelling use cases."
+   },
+   {
+    "option": "Require all Parameters resources to be namespace-scoped",
+    "why_not": "This is listed as a non-goal in the readme."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add new Scope and Namespace fields to the IngressClass ParametersRef field."
+   },
+   {
+    "ref": "readme",
+    "quote": "After the initial release of IngressClass, a number of use cases called for the ability to reference namespace-scoped Parameters."
+   },
+   {
+    "ref": "readme",
+    "quote": "It was ultimately deemed worthwhile for GatewayClass if we could also gain approval for a parallel API change to IngressClass."
+   },
+   {
+    "ref": "readme",
+    "quote": "Potential for confusion with a params reference that can point to both namespace scoped and cluster scoped resources."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1838,
+  "output": 738
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

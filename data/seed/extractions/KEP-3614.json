@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-3614",
+ "input_hash": "c0e6d4b6e7417a28",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3614 proposes that kubeadm start adding new etcd members as learners (etcd learner mode, introduced in etcd 3.4) instead of as voting members, gated by a new EtcdLearnerMode feature gate that graduates over a year or more.",
+  "rationale": "Members added as voting members can disrupt cluster quorum if they are faulty, and kubeadm joins from slow control plane nodes have required manual removal with etcdctl. Learner mode means a faulty new member would not disrupt quorum. The KEP adds a learner code path behind a feature gate and plans to deprecate and remove the old path after graduation.</rationale>\n<parameter name=\"outcome_reason\">Status is provisional, stage beta, so the source gives no final outcome. The excerpt does not say why the KEP is at this stage.",
+  "alternatives": [
+   {
+    "option": "Keep adding all members as voting members (the \"old way\")",
+    "why_not": "The readme says this approach has proven problematic when a member joins from slower infrastructure, requiring manual interference with tools such as etcdctl."
+   },
+   {
+    "option": "Support both the old way and learner mode as a toggle in the kubeadm API",
+    "why_not": "The readme lists this as a non-goal: \"Ideally we should support only a single, stable, community approved code path.\""
+   },
+   {
+    "option": "Improve parallel join of control plane nodes",
+    "why_not": "The readme lists this as a non-goal and notes the old way supports it only tentatively."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If added as learners instead, such members would not disrupt the cluster quorum if they end up being faulty."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposal aims to add the new mode as a standard kubeadm / Kubernetes feature gate that is graduated over the period of one year or more"
+   },
+   {
+    "ref": "readme",
+    "quote": "Use a new feature gate EtcdLearnerMode that can be used to toggle the feature until graduation to GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "Deprecate and remove the \"old way\" of adding members."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2159,
+  "output": 822
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

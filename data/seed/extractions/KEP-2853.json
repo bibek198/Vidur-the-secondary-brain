@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2853",
+ "input_hash": "589df52378ae69f9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2853 proposes renaming the default branch of kubernetes/kubernetes from `master` to `main`, targeting the start of v1.25, with a survey of downstream consumers, announcements, Prow job updates, and draft-mode handling of open PRs during the switch. Status is provisional.",
+  "rationale": "The stated motivation is to use more inclusive naming, since the community is pursuing language changes and the `master` name is considered exclusionary. The main risk is disruption to downstream consumers, contributors, and the large number of open PRs and forks of kubernetes/kubernetes. The proposal addresses this with a survey, advance announcements, moving open PRs to draft mode to avoid a CI queue, and staged Prow job changes.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the `master` branch name for kubernetes/kubernetes",
+    "why_not": "The sources do not record why this was rejected. The Alternatives section of the document says only \"N/A\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Many communities, both on GitHub and in the wider Git community, are considering renaming the default branch name of their repository from `master`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Changing the branch name might cause issues for downstream consumers, our contributors, and the community in general."
+   },
+   {
+    "ref": "readme",
+    "quote": "Change all open Pull Requests to `Draft mode` (so that when we rename the branch, tests will not be triggered, and we avoid a massive queue in the CI infrastructure)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Perform a Survey to gather information on downstream consumers and how this might affects their workflow."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2361,
+  "output": 705
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

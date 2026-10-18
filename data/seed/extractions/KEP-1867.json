@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1867",
+ "input_hash": "cf1f68ab2cfc59d7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1867 proposes deprecating and removing the AcceleratorUsage metrics that the Kubelet advertises, with the DisableAcceleratorUsageMetrics feature gate disabling them by default so users get notice before removal. The KEP is marked implementable at beta.",
+  "rationale": "Accelerator metrics are meant to come from external monitoring agents using the PodResources API, which sig-node considers the out-of-tree mechanism for device metrics. The KEP deprecates the in-kubelet metrics added before that API existed, and the feature gate is disabled by default to give a deprecation window. Per the sources, the feature graduated to beta in 1.20, and a later comment says the feature gate still has not reached GA.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a Kubelet config option instead of a feature gate",
+    "why_not": "Config defaults can not be changed, which prevents having a deprecation period of time."
+   },
+   {
+    "option": "Enable the feature gate by default immediately at alpha",
+    "why_not": "Discussion proposed disabling the feature by default so users get a heads up that the feature will be removed; the sources do not record a reason to enable it by default at alpha beyond recommending users enable the gate."
+   },
+   {
+    "option": "Move directly from beta to GA after a single release",
+    "why_not": "dashpole suggested moving to Beta after a single release but giving a long period before GA so users can migrate to the daemonset and explicitly opt out."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Accelerator metrics are no longer expected to collected by Kubelet, but by external monitoring agents using the PodResources API."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add a config to Kubelet. However config defaults can not be changed. Which prevents us from having a deprecation period of time."
+   },
+   {
+    "ref": "rcomment:443022528",
+    "quote": "IMO, we can move to Beta after a single release, but should give a long-ish period before moving to GA."
+   },
+   {
+    "ref": "rcomment:442601213",
+    "quote": "In this KEP I propose to disable the feature by default so that we can give a heads up to user that this feature will be removed"
+   },
+   {
+    "ref": "comment:1169474873",
+    "quote": "The feature was graduated to GA for almost 2 years. I think it is time to graduate it to GA."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5327,
+  "output": 912
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

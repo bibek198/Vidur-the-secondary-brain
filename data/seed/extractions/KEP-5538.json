@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5538",
+ "input_hash": "2ebcd851f316c588",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5538 adds an opt-in field (serviceAccountTokenInSecrets) on the CSIDriver spec so CSI drivers can receive service account tokens via the NodePublishVolumeRequest secrets field instead of volume_context. Default stays volume context. Status is implemented, stage stable.",
+  "rationale": "Tokens passed in volume_context were logged in GRPC requests (CVE-2023-2878, CVE-2024-3744) because protosanitizer does not treat volume context as secret. The opt-in lets drivers use the secrets field, which is designed for sensitive data, while keeping existing behavior unchanged for drivers that do not opt in. The KEP was merged at beta and the status was later updated to implemented after stable graduation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Move tokens to the secrets field for all drivers by default",
+    "why_not": "The readme's goals say to maintain backward compatibility and not force migration of existing drivers, and its drawbacks note the bifurcation of two delivery mechanisms."
+   },
+   {
+    "option": "Log a warning on the node when tokens are sent in volume context",
+    "why_not": "msau42 asked whether the API server could warn instead, and aramase updated the KEP to add an API server warning, which is more visible and avoids logging noise on every mount."
+   },
+   {
+    "option": "Ship at alpha before beta",
+    "why_not": "jsafrane raised that feature guidelines require alpha for API changes. aramase argued beta was safe because the field defaults to false and needs explicit driver opt-in; the sources do not record a final resolution of that objection beyond the KEP later being tracked as beta and then stable."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This approach led to CVE-2023-2878 in the Secrets Store CSI Driver and CVE-2024-3744 in the Azure File CSI Driver where service account tokens were logged as part of GRPC requests."
+   },
+   {
+    "ref": "rcomment:2425006044",
+    "quote": "The `serviceAccountTokenInSecrets` field defaults to false, so no existing drivers are affected unless they explicitly update their CSIDriver spec to set it to true."
+   },
+   {
+    "ref": "rcomment:2427879518",
+    "quote": "I've updated the KEP to add an API server warning when a CSIDriver is created/updated with `tokenRequests` but without opting into the secrets field."
+   },
+   {
+    "ref": "comment:4467459907",
+    "quote": "Given that this KEP has graduated to `stable` and the status in `kep.yaml` has been updated to `implemented`, I will close the issue."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11564,
+  "output": 1010
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

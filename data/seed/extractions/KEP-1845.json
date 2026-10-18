@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1845",
+ "input_hash": "a10b3ef5b841f375",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1845 proposes a VolumeBinding Score plugin so the scheduler prefers nodes in topologies where statically provisioned PVs best fit the pod's unbound PVC capacity requests. Its status is implementable at alpha, and it was merged for 1.21 with an optional API field.",
+  "rationale": "The scheduler filters nodes by volume topology but does not favor nodes whose PVs fit the requested size, which wastes large PVs on small claims. The KEP scores nodes by best-matching static PV size, grouped per storage class with configurable weights. Reviewers asked about aggregation and dynamic provisioning, and the author answered that the scoring would use best fit per topology rather than totals.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Score on total available capacity of static PVs per topology",
+    "why_not": "Listed as a non-goal; reviewer ahg-g noted an aggregated approach would favor zone-2 over zone-1 even though zone-1 has a better-fitting PV."
+   },
+   {
+    "option": "Score on total number of available static PVs",
+    "why_not": "Listed as a non-goal in the KEP."
+   },
+   {
+    "option": "Score on capacity for dynamic provisioning PVCs",
+    "why_not": "Listed as a non-goal; the author said dynamic provisioning creates exact-size volumes and this is deferred to storage capacity tracking."
+   },
+   {
+    "option": "Use weight-based scoring with MaxScore for dynamically provisioned nodes",
+    "why_not": "Reviewer ahg-g said to use MaxScore (100) when embedding in VolumeBindingArgs during the policy-to-CC API migration, a temporary detail rather than a rejection."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "scheduler picks the smallest matching volumes in each topology but does not try to prioritize nodes in different topologies based on volume capacity"
+   },
+   {
+    "ref": "rcomment:444159460",
+    "quote": "if we are aggregating, then I don't think this approach will give you the best fit, imagine the following scenario: pod request: 10GB zone-1"
+   },
+   {
+    "ref": "rcomment:444212184",
+    "quote": "the volume scheduling library will choose the best fit in each topology (this is already done in our [PV search function]"
+   },
+   {
+    "ref": "comment:772219106",
+    "quote": "This KEP was already reviewed for 1.20, but got implementation got pushed to 1.21. There are no changes in design since."
+   },
+   {
+    "ref": "comment:3766074840",
+    "quote": "No progress on this at the moment. We can close it for now. If someone from the community pick it up later, we can reopen."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10648,
+  "output": 1014
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

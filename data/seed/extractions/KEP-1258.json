@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1258",
+ "input_hash": "ddffe5eedafe8994",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1258 proposes cluster-level default topology spread constraints, applied to pods that do not define their own spreading constraints, so that PodTopologySpread can replace the DefaultPodTopologySpread (SelectorSpread) scoring. The KEP is in implementable state and stage stable per the given status.",
+  "rationale": "Workload authors must know cluster topology to set topologySpreadConstraints, and PodSpecs become less portable when tailored to one topology. Cluster operators know the topology, so they can supply defaults for all workloads. The 1.18 plan to replace DefaultPodTopologySpread was dropped after performance results, and the feature then went through alpha in 1.19 and beta work for 1.20.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make the topology keys used in SelectorSpread configurable",
+    "why_not": "The readme says this allows only one topology key and makes it hard for pods to override operator-provided rules."
+   },
+   {
+    "option": "Implement a mutating controller that sets defaults",
+    "why_not": "The readme says it would not allow replacing SelectorSpread with PodTopologySpread, although it could set defaults for specific namespaces or selectors."
+   },
+   {
+    "option": "Replace DefaultPodTopologySpread with PodTopologySpread plus defaults in 1.18",
+    "why_not": "The maintainer said that in light of performance results, 1.18 would not move forward with this replacement."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose the introduction of configurable default spreading constraints, i.e. constraints that can be defined at the cluster level and are applied to pods that don't explicitly define spreading constraints."
+   },
+   {
+    "ref": "comment:594026704",
+    "quote": "In light of the performance results that we have today, in 1.18 we are **not** moving forward with replacing `DefaultPodTopologySpread` with `PodTopologySpread`+defaults"
+   },
+   {
+    "ref": "comment:691355289",
+    "quote": "This graduated to alpha in 1.19. If you'd like to work towards beta in 1.20 please let us know."
+   },
+   {
+    "ref": "comment:1055214489",
+    "quote": "`DefaultPodTopologySpread` is GA in https://github.com/kubernetes/kubernetes/pull/108278 already."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11762,
+  "output": 903
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

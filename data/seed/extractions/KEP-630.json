@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-630",
+ "input_hash": "01f0f6d8146b513d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-630 proposed the AWS EBS CSI Driver as a standalone, out-of-tree CSI plugin offering the same features as the in-tree EBS plugin. The KEP remained in provisional status; the tracking issue was closed in August 2019 because CSI drivers are tracked out of tree by storage providers.",
+  "rationale": "The driver was meant to live outside the Kubernetes core, gaining modularity and reach beyond Kubernetes (e.g., ECS). Release-team tracking was questioned because CSI drivers ship outside k/k, so the release team declined to track it for v1.14. The issue was closed in August 2019 with the note that CSI drivers are tracked out of tree by storage providers.</persistence_rationale>\n<parameter name=\"outcome_reason\">The sources do not state a formal KEP rejection. The issue was closed because CSI drivers are tracked out of tree by storage providers, and the KEP was never moved past provisional in the record given.",
+  "alternatives": [
+   {
+    "option": "Track the driver as a Kubernetes core enhancement for release milestones (v1.14 and later)",
+    "why_not": "Maintainers argued CSI drivers should not be tracked as part of the Kubernetes core release, since the point of CSI was to decouple plugin development from core Kubernetes."
+   },
+   {
+    "option": "Move the enhancement issue out of the enhancements repo to another location",
+    "why_not": "Suggested by saad-ali as an alternative to closing, but the sources show the issue was closed instead."
+   },
+   {
+    "option": "Track the release via the Kubernetes blog or release notes for out-of-tree releases",
+    "why_not": "spiffxp said release notes should not cover out-of-tree code, and suggested the blog as the place for such updates, not as a tracked enhancement."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:458766768",
+    "quote": "I don't think CSI drivers should be tracked as part of the Kubernetes core release. The whole point of CSI was to decouple plugin development from the development of core Kubernetes."
+   },
+   {
+    "ref": "comment:466104798",
+    "quote": "I agree with @saad-ali the release team shouldn't track this for v1.14."
+   },
+   {
+    "ref": "comment:522427039",
+    "quote": "/close since csi drivers are tracked out of tree by storage providers"
+   },
+   {
+    "ref": "readme",
+    "quote": "Similar to CNI plugins, AWS EBS CSI driver will be a stand alone plugin that lives out-of-tree of kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3908,
+  "output": 956
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

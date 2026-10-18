@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2299",
+ "input_hash": "984b1eada26ee8bb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2299 proposes a new Kustomize API kind, `Composition`, oriented around plugins, letting users mix built-in and plugin transformers in one ordered list, import and override transformers from other Compositions, and reorder them before execution. Status is implementable, stage alpha.",
+  "rationale": "The Kustomization API runs generators, transformers and validators in fixed categories, so plugin ordering and plugin config transformation are awkward for abstraction-based workflows. The proposal adds a separate kind with a single topologically evaluated transformer list. The KEP was discussed at length, and maintainers raised concerns about whether a rewrite was justified, but the KEP was approved as a step forward and later revisions addressed review feedback.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Implement the capabilities in the existing Kustomization API as top-level or grouped fields",
+    "why_not": "The KEP says the result would not be elegant, because overriding transformer configuration needs a different evaluation model: a topological sort over the whole transformer tree, rather than per-level execution of generators, transformers and plugins."
+   },
+   {
+    "option": "Implement Composition as an independent tool or as a plugin",
+    "why_not": "The KEP says this would not solve the usability problem for existing Kustomize features, and that the Kustomize community should be able to use it directly."
+   },
+   {
+    "option": "Keep the plugin fields and add an extra Kustomization layer",
+    "why_not": "The KEP says that with Kustomization a case that Composition expresses in two layers takes five, and some changes cannot go where users would expect."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Introduces a new Kustomize API (`kind`) that is oriented around Kustomize plugins, making them a first-class expression of a resource configuration bundle."
+   },
+   {
+    "ref": "readme",
+    "quote": "one of the primary proposed features--enabling transformer configuration to be overridden--requires a completely different evaluation model."
+   },
+   {
+    "ref": "comment:827954236",
+    "quote": "This is a great step forward. We can merge this and start working on the tech and the product plan."
+   },
+   {
+    "ref": "rcomment:612856861",
+    "quote": "With Composition, this can in fact be expressed in two layers. With Kustomization, it takes five, and some of the changes can't go where you'd expect."
+   },
+   {
+    "ref": "rcomment:813361667",
+    "quote": "Most of them use fieldSpecs to determine what to do, and when given an empty list, they do nothing."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11620,
+  "output": 965
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

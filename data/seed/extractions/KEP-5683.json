@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5683",
+ "input_hash": "6c5a5c45ad23d86d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5683 introduces two Node lifecycle condition types, lifecycleDrain and lifecycleMaintenance, as an opt-in shared signal for admins and controllers. The KEP is at stage alpha with status implementable (per the given status fact).",
+  "rationale": "Node lifecycle events such as drain and maintenance currently lack a shared, standard signal in the API. The discussion says the conditions add lifecycle detail without replacing Ready, taints, or cordoning, and that the Admin owns the transition. Scope is limited to defining the Node conditions, with controller consumption deferred to follow-up work, per the maintainers' discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Kubelet-facilitated communication (DRA-style, via kubelet and DaemonSets)",
+    "why_not": "atiratree raised concerns about different targets, timing outside kubelet/runtime uptime, resource consumption across many nodes, cleanup ordering, and loss of high availability. rthallisey said the API-server path remains open and both approaches are valid."
+   },
+   {
+    "option": "API-server-driven lifecycle controllers",
+    "why_not": "rthallisey noted that drivers in a pull model would need broad read/write access to LifecycleEvent and target objects, which expands RBAC and blurs ownership. This is an open alternative rather than a rejection."
+   },
+   {
+    "option": "Scope the conditions to arbitrary resources now, not just Nodes",
+    "why_not": "rthallisey scoped the KEP to Nodes because those use cases are well-defined, though the Conditions meta object was chosen to leave room for expansion."
+   },
+   {
+    "option": "Model the state after Drained explicitly in this KEP",
+    "why_not": "rthallisey said the KEP intentionally does not define where the Node goes next after Drained, since the Admin owns the transition; modeling it is follow-up work for the broader proposal in PR #5769."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:2690930419",
+    "quote": "So these new conditions aren't meant to replace the `Ready` condition, taints, or other commonly used techniques."
+   },
+   {
+    "ref": "rcomment:3373883232",
+    "quote": "For this KEP, the Admin owns the transition, so the KEP intentionally does not define where the Node goes next after `Drained`."
+   },
+   {
+    "ref": "rcomment:3373884769",
+    "quote": "The \"Lifecycle Conditions\" are `lifecycleDrain` and `lifecycleMaintenance`. I'll make the writing more clear."
+   },
+   {
+    "ref": "rcomment:3374002482",
+    "quote": "The individual controller changes are intentionally out of scope here, but these conditions are the prerequisite signal those fixes need."
+   },
+   {
+    "ref": "comment:4730940986",
+    "quote": "The KEP was discussed with the assumption that it was `implementable` , the PRR was completed and KEP approved by stakeholders."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11443,
+  "output": 1110
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

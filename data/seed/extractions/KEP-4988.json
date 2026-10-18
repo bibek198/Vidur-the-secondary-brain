@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4988",
+ "input_hash": "1ea8a01d3f8fff53",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4988 proposes that the kube-apiserver watch cache generate B-tree snapshots so LIST requests for previous states can be served from the cache instead of etcd. Snapshots are compacted with the etcd compaction mechanism, and an automatic cache inconsistency detection mechanism is added. The KEP's status is implementable, stage beta.",
+  "rationale": "Historical LIST requests (pagination or specific resourceVersion) bypass the watch cache and hit etcd, causing unpredictable memory pressure and weakening APF throttling. The API server already holds the needed data in the watch cache, so snapshots let it serve these requests. Compaction is tied to etcd's to keep Kubernetes conformance, and inconsistency detection guards against cache bugs that would now affect all clients. Maintainers measured the clone overhead in scalability tests and found it small, and the reviewer asked for a high-throughput check.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Snapshot on pagination requests only, with per-apiserver state",
+    "why_not": "Reviewers noted that snapshots created on one API server but not others would degrade to etcd delegation, and that depending on per-apiserver state would require extensive tests. The maintainer chose to drop this idea."
+   },
+   {
+    "option": "Clone the B-tree on every watch event and keep it until TTL, so any API server can serve any request up to TTL",
+    "why_not": "This was the preferred alternative raised by wojtek-t, and serathius's experiments showed low overhead even when snapshotting every event. The discussion does not record a final decision to adopt it, so the KEP text describes snapshots kept for the watch-history duration instead."
+   },
+   {
+    "option": "Automatic switch back to etcd when cache inconsistency is detected",
+    "why_not": "serathius was worried about an untested automatic switch causing severe performance impact. He suggested purging the cache as the response instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes an enhancement to the kube-apiserver's watch cache to generate B-tree snapshots, allowing it to serve `LIST` requests for previous states directly from the cache."
+   },
+   {
+    "ref": "readme",
+    "quote": "we propose that the existing etcd compaction mechanism also be responsible for compacting the snapshots in cache."
+   },
+   {
+    "ref": "readme",
+    "quote": "we propose an automatic cache inconsistency detection mechanism that can run in production and replace manual debugging."
+   },
+   {
+    "ref": "comment:2589860538",
+    "quote": "we can estimate the expected overhead of keeping all store snapshots in the watchcache to be below 2% of memory."
+   },
+   {
+    "ref": "rcomment:1918737927",
+    "quote": "That's why I think it's better to drop idea of snapshots based on pagination requests. Experiments shown low overhead even if we snapshot every event."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13699,
+  "output": 1092
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

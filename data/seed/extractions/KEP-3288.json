@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-3288",
+ "input_hash": "c81dc82917f30363",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3288 adds a `Stream` field to `PodLogOptions` so users can fetch only stdout, only stderr, or all (combined) container logs via the API server and kubelet, with `kubectl logs --stream=stderr`. The KEP is at status implementable, stage alpha.",
+  "rationale": "Kubelet always returned combined stdout and stderr, which many users found inconvenient, so the KEP exposes the stream filtering kubelet already has internally. The chosen design filters on the server side, keeping backward compatibility by defaulting to combined output. Reviewers asked for an explicit \"all\" value and a typed constant set, and agreed that TailLines must count only lines from the selected stream.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Return a multiplexed CRI-format log stream and demultiplex on the client",
+    "why_not": "The proposal says this changes the log format and breaks backward compatibility, and adds client-side demultiplexing overhead."
+   },
+   {
+    "option": "kubectl logs directs the two streams to its own stdout/stderr",
+    "why_not": "Mrunal Patel noted the downside: errors from kubectl logs would be hard to tell apart from what the container process emits. Sig-node later discussed it as a complementary option, not a replacement."
+   },
+   {
+    "option": "Support combining a specific Stream with TailLines in the first iteration",
+    "why_not": "It is listed as a non-goal; TailLines is allowed together with Stream only when Stream is set to all."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To maintain backward compatibility, if this field is not set, the combined stdout and stderr from the container will be returned to users."
+   },
+   {
+    "ref": "readme",
+    "quote": "Supporting the combination of a specific `Stream`(stdout or stderr) and `TailLines` in the first iteration."
+   },
+   {
+    "ref": "rcomment:887091764",
+    "quote": "If `TailLines` is set, only the last N lines in the log file whose stream match the one user specified would be returned."
+   },
+   {
+    "ref": "rcomment:891418206",
+    "quote": "My proposal is that both an empty string and \"all\" are accepted and have the same effect in alpha."
+   },
+   {
+    "ref": "rcomment:885878823",
+    "quote": "The downside of that approach would be distinguishing the errors from kubectl log vs. what's coming from the container process."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13095,
+  "output": 918
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

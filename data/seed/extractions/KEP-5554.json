@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5554",
+ "input_hash": "d5ab0b2d46c0888f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5554 proposes in-place CPU resizing for Guaranteed QoS pods when the static CPU Manager policy is enabled, extending KEP-1287 (In-place Resource Resize) and KEP-3570 (CPU Manager). The KEP is at implementable status, stage alpha.",
+  "rationale": "Static CPU policy pods could not be resized in place, which blocks workloads such as DPDK that need their initial logical cores kept across the pod lifecycle. The KEP keeps the QoS class and CPU request/limit equality, and preserves CPU Manager and Topology Manager properties during resize. Reviewers disagreed on whether topology-manager failures should be Deferred or Infeasible, and the team settled on treating all topology-manager errors as Infeasible for alpha, to avoid triggering disruptive preemption for resizes that can never succeed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Mark topology manager failures as Deferred so the resize can be retried when room frees up",
+    "why_not": "Maintainers said Deferred tells autoscalers and the upcoming scheduler preemption that the resize can succeed if room is made, so marking impossible resizes Deferred would cause unnecessary evictions; the scheduler is not NUMA-aware."
+   },
+   {
+    "option": "Keep topology manager changes in scope and implement Deferred states now",
+    "why_not": "The KEP was narrowed to cpumanager enablement; a reviewer noted that extending only cpumanager yields mostly Unfeasible states, and Deferred was pushed to a future enhancement."
+   },
+   {
+    "option": "Revert the prep work landed in the 1.37 cycle",
+    "why_not": "The maintainer comment states the landed changes are feature-gated and do not need to be reverted; the PR 140249 was put on hold instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:2436530875",
+    "quote": "I'd rather the KEP just say that all errors from topology manager will be treated as Infeasible. We can change them to Deferred later as a follow-up if there is a use case."
+   },
+   {
+    "ref": "rcomment:2755945855",
+    "quote": "My opinion is marking it as \"Infeasible\" is a safe step forward to unblock us now, while still leaving room to relax it to \"Deferred\" later if necessary."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support CPU limit increase without container restart keeping originally configured CPU values (during pod creation on the Node)"
+   },
+   {
+    "ref": "comment:3788537946",
+    "quote": "All errors from topology manager will be treated as Infeasible. This means that when the topology manager cannot generate a topology hint which satisfies the topology manager policy, the proposed resize is not feasible and is rejected; it will never be re-evaluated."
+   },
+   {
+    "ref": "comment:5035771823",
+    "quote": "additions are all guarded by the feature gate"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11008,
+  "output": 1103
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

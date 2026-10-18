@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-688",
+ "input_hash": "bc6fb8b1dfeef6ce",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-688 Pod Overhead proposed adding an Overhead field to RuntimeClass and PodSpec so that per-runtime sandbox overhead is accounted for in scheduling, quota, and pod cgroup sizing. The KEP is recorded as implemented and at stable stage.",
+  "rationale": "Sandbox runtimes such as Kata add pod-level overhead that heuristic reservations do not cover, so the design adds an explicit Overhead field. The scheduler, resource quota, and kubelet cgroup/eviction logic take Overhead into account, with a mutating admission controller copying it from the selected RuntimeClass. Maintainers' discussion of QoS interaction and GA blockers (RuntimeClass GA, docs for default overhead) shaped the schedule, and the feature reached GA in 1.24 per the thread.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep overhead as a ResourceRequirements (requests and limits) on PodSpec",
+    "why_not": "tallclair asked whether overhead should be a single ResourceList per resource, since pod limits are meaningless unless all containers set limits; the sources do not record a final decision on this point beyond the implemented API."
+   },
+   {
+    "option": "Apply overhead logic in the RuntimeClass controller instead of on the PodSpec",
+    "why_not": "tallclair raised this as an alternative that makes settings explicit but makes admission ordering more important; the sources do not say it was chosen."
+   },
+   {
+    "option": "Rely on heuristic reservations (system-reserved, kube-reserved, pause container)",
+    "why_not": "The readme states this approach is heuristic at best and does not scale well when sandbox overhead may be O(100mb)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Augment the RuntimeClass definition and the `PodSpec` to introduce the field `Overhead *ResourceList`. This field represents the overhead associated with running a pod for a given runtimeClass."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current approach is to reserve a chunk of resources for the system components (system-reserved, kube-reserved, fluentd resource request padding), and ignore the (relatively small) overhead from the pause container, but this approach is heuristic at best and doesn't scale well."
+   },
+   {
+    "ref": "comment:1122467453",
+    "quote": "This feature has been **fully implemented** and is now **GA** in K8s version 1.24."
+   },
+   {
+    "ref": "comment:625398068",
+    "quote": "I think PodOverhead GA is probably blocked on RuntimeClass GA. That means it might be an option for v1.20."
+   },
+   {
+    "ref": "comment:1251458360",
+    "quote": "Just two house cleaning items left, pls review if you have time"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12402,
+  "output": 1056
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

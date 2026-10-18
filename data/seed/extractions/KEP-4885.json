@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-4885",
+ "input_hash": "14295b8dbd0dc4fd",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4885 proposes adding Windows support to the kubelet CPU, Memory and Topology Managers so co-located low-latency pods can get CPU and memory affinity. It reuses the existing Linux manager logic and maps Windows processor groups into the kubelet topology structure. Current status is implementable at alpha.",
+  "rationale": "Low-latency workloads co-hosted on Windows Server suffer noisy-neighbor effects, so Windows users asked for the isolation the Linux managers already provide. The proposal avoids new managers and extends Windows processor-group concepts into the cAdvisor-style topology mapping. The design states there are no plans to change core CPU and NUMA selection logic, so the work is mostly platform mapping plus Windows-specific sections.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Create new managers specific to Windows",
+    "why_not": "Non-goals state: \"We do not wish to create new managers and instead re-use the existing logic provided\"."
+   },
+   {
+    "option": "Modify or bypass existing feature-gated policy features",
+    "why_not": "Non-goals state the KEP will not \"Modify or bypass any existing feature gated features\"; existing policy feature gates still apply."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The goal of the KEP is to add Windows support without significant changes to the Managers logic while providing the same feature sets available on Linux today."
+   },
+   {
+    "ref": "readme",
+    "quote": "We do not wish to create new managers and instead re-use the existing logic provided"
+   },
+   {
+    "ref": "readme",
+    "quote": "extends the Windows concepts to a CAdvisor mapping to enable the topology structure in kubelet"
+   },
+   {
+    "ref": "comment:2406155866",
+    "quote": "The status of this enhancement is now marked as `tracked for enhancement freeze`."
+   },
+   {
+    "ref": "comment:4091575268",
+    "quote": "We want to keep this KEP alive and consider moving to Beta in the coming releases."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6834,
+  "output": 801
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

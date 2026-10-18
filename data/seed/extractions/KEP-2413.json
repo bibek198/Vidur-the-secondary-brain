@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2413",
+ "input_hash": "7d0af8f5730a460c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2413 proposes a kubelet feature gate and flag (--seccomp-default) that makes the RuntimeDefault seccomp profile the default for all workloads. The KEP is at implementable status and stage stable; the sources show it was graduated with the kubelet default switched on, with opt-out available to node administrators.",
+  "rationale": "Seccomp is disabled by default in Kubernetes, and enabling it by default could help prevent CVEs or 0-days. The chosen approach promotes the existing RuntimeDefault profile, so no new profile must be shipped and container runtimes already support it. Discussion raised performance regressions and Pod Security Admission gaps, which the maintainers addressed by documenting the performance impact and keeping the change kubelet-side with an opt-out.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Configure a different default seccomp profile per runtime or via RuntimeClass",
+    "why_not": "Discussion proposed RuntimeClass-defined seccomp rules, but saschagrunert asked how that would look in the API and said the container runtime already has the needed information; tallclair suggested runtime-level configuration instead. The sources do not record a decision to adopt RuntimeClass-based defaults."
+   },
+   {
+    "option": "Make the feature API-aware by patching workloads at API-server defaulting time",
+    "why_not": "liggitt objected that applying new defaults to existing pods on API server upgrade triggers instant restarts across nodes. saschagrunert then dropped the API awareness and kept the feature kubelet internal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The most preferred solution is to promote the `RuntimeDefault` profile (previously the `runtime/default` annotation) to the new default one."
+   },
+   {
+    "ref": "comment:1156145619",
+    "quote": "I dropped the API awareness, so I guess there is no API review required any more"
+   },
+   {
+    "ref": "comment:1415360640",
+    "quote": "the main goal of the graduation is to switch `--seccomp-default=true` per default"
+   },
+   {
+    "ref": "comment:1416203889",
+    "quote": "This is the performance vs. security tradeoff and we can choose security while giving admins opt out if they prefer performance."
+   },
+   {
+    "ref": "comment:1429969732",
+    "quote": "but does not change default behavior unless the node administrator opts in by setting this kubelet option"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12823,
+  "output": 928
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

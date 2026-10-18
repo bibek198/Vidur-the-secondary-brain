@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2599",
+ "input_hash": "ac2eab993051d30b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2599 adds an optional minReadySeconds field to the StatefulSet spec, plus an AvailableReplicas field in status, so the StatefulSet controller counts a pod as available only after it has been ready for that many seconds. The KEP is in implementable status at stage stable.",
+  "rationale": "StatefulSets lacked minReadySeconds, while Deployments, DaemonSets, ReplicaSets and ReplicationControllers already had it. The KEP says adding it \"helps in bringing StatefulSets on par with other workload controllers.\" Moving the field to Pod spec was excluded from scope to keep the change limited to the StatefulSet API and to favor consistency across controllers.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Move minReadySeconds to Pod spec",
+    "why_not": "The readme says the effort would be large, and the main goal is to add the field to StatefulSet spec for consistency."
+   },
+   {
+    "option": "Use a longer readinessProbe with initialDelaySeconds in the pod spec",
+    "why_not": "The readme says this 'is not always fool proof and can cause problems'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Enabling this option helps in bringing StatefulSets on par with other workload controllers."
+   },
+   {
+    "ref": "readme",
+    "quote": "StatefulSet spec should be expanded with an optional field called minReadySeconds. To reflect the StatefulSet pods that honored minReadySeconds"
+   },
+   {
+    "ref": "readme",
+    "quote": "The effort to change pod spec would be large. While this also helps other controllers like endpoint controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "Use increased `readinessProbe` and `initialDelaySeconds` to pod spec. This is not always fool proof and can cause problems"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2299,
+  "output": 742
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

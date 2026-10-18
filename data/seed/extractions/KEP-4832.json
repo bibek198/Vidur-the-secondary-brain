@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4832",
+ "input_hash": "044cb9b808064de9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4832 proposes making the preemption plugin's API calls (deleting victim Pods, setting nominatedNodeName) asynchronous, after the PostFilter extension point, so the scheduler can keep scheduling other Pods. The KEP is at implementable, stage beta.",
+  "rationale": "Preemption API calls run inside the PostFilter step of the scheduling cycle and can block scheduling throughput; the scheduler-perf preemption scenario is noticeably slower than others. The design moves those calls into a goroutine, gates the preemptor at PreEnqueue while it runs, and requeues it when victim Pod deletion events arrive. Reviewers pushed for keeping the change inside the existing preemption plugin rather than adding a new extension point, and the KEP follows that.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "A new framework extension point for asynchronous preemption",
+    "why_not": "Reviewers (alculquicondor) argued it risks over-engineering and a user-facing API that may be regretted, and the author moved it to the alternatives section, deciding to scope it out for now."
+   },
+   {
+    "option": "Let the preemptor pod compete for freed space before preemptions finish, rather than blocking it",
+    "why_not": "sanposhiho judged the current design safer and simpler for a first step, noting that more retries would add unnecessary scheduling load; alculquicondor's later comment also said the pod should compete for space freed by other pods."
+   },
+   {
+    "option": "Call AddNominatedPod asynchronously as well",
+    "why_not": "Raised by dom4ha as a possibility; the author replied that AddNominatedPod only changes the cache and makes no API call, with the nominatedNodeName API call moved into the asynchronous goroutine."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The preemption plugin makes API calls for the preemption asynchronously after `PostFilter` extension point so that the scheduler can continue to other Pods' scheduling"
+   },
+   {
+    "ref": "rcomment:1750711544",
+    "quote": "I prefer we start simple, mature the idea just within the existing framework, if possible, and only think of an additional extension point"
+   },
+   {
+    "ref": "rcomment:1794980760",
+    "quote": "While making the API calls in goroutine, the Pod is gated so that it won't be requeued to activeQ/backoffQ."
+   },
+   {
+    "ref": "rcomment:1796624011",
+    "quote": "We do have similar situations right now (we do not guarantee the preemptor pod will be schedulable again), but we're exacerbating this."
+   },
+   {
+    "ref": "rcomment:1796528139",
+    "quote": "so LGTM as well. /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10965,
+  "output": 1026
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

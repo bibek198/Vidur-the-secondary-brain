@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2315",
+ "input_hash": "5f8071b0278b9576",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2315 proposes an AWS load balancer prefix annotation so that the ELB resources generated for a Kubernetes Service of type LoadBalancer get a known, user-defined prefix instead of a name derived only from the resource UID. The KEP is in provisional status.",
+  "rationale": "The default ELB name is derived from the service UID, which is unpredictable. InfoSec-managed IAM policies that use wildcarded resource paths therefore cannot match the resource, and the service cannot be provisioned in such accounts. A short known prefix lets those IAM conditions match. The status is provisional, so the design is proposed and has not been finalized.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the UID-based ELB naming",
+    "why_not": "The readme says the unpredictable name makes it impossible to integrate provisioning with existing IAM policies when two groups control them."
+   },
+   {
+    "option": "Give the ELB meaningful names",
+    "why_not": "The readme lists providing meaningful names for AWS ELB resources as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current implementation provisions AWS ELB with a unique name based on the resource UID."
+   },
+   {
+    "ref": "readme",
+    "quote": "The resulted unpredicted name makes it impossible to integrate the provisioning with existing IAM policies in situations when these two operations are controlled by two different groups."
+   },
+   {
+    "ref": "readme",
+    "quote": "Providing a way to define a short known prefix to ELB resource makes it possible to match IAM policies conditions regarding the resource identifiers."
+   },
+   {
+    "ref": "readme",
+    "quote": "* Provide meaningful names for AWS ELB resources generated for Kubernetes services of the type `LoadBalancer`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2094,
+  "output": 730
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

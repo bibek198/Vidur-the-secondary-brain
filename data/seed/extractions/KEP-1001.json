@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1001",
+ "input_hash": "5c64da7fa37ccb0b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1001 proposed supporting CRI-ContainerD as a container runtime on Windows nodes, so users can use Windows Server 2019 / 1809+ HCS v2 features. Its status is implementable, stage stable, and the discussion shows it was planned to graduate to GA in Kubernetes 1.20.",
+  "rationale": "Docker EE 18.09 had not been updated to work with the Windows HCSv2, while ContainerD had been migrated, so the KEP moves Windows nodes to CRI-ContainerD to get the newer platform features and a Kubernetes-oriented interface. The KEP was tracked over several releases (1.15 through 1.20) and slipped repeatedly, with maintainers citing unfinished containerd work and test failures. In the 1.20 cycle the team decided the remaining issue #70189 would not block stable, because its fix needs a Windows OS change that was not yet released.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using Docker EE 18.09 on Windows nodes",
+    "why_not": "The readme says the Docker EE 18.09 release \"has not been updated to work with the Windows HCSv2, only ContainerD has been migrated.\""
+   },
+   {
+    "option": "Block stable graduation until issue #70189 is fixed",
+    "why_not": "The maintainers said \"This functionality also doesn't work with any other container runtimes on Windows so we are not treating it as a blocker from declaring containerD support on Windows stable.\""
+   },
+   {
+    "option": "Run Linux containers on Windows nodes under this KEP",
+    "why_not": "The readme lists it as a non-goal: \"Running Linux containers on Windows nodes. This would be addressed as a separate KEP since the use cases are different.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the current Docker EE 18.09 release has not been updated to work with the Windows HCSv2, only ContainerD has been migrated."
+   },
+   {
+    "ref": "comment:726234460",
+    "quote": "This functionality also doesn't work with any other container runtimes on Windows so we are not treating it as a blocker from declaring containerD support on Windows stable."
+   },
+   {
+    "ref": "comment:700140137",
+    "quote": "Yes we plan to go GA in 1.20. I can update the KEP to match the new format this week."
+   },
+   {
+    "ref": "comment:716638795",
+    "quote": "Not likely to complete in 1.16, still having issues getting containerd work on Windows moving forward."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10268,
+  "output": 966
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

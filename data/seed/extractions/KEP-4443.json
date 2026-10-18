@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-4443",
+ "input_hash": "e9d3b050c233debb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4443 proposes an optional Name field on PodFailurePolicyRule (defaulting to the rule's index) so that when a rule with action FailJob triggers, the JobFailed condition reason becomes PodFailurePolicy_{ruleName}. This lets higher-level APIs such as JobSet tell apart Job failures caused by different rules.",
+  "rationale": "Higher-level APIs built on the Job API need to distinguish failure types, but all pod failure policy rules currently share the single JobFailed reason PodFailurePolicy. Appending the rule name as a suffix gives each rule a distinct, machine-set reason without changing how the policy behaves. The KEP is in implementable status at alpha stage, as of 2024-06-11.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a SetConditionReason field so users can explicitly set the JobFailed reason",
+    "why_not": "The team decided not to let users set the reason to an arbitrary value, since that would be hard to validate and would diverge from the paradigm of machine-set reasons."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will allow users to set multiple pod failure policy rules and distinguish which one (if any) triggered a Job failure."
+   },
+   {
+    "ref": "readme",
+    "quote": "This prevents higher level APIs like JobSet from distinguishing them and being able to take different actions depending on the type of Job failure that occurred."
+   },
+   {
+    "ref": "readme",
+    "quote": "ultimately it was decided we didn't want to open up the reason field to be explicitly set by the user to any arbitrary value, as this would be tricky to validate"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2631,
+  "output": 688
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

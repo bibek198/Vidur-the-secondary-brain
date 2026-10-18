@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2458",
+ "input_hash": "1e54484817d992d1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2458 proposes deprecating the three resource-based score plugins (NodeResourcesLeastAllocated, NodeResourcesMostAllocated, RequestedToCapacityRatio) and folding them into the NodeResourcesFit plugin via a new ScoringStrategy config parameter. Status is implementable, stage beta.",
+  "rationale": "The three scoring plugins are mutually exclusive and add configuration complexity, and more strategies (Best/WorstFit, Least/MostAllocatable) were planned, which would make configuration worse as separate plugins. Consolidating under one plugin with a ScoringStrategy parameter reduces configuration combinations and gives a path to later expressing fit preferences in the pod spec. Discussion notes the legacy plugins remain usable in v1beta1 but not v1beta2, and the balanced allocation strategy was removed from scope for now.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the three separate scoring plugins as they are",
+    "why_not": "The readme states the plugins are mutually exclusive and that adding more strategies as separate plugins 'will make the scheduler configuration problem even worse.'"
+   },
+   {
+    "option": "Include a balanced allocation strategy in the unified configuration",
+    "why_not": "The maintainer removed it for now: 'I removed the balanced strategy for now, we can come back to it later if we find a good API to integrate it.'"
+   },
+   {
+    "option": "Allow resource fit preferences via the pod spec in this KEP",
+    "why_not": "This is a non-goal: 'This is left as a follow up work that will be done under a different KEP.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to deprecate those plugins and combine them under one Score plugin, the same one used for filtering (namely `NodeResourcesFit`)"
+   },
+   {
+    "ref": "readme",
+    "quote": "Finally, we are planning to add more resource fit scoring strategies, like Best/WorstFit which allows preferring nodes with the least/most amount of available absolute resources"
+   },
+   {
+    "ref": "rcomment:572920663",
+    "quote": "\"deprecated\" would mean that people can still use it, even though we plan to remove it."
+   },
+   {
+    "ref": "rcomment:572952002",
+    "quote": "I removed the balanced strategy for now, we can come back to it later if we find a good API to integrate it."
+   },
+   {
+    "ref": "comment:841200217",
+    "quote": "The KEP is already merged and doesn't need updating. Can we add it back to v1.22?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 6388,
+  "output": 986
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

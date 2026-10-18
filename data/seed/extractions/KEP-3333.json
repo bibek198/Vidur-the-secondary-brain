@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3333",
+ "input_hash": "a23fc44c9024666c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3333 changes the PV controller so that unbound PVCs with storageClassName=nil are retroactively assigned the default StorageClass once one is marked default. The KEP is implemented and at stable stage.",
+  "rationale": "Changing the default StorageClass or recreating it left PVCs with nil storageClassName Pending forever or caused transient errors when two defaults existed. The proposal loosens ordering between PVC creation and default SC creation by applying the default to pending PVCs. Reviewers raised compatibility concerns about nil PVCs binding to class=\"\" PVs, and the maintainers kept that behavior for compatibility.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep PVCs with nil bound to class \"\" PVs until a default SC exists (original proposal, moved to Alternatives)",
+    "why_not": "Thockin and jsafrane judged it too complicated for users; jsafrane said 'It will be easier if nil always means \"I want the default and wait for it if it does not exist\".'"
+   },
+   {
+    "option": "Keep two defaults and pick one randomly or heuristically",
+    "why_not": "Thockin proposed this as a semantic change during review, and it was not the chosen path; the sources do not record a rejection reason beyond the reviewer suggestion."
+   },
+   {
+    "option": "Remove the nil-to-class binding to class \"\" PVs (behavior change for PVs with class \"\")",
+    "why_not": "Thockin argued this would hurt the small subset of users relying on it: 'changing this is likely to have negative impact on that small subset of users who DO depend on it.' The KEP keeps that behavior."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Change PV controller behavior so it will assign a default SC to unbound PVCs with `pvc.spec.storageClassName=nil` after any storage class is marked as default."
+   },
+   {
+    "ref": "rcomment:894906489",
+    "quote": "So leaving this functionality (PVCs with class=nil can bind to preallocated class=\"\" PVs) is unlikely to have negative impact on people who don't want that"
+   },
+   {
+    "ref": "rcomment:894338701",
+    "quote": "It will be easier if `nil` always means \"I want the default and wait for it if it does not exist\"."
+   },
+   {
+    "ref": "comment:1894686086",
+    "quote": "I'm closing milestone 1.28 now, If you wish to progress this enhancement in v1.30"
+   },
+   {
+    "ref": "comment:1570359704",
+    "quote": "This enhancement is targeting for stage `stable` for 1.28 (correct me, if otherwise.)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13434,
+  "output": 1005
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

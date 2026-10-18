@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-427",
+ "input_hash": "57979fb02c25ce4c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-427 proposed graduating CoreDNS from Beta to GA as a selectable cluster service discovery DNS for Kubernetes, with kubeadm upgrade paths from kube-dns and CoreDNS. The status is implemented, stage stable.",
+  "rationale": "CoreDNS was Beta in Kubernetes v1.10 and could be installed as an alternative to kube-dns. The proposal argues it is more flexible, extensible, and performant than kube-dns, with a single process and no dnsmasq. Graduating to GA was meant to make it a supported choice for cluster DNS.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep CoreDNS at Beta as an alternate to kube-dns",
+    "why_not": "The proposal states its purpose is to graduate CoreDNS to GA, so staying at Beta was not the goal."
+   },
+   {
+    "option": "Make CoreDNS the default in every installer",
+    "why_not": "This is listed as a non-goal: \"Making [CoreDNS the default](https://github.com/kubernetes/community/pull/2167) in every installer.\""
+   },
+   {
+    "option": "Translate CoreDNS ConfigMap back to kube-dns (downgrade)",
+    "why_not": "Listed as a non-goal in the document."
+   },
+   {
+    "option": "Define the deprecation path for kube-dns",
+    "why_not": "Listed as a non-goal: fate of kube-dns in future releases is out of scope."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "CoreDNS is Beta in Kubernetes v1.10, which can be installed as an alternate to kube-dns. The purpose of this proposal is to graduate CoreDNS to GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "CoreDNS has fewer moving parts than kube-dns, taking advantage of the plugin architecture, making it a single executable and single process."
+   },
+   {
+    "ref": "readme",
+    "quote": "Provide a kube-dns to CoreDNS upgrade path with configuration translation in `kubeadm`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposed solution is to enable the selection of CoreDNS as a GA cluster service discovery DNS for Kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2580,
+  "output": 885
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

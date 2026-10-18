@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-555",
+ "input_hash": "6b8516671d19029b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-555 moves `kubectl apply` functionality into the control plane (Server-Side Apply): apply is invoked via PATCH with a special Content-Type, and the server tracks a field manager per field instead of the last-applied-configuration annotation. The KEP reached stable; status is implemented, stage stable.",
+  "rationale": "Client-side apply was buggy and hard to fix, because fixes required coordinated client and server changes and a two-release deprecation period. The proposal centralizes apply in the control plane so that changes by other users, controllers, and defaulters are tracked per field. The status history shows implementable from 2020-12-30 and implemented from 2021-09-28.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep fixing client-side kubectl apply with smaller changes",
+    "why_not": "The readme says \"Why can't a smaller change fix the problems?\" and answers that too many components need to change and there is no clear model of the feature, so it argues all routes to fixing the user pain involve centralizing in the control plane."
+   },
+   {
+    "option": "Keep the kubectl.kubernetes.io/last-applied-configuration annotation as the tracking mechanism",
+    "why_not": "The proposal says \"Instead of using a kubectl.kubernetes.io/last-applied-configuration annotation, the control plane will track a 'manager' for every field.\""
+   },
+   {
+    "option": "Move multi-object apply to the control plane too",
+    "why_not": "The Non-Goals state \"Multi-object apply will not be changed: it remains client side for now\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This functionality will be regularized and moved to the control plane."
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead of using a `kubectl.kubernetes.io/last-applied-configuration` annotation, the control plane will track a \"manager\" for every field."
+   },
+   {
+    "ref": "readme",
+    "quote": "It's our belief that all routes to fixing the user pain involve centralizing this functionality in the control plane."
+   },
+   {
+    "ref": "comment:526637663",
+    "quote": "The mandatory prs merged, this is beta now."
+   },
+   {
+    "ref": "comment:835872640",
+    "quote": "I think the only thing would maybe be updating the graduation criteria of the KEP to reference 1.22 rather than 1.21 for GA."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12640,
+  "output": 901
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

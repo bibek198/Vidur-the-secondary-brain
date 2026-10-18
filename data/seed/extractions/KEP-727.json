@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-727",
+ "input_hash": "42a90a0711bd4a87",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-727 added a new kubelet endpoint at /metrics/resource in Prometheus text format that serves only the metrics needed by the cluster-level Resource Metrics API. The KEP reached status implemented at stage stable, with no feature gate, after the endpoint was graduated to GA for 1.29.",
+  "rationale": "The Summary API bundled resource metrics with monitoring data and was expensive to extend, so a purpose-built endpoint was proposed for the minimum set of resource metrics. Maintainers in the discussion said the endpoint was still in active use and should graduate to GA. Because the endpoint was always on with no feature gate, the PR review noted it could not be disabled and was treated as effectively GA.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using the Kubelet Summary API for resource metrics",
+    "why_not": "The readme says the Summary API 'provides much more information than required by the Metrics Server' and is a poor provider of Resource Metrics, which motivated this KEP."
+   },
+   {
+    "option": "Add new Resource Metrics such as Ephemeral Storage to the metrics server",
+    "why_not": "This is listed as a non-goal: 'Add new Resource Metrics to the metrics server (e.g. Ephemeral Storage)'."
+   },
+   {
+    "option": "Deprecate or remove the Summary API",
+    "why_not": "This is also a non-goal in the readme."
+   },
+   {
+    "option": "Mark the endpoint as conformance-tested",
+    "why_not": "A reviewer noted that 'kubelet APIs cannot be part of conformance', so the earlier conformance graduation criterion was dropped."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It provides much more information than required by the Metrics Server, as demonstrated by kubernetes/kubernetes#68841"
+   },
+   {
+    "ref": "comment:1289177022",
+    "quote": "We should graduate this to GA in the next release. We just need to mark metrics here"
+   },
+   {
+    "ref": "rcomment:1342430479",
+    "quote": "So to clarify - there is no way to disable this feature right? It's \"always on\"?"
+   },
+   {
+    "ref": "rcomment:1343083478",
+    "quote": "previously this asked for conformance, but kubelet APIs cannot be part of conformance."
+   },
+   {
+    "ref": "comment:1879453463",
+    "quote": "As it has graduated to `Stable` and the KEP status is still `implementable`, may you please update the status to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12165,
+  "output": 956
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

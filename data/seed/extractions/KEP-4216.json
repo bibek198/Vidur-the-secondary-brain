@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4216",
+ "input_hash": "9b2e094706b44dd0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4216 proposes identifying container images by a (imageName/imageDigest, runtimeClass) tuple in CRI, kubelet and related tooling, so that the same image reference can resolve to different manifests from an image index per runtime class. Its status is implementable at alpha, as of 2023-10-05.",
+  "rationale": "The Windows platform matcher requires an exact host/guest OS version match, which breaks Hyper-V isolated containers whose UVM OS version differs from the host. Keying image pulls by runtime class lets the runtime select the manifest matching that runtime's guest platform. Scope was narrowed to kubelet and CRI changes, with container runtime implementation left to each runtime. The sources record no explicit reason beyond SIG Node approval for the alpha status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Pass only an OS version string (e.g. OSVersion) in the pod spec or runtime class",
+    "why_not": "kiashok said passing osversion alone is not generic enough, and jsturtevant said version alone cannot distinguish process-isolated from Hyper-V runtimes."
+   },
+   {
+    "option": "Keep containerd-specific implementation details in the KEP",
+    "why_not": "Reviewers (aravindhp, haircommander) said the containerd-specific changes are not as relevant, so they were removed and left to the runtimes."
+   },
+   {
+    "option": "Use a triplet of (image reference/digest, runtime class, OCI platform struct) as mikebrow suggested",
+    "why_not": "The sources note mikebrow said either tuple or triplet works, and the KEP kept the tuple form; no source records a decision against the triplet."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This problem can be fixed if container runtimes, CRI, and kubelet refer to images as a tuple of (imageName/imageDigest, runtimeClass) instead of the imageName/imageDigest."
+   },
+   {
+    "ref": "rcomment:1347918690",
+    "quote": "Version isn't enough as we also would want to specify difference between process isolated and hyper-v runtimes."
+   },
+   {
+    "ref": "rcomment:1347873098",
+    "quote": "We want this to be more generic for all platforms. For windows, this would be OSVersion but linux does not use OSVersion"
+   },
+   {
+    "ref": "review:1636435636",
+    "quote": "I agree with @aravindhp that the containerd specific changes aren't as relevant. I think this should cover kubelet + cri changes"
+   },
+   {
+    "ref": "comment:1749622060",
+    "quote": "@johnbelamaric SIG-node has approved"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13445,
+  "output": 1003
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

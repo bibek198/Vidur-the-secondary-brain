@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1693",
+ "input_hash": "b299016135f6d867",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1693 adds a warning mechanism so clients using deprecated APIs receive warnings at request time, administrators get metrics and audit annotations for deprecated API use. Status is implemented, stage stable.",
+  "rationale": "Deprecations are numerous and hard to track from release notes and manual sweeps, and clients submitting problematic data are not told at the time of the request. The KEP therefore proposes warnings at time of use that include the target removal release and replacement API, plus metrics and audit annotations for administrators. Reviewers asked for a broader warning design, but the first iteration was narrowed to deprecated API use, with a follow-up effort for other warnings. The sources show the feature was implemented in the 1.19 to 1.22 cycle, and the reviewers' request for kubectl warnings-as-errors was added to GA criteria.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Build a general warning mechanism for all validation and admission warnings in this first iteration",
+    "why_not": "Maintainer liggitt said of a broader design: \"I'm in favor of it eventually, but not in this first iteration.\""
+   },
+   {
+    "option": "Use 199 Miscellaneous Warning codes in addition to the 2xx codes",
+    "why_not": "liggitt said: \"I could be talked into including `199` codes as well\" but was not confident in cache-generated warnings, and favored the 2xx warning codes as clearer."
+   },
+   {
+    "option": "Keep the exit-non-zero behavior out of scope",
+    "why_not": "deads2k asked for an option to exit non-zero on warnings for GA, and liggitt responded \"Added proposal for `--warnings-as-errors`\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When a user makes a request to a deprecated API, present them with a warning that includes the target removal release and any replacement API"
+   },
+   {
+    "ref": "rcomment:411467591",
+    "quote": "That's a second design effort that includes the API between the admission webhooks and the API server. I'm in favor of it eventually, but not in this first iteration."
+   },
+   {
+    "ref": "comment:620089789",
+    "quote": "Added proposal for `--warnings-as-errors`"
+   },
+   {
+    "ref": "comment:839135198",
+    "quote": "The KEP/PRR work is complete and merged: - https://github.com/kubernetes/enhancements/pull/2719"
+   },
+   {
+    "ref": "comment:901394495",
+    "quote": "Would you be able to open a PR on the KEP to change the stage to `implemented`?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7179,
+  "output": 974
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

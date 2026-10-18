@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-625",
+ "input_hash": "47ac974f9f06dd03",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-625 proposes migrating in-tree storage plugins to CSI drivers via an opt-in, per-plugin redirect of in-tree operations to the corresponding CSI driver. The KEP is at status implementable, stage stable.",
+  "rationale": "In-tree plugins are maintained twice (in-tree and CSI), and the internal plugin APIs cannot be deprecated because of Kubernetes API deprecation policy, so the internals must call CSI plugins instead. The design keeps in-tree plugin API untouched so existing Pods and PVs keep working, and makes migration modular so each plugin can be toggled separately. The sources show the work was repeatedly delayed across releases (1.13 to 1.14, then 1.19, then 1.25 stable) and that per-plugin graduation was tracked in separate KEPs.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep in-tree plugins and maintain both in-tree and CSI versions of each plugin",
+    "why_not": "The readme says this is costly: \"we are currently supporting two versions of each plugin (one in-tree and one CSI)\" and the goal is to move to one version per plugin."
+   },
+   {
+    "option": "Deprecate the in-tree internal plugin APIs directly",
+    "why_not": "The readme states that \"we will be unable to deprecate the current internal plugin API's due to Kubernetes API deprecation policies\", so internals are migrated to call CSI instead."
+   },
+   {
+    "option": "Migrate all plugins at once rather than per plugin",
+    "why_not": "A stated goal is that \"Migration must be modular so that each plugin can have migration turned on and off separately\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will be an opt-in feature turned on at cluster start time that will redirect in-tree plugin operations to a corresponding CSI Driver."
+   },
+   {
+    "ref": "readme",
+    "quote": "In order to do this we need to migrate the internals of the in-tree plugins to call out to CSI Plugins because we will be unable to deprecate the current internal plugin API’s due to Kubernetes API deprecation policies."
+   },
+   {
+    "ref": "readme",
+    "quote": "Migration must be modular so that each plugin can have migration turned on and off separately"
+   },
+   {
+    "ref": "comment:885794087",
+    "quote": "X: beta, enable by default X+1: GA X+3: Remove code. At this point, I think 1.24 is the earliest that any plugin will GA, which makes code removal 1.26 at the earliest."
+   },
+   {
+    "ref": "comment:1009891261",
+    "quote": "PRs for adding the KEPs for all the different plugins: - vSphere: https://github.com/kubernetes/enhancements/pull/3125"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14133,
+  "output": 1047
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

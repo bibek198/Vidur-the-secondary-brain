@@ -1,0 +1,62 @@
+{
+ "kep": "KEP-2342",
+ "input_hash": "69b0e1c8d9e6aa09",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2342 proposed exposing hashed storage versions through the Kubernetes discovery API so the storage version migrator could detect when stored objects needed migration. Its status is provisional, and later discussion suggests it may be superseded by other KEPs (4192 or 2339), though the sources do not confirm a formal replacement.",
+  "rationale": "The migrator cannot tell what the expected storage versions are, so the KEP proposes publishing the storage version hash in discovery. The KEP was approved at the provisional stage in 2021. In 2025, maintainers discussed whether KEP-4192 (SVM in-tree) or KEP-2339 replaces it, and the StorageVersionHash gate stayed beta without being promoted.",
+  "outcome_reason": "The status is provisional and the sources do not record a withdrawal or rejection. The 2025 comments only suggest that the feature may be replaced by other work. enj says KEP-2339 was meant to replace this KEP, but no source states a formal replacement with a KEP number from this KEP's own text.",
+  "alternatives": [
+   {
+    "option": "Trigger the storage version migrator on apiserver binary version change",
+    "why_not": "The readme says correctness depends on storage versions never changing without a binary version change, which may not hold in the future."
+   },
+   {
+    "option": "Use KEP-4192 (SVM in-tree) as the replacement",
+    "why_not": "Liggitt wrote 'I think' and was unsure; enj said KEP-2339 was the intended replacement, not KEP-4192."
+   },
+   {
+    "option": "Use KEP-2339 as replacement via storage version API",
+    "why_not": "enj says it was meant to replace this KEP, but the sources do not describe its status or completion."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to expose this piece of information via the discovery API."
+   },
+   {
+    "ref": "readme",
+    "quote": "We had considered triggering the storage version migrator by the change of the apiserver's binary version."
+   },
+   {
+    "ref": "comment:2610310405",
+    "quote": "I *think* https://github.com/kubernetes/enhancements/tree/master/keps/sig-api-machinery/4192-svm-in-tree might be the replacement for this KEP."
+   },
+   {
+    "ref": "comment:2610842415",
+    "quote": "it mentions `The storage version migrator will have an additional flag when initializing the discovery client to continue using the unaggregated API`"
+   },
+   {
+    "ref": "comment:2611393572",
+    "quote": "#2339 was meant to replace this KEP, since clients like SVM could use the storage version API to drive creation of `StorageVersionMigration` API objects to automate migration."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2339",
+    "relation": "replaced_by",
+    "ref": "comment:2611393572",
+    "quote": "#2339 was meant to replace this KEP, since clients like SVM could use the storage version API to drive creation of `StorageVersionMigration` API objects to automate migration."
+   }
+  ],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 2668,
+  "output": 1107
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

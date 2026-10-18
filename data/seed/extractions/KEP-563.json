@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-563",
+ "input_hash": "24e84b4d2f8054bc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-563 added IPv4/IPv6 dual-stack to Kubernetes: multiple IPs per pod and service (one per family), dual-stack service CIDRs, and kube-proxy driving iptables/ip6tables in parallel. Its status is implemented, stage stable.",
+  "rationale": "Single-stack limits meant pods, system pods, endpoints and service IPs could each hold only one family per cluster, so IPv4-only clients needed costly transition mechanisms like NAT64. The proposal adds \"full\" dual-stack, with IPv4-to-IPv4 and IPv6-to-IPv6 communication in parallel, capped at one IPv4 and one IPv6 address per pod and per service. The sources do not explain the path from alpha to stable beyond the status history dates.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Single-stack service CIDRs (dual-stack pods and nodes, but service IPs restricted to one family)",
+    "why_not": "The readme describes it as a simpler variant that was not the chosen 'full' dual-stack model; it is referenced only as an alternative under 'Variation: Single-Stack Service CIDRs'."
+   },
+   {
+    "option": "Multiple IPs per family or general multiple-IPs-per-pod support in the initial release",
+    "why_not": "The readme lists 'Multiple IPs within a single family' as a non-goal, imposing 'dual-stack-centric' limits of 1 IPv4 and 1 IPv6 address per pod and per service, while keeping code open to later expansion."
+   },
+   {
+    "option": "Cross-family connectivity (IPv4-to-IPv6 and IPv6-to-IPv4)",
+    "why_not": "The readme places it outside scope as a non-goal and mentions it only as a possible future enhancement."
+   },
+   {
+    "option": "Adding host IP metadata as a separate KEP (HostIPs metadata)",
+    "why_not": "Thockin and others agreed in the PR discussion that the HostIPs work was non-blocking and could be a new KEP; the thread then settled on a struct without metadata for hostIPs, which is not part of this KEP's core design."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal aims to add \"full\" dual-stack support to Kubernetes clusters, providing native IPv4-to-IPv4 communication and native IPv6-to-IPv6 communication"
+   },
+   {
+    "ref": "readme",
+    "quote": "Multiple IPs within a single family: Code changes will be done in a way to facilitate future expansion to more general multiple-IPs-per-pod"
+   },
+   {
+    "ref": "readme",
+    "quote": "Pod addresses: 1 IPv4 address and 1 IPv6 addresses per pod maximum"
+   },
+   {
+    "ref": "comment:832206730",
+    "quote": "we thought the best course for this would be to open a new KEP. The rationale being primarily that this is \"non-blocking\" to the rest of the existing KEP"
+   },
+   {
+    "ref": "comment:1017458036",
+    "quote": "This will require a bit more work for Beta, but it's fine for alpha from PRR prespective. /lgtm /approve PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10627,
+  "output": 1189
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

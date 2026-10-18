@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2845",
+ "input_hash": "99e7319a034b90f1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2845 proposes deprecating and eventually removing most klog-specific command-line flags from Kubernetes components (kube-apiserver, kube-scheduler, kube-controller-manager, kubelet), keeping only \"-v\", \"-vmodule\", and the component-base \"-log-flush-frequency\" flag. The KEP status is implemented, stage stable.",
+  "rationale": "klog's global flags are described as the \"last bastion of global state in k/k repository\", with inconsistent naming and no fit for alternative log formats such as JSON. The KEP aims to narrow logging scope and align component configuration with standard mechanisms, reducing the maintenance burden of carrying a logging library. The design excerpt does not explain further why these specific flags were chosen beyond this.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Fix klog's performance, throughput, and feature problems by investing in logging",
+    "why_not": "The KEP argues that 'Fixing all those issues would require big investment into logging, but would not solve the underlying problem of having to maintain a logging library.'"
+   },
+   {
+    "option": "Change klog output format or remove flags from klog itself",
+    "why_not": "These are listed as explicit Non-Goals: 'Change klog output format' and 'Remove flags from klog'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Klog features are controlled by set of global flags that remain last bastion of global state in k/k repository."
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose to remove klog specific feature flags in Kubernetes components (including, but not limited to, kube-apiserver, kube-scheduler, kube-controller-manager, kubelet)"
+   },
+   {
+    "ref": "readme",
+    "quote": "From klog flags we would remove all flags besides \"-v\" and \"-vmodule\". The component-base \"-log-flush-frequency\" flag is also kept."
+   },
+   {
+    "ref": "readme",
+    "quote": "Fixing all those issues would require big investment into logging, but would not solve the underlying problem of having to maintain a logging library."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2705,
+  "output": 826
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

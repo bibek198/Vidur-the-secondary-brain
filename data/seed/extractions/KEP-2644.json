@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2644",
+ "input_hash": "4e7607ea9cf6ca8e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2644 proposed honoring the PersistentVolume Delete reclaim policy regardless of whether the PV or the PVC is deleted first, so that external volumes are not leaked. Its status is implemented, stage stable.",
+  "rationale": "When a Bound PV is deleted before its PVC, the PV controller ends up in a state where the delete reclaim policy is never exercised, leaving the storage asset behind. The sources show the design went through several revisions: an annotation approach, then a finalizer-based approach. Reviewers (jsafrane) pushed for a PV deletion finalizer that is always present, and a feature gate was chosen over a command-line option so all CSI drivers behave the same. The sources do not give a full rationale for each later step beyond these review comments.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Detect that the PV was deleted before the PVC and make sure the volume is deleted (annotation-based or retry-based approach)",
+    "why_not": "Reviewer jsafrane said the proposal was 'not robust enough': the PV could already be removed from the API server, and a restart of kube-controller-manager loses that knowledge. He suggested reframing to 'make sure the PV is always deleted'."
+   },
+   {
+    "option": "Add the protection through a command-line option in the external provisioner",
+    "why_not": "jsafrane preferred a feature gate: 'We want all CSI drivers to have the same behavior and not some drivers protected and some not.'"
+   },
+   {
+    "option": "Have the PV protection controller add the deletion finalizer",
+    "why_not": "jsafrane asked that each controller handle its own finalizer: 'pv_protection_controller needs to add/remove PV protection finalizer and PV controller should add/remove its own PV deletion finalizer.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The PV honors the reclaim policy if the PVC is deleted prior to deleting the PV, however, if the PV is deleted prior to deleting the PVC then the Reclaim policy is not exercised."
+   },
+   {
+    "ref": "rcomment:700420317",
+    "quote": "As suggested above, the PV deletion finalizer should be always present. It does not tell if PV was deleted before PVC."
+   },
+   {
+    "ref": "rcomment:701712181",
+    "quote": "having a feature gate looks better to me. We want all CSI drivers to have the same behavior and not some drivers protected and some not."
+   },
+   {
+    "ref": "rcomment:699183761",
+    "quote": "I am afraid the solution described here is not robust enough and you will need to introduce a new finalizer to make 100% sure that a PV cannot be deleted from the API server before the external provisioner confirms it has deleted the volume."
+   },
+   {
+    "ref": "comment:2887663788",
+    "quote": "Given that this KEP has graduated to `stable`, once all the work is completed (including removing feature gates), could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13186,
+  "output": 1113
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

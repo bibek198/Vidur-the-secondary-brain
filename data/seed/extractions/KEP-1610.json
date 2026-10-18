@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-1610",
+ "input_hash": "c9ba22d6912af0e9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1610 proposes a new HPA metric source, ContainerResourceMetricSource, so the HPA can scale on the CPU or memory usage of an individual named container instead of the summed pod usage. The KEP status is implemented, stage stable.",
+  "rationale": "Pod-level resource metrics sum all container usage, so a hot container can be hidden by an idle sidecar and the HPA will not scale up. The HPA also cannot scale on utilization when a sidecar has no resource requests. The KEP adds a Container field to the resource metric source so each container can be targeted separately.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Export per-container resource metrics to an external metrics source and configure HPA on that external metric",
+    "why_not": "The readme calls this cumbersome and says the external metrics path adds latency compared to the in-cluster resource metrics path."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This is unsuitable for workloads where the usage of the containers are not strongly correlated or do not change in lockstep."
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose that the a new metric source called `ContainerResourceMetricSource` be introduced with the following structure:"
+   },
+   {
+    "ref": "readme",
+    "quote": "The only new field is `Container` which is the name of the container for which the resource usage should be tracked."
+   },
+   {
+    "ref": "readme",
+    "quote": "In the current logic the HPA controller can only scale on absolute resource usage of the pod when the resource requests are not set."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2967,
+  "output": 644
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

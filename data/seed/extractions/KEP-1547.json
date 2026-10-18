@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-1547",
+ "input_hash": "131df597c2bd4dad",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1547 proposed making the Kubelet buildable without Docker-specific code or the docker/docker Go dependency, by moving that code behind a pseudo build tag and adding CI and dependency checks. The KEP is recorded as implemented at stage stable, with its work completed for Kubernetes 1.19.",
+  "rationale": "The problem is that the Kubelet carries Docker-specific code and a dependency on docker/docker even when a remote runtime such as containerd or CRI-O is used. The proposal moves that code into dockershim and adds a build constraint so the Kubelet compiles without it, with CI to keep this mode working. Maintainers closed the tracking issue after the work completed and GA in 1.19, per the discussion. The sources also note cadvisor's docker/docker dependency as a remaining blocker handled in separate workstreams.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Do nothing",
+    "why_not": "The KEP lists this as an alternative but does not say why it was rejected; the proposal was pursued instead."
+   },
+   {
+    "option": "Wait until a longer-term solution has more momentum before handling Docker-specific code",
+    "why_not": "The Alternatives section says that waiting would allow deleting the code entirely, but the KEP chose compiling without it now. No further rationale is given."
+   },
+   {
+    "option": "Maintain a long-running branch with all Docker-specific code deleted",
+    "why_not": "The KEP prefers supporting a dockerless build from master, but the sources give no further rationale beyond that."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we will add a build constraint to the Kubelet for a pseudo \"build tag\" specifying not to include any in-tree \"Docker-specific\" code"
+   },
+   {
+    "ref": "readme",
+    "quote": "To ensure that this dockerless Kubelet continues to function we will add CI building in this mode, and CI running end to end tests against it"
+   },
+   {
+    "ref": "comment:691351778",
+    "quote": "As the enhancement is marked as implemented and this was GA in 1.19 closing this issue. Again congrats!"
+   },
+   {
+    "ref": "readme",
+    "quote": "the kubelet can not truly be rid of the docker/docker client library until cadvisor no longer depends on docker/docker"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 8867,
+  "output": 891
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

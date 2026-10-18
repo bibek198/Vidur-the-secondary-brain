@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2249",
+ "input_hash": "2266090f0d77be9f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2249 adds a namespaceSelector field to PodAffinityTerm so pod affinity/anti-affinity can target namespaces by label, and adds a CrossNamespaceAffinity quota scope so operators can limit which namespaces may use cross-namespace affinity. The KEP is marked implementable at stage stable.",
+  "rationale": "Pod affinity could only name namespaces in a static list, which fails when namespaces are created dynamically. A namespace selector addresses this, but reviewers flagged that it widens cross-namespace interference, so a quota scope was added as an operator control. Reviewers also raised performance and correctness concerns about namespace label changes, and the KEP was updated to only disallow empty selectors.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Allow all namespaces via a dedicated flag or a \"*\" token in the namespaces list",
+    "why_not": "The KEP says this \"makes the api slightly messy and limits use cases where only a select set of namespaces needs to be considered\"; a label selector is consistent with pod selection."
+   },
+   {
+    "option": "Use regexp/prefix matching on namespace names",
+    "why_not": "Reviewer liggitt was -1 because such matches \"are not strong boundaries\"; ahg-g's regexp proposal was not adopted."
+   },
+   {
+    "option": "Allow affinity across all namespaces with no selector",
+    "why_not": "Raised by liggitt as a simpler option; ahg-g said he could not say it was sufficient and preferred a selector consistent with pod selection."
+   },
+   {
+    "option": "Restrict the namespaceSelector operator to only \"In\"",
+    "why_not": "alculquicondor suggested it, but ahg-g proposed no constraints beyond disallowing an empty selector, since a common namespace label may be hard to arrange; the KEP was updated to match."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Adding a new quota scope named `CrossNamespaceAffinity` that allows operators to limit which namespaces are allowed to have pods that use affinity/anti-affinity across namespaces."
+   },
+   {
+    "ref": "rcomment:565409616",
+    "quote": "defining a quota scope for cross-namespace affinity/anti-affinity pods would let a cluster admin easily set up a default cluster wide quota"
+   },
+   {
+    "ref": "rcomment:565451286",
+    "quote": "I will update the KEP to include proposing a new quota scope, so NamespaceSelector and \"CrossNamespaceAffinity\" will be done under one feature flag."
+   },
+   {
+    "ref": "rcomment:568045737",
+    "quote": "I updated the KEP that we will only disallow empty selector to avoid accidental selection of all namespaces. Other operators are allowed."
+   },
+   {
+    "ref": "comment:1121138162",
+    "quote": "This feature has been **fully implemented** and is now **GA** in K8s version 1.24."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11835,
+  "output": 1104
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

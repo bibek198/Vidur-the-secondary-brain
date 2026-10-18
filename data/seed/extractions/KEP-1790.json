@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1790",
+ "input_hash": "a6e31479c3118ee5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1790 relaxes PVC API validation so users can reduce requested size (as long as it stays above pvc.Status.Capacity) to recover from failed volume expansion, and adds pvc.Status.AllocatedResources and pvc.Status.ResizeStatus so quota is tracked accurately. The KEP's status is implemented, stage stable.",
+  "rationale": "Expansion to a size the storage backend cannot support left the expansion controller retrying forever, with no way for the user to retry at a smaller size. The proposal allows size reduction, but quota uses max(spec, AllocatedResources) so that shrinking a PVC cannot be used to cheat the quota system. Discussion shows the design was refined over several years, including the AllocatedResources placement and naming, and the ResizeStatus states for coordinating kubelet and controller.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use pvc.Status.Capacity for quota tracking",
+    "why_not": "The readme's discussion says pvc.Status.Capacity is only set after binding, which could be when the pod starts, so a user could overcommit before binding."
+   },
+   {
+    "option": "Avoid putting the PVC in a shrink-requiring state by checking backend feasibility first",
+    "why_not": "The discussion notes this needs storage providers to tell, without expanding, whether an operation will succeed, and it was not known whether that was possible for all storage types."
+   },
+   {
+    "option": "Allow reduction all the way back to the original size",
+    "why_not": "The Drawbacks section says this needs special logic in kubelet and control-plane and is racy, so it was deferred to a later release. Later discussion suggested a separate ResetResizeRequest-style feature instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this proposal relaxes API validation for PVC objects to allow reduction in requested size"
+   },
+   {
+    "ref": "readme",
+    "quote": "quota calculation will use `max(pvc.Spec.Capacity, pvc.Status.AllocatedResources)` and reduction in `pvc.Status.AllocatedResources` is only done by resize-controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "We plan to revisit and address this in next release."
+   },
+   {
+    "ref": "rcomment:427372725",
+    "quote": "`pvc.Status.Capacity` can't be used for tracking quota because `pvc.Status.Capacity` is calculated after binding happens"
+   },
+   {
+    "ref": "comment:2400664616",
+    "quote": "I am not opposed to letting users reset the PVC size via a new feature may be called `ResetResizeRequest` or something similar."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12586,
+  "output": 1005
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

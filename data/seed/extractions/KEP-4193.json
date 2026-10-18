@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4193",
+ "input_hash": "262a52813a190449",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4193 adds a `node` claim (name and UID) to service account tokens issued by TokenRequest, and lets tokens be bound directly to a Node object. The KEP is now implemented and stable.",
+  "rationale": "Verifying a projected Pod token's Node association required fetching the Pod object and cross-checking spec.nodeName, which is a gap for external verifiers wanting to prevent token replay across Nodes. Embedding the immutable Node name and UID in the signed JWT closes that gap. The sources record the design and the graduation path through beta to stable, with the enhancements team asking the owner to mark it implemented once feature gates are removed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Server without the feature gate ignores the node binding and validates only signature and SA existence",
+    "why_not": "The discussion called this making tokens less secure when the gate is disabled, and the owner said \"I don't like this option\"."
+   },
+   {
+    "option": "Server without the feature gate rejects node-bound tokens",
+    "why_not": "The sources list it as an option requiring node-bound tokens not to be relied on until the upgrade is complete. The owner's leaning was toward option 3, not this one."
+   },
+   {
+    "option": "Server without the feature gate refuses to issue node-bound tokens but still accepts and validates them, using the node informer",
+    "why_not": "This is the option the owner leaned toward (\"I'd lean toward 3 or 3a\"), so it is not rejected. The sources do not say it was the final choice."
+   },
+   {
+    "option": "Gate issuance and acceptance of node-scoped tokens separately, graduating validation before issuance (3a)",
+    "why_not": "The owner mentioned this as a finer-grained variant but did not choose it. The sources do not say why it was not adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will be implemented as an additional `node` entry in the private claims embedded into each JWT returned by the TokenRequest API"
+   },
+   {
+    "ref": "readme",
+    "quote": "we will also add the ability to bind a token/JWT to a Node object directly, similar to how a token can be bound to a Pod or Secret resource today."
+   },
+   {
+    "ref": "rcomment:1344638221",
+    "quote": "3. Server without feature gate does not allow creation of explicitly node-bound tokens but continues to accept/validate them if presented. Requires running the node informer."
+   },
+   {
+    "ref": "comment:2887419319",
+    "quote": "Given that this KEP has graduated to `stable`, is all the work completed (including removing feature gates)?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12209,
+  "output": 983
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

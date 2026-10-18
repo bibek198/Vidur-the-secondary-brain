@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2206",
+ "input_hash": "eb5445a9a2347afe",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2206 adds an `openapi` field to the kustomization file so users can point kustomize at their own OpenAPI schema file (for custom resource merge keys and patch strategies), and adds a `kustomize openapi fetch` command to pull the schema from a live cluster. The current status is implementable at stage beta.",
+  "rationale": "Kustomize shipped with a hard-coded Kubernetes OpenAPI snapshot (1.19), so upgrading required recompiling and custom resources lacked merge key information. The readme says a user-specified `openapi` field would let them \"specify patch strategy and merge key information for their custom resources.\" The status history shows the KEP moved to implemented in June 2021 and was later reset to implementable in October 2021, after a PRR-related dispute; the sources frame that change as a process/labeling correction rather than a change in the feature's functionality.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the KEP at implemented status",
+    "why_not": "The maintainers argued implemented implies no more work, and johnbelamaric said 'If we mark this as `implemented` then it implies there is no more work to do, which isn't true.' The KEP was moved to implementable instead."
+   },
+   {
+    "option": "Move the KEP to stable",
+    "why_not": "Maintainers said 'we really shouldn't be leaving stuff in a perma-beta state', and the sources do not record a stable/GA decision for this KEP."
+   },
+   {
+    "option": "Keep the openapi schema hard-coded in the kustomize binary",
+    "why_not": "The readme identifies this as the problem: 'Because the Kubernetes OpenAPI schema is currently built into the kustomize binary, that strategic merging for custom resources is not supported well.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If a kustomize user were able to specify their own custom OpenAPI schema via an `openapi` field in a kustomization file, they would be able to specify patch strategy and merge key information for their custom resources."
+   },
+   {
+    "ref": "readme",
+    "quote": "The kustomization file would have a new `openapi` field: ``` openapi: path: myschema.json ```"
+   },
+   {
+    "ref": "rcomment:733216051",
+    "quote": "If we mark this as `implemented` then it implies there is no more work to do, which isn't true. So I agree that this should be `implementable`."
+   },
+   {
+    "ref": "rcomment:636533168",
+    "quote": "agree with @KnVerey, the work we intended to do with this KEP is done so I think it can be closed"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8126,
+  "output": 1036
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-4569",
+ "input_hash": "b4aa420504beb13a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4569 moves Kubernetes support for cgroup v1 into maintenance mode: no new features, e2e regression tests kept, best-effort fixes (security prioritized), and migration guidance. It explicitly does not remove cgroup v1 support; removal is deferred to a future KEP.",
+  "rationale": "The Linux kernel community focuses new cgroup features on v2, and distributions and systemd are phasing out v1, so Kubernetes must follow. The KEP freezes v1 features and keeps e2e coverage while leaving deprecation and removal for later. Discussion shows the \"deprecation\" wording caused confusion, so sig-node settled on maintenance mode rather than a removal path.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Continue full support for cgroup v1 with no change",
+    "why_not": "The KEP says this would prevent users from accessing cgroup v2 improvements and expose them to risks as systemd and RHEL 9 deprecate v1."
+   },
+   {
+    "option": "Deprecate cgroup v1 with the eventual goal of removing it",
+    "why_not": "The KEP says this could significantly impact users on legacy OS or kernel versions under long-term support. Reviewers also noted the term 'deprecation' caused confusion, so the KEP was narrowed."
+   },
+   {
+    "option": "Add a feature gate or env variable required to enable cgroup v1",
+    "why_not": "The discussion says the feedback was not to disrupt existing v1 support, and that a barrier would force users to take extra steps to keep using v1. The gate was dropped from the proposal."
+   },
+   {
+    "option": "Log a warning on cgroup v1 hosts at kubelet start",
+    "why_not": "A reviewer (bentheelder) suggested an explicit v1 warning, but the discussion records no decision to adopt it; the status history does not mention it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Moving cgroup v1 to maintenance mode presents transitional challenges, including: 1. Operational Overhead"
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals\nRemoving cgroup v1 support. Deprecation and removal will be addressed in a future KEP."
+   },
+   {
+    "ref": "comment:2059937137",
+    "quote": "The term \"deprecation\" has caused confusion and differing interpretations of how actively cgroup v1 features will be maintained."
+   },
+   {
+    "ref": "rcomment:1584020359",
+    "quote": "We are not going to drop the support for cgroup v1. At least, that is not with-in the scope of this KEP."
+   },
+   {
+    "ref": "rcomment:1608362477",
+    "quote": "the feedback on this KEP has been not to disrupt existing cgroup v1 support. If we put any barrier to enable cgroup v1, it will disrupt their workflow"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12289,
+  "output": 1070
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

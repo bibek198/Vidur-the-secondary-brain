@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-6063",
+ "input_hash": "b326fe20cff38dcb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6063 adds a per-pod PID limit (spec.resources.limits.pids) at Pod level, enforced by the kubelet via the pod cgroup pids.max, behind a new PerPodPIDLimit feature gate. Status is implementable, stage alpha.",
+  "rationale": "Pods that need more PIDs than the node-wide podPidsLimit (for example a sidecar such as Envoy, or agent pods that should be more constrained) cannot set their own pool today. The KEP extends the Pod-level resources stanza from KEP-2837 to PIDs, with the effective limit being min(podPidsLimit, spec.resources.limits.pids). Requests for PIDs are forbidden, since scheduler-side accounting of dynamic PID usage was judged too complex for this scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Requests-based PID accounting in the scheduler",
+    "why_not": "Scoped out: \"Adding support for requests would mean the scheduler needs to check if the node can accommodate the pod. This gets complicated because the number of PIDs in use at the exact moment the scheduler evaluates the node is highly dynamic.\""
+   },
+   {
+    "option": "Container-level PID limits",
+    "why_not": "Decided to start with pod-level: \"the decision was to start with pod-level. ... Adding per-container would add complexity for Alpha.\""
+   },
+   {
+    "option": "NRI plugin (annotation-based) or PriorityClass-based approaches",
+    "why_not": "Listed as alternatives in the Alternatives section; the sources do not give a detailed reason for rejecting them beyond their being alternatives."
+   },
+   {
+    "option": "Using nproc in ulimit (KEP-5758)",
+    "why_not": "\"since ulimit does not operate at the cgroup level, we decided not to pursue this implementation in KEP-5758.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4574091931",
+    "quote": "This KEP extends that same API to add PID limits This KEP has a dependency on the `PodLevelResources` featuregate which enabled by default now."
+   },
+   {
+    "ref": "rcomment:3361503212",
+    "quote": "So the effective limit is min(podPidsLimit, spec.resources.limits.pid) — the lower value wins."
+   },
+   {
+    "ref": "rcomment:3378639639",
+    "quote": "We scoped this to a kubelet change and therefore restricted it to limits alone, which are enforced via cgroups."
+   },
+   {
+    "ref": "rcomment:3378762431",
+    "quote": "the decision was to start with pod-level. I n cgroupsv2, the PID controller is set at the pod cgroup (pids.max)"
+   },
+   {
+    "ref": "rcomment:3401141465",
+    "quote": "Addressed the feedback by integrating Node Declared Features (KEP-5328) into the KEP, including design details, version skew handling, dependency documentation, and unit/e2e test coverage for feature declaration and scheduler filtering."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12522,
+  "output": 1124
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

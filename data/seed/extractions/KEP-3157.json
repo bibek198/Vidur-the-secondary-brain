@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3157",
+ "input_hash": "51ad7442d878ca1b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3157 proposes letting informers receive a stream of objects via a WATCH request (served from the watch cache) instead of a paginated LIST, so that LIST memory use becomes roughly constant per request. The KEP is currently implementable at stage beta.",
+  "rationale": "LIST requests served from etcd allocate roughly O(5 * response size) of temporary memory, which can OOM kube-apiserver and its node. Streaming the initial state through the watch mechanism keeps per-request allocation bounded. Reviewers accepted the design, with concerns about watch-cache buffering and client-side enablement addressed in later discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Tune the priority and fairness cost function for LIST requests",
+    "why_not": "The cost of a LIST is hard to estimate because object sizes vary across the keyspace, and the estimate would be uniform over coarse dimensions, forcing the server to handle very few LISTs at a time."
+   },
+   {
+    "option": "Measure real-time memory use and throttle when a threshold is exceeded",
+    "why_not": "runtime.ReadMemStats requires stop-the-world pauses and is too costly; reading /proc adds polling CPU cost and delay; cgroup notifications do not give free memory on the node."
+   },
+   {
+    "option": "Serve paginated LISTs directly from the watch cache",
+    "why_not": "It would still allocate memory for the entire response, held until the client finishes receiving it (up to 60s), so the memory problem would not be solved."
+   },
+   {
+    "option": "Force all clients to use pagination and let the server shrink page sizes",
+    "why_not": "Suggested by lavalamp as an alternative in discussion; the KEP does not record a reason it was rejected, and it is not the chosen design."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The primary idea is to use standard WATCH request mechanics for getting a stream of individual objects, but to use it for LISTs. This would allow us to keep memory allocations constant."
+   },
+   {
+    "ref": "readme",
+    "quote": "The bottom line is around O(5*the_response_from_etcd) of temporary memory consumption."
+   },
+   {
+    "ref": "readme",
+    "quote": "it also presents a few challenges. The most concerning is that it would actually not solve the issue."
+   },
+   {
+    "ref": "comment:1028302270",
+    "quote": "This design provides the ability for well-behaved clients to reduce the load they place on the server and improve their own deserialization memory cost."
+   },
+   {
+    "ref": "rcomment:1337443188",
+    "quote": "create a new FG [directly in Beta] - use that FG to decide whether watch-list is enabled in binary X"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12740,
+  "output": 1018
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

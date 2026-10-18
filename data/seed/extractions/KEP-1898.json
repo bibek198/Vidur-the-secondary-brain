@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1898",
+ "input_hash": "0b1a44eeb6b9127a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1898 proposes hardening kubelet exec endpoints against SSRF by requiring POST for most exec requests and removing command control via URL parameters; it is marked implementable at alpha stage.",
+  "rationale": "SSRF vulnerabilities (CVE-2020-8559, CVE-2018-1002102) become more severe when an attacker can run arbitrary commands via a GET URL parameter. The KEP limits exec via GET, keeping websocket support, and removes URL-parameter command control. The maintainers accepted the breaking changes, with the kubelet API as the target because only kube-apiserver consumes it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing",
+    "why_not": "The readme says that more exec-related vulnerabilities are likely in the future, so the risk remains."
+   },
+   {
+    "option": "Drop support for websockets",
+    "why_not": "The readme calls this probably a non-starter because it drops a supported feature."
+   },
+   {
+    "option": "Require the websocket protocol for GET requests (sub-protocol hash approach)",
+    "why_not": "The maintainer said the hash approach provides sufficient protection with minimal changes, and this was preferred over the signed exec token and the in-stream exec options. The exact reason for not selecting it as the final design is not fully stated in the sources."
+   },
+   {
+    "option": "Signed exec token request (POST to get signed params, then GET)",
+    "why_not": "The maintainer said it would require managing a signing key."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Mitigate the potential for privilege escalations via SSRF vulnerabilities by requiring a POST method for most exec requests, and limiting control of the executed command via URL parameters."
+   },
+   {
+    "ref": "readme",
+    "quote": "In both these cases, the potential of the vulnerability is greatly increased by the ability for an attacker to execute arbitrary commands specified by a URL parameter in a GET request."
+   },
+   {
+    "ref": "rcomment:496146535",
+    "quote": "Alternative 2 (exec token request) would require managing a signing key and option 3 (make request over the websocket connection) would be a much larger change."
+   },
+   {
+    "ref": "comment:722557156",
+    "quote": "Looks like this is not going to make the code freeze cutoff. /milestone v1.21"
+   },
+   {
+    "ref": "comment:776369928",
+    "quote": "I'm clearing the milestone to reflect that this enhancement was not entered into the [tracking sheet](http://bit.ly/k8s121-enhancements) before the enhancements freeze, therefore not opting into the 1.21 release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8165,
+  "output": 996
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

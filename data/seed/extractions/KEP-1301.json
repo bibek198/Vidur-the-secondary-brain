@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1301",
+ "input_hash": "2c1ed90035884a99",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1301 proposed using RuntimeClass (plus a node.kubernetes.io/windows-build label, a RuntimeHandler in the CRI pull API, and per-RuntimeClass containerd config) to schedule Windows pods to compatible nodes and to control Hyper-V isolation. Current status is implementable at stage alpha.",
+  "rationale": "The problem is that Kubernetes scheduling relies only on the Pod spec, so a Pod can land on an incompatible Windows or multi-arch node and fail to pull, and user intent is ambiguous when a node can run several OS/version/arch permutations. The proposal routes these controls through RuntimeClass rather than new Pod API fields. Discussion shows the user-facing node label shipped in 1.17, while the CRI/RuntimeClass work slipped and the enhancement was tracked with fewer implementation PRs after 2020-09.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Annotations instead of RuntimeClass for the CRI and containerd runtime selection",
+    "why_not": "Described as a fallback plan only; the proposal prefers RuntimeClass because Linux Kata on containerd is moving away from annotations, and in 2020 the team implemented the fallback with annotations in 1.19 for alpha."
+   },
+   {
+    "option": "Adding new fields to the Pod API and changing Kubernetes scheduling behavior",
+    "why_not": "The Summary states the proposal controls these features through RuntimeClass 'rather than adding new fields to the Pod API and changing Kubernetes scheduling behavior'."
+   },
+   {
+    "option": "Node selectors or taints per Pod for OS and version",
+    "why_not": "The Motivation calls these workable but cumbersome; the goal is 'a simpler experience (fewer lines of YAML) than adding os and version nodeSelector and tolerations to each Pod'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document proposes controlling those features through RuntimeClass as well, rather than adding new fields to the Pod API and changing Kubernetes scheduling behavior."
+   },
+   {
+    "ref": "comment:623711194",
+    "quote": "This work is not yet in an alpha state yet. We are working towards implementing the 'fallback' described under"
+   },
+   {
+    "ref": "comment:591213103",
+    "quote": "The user-facing change (node labels) was completed in 1.17 - PRs above. What we're doing for 1.18 is a change to CRI."
+   },
+   {
+    "ref": "comment:694994666",
+    "quote": "since we don't foresee needing any implementation PRs in k/k we didn't think tracking this as an enhancement makes sense."
+   },
+   {
+    "ref": "readme",
+    "quote": "Comparable solutions based on ContainerD + Kata on Linux are moving away from annotations and to RuntimeClass, so we want to follow the same approach for ContainerD + Hyper-V."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6885,
+  "output": 1104
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

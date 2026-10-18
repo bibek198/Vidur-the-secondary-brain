@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-671",
+ "input_hash": "80f99a291dad743d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-671 proposes building support for the out-of-tree IBM cloud provider, centered on a well-tested IBM cloud-controller-manager with feature parity to kube-controller-manager. The KEP is currently in provisional status.",
+  "rationale": "The KEP addresses moving IBM Cloud clusters from in-tree cloud provider code to an out-of-tree cloud-controller-manager, motivated by the general Cloud Controller Manager KEP. Its goals are to develop, test, and release the IBM cloud-controller-manager and to have IBM clusters run it. Removal of the in-tree IBM code is explicitly out of scope and handled by the separate in-tree removal KEP. The status is provisional, and the excerpt gives no further rationale or outcome.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Removing the in-tree IBM cloud provider code as part of this KEP",
+    "why_not": "Stated as a non-goal: removing in-tree IBM code falls under the KEP for removing in-tree providers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Build support for the out-of-tree IBM cloud provider. This involves a well-tested version of the cloud-controller-manager that has feature parity to the kube-controller-manager."
+   },
+   {
+    "ref": "readme",
+    "quote": "Motivation for supporting out-of-tree providers can be found in the [Cloud Controller Manager KEP]"
+   },
+   {
+    "ref": "readme",
+    "quote": "Removing in-tree IBM cloud provider code, this effort falls under the [KEP for removing in-tree providers]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1742,
+  "output": 680
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

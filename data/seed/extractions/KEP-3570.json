@@ -1,0 +1,62 @@
+{
+ "kep": "KEP-3570",
+ "input_hash": "de074259a51661fb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3570 moved the CPU Manager to stable (implemented, stage stable). It replaces the earlier sig-node KEP 375-cpumanager and was tracked under the new number after an early tracking-number mix-up.",
+  "rationale": "The CPU Manager was consumed by multiple parties and treated as GA, so maintainers wanted to avoid a permanent beta status. Reviewers asked for observability (pinning request and error metrics) before GA, which the KEP added as cpu_manager_pinning_requests_total and cpu_manager_pinning_errors_total. The 1.26 cycle delivered the work, and the status was later set to implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature in beta (perma-beta)",
+    "why_not": "Maintainers wanted to avoid it because the CPU Manager is consumed by multiple parties and treated as GA."
+   },
+   {
+    "option": "Keep the old KEP 375 number",
+    "why_not": "Reviewers asked to update the filename and KEP number to match the new tracking number; the author moved the KEP to 3570 using git mv."
+   },
+   {
+    "option": "Mark the KEP implementable for 1.27 and keep it in 1.27 tracking",
+    "why_not": "The maintainer said the enhancement was done in the 1.26 cycle and was labeled by mistake, so it was removed from 1.27 tracking."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP supersedes and replaces `kubernetes/enhancements/keps/sig-node/375-cpumanager/README.md`."
+   },
+   {
+    "ref": "comment:1263447318",
+    "quote": "CPU Manager is consumed by multiple parties and trated as GA. We want to avoid the perma-beta status"
+   },
+   {
+    "ref": "comment:1347538860",
+    "quote": "since this enhancement has graduated to stable can you please update"
+   },
+   {
+    "ref": "comment:1420267879",
+    "quote": "this enhancement was done in the 1.26 cycle and labeled by mistake"
+   },
+   {
+    "ref": "rcomment:986796866",
+    "quote": "cpu_manager_pinning_requests_total"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-375",
+    "relation": "replaces",
+    "ref": "readme",
+    "quote": "This KEP supersedes and replaces `kubernetes/enhancements/keps/sig-node/375-cpumanager/README.md`."
+   }
+  ],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13075,
+  "output": 936
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

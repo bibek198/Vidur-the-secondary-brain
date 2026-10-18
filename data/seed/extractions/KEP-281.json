@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-281",
+ "input_hash": "cf3ff0ce67572b0f",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-281 (Dynamic Kubelet Configuration) was deprecated in v1.22 for lack of interest in promoting it to stable, and later withdrawn with its stage removed; the feature was removed from the project's tracking.",
+  "rationale": "The feature had been stuck in alpha for years because maintainers did not push it to beta, and the approach exposed the Kubelet's whole ComponentConfig with many fields that do not make sense to change dynamically. The readme states deprecation at v1.22 was due to lack of interest in promoting it to stable. Maintainers said there was no native replacement and that the team would not prioritise it, and the issue was closed on 2022-11-10 as on the deprecation track.",
+  "outcome_reason": "The sources say the feature was deprecated because of lack of interest in promoting it to stable, and that it was not actively worked on. Maintainers also noted the approach had sharp edges. The sources do not give a single explicit reason for the withdrawal itself beyond the deprecation track.",
+  "alternatives": [
+   {
+    "option": "Promote Dynamic Kubelet Configuration to beta/stable",
+    "why_not": "The readme says the feature was deprecated at v1.22 due to lack of interest in promoting it to stable, and maintainers said there was no ongoing work on it."
+   },
+   {
+    "option": "Build a native replacement for dynamic kubelet config",
+    "why_not": "A maintainer said there was no plan for a native alternative; after deprecation it would be delegated to platform providers."
+   },
+   {
+    "option": "Update the kubelet configuration file on disk and restart kubelet",
+    "why_not": "The readme lists this as the preferred solution because it increases kubelet reliability and simplifies its code, so it was the path endorsed rather than rejected."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Dynamic Kubelet Configuration feature is deprecated at the version v1.22 due to lack of interest in promoting it to stable."
+   },
+   {
+    "ref": "readme",
+    "quote": "Alternatives for Dynamic Kubelet Configuration feature is a solution that updates kubelet configuration file and restarts kubelet which is preferred solution"
+   },
+   {
+    "ref": "comment:571238149",
+    "quote": "Our focus is pushing the underlying ComponentConfig APIs to a more stable state across core components."
+   },
+   {
+    "ref": "comment:661415107",
+    "quote": "The approach has a lot of sharp edges right now, because it just exposes the Kubelet's whole config, and many of those fields don't make sense to be dynamic."
+   },
+   {
+    "ref": "comment:1309635782",
+    "quote": "Closing this issue since this feature has been on the deprecation track for a while."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12463,
+  "output": 1024
+ },
+ "extracted_at": "2026-10-15T22:45:13Z"
+}

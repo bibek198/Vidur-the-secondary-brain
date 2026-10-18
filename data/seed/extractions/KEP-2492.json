@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2492",
+ "input_hash": "050644e2b2a596c0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2492 proposes using Kubernetes operators to manage cluster addons, with one CRD per addon so users can tailor addons (install or not, version, primary features) by editing the CRD instance. The KEP is in provisional status, dated from 2021-02-15.",
+  "rationale": "The bash addon-manager has many known shortcomings and is not widely adopted, and addons are increasingly developed outside kubernetes/kubernetes. The proposal reuses Kubernetes API machinery and operator patterns so addon-specific logic and options live in per-addon operators, with shared tooling to keep them consistent. The status is provisional, so the design is still a proposal and the excerpt does not show an accepted outcome.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue using the bash addon-manager",
+    "why_not": "The readme says it \"has many known shortcomings and is not widely adopted\"."
+   },
+   {
+    "option": "Mandate that all installation tools use addon operators",
+    "why_not": "This is a non-goal: \"We do not intend to mandate that all installation tools use addon operators; installation tools are free to choose their own path.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Our existing solution in the form of the bash addon-manager has many known shortcomings and is not widely adopted."
+   },
+   {
+    "ref": "readme",
+    "quote": "Each addon will have its own CRD, and users will be able to perform limited tailoring of the addon (install/don’t install, choose version, primary feature selection)"
+   },
+   {
+    "ref": "readme",
+    "quote": "We do not intend to mandate that all installation tools use addon operators; installation tools are free to choose their own path."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2907,
+  "output": 697
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

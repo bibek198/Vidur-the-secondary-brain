@@ -1,0 +1,46 @@
+{
+ "kep": "KEP-536",
+ "input_hash": "b917708c9981aeb9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-536 proposed a generic, label-based topology-aware routing for Services (e.g. node, rack, zone, region), with hard or soft topology requirements enforced by kube-proxy and kube-dns/coredns. The KEP was replaced by KEP-2433 Topology Aware Hints.",
+  "rationale": "The motivation was to generalize the earlier node-local service requests so that locality can be defined by any node label (the \"topology key\"). The KEP was implementable from 2020-12-16 and was replaced from 2021-05-04. The recorded replacement is KEP-2433 Topology Aware Hints, but the sources do not give the reason for the replacement.",
+  "outcome_reason": "The kep.yaml record says KEP-536 is replaced by KEP-2433 Topology Aware Hints. The sources do not state why it was replaced.",
+  "alternatives": [
+   {
+    "option": "Node-local service routing only, as in the earlier requests (kubernetes/kubernetes#7433 and PR #28637)",
+    "why_not": "The proposal says the node-local case alone is not enough and that a more generic way should be figured out."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Figure out a generic way to implement the \"local service\" route, say \"topology aware routing of service\"."
+   },
+   {
+    "ref": "readme",
+    "quote": "But, this document proposes that not only the particular \"node-local\" user case should be taken care, but also a more generic way should be figured out."
+   },
+   {
+    "ref": "readme",
+    "quote": "Routing decision is expected to be implemented by kube-proxy and kube-dns/coredns for headless service."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2433",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "KEP-536 is replaced by KEP-2433 Topology Aware Hints"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2084,
+  "output": 744
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

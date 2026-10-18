@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-950",
+ "input_hash": "ae20c6587ec8b95f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-950 proposed a new startupProbe that holds off liveness and readiness probes until a slow-starting container has finished starting, so that a high failureThreshold can cover startup while the liveness probe still detects deadlocks quickly afterward. The KEP's status is implemented, stage stable.",
+  "rationale": "Slow-starting containers (one to several minutes) get killed by the kubelet when livenessProbe fails failureThreshold times before they are up. Existing workarounds either delay deadlock detection (large initialDelaySeconds) or delay it after startup (large failureThreshold times periodSeconds). The KEP adds a startupProbe that runs first and gates the other probes, which the sources describe as the mechanism that resolves this.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Increase initialDelaySeconds on livenessProbe to exceed startup time",
+    "why_not": "The readme says this delays deadlock detection if the container starts faster than initialDelaySeconds, and gives no feedback on actual startup time."
+   },
+   {
+    "option": "Increase failureThreshold so failureThreshold times periodSeconds exceeds startup time",
+    "why_not": "The readme says this prevents timely kills of containers that deadlock after they have come up."
+   },
+   {
+    "option": "Address node-level load affecting startup",
+    "why_not": "The readme lists this as a non-goal: the proposal acts strictly at the pod level, not the node level."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal adds a new probe called `startupProbe` that holds off all the other probes until the pod has finished its startup."
+   },
+   {
+    "ref": "readme",
+    "quote": "it also delays deadlock detection if the container starts faster than `initialDelaySeconds`."
+   },
+   {
+    "ref": "readme",
+    "quote": "It is acting strictly at the pod level, not the node level."
+   },
+   {
+    "ref": "comment:691535806",
+    "quote": "once this feature totally complete and all of your PRs are merged, please update the kep to have a status of implemented"
+   },
+   {
+    "ref": "comment:756379297",
+    "quote": "I'm closing out this issue since the enhancement is GA and KEP has been updated to implemented."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12032,
+  "output": 863
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

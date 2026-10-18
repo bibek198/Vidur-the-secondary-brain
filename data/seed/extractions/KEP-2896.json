@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2896",
+ "input_hash": "a4e7b672f4ef4438",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2896 proposes publishing OpenAPI v3 for Kubernetes types at /openapi/v3/apis/{group}/{version}, one spec per group-version instead of one aggregated spec, with the aggregated document no longer served at /openapi/v3. The KEP is implemented and at stable stage.",
+  "rationale": "OpenAPI v2 conversion strips information from CRD schemas (oneOf, anyOf, nullable, default), and one monolithic aggregated spec forces clients to re-download everything on any change. Splitting by group-version makes the published v3 lossless and cheaper to fetch. Reviewers raised concerns about incomplete v3 data during transition, which led to making v2->v3 conversion a beta requirement.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a separately maintained, hand-written OpenAPI v3 spec as source of truth instead of generating from Go types",
+    "why_not": "Maintainers said it was out of scope for this KEP and that hand-written OpenAPI as source of truth had little chance of agreement; the KEP is about publishing the spec via a new endpoint."
+   },
+   {
+    "option": "Aggregate by group only instead of group-version",
+    "why_not": "Splitting by group-version was chosen because it removes the aggregation step; the group-only split was only about 30% smaller in total size, which was judged less important."
+   },
+   {
+    "option": "For aggregated apiservers, convert v2 to v3 and publish a lossy v3 schema",
+    "why_not": "Discussed by jefftree as an alternative; the sources do not state a final rejection rationale, but the v2->v3 conversion was later accepted as a beta requirement with the caveat that it is ugly but feasible."
+   },
+   {
+    "option": "Drop v3 publishing for old apiservers until upgraded (version skew handling)",
+    "why_not": "This was the position adopted in the version-skew section, so it is not an alternative that was rejected; it is noted as the chosen handling for skew."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposal is to publish OpenAPI v3 schemas at the `/openapi/v3/apis/{group}/{version}` endpoint for all resources."
+   },
+   {
+    "ref": "readme",
+    "quote": "There are a couple of important fields part of the CRD structural schema that are stripped when we publish v2: `oneOf`, `anyOf`, `nullable`, `default`."
+   },
+   {
+    "ref": "rcomment:700745290",
+    "quote": "let's adopt splitting by group-version given the advantages of a omitting an aggregation step with group-version"
+   },
+   {
+    "ref": "comment:915362349",
+    "quote": "v2->v3 is fine as a beta requirement. We will attempt that. I think it is ugly, but feasible."
+   },
+   {
+    "ref": "comment:915636640",
+    "quote": "I am pretty sure, however, that there's little chance people would agree to hand-write OpenAPI and make that the source of truth."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11740,
+  "output": 1118
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-596",
+ "input_hash": "b1b423e281c419f1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-596 let CSI volumes be declared inline in pod specs for ephemeral-style drivers, handled only through mount/unmount calls. The KEP reached GA (stable) in Kubernetes 1.25 and was marked implemented.",
+  "rationale": "Driver developers needed a way to inject configuration, secrets, identity, or variables into pods through a mounted volume, which PV/PVC objects did not support. The design makes inline volumes participate only in mount/unmount calls, with the kubelet generating the volumeHandle and resolving secret references. Graduation was delayed from 1.24 because graduation criteria remained, and the enhancement then missed the 1.25 code freeze and was readmitted by exception.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Require each CSI driver to be deployed twice, once for ephemeral and once for persistent volumes",
+    "why_not": "Rejected because a driver might manage a resource shared between both kinds of volumes, like local disks (LVM) or persistent memory (PMEM), and deploying twice would make driver implementation more complex."
+   },
+   {
+    "option": "Keep the existing \"CSI\" VolumeSource name and only pass a hint",
+    "why_not": "Comment 726185967 records that the group agreed to rename the API (VolumeSource.CSI to VolumeSource.Ephemeral.Custom) because having \"CSI\" in the name was confusing; the sources do not say this rename was carried out for the GA release."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When a volume definition is embedded inside a pod spec, it is considered to be an `ephemeral inline` volume request and can only participate in *mount/unmount* volume operation calls."
+   },
+   {
+    "ref": "readme",
+    "quote": "Driver developers to create new types of CSI drivers such as ephemeral volume drivers. They can be used to inject arbitrary states, such as configuration, secrets, identity, variables or similar information"
+   },
+   {
+    "ref": "comment:1309567396",
+    "quote": "This enhancement is complete, closing it out. To recap: it graduated to GA in 1.25, I marked it as implemented in https://github.com/kubernetes/enhancements/pull/3445"
+   },
+   {
+    "ref": "comment:1076809084",
+    "quote": "we'll need to postpone GA for this enhancement to 1.25, there is still some remaining work in the [graduation criteria]"
+   },
+   {
+    "ref": "comment:1206871729",
+    "quote": "the exception request was approved today and the PR merged"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12456,
+  "output": 977
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

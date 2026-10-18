@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2338",
+ "input_hash": "9f08e6e5618451dc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2338 adds transparent gzip response encoding for large Kubernetes API responses via Accept-Encoding: gzip, without compressing small requests or watch responses. Its current status is implementable at beta; graduation to GA is under discussion but not decided in the sources.",
+  "rationale": "Large API responses (hundreds of MB) are slow for clients outside the cluster network, and gzip can cut bandwidth substantially. The design aims to add gzip without regressing apiserver CPU for small requests. Maintainers later questioned whether gzip throughput at scale is acceptable enough to graduate, citing past issues that forced lowering the compression level or disabling it for local traffic.",
+  "outcome_reason": "The status is implementable, stage beta, so the KEP has not been graduated to GA. The sources say GA is blocked on understanding high-scale impact and compression throughput, but they do not record a final decision to stay at beta or to deprecate.",
+  "alternatives": [
+   {
+    "option": "Graduate to GA now",
+    "why_not": "Liggitt said that before calling this GA and locking the feature to enabled, the impact at high scale needs to be understood, and possibly addressed."
+   },
+   {
+    "option": "Deprecate the existing gzip support",
+    "why_not": "Sftim argued for either documenting or deprecating it, but the sources record no decision to deprecate; Serathius said gzip should not simply be disabled."
+   },
+   {
+    "option": "Switch to a different compression algorithm",
+    "why_not": "Serathius proposed looking for alternatives that do not bottleneck, in a separate proposal (issue #136030); the sources do not show this was adopted in KEP-2338."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Allow standard HTTP transparent `Accept-Encoding: gzip` behavior to work for large Kubernetes API requests, without impacting existing Go language clients"
+   },
+   {
+    "ref": "comment:3637291438",
+    "quote": "Before calling this GA and locking the feature to enabled, the impact at high scale does need to be understood, and possibly addressed."
+   },
+   {
+    "ref": "comment:3710899649",
+    "quote": "I don't think gzip at the current state is good candidate for graduation. It caused issues on multiple occasions, forcing us to lower it's compression level"
+   },
+   {
+    "ref": "comment:3637297926",
+    "quote": "we should have a clear view to the throughput targets for compression. The current implementation has some scale limitations that may need addressing before graduating and locking on."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4836,
+  "output": 960
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

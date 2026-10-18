@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-2763",
+ "input_hash": "19dc7319ed37a9d7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2763 proposes letting Pod manifests set ambient capabilities for containers, with matching changes in containerd and CRI-O, so non-root containers can get capabilities such as NET_BIND_SERVICE without file capabilities baked into the image. Its status is provisional at alpha stage, and the sources show it was not marked implementable and was removed from the 1.23 and 1.24 milestones.",
+  "rationale": "Non-root containers lose the capabilities added in the Pod spec because the effective and permitted sets are cleared on the UID 0 to non-zero transition, so users must apply setcap in the image build. The sources say the API design was still under discussion when the KEP missed the 1.23 freeze, and the team could not agree on the field needed to mark it implementable. The sources do not record a final rejection.",
+  "outcome_reason": "The sources do not say why the KEP stayed provisional beyond the unresolved API design. The maintainer said \"We still haven't agreed upon the field to mark it implementable. I am going to remove it from milestone. /remove milestone 1.24\". The containerd and CRI-O feature PRs are closed, and the sources do not say whether that was a rejection.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Including NET_BIND_SERVICE in the ambient set by default\", \"why_not\": \"Listed as the only alternative in the KEP; the sources do not say why it was not pursued.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes that kubernetes provide a way to set ambient capabilities for containers through the Pod manifest."
+   },
+   {
+    "ref": "readme",
+    "quote": "Capabilities that are either added explicitly in the manifest or by default to a non-root container do not get added to its effective and permitted set"
+   },
+   {
+    "ref": "comment:914484690",
+    "quote": "We are still discussing how the K8S API changes would look like, we need to figure those out before we can mark this as implementable."
+   },
+   {
+    "ref": "comment:1025141614",
+    "quote": "We still haven't agreed upon the field to mark it implementable. I am going to remove it from milestone. /remove milestone 1.24"
+   },
+   {
+    "ref": "comment:2337511197",
+    "quote": "The feature PRs in CRI-O and Containerd are all closed now."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7401,
+  "output": 887
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

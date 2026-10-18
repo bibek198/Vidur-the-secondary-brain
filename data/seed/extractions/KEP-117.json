@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-117",
+ "input_hash": "bcc3fa6fe4a68088",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-117 extends HPA metric specificity: adds a label selector to the Object and Pods metric sources, adds targetAverageValue to Object metrics, and aligns External sources with the new MetricIdentifier/MetricTarget form, delivered as a second autoscaling/v2 beta (v2beta2). The KEP's recorded status is implemented, stage stable, from 2020-12-28.",
+  "rationale": "Users needed to select a specific series (e.g., one queue among several) from custom metrics without external relabeling, and to divide object targets by replica count. The design adds a selector to MetricIdentifier and a unified Target field, which requires a new beta API version. The discussion records a status-classification dispute: the KEP was declared implementable at alpha before PRR was required, and was retroactively marked implemented at beta, which skipped PRR review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep requiring out-of-band changes (e.g., Prometheus recording rules) to support complex metric environments",
+    "why_not": "The readme says this induces friction with Prometheus-style setups and often needs admin intervention that is not simple or scalable."
+   },
+   {
+    "option": "Allow passing full queries instead of metric names",
+    "why_not": "The readme says it would add adapter complexity, security issues, and lesser portability, since adapters would need query rewriting to inject labels."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal brings both of those fields to the `Object` metric source type, and further brings the selector field to the `Pods` metric source type"
+   },
+   {
+    "ref": "readme",
+    "quote": "These changes necessitate a second beta of `autoscaling/v2`: `autoscaling/v2beta2`."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6048,
+  "output": 867
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

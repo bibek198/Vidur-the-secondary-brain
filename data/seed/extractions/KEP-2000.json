@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2000",
+ "input_hash": "cf8dd9e91bc3393a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2000 makes the kubelet aware of a node shutdown (via systemd inhibitor locks) so it can gracefully terminate pods before the machine powers off. It is currently implementable at stage beta, and the design was revised to use two configurable shutdown phases with a NotReady-style node status.",
+  "rationale": "Pods were not terminated gracefully when a node shut down, which can harm some workloads. The KEP has the kubelet hold a systemd logind inhibitor lock to propagate the shutdown to pods, chosen over systemd cgroup-based alternatives that cannot run preStop hooks. Per sig-node review, the design was changed to add configurable ShutdownGracePeriod and ShutdownGracePeriodCriticalPods, and to mark the node Ready=false with reason \"Node is shutting down\".",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use systemd cgroup driver to set TimeoutStopSec= on container scopes",
+    "why_not": "The KEP says systemd doesn't understand the prestop hooks."
+   },
+   {
+    "option": "Use systemd cgroup driver with Before=kubelet.service ordering",
+    "why_not": "The KEP says this depends on the systemd cgroups driver and is coupled to systemd."
+   },
+   {
+    "option": "Hook directly into ACPI events on the node",
+    "why_not": "The KEP says it can conflict because only one systemd daemon should monitor ACPI events, and systemd would otherwise terminate kubelet during shutdown."
+   },
+   {
+    "option": "Drain nodes before shutdown instead",
+    "why_not": "The KEP says this is not always possible, for example when an external system controls shutdown such as Preemptible VMs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubelet should be aware of node shutdown and trigger graceful shutdown of pods during a machine shutdown."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is not always possible, for example if the shutdown is controlled by some external system (e.g. Preemptible VMs)."
+   },
+   {
+    "ref": "comment:701154919",
+    "quote": "I will followup to address the comments here and would like to merge this and mark it implementable, so we can get the KEP in before the enhancements freeze for 1.20"
+   },
+   {
+    "ref": "rcomment:497244146",
+    "quote": "it would makes sense to make this configurable via KubeletConfig. Unfortunately, this would result in two fields that need to be exposed in Kubelet Config"
+   },
+   {
+    "ref": "comment:2388974784",
+    "quote": "I believe we will keep this feature as Beta in 1.32, too."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12330,
+  "output": 1007
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

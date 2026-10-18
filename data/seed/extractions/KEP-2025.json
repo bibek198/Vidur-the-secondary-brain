@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2025",
+ "input_hash": "4e4124705424f27c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2025 proposes extending the API server network proxy (Konnectivity) so that traffic from the Node network (kubelets, pods) can reach the kube-apiserver on the Master network. Konnectivity agents expose a listening endpoint on the node and forward traffic to the KAS, without exposing the KAS to the node network. The KEP is at status implementable, stage alpha.",
+  "rationale": "Isolated node and master networks currently leave only two options for node-to-master traffic: expose the KAS publicly or run a VPN. The proposal reuses the existing Konnectivity tunnels for node-to-master traffic to keep one consistent approach in both directions, and it also allows SNI-based routing so one load balancer can serve multiple clusters. The drawback noted is more complex node bootstrap and harder agent upgrades.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Setting up a VPN (e.g. IPSec, Wireguard)",
+    "why_not": "More complicated to set-up (e.g. MTU size issues, specific configuration, kernel requirements and ports to open)."
+   },
+   {
+    "option": "Exposing the KAS directly to the Internet",
+    "why_not": "The summary states the goal is to avoid exposing the Kubernetes API Server publicly, and the motivation lists this as the only alternative to the proxy approach that the proposal wants to avoid."
+   },
+   {
+    "option": "Exposing only the Konnectivity Proxy Server",
+    "why_not": "The motivation says this would add a layer of security but does not remove the need to expose a public endpoint; the proposal instead builds on the existing proxy for both directions."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "What we propose here is to build on top of what we have, and having a consistent approach for master to node and node to master communications."
+   },
+   {
+    "ref": "readme",
+    "quote": "When using this setup, there are no other options than to directly expose the KAS to the Internet or setting up a VPN to handle traffic originated from the cluster nodes"
+   },
+   {
+    "ref": "readme",
+    "quote": "the Konnectivity Agents have to expose an endpoint that will be listening on a specific port and forward the traffic to the KAS on the Master Network"
+   },
+   {
+    "ref": "readme",
+    "quote": "Main drawback is the increased complexity of the nodes bootstrap, as kubelets need to have the Konnectivity server up and running in order to communicate with KAS."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2720,
+  "output": 941
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

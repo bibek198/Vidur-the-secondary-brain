@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2258",
+ "input_hash": "28ddb9a69d50e5e2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2258 proposes a kubelet API and kubectl support so cluster administrators can stream node logs (systemd/journald services, /var/log files, and Windows event/log files) without SSH access to the node. The KEP is recorded as implemented and at stable stage.",
+  "rationale": "Troubleshooting control-plane and worker nodes required administrators to SSH into nodes to read services' logs such as kube-proxy or kubelet. The KEP restricts access to cluster administrators because node logs are sensitive. Reviewers accepted the design after debate over whether to hide the journald-versus-file distinction, and the agreed direction was a heuristic lookup by service name.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Client-side log reader deployed on the nodes to redirect logs",
+    "why_not": "The readme says this would need privileged container support on Windows and would not help when containers fail to launch on the node."
+   },
+   {
+    "option": "Require callers to specify journal versus file explicitly for each query",
+    "why_not": "Reviewers (thockin) objected that users should not have to know the difference; the thread moved toward a heuristic that looks up the service name in the journal and then /var/log."
+   },
+   {
+    "option": "Ship logs off-node to a central store",
+    "why_not": "Raised by thockin as a comparison point; the sources do not record a specific rejection rationale beyond the need for the added complexity to be justified."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A simpler and more elegant method would be to allow them to use a kubelet API or kubectl plugin to also view these logs similar to using it for other interactions with the cluster."
+   },
+   {
+    "ref": "comment:832987701",
+    "quote": "I have updated the KEP to reflect the heuristic approach you suggested. Please take a look."
+   },
+   {
+    "ref": "comment:781499794",
+    "quote": "Confined to admins this feature should be roughly proportionally as expensive as any other admin command, and an admin has other ways to attack the node."
+   },
+   {
+    "ref": "comment:828778983",
+    "quote": "My fear is that if we implement with a lot of control we will have a hard time removing them, whereas if we start with relatively little control, we may not need them at all."
+   },
+   {
+    "ref": "comment:776703478",
+    "quote": "If the authorization is limited the same way as current node log access, and kubelet admins have the ability to disable logs by setting enableSystemLogHandler: false, this lgtm for sig-auth"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9537,
+  "output": 945
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

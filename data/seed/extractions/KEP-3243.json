@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3243",
+ "input_hash": "34b1308522824c54",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3243 proposes a MatchLabelKeys field in TopologySpreadConstraint so that pod topology spreading is computed per Deployment revision during rolling upgrades. Its current status is implementable, stage beta.",
+  "rationale": "Topology spread constraints use a label selector that matches pods across all ReplicaSets of a Deployment, so during a rollout old and new pods skew the distribution. The KEP has kube-apiserver merge label values from the listed keys into the LabelSelector at pod creation, and kube-scheduler handles the same keys for cluster-level default constraints. Reviewers asked for an upgrade path in which kube-scheduler handles all incoming pods during the transition release.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Implement MatchLabelKeys only inside the PodTopologySpread scheduler plugin",
+    "why_not": "The KEP says this may confuse users because it would differ from PodAffinity's MatchLabelKeys, and it cannot be applied to the update path cleanly."
+   },
+   {
+    "option": "Implement MatchLabelKeys only in kube-apiserver",
+    "why_not": "The KEP says this would make it impossible to handle matchLabelKeys in the cluster-level default constraints in the scheduler configuration."
+   },
+   {
+    "option": "Use a manual revision label on the Deployment and update the selector at each rollout",
+    "why_not": "The Motivation section calls this not user friendly and error prone, requiring manual tuning."
+   },
+   {
+    "option": "Run a descheduler to rebalance pods",
+    "why_not": "The Motivation section says it requires installing and maintaining an extra controller."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The main case that this new way for identifying pods will enable is constraining skew spreading calculation to happen at the revision level in Deployments during rolling upgrades."
+   },
+   {
+    "ref": "readme",
+    "quote": "The root cause is that PodTopologySpread constraints allow defining a key-value label selector, which applies to all pods in a Deployment irrespective of their owning ReplicaSet."
+   },
+   {
+    "ref": "rcomment:1923587736",
+    "quote": "we cannot implement this feature only within kube-apiserver because it'd make it impossible to handle `matchLabelKeys` within the cluster-level default constraints in the scheduler configuration."
+   },
+   {
+    "ref": "rcomment:1926288564",
+    "quote": "So, for a safe upgrade path from v1.32 to v1.33, kube-scheduler would handle not only `matchLabelKeys` from the default constraints, but also all incoming pods during v1.33."
+   },
+   {
+    "ref": "comment:2742704778",
+    "quote": "OK, I've merged this change into #5205 and close this PR."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12763,
+  "output": 1049
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2578",
+ "input_hash": "b3d41027608a43ec",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2578 proposes a Windows operational readiness standard for Kubernetes clusters that support Windows, defined in terms of existing Ginkgo tags and e2e tests, with a possible Sonobuoy-based certification bundle. The KEP is implementable at alpha stage.",
+  "rationale": "The 1000s of existing Ginkgo tests do not give a clear meaning for Windows operational readiness, and Windows clusters vary in CNI, CRI and configuration, so users get a less stable experience than on Linux. The KEP defines readiness categories (core versus feature-specific), maps them to existing tags, and avoids new tooling in Kubernetes core. During PRR review, the approver noted the KEP is about building a test suite rather than a feature present in a running cluster, so PRR answers were not required.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Define a new set of Ginkgo tags for Windows conformance",
+    "why_not": "The KEP says tags 'can be subject to change over time', so it does not couple the definition of Windows operational readiness to them; tags remain the canonical implementation detail only."
+   },
+   {
+    "option": "Treat the standard as Windows Conformance with a Conformance specification",
+    "why_not": "Reviewers objected that there should not be a 'Conformance' specification, so it was framed as an operational readiness specification instead."
+   },
+   {
+    "option": "Standardize on specific Windows versions 1909 and 2004 (SAC)",
+    "why_not": "A reviewer argued only LTSC versions (Windows Server 2019 and 2022) should be covered, since SAC versions were ending service; the discussion records a plan to push updates to the two latest SACs and latest LTS."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Ginkgo tags, which are commonly used to define test suites, can be subject to change over time (either in their implementation, their definition, or both)"
+   },
+   {
+    "ref": "readme",
+    "quote": "defines how these conformance tests can be run using *existing* Kubernetes ginkgo tags, without any additional tooling"
+   },
+   {
+    "ref": "rcomment:788195575",
+    "quote": "This KEP appears to be about building a test suite as opposed to a feature that is enabled and always present inside of a running cluster."
+   },
+   {
+    "ref": "rcomment:894754374",
+    "quote": "the feedback was that there shouldnt be a \"Conformance\" Specification - hence we defined this as an operational readiness specification"
+   },
+   {
+    "ref": "rcomment:708411470",
+    "quote": "I believe we should only be performing conformance tests on what would be officially supported at the time of 1.23, which would be LTSC versions of Windows Server"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12104,
+  "output": 1024
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

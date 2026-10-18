@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1179",
+ "input_hash": "7211053f4d9fbbbc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1179 proposed adding a pseudo build tag (build constraints) to in-tree cloud provider code so Kubernetes can be built without in-tree cloud providers, to simulate their future removal. The KEP's status is implemented, stage stable.",
+  "rationale": "The in-tree cloud provider code is being removed (KEP-2395), and hidden uses via side channels such as init() methods are hard to find without a build that excludes it. A build tag lets the team verify removal and gives smaller binaries for cloud-provider-less clusters, with no change to default builds. The status reasons come from the review thread on PR #3007, which concerned how status values map to KEP stages rather than this KEP's technical merits.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Wait for the in-tree providers to be removed entirely",
+    "why_not": "The readme says this 'may not provide sufficient tools to adequately prepare', and the providers are not guaranteed to exit at the same time."
+   },
+   {
+    "option": "Each cloud provider duplicates the work to test a cloud-provider-free Kubernetes",
+    "why_not": "The readme names this as a risk, since each provider would need its own duplicate effort."
+   },
+   {
+    "option": "Maintain a branch or PR carrying the removal changes",
+    "why_not": "The readme says that would be expensive to maintain and would obscure the effort, so developers would have little visibility that their changes were cloud-provider related."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We will add a build constraints to the cloud provider code for a pseudo \"build tag\" specifying not to include any in-tree provider code."
+   },
+   {
+    "ref": "readme",
+    "quote": "in the default mode without our pseudo-tag the code will build as today and require zero additional maintenance to function."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented. It landed after"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5313,
+  "output": 858
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

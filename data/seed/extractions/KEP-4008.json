@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4008",
+ "input_hash": "326e5fcc7a7e87b9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4008 proposes a CRDValidationRatcheting feature gate that lets updates to custom resources succeed when validation errors fall only on unchanged keypaths, so CRD authors and Kubernetes can widen or tighten value validations without breaking existing objects. The KEP is implementable and at stable stage.",
+  "rationale": "Tightening a CRD value validation today makes any update to an existing object fail, even when the invalid field was not changed, which discourages adding validation. The proposal ratchets validation so only errors on changed keypaths block writes. Reviewers asked for a restricted scope: leaf value validations are ratcheted while anyOf/allOf/oneOf/not and transition rules are not, because the general case is hard to make correct and performant.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Ratchet validation by mapping field paths from string error paths back to old and new objects",
+    "why_not": "alexzielenski moved away from this: \"I've moved the original plan to use string field path based approach to alternatives.\" The new plan evaluates old and new pairwise during traversal."
+   },
+   {
+    "option": "Ratchet all nested value validations (anyOf, allOf, oneOf, not) and transition rules",
+    "why_not": "sttts recommended restricting ratcheting to leaf validations, noting that nested validations \"are not common, and they usually don't overlap\". jpbetz and benluddy agreed transition rules are not practical to ratchet, since they would need the resource two states back."
+   },
+   {
+    "option": "Offline one-off process to convert existing etcd resources to pass new validation",
+    "why_not": "alexzielenski argued it \"wouldn't solve the main goal of the KEP\" because authors and users would both need to track which changes need manual repair."
+   },
+   {
+    "option": "Opt-in ratcheting via CRD extension or cluster-level flag",
+    "why_not": "The KEP authors leaned toward applying it to all CRDs; the discussion says \"open to making it opt-in\" but does not record a final choice on opt-in."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When enabled, this flag allows updates to custom resources that fail validation to succeed if the validation errors were on unchanged keypaths."
+   },
+   {
+    "ref": "rcomment:1219476797",
+    "quote": "My gut feeling is that to make this whole KEP feasible we should heavily restrict the OpenAPI validation constructs we can ratchet."
+   },
+   {
+    "ref": "rcomment:1212339143",
+    "quote": "I'm in favor of not providing ratcheting for transition rules."
+   },
+   {
+    "ref": "rcomment:1230619139",
+    "quote": "Hence, we will move those cases out of the feature gate that we are comfortable with."
+   },
+   {
+    "ref": "rcomment:1227327470",
+    "quote": "This does change the current behavior which would block an update containing an unchanged field that now fails validation. I think it is worth the tradeoff."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11128,
+  "output": 1106
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3352",
+ "input_hash": "b7bae3f9fab7091a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3352 proposes an aggregated discovery endpoint that serves all group-versions' discovery documents in one response, with ETag support, built by a new controller. The KEP is implemented and at stable stage (GA in v1.30).",
+  "rationale": "Clients such as kubectl must send one request per group-version to discover APIs, causing request storms, latency, and throttling. The KEP centralizes discovery into aggregated documents served via content negotiation, with ETag polling for refresh. Reviewers agreed polling with ETags was sufficient, so watch support was left out of scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Discovery cache busting (hash-named files with never-expiring cache headers)",
+    "why_not": "The KEP chose aggregation because it saves the most requests both on startup and when multiple group-versions change."
+   },
+   {
+    "option": "Watchable discovery",
+    "why_not": "Polling with ETag support is sufficient for most clients, and watch would substantially change the proposal's scope."
+   },
+   {
+    "option": "New URL endpoint /discovery/<version>",
+    "why_not": "A new endpoint per serialization version adds burden for clients as the API evolves, since they may need to check multiple endpoints to learn the feature's state."
+   },
+   {
+    "option": "Keep the existing per-group-version endpoints only",
+    "why_not": "The KEP states that the per-group-version discovery endpoints are needed for some use cases, so they are kept, but the aggregated endpoint is added to address the request storm."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes centralizing the \"discovery\" mechanism into two aggregated documents so clients do not need to send a storm of requests"
+   },
+   {
+    "ref": "readme",
+    "quote": "ETag support will be provided so clients who already have the latest version of the aggregated discovery can avoid redownloading the document."
+   },
+   {
+    "ref": "readme",
+    "quote": "Aggregated Discovery was selected because of the amount of requests that are saved both on startup and on changes involving multiple group versions."
+   },
+   {
+    "ref": "rcomment:903027612",
+    "quote": "With this KEP, the total number of requests will be reduced from `kubectl api-versions | wc -l` to a single request."
+   },
+   {
+    "ref": "comment:2110850625",
+    "quote": "Since this KEP has been graduated to GA in v1.30 and the status marked as [implemented]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12383,
+  "output": 931
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1281",
+ "input_hash": "2875b1ec150c2b36",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1281 proposes an extensible API Server Network Proxy (konnectivity) that routes traffic initiated by the kube-apiserver through a connectivity proxy running in the control plane network, replacing the deprecated SSH tunnels. The KEP's current status is implementable at stage beta.",
+  "rationale": "SSH tunnels were deprecated in 1.9 and removed in 1.22, and the KAS needed a level of indirection separating API server-initiated traffic from user traffic to support isolated control and cluster networks. The proposal runs a connectivity server outside the KAS, starting with HTTP Connect and falling back to gRPC if HTTP Connect proved unsuitable. Per the discussion, the feature reached beta in 1.18 but the KEP status was not updated, so the KEP was refreshed to implementable/beta in 2023 and GA criteria remained open.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave SSH tunnels in the KAS",
+    "why_not": "The readme says this 'Prevents us from making the KAS cloud provider agnostic. Blocks out of tree effort.'"
+   },
+   {
+    "option": "Build equivalent functionality into the KAS",
+    "why_not": "The readme says it 'Is not extensible. Essentially has the same issues as SSH Tunnels.'"
+   },
+   {
+    "option": "Use a socks5 proxy",
+    "why_not": "The readme says there is 'No standard mTLS mechanism for securing traffic' and it 'Does not actually act as a standard. More complicated implementation.'"
+   },
+   {
+    "option": "Expose per-destination egress selection for webhooks/apiservices (raised in PR #4048)",
+    "why_not": "The readme and comments say a maintainer (deads2k) judged this 'would like on the kube-apiserver side and be a significant shift', and recommended a new KEP instead of coupling it to this effort."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Historically, Kubernetes used SSH tunnels, but they only functioned on GCE; they were deprecated in 1.9 and removed in 1.22"
+   },
+   {
+    "ref": "readme",
+    "quote": "We will run a connectivity server inside the control plane network. It could work on either a HTTP Connect mechanism or gRPC."
+   },
+   {
+    "ref": "comment:1557793189",
+    "quote": "API Server Network Proxy is in Beta, we probably just forgot to update the tracking information. We reached beta in 1.18 with this PR"
+   },
+   {
+    "ref": "rcomment:1317539210",
+    "quote": "Rather than make that shift and couple it this current effort, starting a new KEP for expansion of the featureset looks more appropriate."
+   },
+   {
+    "ref": "comment:2810940116",
+    "quote": "I no longer actively work on this since leaving a previous job. @cheftako or @ipochi, as the other two active approvers, would one of you be willing to own this enhancement?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10211,
+  "output": 1109
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

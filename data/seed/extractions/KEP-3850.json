@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3850",
+ "input_hash": "f035e696e392e56f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3850 extends Indexed Jobs so the backoff limit applies per index rather than shared across the Job, letting the Job continue when some indexes fail. It also adds a FailIndex action to PodFailurePolicy to fail an index early. Status is implemented, stage stable.",
+  "rationale": "With a single shared backoff limit, one failing index causes the whole Indexed Job to be marked failed and its unfinished indexes cleaned up. This breaks embarrassingly parallel workloads, such as integration test suites where each index is independent. The KEP proposes a per-index backoff policy and a FailIndex action so failed indexes stop retrying while others keep running.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a single shared backoff limit for all indexes",
+    "why_not": "The readme says the current shared limit marks the entire job as failed and cleans up unfinished indexes, which does not fit independent indexes."
+   },
+   {
+    "option": "Support per-index retry control when restartPolicy=OnFailure",
+    "why_not": "This is listed as a Non-Goal and is handled in a separate section of the KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When the job reaches this shared backoff limit, the job controller marks the entire job as failed, and the resources are cleaned up, including indexes that have yet to run to completion."
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose a new policy for running Indexed Jobs in which the backoff limit controls the number of retries per index."
+   },
+   {
+    "ref": "readme",
+    "quote": "called FailIndex, to short-circuit failing of the index before the backoff limit per index is reached."
+   },
+   {
+    "ref": "readme",
+    "quote": "Other popular batch services like AWS Batch use a separate backoff limit for each index, showing that this is a common use case that should be supported by Kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2077,
+  "output": 758
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

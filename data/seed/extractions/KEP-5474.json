@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5474",
+ "input_hash": "14eb7773242c0a34",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5474 proposes a CRI-based, opt-in field (CgroupOptions in the Pod SecurityContext) to let containers mount cgroups writable. The KEP is now implementable at alpha, after the design was narrowed to a CRI-level contract with kubelet-set Pod-level descendant and depth limits.",
+  "rationale": "Unprivileged containers have read-only cgroupfs by default, which blocks workloads that manage their own sub-cgroups. Reviewers pushed for a runtime-agnostic CRI contract, for relying on cgroup namespaces and nsdelegate rather than file permissions, and for bounding cgroup creation (cgroup.max.descendants / cgroup.max.depth) to avoid kernel DoS. The SIG-Node meeting of 2026-05-13 preferred kubelet setting Pod-level limits over adding per-container fields to the CRI, and the maintainer later agreed to that approach.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Model writable cgroups as a new Cgroup volume type with a readOnly field",
+    "why_not": "Chrishenzie argued it could confuse users about mount points and that it is closer to readOnlyRootFilesystem or procMount; pmengelbert argued for the volume model, so the thread did not settle it in the sources."
+   },
+   {
+    "option": "Make writable cgroups the default for Guaranteed QoS pods or for all containers",
+    "why_not": "Open questions were raised about default behavior, cgroup v1 nodes, and the container runtime's read-only default; the sources do not record a final default decision beyond the Guaranteed-only requirement."
+   },
+   {
+    "option": "Set cgroup.max.descendants and cgroup.max.depth via the Pod spec (resource limits) or per-container CRI fields",
+    "why_not": "The 2026-05-13 SIG-Node discussion preferred kubelet-set Pod-level defaults because it was simpler and avoided expanding the CRI API until a use case appears."
+   },
+   {
+    "option": "Use NRI as the mechanism instead of a built-in K8s feature",
+    "why_not": "dchen1107 notes an NRI solution exists, but SIG-Node agreed there are advantages to having this visibility in Kubernetes; NRI is to be documented as an alternative consideration."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4442797372",
+    "quote": "It was suggested we make it kubelet's responsibility to set descendants and depth at the Pod-level rather than add this to the CRI API (at least for now)."
+   },
+   {
+    "ref": "rcomment:3352109374",
+    "quote": "I think we do not want to introduce these changes yet, and instead have kubelet set sane defaults for max descendents and depth on the Pod-level cgroup."
+   },
+   {
+    "ref": "comment:4713455539",
+    "quote": "We discussed it at SIG Node and agreed there are much advantages to have this visibility to K8s."
+   },
+   {
+    "ref": "comment:3275866641",
+    "quote": "I have addressed the comments and have removed specific runtime references."
+   },
+   {
+    "ref": "comment:3821069456",
+    "quote": "This mount option makes it so that: > - Writes to controller interface files in the root directory of the namespace will fail with the error EPERM."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10124,
+  "output": 1218
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

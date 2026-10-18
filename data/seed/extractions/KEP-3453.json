@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-3453",
+ "input_hash": "97252ec76c55f2ca",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3453 proposed minimizing the input passed to kube-proxy's iptables-restore calls by omitting rules that have not changed, to improve kube-proxy iptables-mode performance in large clusters. Its status is implemented, stage stable.",
+  "rationale": "kube-proxy's iptables mode slows down in large clusters because its calls to iptables-restore carry the full ruleset. The KEP proposes sending only rules that changed, which the design says \"could potentially completely break clusters (if the code was buggy)\", so it was tracked as a KEP. The status history shows implementable from 2022-10-04 and implemented from 2024-01-01.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Other kube-proxy performance improvements",
+    "why_not": "The readme says that 'there are other things that might be done to improve kube-proxy performance, but this KEP is about a single specific idea, and does not prevent us from also doing other improvements later.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The performance of kube-proxy's iptables mode in large clusters could be greatly increased by optimizing its calls to `iptables-restore`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Improve the performance of kube-proxy in iptables mode, by optimizing its calls to `iptables-restore` by not including rules that haven't changed."
+   },
+   {
+    "ref": "readme",
+    "quote": "Assuming the code is not buggy, there are no drawbacks. The new code would be strictly superior to the old code."
+   },
+   {
+    "ref": "readme",
+    "quote": "there are other things that might be done to improve kube-proxy performance, but this KEP is about a single specific idea, and does not prevent us from also doing other improvements later."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1735,
+  "output": 716
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

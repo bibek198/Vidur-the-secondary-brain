@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2395",
+ "input_hash": "735e59ea72230a5f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2395 proposes removing in-tree cloud provider code from k8s.io/kubernetes in four phases, moving provider code to staging, building external cloud-controller-managers, freezing legacy code, and finally disabling in-tree providers by default. Its status is implemented at stage stable.",
+  "rationale": "The project wants cloud providers to develop and release independently of the core Kubernetes cycle. Core components would also stop depending on cloud-specific APIs, which yields smaller binaries and fewer external-dependency security risks. The readme states the goal as removing all cloud provider specific code from k8s.io/kubernetes with minimal disruption.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove in-tree providers in a single step",
+    "why_not": "The readme's stated goal is removal 'with minimal disruption to end users and developers', so it uses a phased approach instead; the sources do not discuss a single-step alternative further."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Remove all cloud provider specific code from the `k8s.io/kubernetes` repository with minimal disruption to end users and developers."
+   },
+   {
+    "ref": "readme",
+    "quote": "Each cloud provider is free to release features/bug fixes at their own schedule rather than relying on the core Kubernetes release cycle."
+   },
+   {
+    "ref": "readme",
+    "quote": "A 4 phase approach will be taken. 1. Move all code in `k8s.io/kubernetes/pkg/cloudprovider/providers/<provider>` to `k8s.io/kubernetes/staging/src/k8s.io/legacy-cloud-providers/<provider>/`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Disable in-tree providers and set the `DisableCloudProviders` and `DisableKubeletCloudCredentialProvider` feature gates to true by default."
+   },
+   {
+    "ref": "readme",
+    "quote": "It will necessarily require an increased level of turbulence for developers and users as they learn about the changes to the `kubelet`, `kube-apiserver`, and `kube-controller-manager` processes"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2681,
+  "output": 843
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

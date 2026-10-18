@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-667",
+ "input_hash": "e1e35440cd8ddb20",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-667 proposes building support for the out-of-tree Azure cloud provider, including a well-tested cloud-controller-manager with feature parity to kube-controller-manager. It hosts the implementation in new Kubernetes repositories and sets up AzureDisk and AzureFile CSI driver projects as SIG Cloud Provider subprojects. Current status: implementable, alpha.",
+  "rationale": "Azure clusters depend on in-tree cloud provider code, and the KEP tracks moving that functionality out of tree. The stated goal is that Kubernetes clusters running on Azure should run the cloud-controller-manager. The AzureFile and AzureDisk plugins also depend on the Azure cloud provider, so separate CSI driver repositories are proposed for them. Removal of in-tree code is explicitly out of scope and handled by a separate KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Removing in-tree Azure cloud provider code within this KEP",
+    "why_not": "Non-Goals state that removing in-tree Azure code is out of scope and falls under the KEP for removing in-tree providers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Build support for the out-of-tree Azure cloud provider. This involves a well-tested version of the cloud-controller-manager that has feature parity to the kube-controller-manager."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals\n- Removing in-tree Azure cloud provider code, this effort falls under the [KEP for removing in-tree providers]"
+   },
+   {
+    "ref": "readme",
+    "quote": "Since AzureFile/AzureDisk are also depending on Azure cloud provider, three new projects would be setup"
+   },
+   {
+    "ref": "readme",
+    "quote": "Those projects would be subprojects under [SIG Cloud Provider provider-azure]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2083,
+  "output": 766
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

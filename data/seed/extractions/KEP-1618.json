@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-1618",
+ "input_hash": "f06f75056b84b644",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1618 proposes defining \"profiles\" (named sets of conformance behaviors) for Kubernetes, plus a mechanism to express and validate which profiles a cluster conforms to. The KEP is in provisional status, from 2020-04-22.",
+  "rationale": "Conformance tests cover only a small set of GA, non-optional features, so a conforming offering may lack features that applications need (the readme's example is a PersistentVolume). Profiles would let users and packagers identify which sets of functionality a vendor offering supports. The readme's stated goals are to design a mechanism to express profiles, a mechanism to validate them, and to define a base profile plus at least one other.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a single set of conformance tests for all offerings",
+    "why_not": "The readme says that approach excludes optional features, so applications relying on them, such as a PersistentVolume, cannot be assured to run on every Certified Kubernetes distribution."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Any given offering must pass all conformance tests in order to be conforming. Therefore, the conformance tests are limited to non-optional, GA features"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes the use of sets of functionality (behaviors), referred to as “profiles”, and the mechanisms used to define and validate those profiles."
+   },
+   {
+    "ref": "readme",
+    "quote": "Design and implement a mechanism to express profiles in the conformance behavior definitions."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2352,
+  "output": 647
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5963",
+ "input_hash": "e76f8a87fc32946f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5963 proposes an optional compatibilityGroups field on DRA devices so the scheduler can refuse to co-allocate devices that a driver marks as mutually incompatible (e.g., MIG vs. full-GPU style partitioning). It is implementable at alpha as of 2026-06-15.",
+  "rationale": "Existing counter-based constraints cannot express \"devices in a set are mutually exclusive unless they share a group,\" so the scheduler can allocate incompatible devices that only fail at preparation time. The KEP adds a per-device group list where devices are compatible only if they share at least one group, and devices without groups are only compatible with other devices without groups. Reviewers pushed for alpha-stage safeguards: ignore devices using the field when the gate is off, and have drivers detect dropped fields and fail rather than publish silently wrong slices.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Shared counter with capacity one for mutual exclusion",
+    "why_not": "Such a counter would have to be decremented once for the first device from a compatible set, not once per device, and this cannot be expressed at the moment."
+   },
+   {
+    "option": "Default of 'not compatible with any group' or regex/wildcard group matching",
+    "why_not": "The author worried that a default other than 'compatible with all devices' would brick existing devices on upgrade until drivers are updated."
+   },
+   {
+    "option": "Scheduler reads groups back from the ResourceSlice of allocated devices",
+    "why_not": "Reviewers noted a driver may remove the definition of an allocated device while it is in use; the KEP instead copies group info into the allocation result as the source of truth."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3085082231",
+    "quote": "A shared counter with a capacity of one can ensure mutual exclusion, but this cannot be used here: such a counter would have to be decremented once"
+   },
+   {
+    "ref": "rcomment:3082890679",
+    "quote": "My worry is that if the default is anything other than \"compatible with all devices\", this will introduce API breakage."
+   },
+   {
+    "ref": "rcomment:3311949072",
+    "quote": "Other features like consumable capacity therefore copy all relevant information into the allocation result, then use that as source of truth. You should do the same."
+   },
+   {
+    "ref": "rcomment:3194810173",
+    "quote": "At alpha, add a check for the new field if the feature gate is off. If the field is non-empty, ignore the device."
+   },
+   {
+    "ref": "rcomment:3195153205",
+    "quote": "the scheduler >= 1.37 will ignore the devices instead of doing incorrect allocations."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10077,
+  "output": 995
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

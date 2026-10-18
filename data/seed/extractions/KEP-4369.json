@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4369",
+ "input_hash": "bd3c55628691451e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4369 relaxes Kubernetes environment variable name validation to allow all printable ASCII characters in the range 32-126 except \"=\", and documents the rules for setting environment variables. The KEP status is implemented, stage stable.",
+  "rationale": "Kubernetes restricted env var names to a narrow identifier set even though it cannot know what applications need, and users cannot always choose their own variable names. The main counter-concern raised in review was that third-party consumers treating env var names as safe filenames or flat paths could break. Reviewers judged the change acceptable with reasonable caution, and the proposal was narrowed to the 32-126 range after container runtime testing.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing (leave the existing rule as-is)",
+    "why_not": "The KEP's motivation is that Kubernetes should not restrict env var names it cannot justify restricting; the sources do not record a specific rejection reason beyond this."
+   },
+   {
+    "option": "Relax the rule with a long beta period, keeping the legacy rule as default until ValidatingAdmissionPolicy is GA",
+    "why_not": "Listed as an alternative by sftim; hirazawaui said it overlaps with the current KEP and the docs for ValidatingAdmissionPolicy could be updated after it. The sources do not record a final decision to reject it."
+   },
+   {
+    "option": "Namespace label or annotation controlling Pod env var validation",
+    "why_not": "Listed as an alternative in the KEP; the sources do not state why it was not chosen."
+   },
+   {
+    "option": "New PodValidationRule API kind with CEL rules for env var keys and values",
+    "why_not": "Described as the 'more complex' option in the KEP; the sources do not state why it was not chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Allows all printable ASCII characters except \"=\" to be set as environment variables, the range of printable ASCII characters is 32-126."
+   },
+   {
+    "ref": "readme",
+    "quote": "Kubernetes should not restrict which environment variable names can be used, because it has no way of knowing what the application may need"
+   },
+   {
+    "ref": "readme",
+    "quote": "If a third party uses an envvar name as a filename and assumes that it is currently safe, then if it contains characters that cannot be used as a filename"
+   },
+   {
+    "ref": "rcomment:1464179828",
+    "quote": "Could be good to get a consultation - security holes are rarely where reasonable people expect them to be."
+   },
+   {
+    "ref": "comment:1917478430",
+    "quote": "so I re-adjusted the ASCII character range to 32-126."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12335,
+  "output": 997
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

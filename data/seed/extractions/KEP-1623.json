@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1623",
+ "input_hash": "5904202c58d337d9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1623 standardized a common Condition type (Type, Status, ObservedGeneration, LastTransitionTime, Reason, Message) in k8s.io/apimachinery meta/v1 for use in .status.conditions across new APIs, plus shared helper methods. Status: implemented, stable.",
+  "rationale": "Condition schemas varied widely across Kubernetes APIs, so consumers could not rely on a common shape and could not share Get/Set/Is logic. The KEP proposes a fixed golang type for new APIs to be embedded literally, and the discussion notes it standardizes existing practice rather than inventing a new one. Reviewers accepted compatibility trade-offs (e.g., metav1.Time rather than MicroTime, non-pointer required-but-empty fields) to ease consumer adoption.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Recommend a schema without providing a shared type",
+    "why_not": "The KEP says this 'doesn't seem very nice to consumers.'"
+   },
+   {
+    "option": "Use MicroTime for LastTransitionTime",
+    "why_not": "deads2k argued that consumers are used to normal time and the gain did not warrant the pain; the KEP keeps metav1.Time."
+   },
+   {
+    "option": "Make Condition fields optional pointers (e.g., *bool for status, *string for message)",
+    "why_not": "deads2k wanted to avoid pointers in a commonly used struct; the field set was kept non-pointer with the zero value treated as valid for some fields."
+   },
+   {
+    "option": "Add identity field to conditions",
+    "why_not": "deads2k was -1 because identity can be obtained via the fieldManager and duplicating it was undesired."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Conditions are central enough to the API to make a common golang type with a fixed schema. The schema can be a strong recommendation to all API authors."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is not strictly compatible with any of our existing conditions because of either proto ordinals, required vs optional, or omitEmpty or not."
+   },
+   {
+    "ref": "rcomment:422316835",
+    "quote": "This enhancement is just about having a recommended data structure to avoid having subtly different ones everywhere forever."
+   },
+   {
+    "ref": "rcomment:421645307",
+    "quote": "The rule is, the zero value is sufficiently invalid that it doesn't create any ambiguity. Omitted-on-the-wire needs to mean \"I have no opinion\"."
+   },
+   {
+    "ref": "comment:619002017",
+    "quote": "It gives an option for acknowledging awareness of a condition without the ability to inspect the current value."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11394,
+  "output": 1021
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

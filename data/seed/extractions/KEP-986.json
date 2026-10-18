@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-986",
+ "input_hash": "8b6c096628ebed89",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-986 proposed graduating ResourceQuotaScopeSelectors (priorityClass-based quota scopes) to stable, removing the limitation that critical pods could only be created in kube-system. The KEP is recorded as implemented at stage stable.",
+  "rationale": "Priority and Preemption went GA in 1.14, but critical pods could only be created in kube-system. The KEP aims to promote ResourceQuotaScopeSelectors to stable to lift that restriction, without changing the API field or its meaning. Discussion notes the feature had already reached GA by 2019-12-31, and the KEP was later marked implemented in 2020 and re-declared at beta during 1.21 under a retroactive update.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature in the 1.15 milestone with a later docs or code PR",
+    "why_not": "The sources say the feature was removed from the 1.15 milestone after code freeze was missed and the main PR (#76310) was not merged in time. The 1.15 milestone was dropped, and the feature later graduated to GA."
+   },
+   {
+    "option": "Mark the KEP as implementable rather than implemented",
+    "why_not": "Maintainers changed the status to implemented after the feature graduated to stable, as the KEP's status history shows. The sources do not give a stated reason for rejecting the implementable label."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We wish to graduate `ResourceQuotaScopeSelectors` feature in order to overcome this limitation."
+   },
+   {
+    "ref": "comment:569854158",
+    "quote": "This feature has already graduated to GA, and we could close this now. /close"
+   },
+   {
+    "ref": "comment:615409632",
+    "quote": "since this enhancement already graduated to Stable, can you please also mark the KEP as `implemented`?"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "comment:497481301",
+    "quote": "It's now being marked as At Risk in the [1.15 Enhancement Tracking Sheet]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7239,
+  "output": 863
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

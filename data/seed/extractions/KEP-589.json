@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-589",
+ "input_hash": "09c1dd1196142975",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-589 introduces a built-in Lease API (coordination.k8s.io) so each Kubelet's node heartbeat is a small Lease object updated independently of NodeStatus, with NodeController treating both as health signals. The KEP's status is implemented, stage stable.",
+  "rationale": "Large clusters (more than 2000 nodes) hit etcd database size limits because node heartbeats were large Node objects stored in full on every 10s update. Making heartbeats a small Lease object reduces etcd size while preserving NotReady and eviction behavior. The design chose a built-in API over a CRD because CRDs lacked versioning and were slower, lacking protobuf support.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use kube-system namespace for the heartbeat objects",
+    "why_not": "The design says kube-system is already too overloaded, so a dedicated namespace was created instead."
+   },
+   {
+    "option": "Use a CRD instead of a built-in API",
+    "why_not": "The readme says CRDs do not yet have versioning support, are significantly less performant (no protobuf support), and it was unknown whether storage could later move from a CRD to a built-in API."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubelet creates and periodically updates its own Lease object and frequency of those updates is independent from NodeStatus update frequency."
+   },
+   {
+    "ref": "readme",
+    "quote": "even though CRDs are `the new way` for creating new APIs, they don't yet have versioning support and are significantly less performant"
+   },
+   {
+    "ref": "comment:439972311",
+    "quote": "Implementation is finished. Documentation is merged into https://github.com/kubernetes/website/blob/dev-1.13/content/en/docs/concepts/architecture/nodes.md"
+   },
+   {
+    "ref": "comment:466197612",
+    "quote": "the current focus is use of the API for node presence detection (aka \"heartbeats\"), which is orthogonal to the pre-existing uses of LeaderElectionRecord"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11516,
+  "output": 869
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

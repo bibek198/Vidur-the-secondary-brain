@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-3325",
+ "input_hash": "d9a8012e58ea846a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3325 proposed a new authentication.k8s.io endpoint (SelfSubjectReview, later renamed SelfSubjectAttributesReview) that returns the attributes the current user has after authentication, plus a `kubectl auth whoami` command. The KEP reached implemented and stable status.",
+  "rationale": "Authentication via proxy, webhook, and other authenticators makes it unclear which user attributes apply after authentication, which hinders debugging. The proposal adds a self-review endpoint, since the user hits it after authentication, so all attributes are available to return. Reviewers pushed for a kubectl front end, a POST create verb, reuse of the UserInfo struct, and a way to disable the API via runtime-config.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Delegate requests to an external API server (e.g., Pinniped's whoami API)",
+    "why_not": "The readme says it is complicated to maintain an additional API server and that it integrates poorly with tooling such as client-go and kubectl."
+   },
+   {
+    "option": "Use a GET to a user resource such as /apis/user.openshift.io/v1/users/~",
+    "why_not": "Reviewer deads2k asked for an exact URL and HTTP method; the thread moved to a create verb on a review object, with enj asking for a POST to a selfuserattributesreview resource, which matches other create-verb APIs."
+   },
+   {
+    "option": "Deny the API via a validating admission webhook instead of a dedicated flag",
+    "why_not": "enj suggested this as a more practical way to deny it, and the thread notes runtime-config can disable a single resource once the API is GA; the sources do not record a final choice between them beyond the runtime-config note."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add the API endpoint to get user attributes - Add a corresponding kubectl command - `kubectl auth whoami`"
+   },
+   {
+    "ref": "readme",
+    "quote": "The user will hit the endpoint after authentication happens, so all attributes will be available to return."
+   },
+   {
+    "ref": "rcomment:902987606",
+    "quote": "I would expect to see a `kubectl auth whoami` command that internally calls any available version of this API that it understands"
+   },
+   {
+    "ref": "rcomment:904093442",
+    "quote": "I will mention that the note about disabling only becomes relevant once the selfsubjectattributesreview API reaches GA."
+   },
+   {
+    "ref": "comment:1701191798",
+    "quote": "Closing this issue as complete now that the feature is GA."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11715,
+  "output": 968
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

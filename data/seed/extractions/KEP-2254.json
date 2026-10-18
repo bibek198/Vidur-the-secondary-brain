@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2254",
+ "input_hash": "af43ef71046aa2c9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2254 adds cgroups v2 support to the Kubelet. The kubelet detects the hierarchy at startup by checking whether /sys/fs/cgroup is cgroup2fs and then uses only cgroups v2. The KEP is currently implementable at stage stable.",
+  "rationale": "The design motivation is that cgroups v2 is stable in the kernel, PSI depends on it, and some distros default to it, which prevents Kubernetes from running there. The proposal stages the work in two phases and explicitly does not deprecate cgroups v1. Discussion shows the KEP was pushed through the 1.22 and 1.25 enhancement freezes, with PRR and test plan gaps raised along the way, and the issue was closed in September 2022 once giuseppe said nothing was left to do.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Expose cgroup version in Node status or as a node label",
+    "why_not": "Discussed but not adopted: bobbypage and mrunalp decided the vendor should set any such label, since some vendors may run only cgroups v2 and the label would be redundant."
+   },
+   {
+    "option": "Deprecate cgroups v1 now",
+    "why_not": "The design says it does not aim at deprecating cgroup v1, which must still be supported through the stack."
+   },
+   {
+    "option": "Include device plugins requiring v2 enablement",
+    "why_not": "Out of scope for this proposal according to the design document."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If the type is `cgroup2fs` then the Kubelet will use only cgroups v2 during all its execution."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current proposal doesn't aim at deprecating cgroup v1, that must still be supported through the stack."
+   },
+   {
+    "ref": "comment:1189481365",
+    "quote": "it's something me and @mrunalp discussed but we decided it would make more sense for the vendor to set since some vendors may or may not want to set this label."
+   },
+   {
+    "ref": "comment:1243303097",
+    "quote": "yes, I think it can be closed since there is nothing left to do. Thanks for the reminder! /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7548,
+  "output": 848
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

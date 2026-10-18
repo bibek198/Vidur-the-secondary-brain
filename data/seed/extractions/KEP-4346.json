@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4346",
+ "input_hash": "45d3b6765b331835",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4346 proposes adding client-go informer metrics (reflector, queue, and eventHandler internals) exposed to Prometheus, gated behind a new InformerMetrics feature gate. The KEP is marked implementable at alpha stage.",
+  "rationale": "Operators cannot tell why an informer stalls without adding debug logs, so the KEP exposes reflector/queue/eventHandler metrics. Reviewers asked for a feature gate because earlier reflector metrics caused a memory leak and were reverted. The status is implementable, with the stage set to alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the reflector metrics removed (no re-add)",
+    "why_not": "The readme says the change is needed because the removed reflector metrics were a memory leak, but it proposes reverting that removal behind a gate instead of leaving the metrics out."
+   },
+   {
+    "option": "Enable the metrics by default without a feature gate",
+    "why_not": "Reviewers said earlier attempts were reverted after causing problems in the field, and the proposal adds the InformerMetrics feature gate; logicalhan later asked that the metrics be disabled by default and enabled only by explicit flag."
+   },
+   {
+    "option": "Use an environment variable to enable them",
+    "why_not": "Reviewer rcomment:1481837519 notes an environment variable was updated to a feature gate instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add a feature gate `InformerMetrics` to enable informer/reflector metrics"
+   },
+   {
+    "ref": "rcomment:1481697427",
+    "quote": "I would ordinarily say no, but these in particular have been attempted at least once (I think twice) and reverted after causing issues in the field."
+   },
+   {
+    "ref": "readme",
+    "quote": "This change remove reflector metrics before https://github.com/kubernetes/kubernetes/pull/74636. It is essential to fix memory leak issue."
+   },
+   {
+    "ref": "comment:3037310031",
+    "quote": "I think these metrics should only be enabled through an explicit flag, and disabled by default. We have been burned by this so many times"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7050,
+  "output": 844
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

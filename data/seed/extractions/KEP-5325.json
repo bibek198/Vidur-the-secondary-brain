@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5325",
+ "input_hash": "761cb207683a7cc0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5325 proposes a new HPA field, SelectionStrategy, so HPAs can choose how pods are selected for metric collection: LabelSelector (default, current behavior) or OwnerReference (only pods owned by the target workload). The KEP is in implementable status at alpha stage.",
+  "rationale": "HPA collects metrics from every pod matching the target's label selector, so unrelated pods such as Jobs or other Deployments that share labels can distort scaling. The KEP adds a selection strategy field to address this while keeping existing configurations working by defaulting to LabelSelector. The source gives the Job-sharing-label example as the motivating case.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep selecting all pods matching the label selector (current behavior)",
+    "why_not": "This is the behavior that causes incorrect scaling when unrelated pods share labels; the default is kept only for backward compatibility."
+   },
+   {
+    "option": "Future selection strategies such as Annotations",
+    "why_not": "The source mentions these only as possible future extensions of the enumerated type; they are not part of this proposal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "it collects metrics from all pods that match the target workload's label selector. This can lead to incorrect scaling decisions when unrelated pods"
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose adding a new field to the HPA specification called `SelectionStrategy` that allows users to specify how pods should be selected for metric collection"
+   },
+   {
+    "ref": "readme",
+    "quote": "If set to `LabelSelector` (default): Uses the current behavior of selecting all pods that match the target workload's label selector."
+   },
+   {
+    "ref": "readme",
+    "quote": "Maintain backward compatibility with existing HPA configurations"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2444,
+  "output": 733
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

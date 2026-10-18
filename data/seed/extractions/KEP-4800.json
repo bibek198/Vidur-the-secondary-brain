@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4800",
+ "input_hash": "2a99098c820b8d2e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4800 proposes a new CPU Manager static policy option, \"prefer-align-cpus-by-uncorecache\", that groups CPU allocations by uncore cache (last-level cache) on an opt-in basis. The KEP is at status implementable, stage stable.",
+  "rationale": "The default CPU Manager is unaware of split uncore cache architectures and can spread a container's CPUs across several uncore caches, causing noisy-neighbor contention and inter-cache latency. The option changes CPU assignment to sort CPUs by uncore cache and allocate to the fewest caches possible, on a best-effort basis. If alignment is not possible the workload is still admitted, and on hardware without split uncore caches the default behavior is unchanged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Delegate uncore cache affinity CPU allocation to the container runtime and plugins",
+    "why_not": "The readme says that with this approach \"the topology alignment granted by the Topology Manager within the kubelet is not compatible.\""
+   },
+   {
+    "option": "Use the existing static CPU Manager with manual assignment",
+    "why_not": "The readme says this \"requires manual assignment and for user to only run guaranteed pods with CPU sizes matching the corresponding uncore cache CPU group of the specific node.\""
+   },
+   {
+    "option": "Use a generic kernel-hierarchy-based alignment (hyperthread, core, cluster, die, socket) instead of cache-specific grouping",
+    "why_not": "A reviewer (kad) suggested this as a more vendor-neutral approach, but the sources say teaching cAdvisor and CPU manager about real topology variations would be more complex, and the KEP stays focused on the cache implementation. The sources do not record a final decision on this."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to introduce a new CPU Manager static policy option, \"prefer-align-cpus-by-uncorecache\", that groups CPU resources by uncore cache where possible."
+   },
+   {
+    "ref": "readme",
+    "quote": "If the CPU Manager cannot align optimally, it will still admit the workload as before. Uncore cache assignment will be preferred but not a strict requirement for this feature."
+   },
+   {
+    "ref": "readme",
+    "quote": "If the node CPU topology does not support split uncore caches, enabling this feature will not impact on the default CPU allocation behavior."
+   },
+   {
+    "ref": "rcomment:1740927120",
+    "quote": "If the hardware lack the capability (L3 cache or virtual cores) than the extra requirement is automatically satisfied, because the workload can't be possibly misaligned."
+   },
+   {
+    "ref": "comment:2651057334",
+    "quote": "it's fine to drop compatibility with `distribute-cpus-across-numa`. We don't need a separate KEP, we just need to do that small scope change in a separate commit in addition to this one."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11982,
+  "output": 1103
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

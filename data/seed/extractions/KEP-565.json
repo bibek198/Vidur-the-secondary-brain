@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-565",
+ "input_hash": "e0423dd002aa4ec4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-565 adds raw block volume support to kubelet's CSI volume plugin, so CSI volumes can be published as block devices (behind the CSIBlockVolume feature gate). The KEP's status is implemented, stage stable.",
+  "rationale": "CSI volumes needed raw block support to match other Kubernetes volume types, since the project expected most persistent volumes to become CSI-based. The readme proposes kubelet call NodeStageVolume without an fsType and NodePublishVolume with a device file name, with the node plugin creating the device. The discussion shows the feature moved between alpha, beta and GA targets over several releases, and it was finally marked implemented in the 2021 status cleanup.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature at alpha or beta in 1.12 and 1.13",
+    "why_not": "Maintainers chose to hold it at alpha in 1.12 to focus on cleanup and stability, and it was then moved to beta later, with the sources not giving a single decisive reason for each change."
+   },
+   {
+    "option": "Graduate to GA in 1.16",
+    "why_not": "bswartz said 'We're **not** going to move this to GA in 1.16 regardless of how much progress we make', aiming for 1.17 instead."
+   },
+   {
+    "option": "Graduate to GA in 1.17",
+    "why_not": "jsafrane said 'with the number of changes required, we've decided to wait one more release with GA. This feature stays as beta in 1.17.'"
+   },
+   {
+    "option": "Mark the KEP stable without an implemented status (2021 PR #3007 discussion)",
+    "why_not": "The PR reviewers argued that implemented status follows a stable graduation with a PRR, and the sources do not record a separate objection to this KEP's status beyond that process concern."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This support is controlled by a feature gate called \"CSIBlockVolume\"."
+   },
+   {
+    "ref": "comment:546266890",
+    "quote": "with the number of changes required, we've decided to wait one more release with GA. This feature stays as beta in 1.17."
+   },
+   {
+    "ref": "comment:514679522",
+    "quote": "We're **not** going to move this to GA in 1.16 regardless of how much progress we make."
+   },
+   {
+    "ref": "comment:603588048",
+    "quote": "please open a PR to update your KEP status to implemented."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12483,
+  "output": 1001
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2943",
+ "input_hash": "8b93ef2bfec6ed6f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2943 proposed adding a status subresource to NetworkPolicy objects so that network policy providers could report, as a single Condition (controller, status, description), whether a NetworkPolicy and its features were parsed correctly. The KEP is withdrawn at alpha stage; it was implementable from 2022-02-03 and withdrawn from 2023-01-13.",
+  "rationale": "NetworkPolicy has no status subresource, so providers that fail to parse newer features (for example endPort, SCTP, or port-count limits) cannot tell users that a rule was silently not created. The proposal adds a generic status field so providers can give that feedback. The readme records a drawback: providers may not want the field, since they already expose similar feedback in their own CRDs and the implementation may add overhead.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Provider-specific validation webhooks that reject invalid NetworkPolicies up front",
+    "why_not": "The readme lists this as an alternative that providers may choose instead of an API field, but it does not say why the KEP did not pursue it."
+   },
+   {
+    "option": "Keep feedback in each provider's own CRDs",
+    "why_not": "The readme notes providers already expose this in their CRDs, but it does not say why the generic status field was preferred over that or why the KEP was withdrawn."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "NetworkPolicy objects does not contain a status subresource. This KEP proposes to add this subresource in NetworkPolicy objects"
+   },
+   {
+    "ref": "readme",
+    "quote": "This subresource will contain only a single field with a tuple of (controller, status, description), aka a Condition."
+   },
+   {
+    "ref": "readme",
+    "quote": "Network Policy Providers may not want to use this field. They already provide this feature as part of their CRDs"
+   },
+   {
+    "ref": "readme",
+    "quote": "Network Policy Providers may want to implement an additional validation webhook instead of relying on an API field"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 2071,
+  "output": 780
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

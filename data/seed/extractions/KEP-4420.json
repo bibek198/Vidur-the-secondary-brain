@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4420",
+ "input_hash": "9712c6004598536c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4420 proposes that the kube-apiserver automatically retries create requests using generateName when the generated name conflicts with an existing resource, up to 7 attempts, instead of returning HTTP 409 to the client. The KEP is marked implementable at stable stage.",
+  "rationale": "Generated names use a 5-character suffix, so name collisions become likely as resource counts grow (50% chance before about 5000 names), and most clients do not retry the 409 error. Lengthening the suffix would break the 63-char name limit and downstream \"{5}\" regexes, so the KEP has the server retry name generation at the storage create step. Reviewers noted the change is in a critical codepath, and the discussion accepted it as the better option than client-side retries.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Increase the length of the random generateName suffix",
+    "why_not": "Breaking in two ways: it forces trimming generateName below 58 chars for names over that length and breaks downstream projects that use \"{5}\" regexes to match the suffix."
+   },
+   {
+    "option": "Check etcd for the generated name and regenerate on collision",
+    "why_not": "Adds an etcd round-trip to every create request that uses generateName. The KEP's authors cite this cost as the downside."
+   },
+   {
+    "option": "Add a retry filter to the apiserver filter chain to re-run the whole request",
+    "why_not": "Re-invokes the full admission chain and increases request latency more than the other approaches."
+   },
+   {
+    "option": "Build automatic retry into the client, by default or opt-in via a query param",
+    "why_not": "The KEP does not state a specific reason; it lists this as an alternative considered but not adopted. Clients not doing retries was the problem being addressed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Today a HTTP 409 respose returned to the client if a name conflict happens. It is possible for clients to detect the error and retry, but we've seen that most clients don't realize to do this"
+   },
+   {
+    "ref": "readme",
+    "quote": "If we retry up to 7 times, we can generate up to 1 million names before reaching a 0.1% chance of a collision."
+   },
+   {
+    "ref": "readme",
+    "quote": "This code is in a critical system codepath, if anything is wrong with it, it could cause severe problems, up to and including data corruption and loss."
+   },
+   {
+    "ref": "comment:1904399572",
+    "quote": "Note that the problem is pre-existing. So this KEP doesn't create or encourage it, just tries to deal with it."
+   },
+   {
+    "ref": "comment:2445567995",
+    "quote": "This enhancement is now marked as `tracked for code freeze` for the v1.32 Code Freeze!"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13087,
+  "output": 1019
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

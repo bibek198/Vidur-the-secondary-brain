@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2818",
+ "input_hash": "0bd4238add04fa3d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2818 deprecates and removes Bazel from the k8s-container-image-promoter (CIP), replacing Bazel builds with existing dependencies: go build for binaries, Docker CLI scripted via make targets for images, and committed local image archives for e2e tests.",
+  "rationale": "CIP wanted to reduce build maintenance, following the wider Kubernetes move away from Bazel toward make-based builds. The proposal relies on Docker and Golang, which the project already uses, and go modules instead of Gazelle-generated BUILD files. E2E tests need predictable digests, so committed image tarballs are loaded by Docker rather than rebuilt with Bazel. The status is implemented, stage stable, from 2021-12-10.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep Bazel and maintain its BUILD files and Gazelle updates",
+    "why_not": "The KEP's aim is to reduce build maintenance by removing Bazel, and the sources state the goal is to completely remove all references of Bazel."
+   },
+   {
+    "option": "Adopt another technology that mimics Bazel's behavior",
+    "why_not": "The readme mentions this as a possibility, but the chosen proposal avoids adding tools, since adding tools to the build process should be avoided."
+   },
+   {
+    "option": "Avoid image building altogether for e2e tests",
+    "why_not": "The proposal does this in part: e2e tests use local archives committed to source control, so images are not built with Bazel at all."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Bazel's removal will leverage existing project dependencies (Docker and Golang) to manage binary and container builds."
+   },
+   {
+    "ref": "readme",
+    "quote": "Since reducing build maintenance is the primary reason behind removing Bazel, adding additional tools to the build process should be avoided."
+   },
+   {
+    "ref": "readme",
+    "quote": "End-to-end tests, which rely on static image definitions, can utilize local archives committed to source control."
+   },
+   {
+    "ref": "readme",
+    "quote": "The result of this project must remove all references of Bazel."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2448,
+  "output": 832
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

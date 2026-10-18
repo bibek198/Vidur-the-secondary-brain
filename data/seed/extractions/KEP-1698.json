@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1698",
+ "input_hash": "55ce05f88d40fc67",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1698 proposed a generic ephemeral inline volume: an `Ephemeral` VolumeSource embedding a PVC template, with a new kube-controller-manager controller creating a PVC per pod that is owned by the pod and deleted with it. The KEP reached implemented status and stable stage.",
+  "rationale": "Existing ephemeral volume types (EmptyDir, Secrets, ConfigMap, CSI inline) cannot use normal dynamically provisioned storage with unmodified CSI drivers. The design embeds PVC parameters in the pod spec and lets a controller create the PVC, so provisioning and scheduling work as for a manually created claim. Reviewers rejected an admission webhook because the owner reference depends on the pod UID, which may not exist at admission time.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Admission plugin or webhook that creates the PVC",
+    "why_not": "Pod UID, needed for the ownership relationship, might not be available at admission; the reviewer said a webhook needs a reconciliation process when pod creation comes later."
+   },
+   {
+    "option": "Creating the PVC in kube-scheduler volume scheduling code",
+    "why_not": "Discussion said it was doable but not the right place; architecturally the scheduler does not fit."
+   },
+   {
+    "option": "Naming the API type ClaimVolumeSource or InlineVolumeSource instead of ephemeral",
+    "why_not": "The KEP adopted the name Ephemeral. Reviewers noted that 'ephemeral' in the name rules out persistence later, but the final naming (EphemeralVolumeSource) was kept; the sources do not give a fuller rejection rationale."
+   },
+   {
+    "option": "Keeping the ReadOnly field",
+    "why_not": "Reviewers questioned its usefulness (saad-ali, jsafrane); the beta TODO lists removing it, and the sources do not record the final decision on removal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A new controller in `kube-controller-manager` is responsible for creating new PVCs for each such ephemeral inline volume."
+   },
+   {
+    "ref": "comment:620664440",
+    "quote": "I think we can rule out this option exactly for this reason: while \"admission controllers may sometimes have side effects\""
+   },
+   {
+    "ref": "readme",
+    "quote": "This mimics a [`PersistentVolumeClaimVolumeSource`]"
+   },
+   {
+    "ref": "rcomment:426808792",
+    "quote": "This is part of the long term plan and the reason why `VolumeClaimTemplate` is a pointer: we can add a new, alternative pointer to a struct"
+   },
+   {
+    "ref": "comment:1009571903",
+    "quote": "I think you can go ahead and close this. In the past, I have seen PRs where all feature gates are cleaned up for a given release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12761,
+  "output": 1077
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

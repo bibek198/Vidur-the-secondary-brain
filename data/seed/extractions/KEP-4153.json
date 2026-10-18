@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4153",
+ "input_hash": "36666c0fb9b94bf9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4153 proposed declaring Kubernetes native API validation rules via IDL tags (e.g. +minimum, +maximum, +validationRule) in types.go, with validation run against versioned types and published to OpenAPI. The KEP was accepted for alpha in October 2023 and later marked replaced (from 2025-02-13).",
+  "rationale": "Hand-written validation is hard for users to access, review, maintain, and test, and is spread across roughly 15k lines of code. Declarative IDL tags aim to make rules inspectable, enable shift-left linting, and allow features like ratcheting to be implemented once. Reviewers accepted alpha on the condition of iterating, with several concerns raised about CEL readability and migration safety.",
+  "outcome_reason": "The sources do not say why the KEP was replaced. The status history records only \"replaced from 2025-02-13\" with no successor KEP named.",
+  "alternatives": [
+   {
+    "option": "Validate the unstructured JSON/YAML instead of the deserialized Go struct",
+    "why_not": "Discussion noted that defaulting happens on the typed object and that CEL has() semantics differ for empty fields, so validating unstructured would cause breaking changes that are hard to predict."
+   },
+   {
+    "option": "Keep validation hand-written in Go only",
+    "why_not": "The motivation section states hand-written rules are hard to access, review, maintain, and test, and the goal is for 95%+ of them to be replaced with declarative validation."
+   },
+   {
+    "option": "Use a separate +validation annotation per rule instead of one map-shaped rule",
+    "why_not": "Discussion settled on a list of rule maps, where multiple rules are ANDed together, so multiple annotations are already supported in that form."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubernetes API validation rules are currently written by hand, which makes them difficult for users to access directly, review, maintain, and test."
+   },
+   {
+    "ref": "comment:1745864421",
+    "quote": "I think this meets the bar for alpha. Do any reviewers have objections with us merging and iterating?"
+   },
+   {
+    "ref": "rcomment:1346432620",
+    "quote": "I agree this does not block alpha. I think it should prevent beta (on by default)."
+   },
+   {
+    "ref": "rcomment:1346197794",
+    "quote": "Alpha: Runs both systems, logs differences, admits based off of native validation"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12153,
+  "output": 927
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3498",
+ "input_hash": "9972cc86807149f4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3498 proposes extending the Kubernetes metrics stability framework with two new stability classes, `beta` and `internal`, and narrows the meaning of `alpha` to the nascent stage of a KEP-proposed feature. The KEP is at implementable status, stage beta.",
+  "rationale": "The existing framework only distinguishes `stable` and `alpha` metrics, so feature metrics at intermediate stages get no guarantees or full stability. The KEP adds classes that mirror feature release stages and separates internal low-level metrics from feature metrics. The readme ties this to PRR requirements for production readiness metrics.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Doing nothing",
+    "why_not": "The readme calls it a viable alternative but says it leaves feature metrics with no guarantees or fully stable, which it presents as an odd position."
+   },
+   {
+    "option": "Forced upgrades of metrics stability classes in the alpha version",
+    "why_not": "The readme defers this to the beta version of the KEP, so the alpha version only adds the classes without changing existing metrics."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP intends to propose additional stability classes to extend on the existing metrics stability framework, such that we can achieve parity with the various stages of the feature release cycle."
+   },
+   {
+    "ref": "readme",
+    "quote": "Introduce two more metric classes: `beta`, corresponding to the `beta` stage of feature release, and `internal` which corresponds to internal development related metrics."
+   },
+   {
+    "ref": "readme",
+    "quote": "We also propose amending the semantic meaning of an `Alpha` metric such that it represents the nascent stage of a KEP-proposed feature"
+   },
+   {
+    "ref": "readme",
+    "quote": "For the alpha version of this KEP, we will implement the necessary changes to Kubernetes metrics framework, such that it supports the additional classes of metrics, without making changes to any existing metrics or their stability levels."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2355,
+  "output": 798
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

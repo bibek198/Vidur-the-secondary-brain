@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-531",
+ "input_hash": "f40132b731e25d2b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-531 proposes letting users expand a PVC's file system online, without restarting the pod using it, with kubelet performing the resize for mounted volumes. Its current status is implementable, stage alpha.",
+  "rationale": "Release 1.10 only resized file systems offline, inside MountVolume, so a resize request made after mount was not performed. The KEP targets online resizing in kubelet for ext3, ext4 and xfs, and leaves offline resizing to the existing handler. The discussion shows the feature was repeatedly tracked across releases and was delayed or removed from milestones for missing docs, KEP merge, or bug concerns. The status given is alpha, although the discussion mentions beta promotions that did not happen per the sources.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Offline file system resizing in MountVolume only (the Release 1.10 behavior)",
+    "why_not": "The readme says this only runs inside MountVolume, so a resize requested after the volume was mounted is not performed; online resizing is the stated goal."
+   },
+   {
+    "option": "Extending resize tools to more file systems in the current release",
+    "why_not": "Readme non-goals: 'we only support the most common file systems' offline resizing in current release, and we prefer to stay the same for online resizing: ext3, ext4, & xfs.'"
+   },
+   {
+    "option": "Promote to beta in 1.13 or 1.14",
+    "why_not": "Comment 11/09/2018 says the alpha->beta promotion was delayed due to a bug concern; the 1.14 KEP was not merged in time and the feature was removed from the milestone. The sources do not give a clear reason for the eventual status."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This feature enables users to expand a volume's file system by editing a PVC without having to restart a pod using the PVC."
+   },
+   {
+    "ref": "readme",
+    "quote": "Release 1.10 only supports offline file system resizing for PVCs, as this operation is only executed inside the `MountVolume` operation in kubelet."
+   },
+   {
+    "ref": "comment:437507799",
+    "quote": "decision was made to delay this alpha->beta promotion another release because there is some concern a bug similar to one that was discovered recently could affect this feature"
+   },
+   {
+    "ref": "comment:458876700",
+    "quote": "since theKEP for this issue isn't merged yet we will be removing it from the 1.14 milestone."
+   },
+   {
+    "ref": "comment:785990802",
+    "quote": "We are still actively working on fixing bugs and improving this feature, so as it can reach GA milestone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8269,
+  "output": 987
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

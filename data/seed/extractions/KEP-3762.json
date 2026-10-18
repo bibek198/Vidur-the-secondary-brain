@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3762",
+ "input_hash": "c4d03095d6d58e70",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3762 adds a PersistentVolumeStatus field holding the timestamp of when a PersistentVolume last transitioned to a different phase. The API server strategy code sets it on each phase change. Status is implemented, stage stable.",
+  "rationale": "Users reverting from Delete to Retain reclaim policy need to know when volumes became Released so admins can clean up old volumes, and the design generalizes this to any phase change for measurement and observability. The timestamp is set in API strategy code rather than the PV controller to reduce time skew against API audit logs. Feature was graduated to stable per the status history.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Update the phase transition timestamp in the PV controller / kube-controller-manager",
+    "why_not": "The readme says this 'would increase chances of having a time skew between API audit logs and the timestamp', so updating in API strategy code is the chosen solution."
+   },
+   {
+    "option": "Track a full phase transition history (conditions), as msau42 contemplated",
+    "why_not": "msau42 said it 'would end up trying to fit retrofit the legacy phases into conditions, which may be a bit overkill for this use case.'"
+   },
+   {
+    "option": "Make a SLO/metrics-based approach instead of an API field",
+    "why_not": "msau42 later said 'I think a SLO may be better served by metrics improvements rather than adding timestamps to API objects'; this is a reasoning comment, not a rejection of the KEP itself."
+   },
+   {
+    "option": "Reset the field on feature gate disable via PV controller sync polling",
+    "why_not": "Romanbednar called it 'an overkill'; the chosen approach is to drop disabled fields in the strategy on write, per msau42."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The timestamp field must be set to current time also for newly created volumes."
+   },
+   {
+    "ref": "readme",
+    "quote": "Updating phase transition timestamp in API strategy code is therefore a better solution."
+   },
+   {
+    "ref": "rcomment:1097808419",
+    "quote": "When a feature is disabled, the api server strategy implementation should drop disabled fields on write, so approach 2) should cover it."
+   },
+   {
+    "ref": "rcomment:1095185541",
+    "quote": "But I think it would end up trying to fit retrofit the legacy phases into conditions, which may be a bit overkill for this use case."
+   },
+   {
+    "ref": "comment:2335016926",
+    "quote": "now that this KEP has been implemented, would you kindly update the KEP status to `implemented` and then close this out?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12628,
+  "output": 979
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

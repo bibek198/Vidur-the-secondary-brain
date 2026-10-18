@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5936",
+ "input_hash": "4ae5f1a6ff7d5171",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5936 adds optional user fields (a volume-level defaultUser and a per-item user) to atomic write volumes so kubelet lchowns the written files to a chosen UID. The KEP is marked implementable and targeting alpha in Kubernetes 1.37, behind the AtomicWriteVolumeUserFields feature gate.",
+  "rationale": "Users running restricted pod security profiles cannot run an initContainer as root to chown files in atomic write volumes such as ConfigMap, Secret, and projected volumes. The KEP adds explicit UID fields so kubelet sets file ownership directly. The maintainer asked for alpha targeting in 1.37, and the PRR review was completed with soltysh as final approver.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the initContainer-as-root workaround",
+    "why_not": "The author states it is not possible with a restricted pod security standards profile, since Restricted enforces running as non-root and dropping all capabilities."
+   },
+   {
+    "option": "Infer owner UID from runAsUser",
+    "why_not": "The author says this was discussed in SIG call and analysed in the draft, but the sources do not record a reason it was rejected."
+   },
+   {
+    "option": "Apply the behavior to user namespaces or all volumes",
+    "why_not": "The author notes the proposal covers atomic write volumes only and does not interfere with user namespaces. Windows is out of scope per the author."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4034252519",
+    "quote": "It doesn't prevent adoption because there is a workaround running initContainer as root to do chowns. However, it's not possible with a restricted pod security standards profile."
+   },
+   {
+    "ref": "comment:4034252519",
+    "quote": "It doesn't interfere with user namespaces because the proposal covers atomic write volumes only."
+   },
+   {
+    "ref": "rcomment:3251221362",
+    "quote": "Change this to implementable if you want to target alpha in 1.37"
+   },
+   {
+    "ref": "rcomment:3394848957",
+    "quote": "Yup, since your change applies to both kubelet (where the logic resides) and to kube-apiserver (where API bits are represented) this is required."
+   },
+   {
+    "ref": "rcomment:3401031071",
+    "quote": "Agreed. That's a good point. Thank you for raising this concern. This is updated. I will also implement the FG in kubelet."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12329,
+  "output": 922
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

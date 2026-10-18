@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-4188",
+ "input_hash": "606f7b61707cf327",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4188 proposes a new read-only Kubelet gRPC API, served over a local UNIX socket restricted to local admin users, that returns local Pod information (initially Pod readiness/conditions) from the Kubelet's cache so node-local workloads can avoid depending on kube-apiserver. The KEP is at stage beta with status implementable.",
+  "rationale": "Node-local consumers (e.g. networking components) need Pod state even when the control plane is unreachable, and polling kube-apiserver adds load and a control-plane dependency. The reviewers accepted that Pod readiness is safe to expose to same-node workloads, since the existing PodResources socket already works similarly, while sig-auth concerns about broader exposure led the authors to narrow the scope to readiness conditions. The status is implementable, and sig-node approvers signed off on the KEP.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Add pod readiness endpoints to the existing PodResources API",
+    "why_not": "The authors wanted to keep the API free of kube-apiserver authorization and avoid mixing it with allocated-resource data; a reviewer asked for pros/cons. Quote: \"because our goal with this API is to reduce the Control Plane dependency we didn't wanted to add this to already existing API.\""
+   },
+   {
+    "option": "Use a REST API instead of gRPC",
+    "why_not": "Listed as an option in the design tables, but the discussion does not record a reason it was rejected; the KEP stayed with gRPC."
+   },
+   {
+    "option": "Serve only data acknowledged by the control plane",
+    "why_not": "Raised by a reviewer to avoid split-brain; the response was that the API will not override control-plane decisions and exists so nodes can work when the control plane is unavailable. Quote: \"the proposed API won't be used to override any decision made by the control plane.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The full PodSpec may contain sensitive information, so access to this API is secured by restricting the UNIX socket to local admin users only."
+   },
+   {
+    "ref": "rcomment:1341613156",
+    "quote": "We already have a Pod resources API in Kubelet that is exposed in a similar way (via socket and therefore only accessible to other workloads on the same Node)."
+   },
+   {
+    "ref": "comment:1740281084",
+    "quote": "1) Read-only 2) throttling 3) limited to small set of information initially, for example, pod condition."
+   },
+   {
+    "ref": "rcomment:1343614779",
+    "quote": "I updated the doc and changed all those places to point out that we want to expose readiness information."
+   },
+   {
+    "ref": "rcomment:1340867051",
+    "quote": "Basically the proposed API won't be used to override any decision made by the control plane."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11582,
+  "output": 1047
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

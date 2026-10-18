@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2885",
+ "input_hash": "09338b8139708559",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2885 proposes server-side unknown and duplicate field validation for create, update, and patch requests, selected via a query parameter (fieldValidation=Strict|Warn|Ignore), so kubectl can default to server-side validation and eventually drop client-side validation. Current status: implementable, stage stable.",
+  "rationale": "Client-side validation in kubectl (--validate) is slow to fix because client upgrades are hard to deliver, and every client must reimplement it. The proposal moves the check to the API server, keeps it opt-in for compatibility, and has kubectl fall back to client-side validation with a warning when the server lacks support. Reviewers settled on a query parameter over a content type, and on the Strict/Warn/Ignore values, with a Warn option added.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Content-type based selection of strictness",
+    "why_not": "Reviewer smarterclayton preferred query parameters because they can be versioned by API version and are more discoverable in OpenAPI; the review concluded with 'I don't see a clear conclusion here whether to go with the content type or query param approach, or both. I'd say we start with the query param approach for now.'"
+   },
+   {
+    "option": "Boolean fieldValidation flag",
+    "why_not": "smarterclayton suggested 'fieldValidation=Strict' instead of a bool, with IgnoreUnknownFields as default."
+   },
+   {
+    "option": "Separate TreatWarningsAsErrors and ProduceWarningsOnUnknownFields options",
+    "why_not": "deads2k raised it as a more general option, but kevindelgado said it raised questions about default behavior and performance that were best left out of alpha; the thread notes that a separate option would make unknown fields hard to flag apart from other warnings."
+   },
+   {
+    "option": "Explicit client-side validation request mechanism kept alongside server-side",
+    "why_not": "liggitt said 'I don't think we should add mechanisms to explicitly request client-side validation'; he expected --validate to be intent-based and to drop client-side support after server-side validation reaches GA."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We introduce a query parameter that enables the user/client to indicate that server-side validation should either not be performed at all, provide warnings for the presence of unknown/duplicate fields, or error out in the presence of unknown/duplicate fields."
+   },
+   {
+    "ref": "rcomment:702068352",
+    "quote": "I'd probably argue for `fieldValidation=Strict` instead of a bool. The default would be `fieldValidation=IgnoreUnknownFields`."
+   },
+   {
+    "ref": "rcomment:779694766",
+    "quote": "I would expect the `--validate` flag to be intent-based, to use server-side validation when available, and N releases after server-side field validation hits GA, to drop support for client-side validation."
+   },
+   {
+    "ref": "comment:1015975332",
+    "quote": "Since my main concern is changing the behavior without the person knowing, I suggest we go with that sort of messaging"
+   },
+   {
+    "ref": "rcomment:704754069",
+    "quote": "I would like to have a Warn option."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11823,
+  "output": 1168
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

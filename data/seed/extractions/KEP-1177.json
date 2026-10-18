@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-1177",
+ "input_hash": "da2e36ea6141d92e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1177 proposed a kubeadm feature letting users customize control-plane and etcd static pod manifests (e.g., add sidecars, change probe timeouts) using Kustomize. Its status is replaced, and the readme says it was superseded by the KEP tracked in #1739, which uses raw patches instead.",
+  "rationale": "Kubeadm's component configuration only exposes a limited set of cluster-wide args, so users had to hand-edit static pod manifests after init/join. This KEP aimed to give node-level control over generated static pod manifests. The readme states the KEP was replaced by #1739, which chose raw patches for customization instead of Kustomize.",
+  "outcome_reason": "The readme says the KEP was replaced by the KEP tracked in #1739 which uses raw patches for customization. The sources do not give a detailed reason for choosing raw patches over Kustomize.",
+  "alternatives": [
+   {
+    "option": "Kustomize-based customization (this KEP's approach)",
+    "why_not": "Replaced by the KEP tracked in #1739, which uses raw patches for customization. The sources do not say why the change was made."
+   },
+   {
+    "option": "Extending the kubeadm component configuration (extraArgs and similar fields)",
+    "why_not": "The readme says the component configuration covers only a limited set of cluster-wide args, and the KEP explicitly does not aim to deprecate it. It cannot add sidecars or alter probe timeouts."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP was replaced by the KEP tracked in #1739 which uses raw patches for customization"
+   },
+   {
+    "ref": "readme",
+    "quote": "It is not possible to set/alter timeouts for liveness probes in control plane components."
+   },
+   {
+    "ref": "readme",
+    "quote": "While there is great value in several different approaches “Kustomize” was selected as the first choice for this proposal"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-1739",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "this KEP was replaced by the KEP tracked in #1739 which uses raw patches for customization"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2866,
+  "output": 834
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

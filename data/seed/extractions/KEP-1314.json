@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1314",
+ "input_hash": "11a8ec87abb2823b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1314 extends the NodeRestriction admission controller to limit a node's effect on pods: label restrictions to per-namespace whitelisted keys, blocking label/owner changes via pod/status, and restricting mirror pod OwnerReferences to a node reference. Status is implementable at alpha. Per the discussion, the owner-reference and pod/status restrictions were implemented, while the label whitelisting was not and was split out for separate tracking.",
+  "rationale": "Nodes can manipulate pod labels and owner references, letting a compromised node trigger confused-deputy attacks against services and controllers (e.g., matching a service selector or a ReplicaSet). The KEP addresses this by restricting admission for node-originated pod writes. The label whitelisting design was rejected by the maintainer as unsatisfactory, so the label part was never built.",
+  "outcome_reason": "The sources do not record a formal withdrawal or rejection. The status is implementable (alpha). The label restriction part was deferred: the maintainer said it \"need[s] to be re-thought out\" and that label restrictions would be tracked separately, and a later comment asked whether the label KEP should be withdrawn.",
+  "alternatives": [
+   {
+    "option": "Per-namespace label whitelisting for mirror pods (the approach in the KEP)",
+    "why_not": "The maintainer said 'I'm not happy with the label whitelisting approach' and 'I'm not satisfied with the whitelist mechanism currently proposed', so it was removed from v1.17 and not implemented."
+   },
+   {
+    "option": "Rejecting mirror pods with no owner reference in NodeRestriction",
+    "why_not": "Not rejected; this was adopted. The maintainer asked for it and it was merged, and the sources say 'The OwnerRef restrictions are already merged.'"
+   },
+   {
+    "option": "Ship the feature gated in v1.17",
+    "why_not": "The maintainer removed the feature-gated parts from v1.17 due to the whitelist concerns and the time crunch, keeping only the non-feature-gated parts."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:553058828",
+    "quote": "I'm not really satisfied with the whitelist mechanism currently proposed on this feature, and with the time crunch & overdue docs, I'm content with removing the feature piece from v1.17."
+   },
+   {
+    "ref": "comment:755591816",
+    "quote": "The OwnerRef restrictions are already merged. The label restrictions have not been implemented, and need to be re-thought out."
+   },
+   {
+    "ref": "comment:902256245",
+    "quote": "Implemented: - OwnerReference requirements for mirror pods - Metadata update restrictions through pod/status updates Not implemented: - Label restrictions on mirror pods"
+   },
+   {
+    "ref": "comment:923072301",
+    "quote": "Need to confirm if there is a KEP contains Label restrictions on mirror pods and remove it or move it to \"withdraw\""
+   },
+   {
+    "ref": "readme",
+    "quote": "Restrict mirror pod OwnerReferences to only allow a node reference."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7247,
+  "output": 1149
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

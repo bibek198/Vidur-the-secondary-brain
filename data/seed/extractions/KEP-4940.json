@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4940",
+ "input_hash": "af5ebae72a359456",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4940 adds Pod Security Admission (PSA) controls so admins can block pods that set the `Host` field in TCP and HTTP probe and lifecycle handlers, and updates the Baseline Pod Security Standard to block it. The status is implemented, stage stable.",
+  "rationale": "The `Host` field lets users point kubelet probes at arbitrary hosts, including localhost on the node, which enables blind SSRF. The KEP does not remove the field, since the API is never removed; instead it lets admins restrict its use through PSA, and the Baseline standard blocks it by default. The change was implemented in kubernetes PR 125271 and a reviewer noted the Baseline update is what makes adoption easier for workload operators.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove the `Host` field from the API after deprecation",
+    "why_not": "The readme says this is not a supported API action and the older API is never going to go away."
+   },
+   {
+    "option": "Deprecate the `Host` field in this KEP",
+    "why_not": "Reviewer deadills2k said deprecation should be done in the KEP adding the replacement, so the deprecation was removed from scope; the readme keeps only the doc updates."
+   },
+   {
+    "option": "Allow `host` only for 127.0.0.1 or ::1 on hostNetwork pods",
+    "why_not": "Discussed by danwinship as a possible exception, but tssurya questioned whether deprecating with exceptions is common practice; the sources do not show it was adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "So we also want to add PSA to allow admins to be able to restrict users from creating probes with the Host field set when using the (about to be deprecated) API."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is implemented by [kubernetes PR 125271](https://github.com/kubernetes/kubernetes/pull/125271) that does exactly that."
+   },
+   {
+    "ref": "rcomment:2152476147",
+    "quote": "Deprecation doesn't mean broken and doesn't mean removed. My understanding of this change is 1. the meaning of the .Host field is remaining the same"
+   },
+   {
+    "ref": "comment:3303242259",
+    "quote": "The change in this KEP was done in an area that already has an established mechanism for versioning and controlled rollouts of additions, so the code changes didn't use the typical feature-gated stability level approach."
+   },
+   {
+    "ref": "comment:3303242259",
+    "quote": "https://github.com/kubernetes/enhancements/pull/5543 records this KEP as being stable and implemented in 1.34"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12819,
+  "output": 994
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

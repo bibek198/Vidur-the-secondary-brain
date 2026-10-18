@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3939",
+ "input_hash": "9d0b01af03d76635",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3939 adds an opt-in Job spec field so replacement Pods are created only after previous Pods fully terminate, instead of as soon as they are terminating, and adds a Job status field counting terminating Pods.",
+  "rationale": "Jobs currently start replacement Pods once existing Pods have a deletionTimestamp or phase=Failed, and terminating Pods are counted as failed. This causes replacements to fail to start for frameworks like TensorFlow and JAX that need unique Pods per index, and can trigger unwanted scale-ups or resource contention. The KEP makes the waiting behavior opt-in and exposes terminating Pods in status so users and queueing controllers like Kueue can see them.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Put the behavior under PodFailurePolicy",
+    "why_not": "The KEP says \"We discussed having this under the PodFailurePolicy but this is a more general idea than the PodFailurePolicy.\""
+   },
+   {
+    "option": "Keep the existing behavior with no change",
+    "why_not": "The sources do not record a direct rejection; the motivation describes problems with immediate replacement such as replacement pods that \"immediately fail to start\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a new field for the Job API that allows for users to specify if they want replacement Pods as soon as the previous Pods are terminating (existing behavior) or only once the existing pods are fully terminated (new behavior)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently, if a pod enters a terminating state (due to preemption, eviction or other external factors), a replacement pod is created and immediately fail to start."
+   },
+   {
+    "ref": "readme",
+    "quote": "As an opt-in behavior, the job controller can use the active and terminating pods to determine whether replacement Pods are needed."
+   },
+   {
+    "ref": "readme",
+    "quote": "2. A new field in Status for tracking the number of terminating pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "We discussed having this under the PodFailurePolicy but this is a more general idea than the PodFailurePolicy."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2437,
+  "output": 852
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

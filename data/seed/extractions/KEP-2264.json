@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2264",
+ "input_hash": "39ab9c9501ae8d51",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2264 defines a release and CI process for the Kubernetes-CSI components maintained by sig-storage, with each component released separately and tested on Kubernetes before release. The KEP is implemented and at stable stage.",
+  "rationale": "The release process was manual, with some Travis CI help, and pre-release components were not automatically tested on a Kubernetes cluster. With CSI GA in Kubernetes 1.13, the project wanted a less work-intensive and more predictable approach. The design makes unit tests mandatory pre-submit for all components and Kubernetes testing mandatory for components deployed in a cluster.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Automatically updating deployments by setting additional image tags (semantic versioning tags)",
+    "why_not": "Rejected in discussion because of the risks of automatically changing versions in a production cluster."
+   },
+   {
+    "option": "Maintain the deployment in a separate repository with independent versioning",
+    "why_not": "Rejected because it is more work and because driver and deployment always need to be updated together."
+   },
+   {
+    "option": "A combined Kubernetes-CSI release of all components",
+    "why_not": "Listed as a non-goal; each component is released separately and driver maintainers pick and test sidecar releases themselves."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "So far, the process for tagging and building components has been fairly manual, with some assistance by Travis CI."
+   },
+   {
+    "ref": "readme",
+    "quote": "With CSI support reaching GA in Kubernetes 1.13, it is time to define and follow a less work-intensive and more predictable approach."
+   },
+   {
+    "ref": "readme",
+    "quote": "a combined \"Kubernetes-CSI release\": each component gets released separately."
+   },
+   {
+    "ref": "readme",
+    "quote": "rejected that idea because of the risks associated with automatically changing versions in a production cluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "The alternative would have been to maintain the deployment in a separate repository with its own independent versioning, but that has been rejected because it is more work"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2435,
+  "output": 822
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

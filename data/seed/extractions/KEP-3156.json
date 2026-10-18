@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-3156",
+ "input_hash": "5a21f7c8f1bfe0f9",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3156 proposed adding HTTP/3 support to the kube-apiserver (serving on UDP in addition to TCP) and an opt-in HTTP/3 round tripper in client-go. The KEP was deferred until HTTP/3 is supported by the Go standard library.",
+  "rationale": "HTTP/3 was expected to fix head-of-line blocking and speed up connection setup relative to HTTP/2. Reviewers objected that HTTP/3 was still an Internet Draft and that Go's standard library did not support it, so they did not want to plumb a non-stdlib implementation into apiserver and client-go. The KEP was closed and reopened as deferred, with the reason recorded in the document.",
+  "outcome_reason": "Deferred until HTTP/3 is supported by the Golang standard library. Lavalamp's proposed wording was \"we will revisit this when the go standard library supports HTTP/3 or has a very mature candidate.\"</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Proceed with a third-party Go HTTP/3 implementation (quic-go) in apiserver and client-go\", \"why_not\": \"Reviewer lavalamp said he was not in favor of plumbing something not destined for the go standard library into apiserver / client-go, and was a -1 until Go's plans were known.\"}, {\"option\": \"Graduate to beta before the RFC, with the feature gate off by default\", \"why_not\": \"Suggested by sftim, but not adopted; the KEP was deferred instead.\"}, {\"option\": \"Mark the KEP as closed/rejected\", \"why_not\": \"Mikespreitzer noted 'closed' did not convey 'we plan to take this up later'; aojea said deferred seemed the best fit among the template statuses.\"}, {\"option\": \"Include webhooks and aggregated apiservers in scope\", \"why_not\": \"Aojea preferred not to open that can of worms; webhooks add an external dependency and these were placed in non-goals.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "IMPORTANT: THIS KEP HAS BEEN DEFERRED UNTIL HTTP/3 IS SUPPORTED BY THE GOLANG STANDARD LIBRARY"
+   },
+   {
+    "ref": "rcomment:789878825",
+    "quote": "It seems that the go standard library doesn't yet support HTTP/3? I'm not in favor of plumbing something not destined for the go standard library into apiserver / client-go."
+   },
+   {
+    "ref": "comment:1023451433",
+    "quote": "one possible thing we could do is make the status \"rejected for now\" with the explanation \"we will revisit this when the go standard library supports HTTP/3 or has a very mature candidate.\""
+   },
+   {
+    "ref": "rcomment:793920141",
+    "quote": "From the status options that come in the template, deferred seems the best fit"
+   },
+   {
+    "ref": "rcomment:790062811",
+    "quote": "OK, yeah, unfortunately I think I'm a -1 until we at least know what go is going to do about this."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4050,
+  "output": 1131
+ },
+ "extracted_at": "2026-10-15T22:45:28Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4471",
+ "input_hash": "78306b1a9c3f216a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4471 proposes that kubeadm make kubelets on control plane nodes point to the local kube-apiserver during init, join and upgrade, instead of the load-balanced control plane endpoint, behind the ControlPlaneKubeletLocalMode feature gate. The KEP status is implementable, stage stable.",
+  "rationale": "A kubelet bootstrapped through the load-balanced endpoint can reach kube-apiservers of older control plane nodes, which may violate the rule that kubelet must not be newer than kube-apiserver during immutable rolling upgrades. Pointing the kubelet at the local kube-apiserver avoids this. The change requires reordering etcd join ahead of the kubelet bootstrap wait, which is a CLI-breaking change, so it is gated.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the kubelet pointing at the load-balanced control plane endpoint",
+    "why_not": "The source says this 'could result in violations of version skew policy' during immutable rolling upgrades, which the KEP aims to avoid."
+   },
+   {
+    "option": "Keep the existing phase order during kubeadm join",
+    "why_not": "The KEP states that etcd must join before waiting for the kubelet bootstrap, so the reorder is needed for the local-endpoint path; the source says this 'requires reordering some of the operations'."
+   },
+   {
+    "option": "Apply the reordering without a feature gate",
+    "why_not": "The source says that because reordering 'can be considered a breaking change to the CLI of kubeadm for some users, this should get done behind a feature gate'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently the kubelet always points to the load balanced control plane endpoint which could result in violations of version skew policy."
+   },
+   {
+    "ref": "readme",
+    "quote": "When doing a immutable rolling upgrade (as e.g. done when using [Cluster API]) the kubelet's minor Kubernetes version could be newer than the version of kube-apiserver"
+   },
+   {
+    "ref": "readme",
+    "quote": "Use a new feature gate `ControlPlaneKubeletLocalMode` to toggle the feature until graduating to GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "Because reordering the phases can be considered a breaking change to the CLI of kubeadm for some users, this should get done behind a feature gate"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2825,
+  "output": 925
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

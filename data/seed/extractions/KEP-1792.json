@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1792",
+ "input_hash": "8742d014fbc61a80",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1792 adds an opt-in PodSpec field that sets a pod's kernel hostname (nodename) to its FQDN instead of its shortname. The KEP is at implementable status, stage beta, owned by sig-node.",
+  "rationale": "Legacy applications, especially on RedHat/CentOS-style systems, expect the kernel hostname to be the FQDN, and containerizing them without code changes is hard. The field defaults to false so existing behavior is preserved. Reviewers chose a PodSpec field over a kubelet flag so that controllers such as Deployments behave consistently across their pods.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make users fix legacy code to not assume the FQDN is the hostname",
+    "why_not": "Described in the KEP as not practical."
+   },
+   {
+    "option": "Kubelet configuration flag",
+    "why_not": "Configuration flags are harder to maintain and require platforms such as GKE to support them; a PodSpec flag keeps behavior consistent across pods of the same controller."
+   },
+   {
+    "option": "Admission plugin that checks FQDN length",
+    "why_not": "Might not cover all pod entry points (Deployments, ReplicaSets, CRDs, etc.) and breaks abstraction layers; reviewer thockin suggested it would only shift the error up-stack, and proposed an example admission controller instead."
+   },
+   {
+    "option": "Non-retriable pod errors that move the pod to Failed",
+    "why_not": "Listed as an alternative for improving the failure mode; the sources do not record a decision on it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The new PodSpec field `setHostnameAsFQDN` will default to `false` to preserve current behavior, i.e., setting the hostname field of the kernel to the pod's shortname."
+   },
+   {
+    "ref": "readme",
+    "quote": "Having this feature would help containerize existing applications without deep, risky code changes."
+   },
+   {
+    "ref": "readme",
+    "quote": "Additionally, using a PodSpec flag we ensure that the behavior of controllers, like Deployments, is consistent on all its pods."
+   },
+   {
+    "ref": "rcomment:427541071",
+    "quote": "As discussed today, I don't think this will actually make it better, it will just shift the error up-stack."
+   },
+   {
+    "ref": "rcomment:490837537",
+    "quote": "We're generally trying to have 2 releases between Beta and GA - I recommend targetting GA for 1.22."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8256,
+  "output": 937
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

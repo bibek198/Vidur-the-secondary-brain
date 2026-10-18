@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4960",
+ "input_hash": "b386d34bde961cb0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4960 proposes a new optional string field, Pod.spec.containers[].lifecycle.stopSignal, so users can set a custom stop signal for containers from the ContainerSpec; the effective signal is reported in container status. The KEP is implementable at beta stage.",
+  "rationale": "Changing a container's stop signal today requires rebuilding the image with a STOPSIGNAL instruction, which is hard with prebuilt images. Reviewers preferred a single string field over a richer lifecycle handler, because a signal is always sent on stop and a non-signal Stop handler could not disable that. The effective signal is surfaced in status, since kubelet is the only component that knows the final value and the spec must not be mutated.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Stop lifecycle handler with a nested signal option (lifecycle.stop.signal)",
+    "why_not": "Reviewer thockin noted that a Stop handler would be in addition to the signal, not instead of it, so it was dropped in favour of a single string field."
+   },
+   {
+    "option": "Bake the stop signal into the container image definition",
+    "why_not": "The KEP says this is tricky with prebuilt images or when users do not want to build custom images just to change the stop signal."
+   },
+   {
+    "option": "Use a preStop exec hook that runs kill -SIGUSR1",
+    "why_not": "The KEP lists it as an alternative but it is a workaround via a command in the container rather than a first-class API field."
+   },
+   {
+    "option": "Pass the stop signal in StopContainerRequest at stop time",
+    "why_not": "Reviewers (haircommander) preferred setting it in ContainerConfig at creation so the runtime owns the stop; the signal is overridden by SIGKILL after the grace period anyway."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add support to configure custom stop signals for containers from the ContainerSpec."
+   },
+   {
+    "ref": "rcomment:1945580788",
+    "quote": "I have a slight lean toward the second beause a signal is always sent. If we added `lifecycle.stop.*` that would be IN ADDITION TO, not INSTEAD OF the signal."
+   },
+   {
+    "ref": "rcomment:1947090634",
+    "quote": "The true value of the status field is to express what happened as a result of spec. If you did not specify it, you got SIGTERM."
+   },
+   {
+    "ref": "rcomment:1946766999",
+    "quote": "Let's go with the second option as the plan? Just a string field, no new struct"
+   },
+   {
+    "ref": "rcomment:1945249415",
+    "quote": "it feels cleanest to me to update the container config and omit the `crictl stop` piece"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10536,
+  "output": 1022
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

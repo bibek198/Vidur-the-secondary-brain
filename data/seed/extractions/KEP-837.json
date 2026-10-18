@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-837",
+ "input_hash": "b80c4d1c9f319ec2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-837 proposes promoting the cloud provider node and volume labels from beta to GA by applying both the beta and GA label sets during a transition period, replacing beta.kubernetes.io/instance-type, failure-domain.beta.kubernetes.io/zone and failure-domain.beta.kubernetes.io/region with node.kubernetes.io/instance-type, topology.kubernetes.io/zone and topology.kubernetes.io/region. Current status is implementable, stage alpha.",
+  "rationale": "The beta labels were added before their usage was known, but they are now consumed by almost all clusters with cloud providers enabled, so the KEP argues they should be promoted to GA. Both label sets must coexist because existing workloads and nodeSelectors still rely on the beta labels, and removing them would break scheduling. The change is meant to span several Kubernetes versions under the deprecation policy.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue to use beta labels until a V2 of Nodes / PersistentVolumes is developed and breaking changes are acceptable",
+    "why_not": "The sources list this as an alternative but do not say why it was not chosen."
+   },
+   {
+    "option": "Continue to use existing beta labels forever",
+    "why_not": "The sources list this as an alternative but do not say why it was not chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In order to promote these labels to GA safely, there will be a period in which both the \"beta\" and \"GA\" labels are applied to node and volume objects."
+   },
+   {
+    "ref": "readme",
+    "quote": "The labels mentioned above are consumed by almost all Kubernetes clusters that have cloud providers enabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to remove the beta labels and replace them with their GA equivalents:"
+   },
+   {
+    "ref": "readme",
+    "quote": "For the case of new resources, both labels are still required as workloads may still consume the beta labels in some other resource that was not updated yet to use the GA labels."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2422,
+  "output": 817
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

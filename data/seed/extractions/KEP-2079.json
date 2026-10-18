@@ -1,0 +1,35 @@
+{
+ "kep": "KEP-2079",
+ "input_hash": "cb042bda6cd83ea2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2079 proposes adding an endPort field to NetworkPolicyPort so a single ports entry can declare a contiguous port range instead of listing each port. The KEP is marked implemented, stage stable.",
+  "rationale": "Users must list every port individually in the ports array to allow a range (e.g., the NodePort range 32000-32768), and making an exception requires listing all other ports. Adding endPort to NetworkPolicyPort simplifies these rules. A design with a NetworkPolicyPortRange struct including an Except array was considered but dropped as adding too much complexity.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "NetworkPolicyPortRange struct inside NetworkPolicyPort (Port, Range fields)",
+    "why_not": "Source says the main design 'seems more clear, so this alternative has been discarded.'"
+   },
+   {
+    "option": "Range struct with From, To and an Except array",
+    "why_not": "Source says 'because it would bring much more complexity than desired the proposal has been dropped right now.'"
+   },
+   {
+    "option": "Support a specific Exception field",
+    "why_not": "Listed as a non-goal in the KEP."
+   },
+   {
+    "option": "Support endPort when the starting port is a named port",
+    "why_not": "Listed as a non-goal in the KEP."
+   }
+  ],
+  "evidence": "[{\"ref\": \"readme\", \"quote\": \"Adding a new `endPort` field inside the `ports` will allow a simpler creation of NetworkPolicy to the user.\"}, {\"ref\": \"readme\", \"quote\": \"In NetworkPolicy specification, inside `NetworkPolicyPort` specify a new `endPort` field composed of a numbered port that defines if this is a range and when it ends.\"}, {\"ref\": \"readme\", \"quote\": \"But the main design suggested in this Kep seems more clear, so this alternative has been discarded.\"}, {\"ref\": \"readme\", \"quote\": \"because it would bring much more complexity than desired the proposal has been dropped right now\"}], \"supersession_claims\": [], \"confidence\": \"medium\"}"
+ },
+ "usage": {
+  "input": 5515,
+  "output": 759
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

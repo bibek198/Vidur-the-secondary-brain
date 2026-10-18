@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2273",
+ "input_hash": "e255dc8dd15694ea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2273 proposed CRI API changes so container resource fields can be updated for in-place pod vertical scaling. Its status is implementable at alpha stage, with the kubelet, kube-apiserver and kube-scheduler behind a feature gate.",
+  "rationale": "The sources cover the PRR review on PR #2474, not the design itself. Reviewers asked for Upgrade/Downgrade and Version Skew sections, and the author documented that an API server with the feature on but an older kubelet would restart containers on a resource PATCH. Reviewers approved PRR for alpha on that basis, and sig-node approvers (dchen1107) approved the KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate directly past alpha with the feature gate on in the API server first",
+    "why_not": "The sources say the version skew issue means it would delay GA, since the feature gate must be on in kubelets before removing it in the API server; the author instead targeted beta for 1.24 with the gate default-off in alpha."
+   },
+   {
+    "option": "Keep alpha at n+2 kubelet compatibility without changes",
+    "why_not": "The author asked whether stretching alpha to n+2 was reasonable, and ehashman said she did not think beta should be delayed; the sources do not record an explicit decision on this option."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:840765654",
+    "quote": "I requested @Random-Liu a last minute review on CRI-related extension last Tuesday."
+   },
+   {
+    "ref": "rcomment:629692561",
+    "quote": "I don't think we should delay beta, but this would delay GA, since we'd need to ensure that the feature gate was on in kubelets before removing it in the API server."
+   },
+   {
+    "ref": "rcomment:629692561",
+    "quote": "This is why we ask these questions, to catch them before we've implemented it without a strategy"
+   },
+   {
+    "ref": "rcomment:629781599",
+    "quote": "I've updated the KEPs to target 1.24 for beta. This way we will not have to worry about the above issue in n-2 kubelet versions surprising anyone as alpha has feature-gate default-off."
+   },
+   {
+    "ref": "review:657083859",
+    "quote": "/approve I think PRR is good to go for alpha. @derekwaynecarr @dchen1107 can you please give this a final approval?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4914,
+  "output": 906
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

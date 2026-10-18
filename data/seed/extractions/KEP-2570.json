@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-2570",
+ "input_hash": "2eaca6d8d35d493a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2570 (Memory QoS, sig-node) maps pod memory requests to memory.min and computes memory.high from a throttling factor using cgroups v2. Its current status is implementable at stage beta, after a history of implementable (2021), provisional (2023), and implementable again (2026-02-11).",
+  "rationale": "Kubernetes does not use memory requests for memory protection under cgroups v1 or v2, so pod memory can be reclaimed and allocation latency rises under node pressure. The KEP uses cgroups v2 memory.min, memory.low and memory.high to protect requests and throttle overcommit. Reviewers raised concerns about kernels older than 5.9 (the livelock fix), rollback, memory.min starving node components, and padded requests. The sources show the team responding with PSI-based eviction, a kubelet opt-out, and a separate memoryMinEnabled field, but they do not show a final resolution of these concerns.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Map memory.low to requests for all QoS classes (uniform setting)",
+    "why_not": "Maintainers noted memory.min is preferable to memory.low for uniform requests, since memory.min forces reclaim only when needed; the choice was discussed but the sources do not show a final decision on this alternative beyond the memory.min choice in the proposal."
+   },
+   {
+    "option": "Map memory.min for Guaranteed pods and memory.low for Burstable pods (QoS-tiered mapping)",
+    "why_not": "Proposed by ndixita as an alternative during beta review; the sources record it as a discussion point, not as adopted. The KEP proposal maps requests to memory.min for Guaranteed pods and uses memory.low for Burstable pods, per its table."
+   },
+   {
+    "option": "Revert to alpha (re-assess design and do another alpha in 1.36)",
+    "why_not": "Raised by ndixita on 2026-02-10 over memory.min starvation risk; the sources show further discussion but no recorded decision to revert."
+   },
+   {
+    "option": "Kernel version check (reject kernels older than 5.9) to gate the feature",
+    "why_not": "Sources say pure kernel version checks are unreliable because RHEL and other LTS distributions backport fixes without changing the version string."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It maps pod memory requests to `memory.min` (guaranteed memory protection from reclaim) and calculates `memory.high` (throttling threshold) based on a configurable throttling factor."
+   },
+   {
+    "ref": "rcomment:2783213521",
+    "quote": "workloads hitting `memory.high` on kernels < 5.9 would hang indefinitely instead of progressing toward OOM."
+   },
+   {
+    "ref": "review:3773904182",
+    "quote": "The updated plan is to make PSI-based eviction the primary safety mechanism as systemd-oomd can kill workloads stuck at memory.high regardless of kernel version."
+   },
+   {
+    "ref": "rcomment:2791416717",
+    "quote": "For `memory.min`, we can add a separate `memoryMinEnabled` bool in KubeletConfiguration (gated by MemoryQoS)."
+   },
+   {
+    "ref": "comment:3960592763",
+    "quote": "The result is a silently degraded workload stuck in a perpetual tug-of-war, which is arguably worse than a clean OOM kill"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 11771,
+  "output": 1255
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

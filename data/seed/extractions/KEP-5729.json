@@ -1,0 +1,63 @@
+{
+ "kep": "KEP-5729",
+ "input_hash": "ebb59502716aa70b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5729 extends the Workload and PodGroup APIs so ResourceClaims and ResourceClaimTemplates can be associated with a PodGroup. A claim referenced by a PodGroup is reserved for the PodGroup as a whole, and a template generates one claim per PodGroup, so more than 256 Pods can share a claim. The KEP is at implementable status, stage beta.",
+  "rationale": "Today a ResourceClaim's status.reservedFor is limited to 256 entries, and workload controllers such as JobSet and LeaderWorkerSet must create and name shared claims themselves. Associating claims and templates with PodGroups lets Kubernetes manage the claim lifecycle generically and removes that cap. Review settled on PodGroup-level scope first, with allocation deferred to Pod scheduling time and the reservedFor work (KEP-5194) folded into this KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Associate ResourceClaims or ResourceClaimTemplates with Workload objects",
+    "why_not": "Listed as a non-goal (future work). Wojtek Szczesniak said the constraint should be added only to the PodGroup type for now, to avoid boiling the ocean and significant scheduling-algorithm changes."
+   },
+   {
+    "option": "Create the ResourceClaim when the first Pod in the PodGroup is created instead of when the PodGroup is created",
+    "why_not": "Considered by nojnhuh and the KEP was updated to describe it, but johnbelamaric and wojtek-t favored creating the claim on PodGroup creation, which the thread says was then settled as copying the template to the PodGroup explicitly on creation."
+   },
+   {
+    "option": "Keep the reservedFor changes (KEP-5194) separate from this KEP",
+    "why_not": "johnbelamaric and kannon92 favored one KEP and one feature gate; nojnhuh then widened the scope to include KEP-5194."
+   },
+   {
+    "option": "Add finalizer-based deletion protection for PodGroups in alpha",
+    "why_not": "wojtek-t said this is not needed for alpha and should be a beta blocker solved at the framework level, so nothing custom is added for alpha."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A ResourceClaim referenced by a PodGroup will be reserved for that PodGroup as a whole instead of its individual Pods, addressing the limit on the number of entries in a ResourceClaim's `status.reservedFor` list."
+   },
+   {
+    "ref": "readme",
+    "quote": "Allow claims to be allocated for more than 256 Pods."
+   },
+   {
+    "ref": "rcomment:2745569156",
+    "quote": "I think that (at least as a first step), we should limit introduction of RC/RCT only into PodGroup. In other words - the additional constraint can only be introduced at the PodGroup level."
+   },
+   {
+    "ref": "rcomment:2748346455",
+    "quote": "Yes, creation of the RC upon creation of the PG makes sense to me. But at least for now I think we can still defer *allocation* to Pod scheduling time"
+   },
+   {
+    "ref": "comment:3813329623",
+    "quote": "FYI the scope of this KEP will be widened to include #5194. Working on that now, but feedback on what's here now in the meantime is still welcome!"
+   },
+   {
+    "ref": "rcomment:2793379835",
+    "quote": "for Alpha this is not needed (so let's not add anything custom for the sake of this PR), and for Beta we will solve it on the framework level"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10918,
+  "output": 1305
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

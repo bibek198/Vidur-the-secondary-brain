@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2334",
+ "input_hash": "5b04649ff1ba88a0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2334 proposes graduating server-side columnar formatting (Table) and PartialObjectMetadata from beta to GA. Current status is implementable, stage alpha, from 2021-02-09.",
+  "rationale": "Server-side printing has been in beta since Kube 1.10 and is widely used by kubectl and web interfaces, with no schema changes since 1.10. GA promotion would let kubectl drop legacy printers and let controllers use PartialObjectMetadata without deprecation risk. The only discussion source is a single LGTM comment on the PR approving the update.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep server-side printing and PartialObjectMetadata in beta",
+    "why_not": "The sources say the schema has not changed since 1.10 and the feature has no outstanding feature requests, so the document argues it is ready to ship as GA."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We have not needed to update the schema since 1.10, proving that it is ready to ship."
+   },
+   {
+    "ref": "readme",
+    "quote": "Server-side printing has no outstanding feature requests now that full [WATCH support has been implemented in 1.15]"
+   },
+   {
+    "ref": "comment:775734599",
+    "quote": "Since you approved the original one, I will simply lgtm this one :) /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2097,
+  "output": 587
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

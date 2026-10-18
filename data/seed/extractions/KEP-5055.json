@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5055",
+ "input_hash": "0305f8fff7ec39f6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5055 adds device taints and tolerations to Dynamic Resource Allocation. DRA drivers or cluster admins (via DeviceTaintRule) can taint devices so they are not used for new pods, and pods already using a tainted device can be stopped; ResourceClaims can list tolerations to ignore specific taints. The status is implemented, stage stable.",
+  "rationale": "Drivers and admins need to take individual devices offline for maintenance or mark them unhealthy without affecting the whole node, and users need to choose between degraded operation and rescheduling. Early review rejected encoding offline state as predefined device attributes (kubernetes.io/offline) in favor of a proper taint/toleration API built on ResourceSliceOverride-style patching. The sources do not record the final rationale for the stable release beyond these design goals.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Predefined device attribute such as kubernetes.io/offline with CEL matching",
+    "why_not": "Pohly leaned toward dropping it: \"I'm leaning towards dropping kubernetes.io/offline and replacing it with a 'proper' API.\" Merging multiple values for one attribute was seen as awkward."
+   },
+   {
+    "option": "Storing the result of patching in ResourceSlice status",
+    "why_not": "Would duplicate attributes, risk fights between the patch controller and the driver owning the slice spec, and could make slices too large."
+   },
+   {
+    "option": "Using statically allocated ResourceClaims as admin reservations/taints instead of patches",
+    "why_not": "Pohly listed drawbacks: ResourceClaims cannot select devices by <driver>/<pool>/<device>, cannot express tolerations matching only some taints, and are not a convenient API. The thread was left unresolved and withdrawn for this cycle."
+   },
+   {
+    "option": "Default CEL-based eviction behavior applied by the apiserver when tolerations are empty",
+    "why_not": "Pohly preferred that empty tolerations stay empty when stored so future default changes apply to existing objects."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "With this KEP, DRA drivers can mark devices as tainted such that they won't be used for scheduling new pods."
+   },
+   {
+    "ref": "rcomment:1937627730",
+    "quote": "So the goal is to let the driver set a taint and then the admin decides that \"no, this this taint shouldn't really taint the device\"?"
+   },
+   {
+    "ref": "rcomment:1917842711",
+    "quote": "I'm leaning towards dropping `kubernetes.io/offline` and replacing it with a \"proper\" API. It still fits into this KEP because it relies on `ResourceSliceOverride`."
+   },
+   {
+    "ref": "comment:2643949663",
+    "quote": "ResourceClaims cannot select devices by `<driver>/<pool>/<device>` (loss of the most common use case)."
+   },
+   {
+    "ref": "comment:2633469561",
+    "quote": "Duplicating the attributes might make a slice too large."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10131,
+  "output": 1138
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

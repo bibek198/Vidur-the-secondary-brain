@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-2433",
+ "input_hash": "30b45b5de9366392",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2433 proposed automatic topology aware hints: the EndpointSlice controller populates a zone hint per endpoint so kube-proxy can keep traffic in-zone when capacity suffices. It was implemented as an EndpointSlice hints mechanism gated by a TopologyAwareHints feature gate and a Service annotation; its status is implementable, stage stable.",
+  "rationale": "Traffic to a Service is routed randomly across zones, which adds cross-zone cost and latency. Endpoints are often unevenly spread across zones, so the KEP has the EndpointSlice producer assign hints that move endpoints from zones with extra capacity to zones lacking it. The KEP takes the place of two earlier EndpointSlice subsetting KEPs, which were never implemented, and it separates subsetting from topology routing because combining them led to weaker results on both sides.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Node-level topology aware routing with specified topology keys (earlier Topology Aware Routing KEP)",
+    "why_not": "The readme says it still requires API and controller additions, adds complexity, and cannot offer an easy policy decision at service level."
+   },
+   {
+    "option": "Implement this proposal with EndpointSlice subsetting",
+    "why_not": "The readme says this was the original plan but it resulted in too many compromises on both sides, so the two were separated."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal is currently focused on topology aware routing at zone level but could be expanded to include region."
+   },
+   {
+    "ref": "readme",
+    "quote": "When a heuristic that depends on Hints is chosen, the EndpointSlice controller will populate hints for each endpoint."
+   },
+   {
+    "ref": "readme",
+    "quote": "This functionality will be enabled by a `TopologyAwareHints` feature gate along with a new Service annotation."
+   },
+   {
+    "ref": "readme",
+    "quote": "In the short term, this is taking the place of two closely related KEPs that were never implemented."
+   },
+   {
+    "ref": "readme",
+    "quote": "We ended up with weaker approaches for subsetting and topology aware routing than if we separated them."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-536",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-2433 replaces KEP-536 Topology-aware service routing"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3186,
+  "output": 918
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

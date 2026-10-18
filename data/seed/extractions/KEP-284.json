@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-284",
+ "input_hash": "c418fa1e83cf6f78",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-284 (Growing Persistent Volume size) lets users increase the size of PVs used by pods by updating the PVC's requested size, with a controller applying the change to the bound PV. Its status is implementable, stage stable.",
+  "rationale": "The design goal is to let users grow volumes in use by editing the PVC, with a controller applying the change to the bound PV. The discussion shows the feature went through alpha in 1.8 and beta in 1.11, and stayed beta while file system resize, CSI expansion and recovery from resize failure were finished. A late-2022 comment reports that volume expansion went GA around 1.24, which is consistent with the stable stage in the status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature in beta until recovery from resize failure (kubernetes/enhancements#1790) is solved",
+    "why_not": "The maintainers said a solution to that issue is a blocker for GA, which was the reason it stayed beta through 1.22, but the record does not show the later GA path beyond a blog link."
+   },
+   {
+    "option": "Promote to GA in 1.17 together with CSI volume expansion",
+    "why_not": "The 2019 comments set this target, but the feature remained beta in 1.18, 1.19, 1.20 and 1.22 because the dependent work was not finished."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Enable users to increase size of PVs that their pods are using. The user will update PVC for requesting a new size."
+   },
+   {
+    "ref": "comment:833172194",
+    "quote": "a solution for https://github.com/kubernetes/enhancements/issues/1790 is blocker for resizing going GA"
+   },
+   {
+    "ref": "comment:1229864333",
+    "quote": "I *think* this is available in k8s 1.24, and blog that is alluded to in the linked issue is probably this one"
+   },
+   {
+    "ref": "comment:509280025",
+    "quote": "Feature is still in beta in 1.15 and likely going to remain beta in 1.16. We will target 1.17 as GA"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9752,
+  "output": 814
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

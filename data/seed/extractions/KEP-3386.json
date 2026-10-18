@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3386",
+ "input_hash": "954158fd8b1a521e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3386 proposes replacing the Kubelet's periodic container-state polling (PLEG relisting) with a CRI gRPC server-streaming events API, so the Kubelet is notified of container lifecycle changes. The KEP is in status implementable, stage alpha, and keeps relisting at a reduced frequency as a safety net.",
+  "rationale": "Kubelet polls the container runtime every 1s with List calls, and the cost grows with pod and container count, causing CPU spikes and scalability limits. The design adds CRI events for container create, start, stop and delete, while keeping relisting because events can be missed. The reviewers approved the write-up for alpha, with the open items (ordering, buffering, restarts, metrics) to be handled during implementation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use cadvisor events for the Kubelet PLEG",
+    "why_not": "The KEP says \"we are trying to reduce the kubelet's dependency on cadvisor so that option is not viable.\""
+   },
+   {
+    "option": "Completely eliminate polling",
+    "why_not": "Listed as a non-goal: \"We cannot solely rely on the upstream container events due to the possibility of missing events.\""
+   },
+   {
+    "option": "Subscribe to a per-container/per-pod event stream with filters (as first proposed)",
+    "why_not": "Reviewer mikebrow questioned the need and the design was discussed; kubelet subscribing to all events without a filter was considered technically possible, with the runtime scoping events to the k8s.io namespace."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Specifically, the Kubelet will listen for gRPC server streaming events from the CRI implementation for events required for generating pod lifecycle events."
+   },
+   {
+    "ref": "readme",
+    "quote": "Polling incurs non-negligible overhead as the number of pods/containers increases, and is exacerbated by Kubelet's parallelism"
+   },
+   {
+    "ref": "rcomment:897516876",
+    "quote": "Yes, this should be modified to say that we will reduce the polling frequency. The details of how often that is TBD as we work through this."
+   },
+   {
+    "ref": "rcomment:898249721",
+    "quote": "How can a cluster-admin know this is happening in the cluster at scale? Is there something exposed which shows a difference between the state anticipated based on the event stream and state produced when the re-list happens?"
+   },
+   {
+    "ref": "review:1009522928",
+    "quote": "I think the write-up is good to pursue alpha. As we go into implementation, the exact metric name will need to be visited."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13526,
+  "output": 989
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

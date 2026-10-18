@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4020",
+ "input_hash": "d3c8be576d2f1ff7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4020 (Unknown Version Interoperability Proxy, later called Mixed Version Proxy) proposes that during upgrades or downgrades an apiserver proxies requests for built-in resources it does not serve to a peer apiserver that can, and merges aggregated discovery across peers. Its status is implementable, stage beta, with implementable from 2023-06-14.",
+  "rationale": "During version skew, clients can get 404s for resources that exist elsewhere in the cluster, and incomplete discovery can cause controllers to act wrongly, such as blocking namespace deletion or garbage collecting objects by mistake. The design routes requests to a capable peer and returns 503 when the peer is unreachable, and it merges discovery so that it matches what the cluster can serve. The sources do not give a separate rationale for the move to beta; the status history only records the implementable date.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Serve 503s without proxying, or merge discovery without proxying",
+    "why_not": "The readme says merely serving 503s does not solve the problem, and proxying without merged discovery also does not fix it completely; both are needed."
+   },
+   {
+    "option": "Store peer IP info in the APIServerIdentity lease object",
+    "why_not": "Discussion notes that users could then edit this info unless a webhook blocks them; the masterlease reconciler was preferred as safer, though the final decision was to write to both masterleases and v1.Lease objects."
+   },
+   {
+    "option": "Add a new discovery endpoint for peer-aggregated discovery",
+    "why_not": "The readme says all discovery changes are implemented at the existing aggregated discovery endpoint /apis, with no new discovery endpoints introduced."
+   },
+   {
+    "option": "Enforce that the feature requires --peer-ca-file to be set",
+    "why_not": "A reviewer argued the feature should be enabled even without apiserver networking, where the only difference is 503 instead of 404; the sources do not record a final resolution beyond the flag being required per the 2023-06-06 comment."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "ensures that: 1. Client requests for a specific built-in resource are proxied to an API server capable of serving it, avoiding 404 Not Found errors"
+   },
+   {
+    "ref": "readme",
+    "quote": "Merging discovery: During upgrade or downgrade, it may be the case that no apiserver has a complete list of available resources."
+   },
+   {
+    "ref": "readme",
+    "quote": "Likewise proxying but not merging the discovery document, or merging the discovery document but serving 503s instead of proxying, doesn't fix the problem completely."
+   },
+   {
+    "ref": "rcomment:1210724809",
+    "quote": "You are not guaranteed that apiservers will be able to talk to each other in the first place (i.e. firewall rules), so falling back to 503 (instead of 404ing) seems reasonable to me."
+   },
+   {
+    "ref": "rcomment:1222275930",
+    "quote": "I think this would work well and I think the security profile on it is ok since cluster-admins will be able to specify an egress dialer."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13516,
+  "output": 1141
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

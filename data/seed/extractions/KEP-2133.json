@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2133",
+ "input_hash": "c73c7addb8967ee2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2133 replaces the in-tree container image registry credential providers with an external, pluggable credential provider mechanism and removes the in-tree providers. Status is implemented, stage stable.",
+  "rationale": "Kubelet used cloud-provider-specific SDKs inside the main tree to obtain registry credentials, which KEP-0002 deprecated in favor of out-of-tree migration. This KEP adds an external binary interface for kubelet credential acquisition and removes the in-tree code. The status history shows it was implemented from 2023-01-31 after several release cycles of slipped milestones (1.21, 1.23, 1.25 exception denied, then 1.26 tracked).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "API Server Proxy",
+    "why_not": "The KEP says the team chose not to follow it because \"we have not seen enough evidence that these features are commonly requested by users\" and it was outside the stated goals."
+   },
+   {
+    "option": "Sidecar Credential Daemon",
+    "why_not": "The KEP says \"The added complexity of running a daemon over executing a binary made this option less desirable to us.\""
+   },
+   {
+    "option": "Bound Service Account Token Flow",
+    "why_not": "The KEP describes it as \"out of scope for extracting the cloud provider specific code\" and a possible future enhancement."
+   },
+   {
+    "option": "Pushing Credential Management into the CRI",
+    "why_not": "The KEP calls it \"a more significant redesign\" and out of scope for extracting cloud provider code, to be considered later."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP replaces the existing in-tree container image registry credential providers with an external and pluggable credential provider mechanism and removes the in-tree credential providers."
+   },
+   {
+    "ref": "readme",
+    "quote": "The use of cloud provider specific SDKs from within the main Kubernetes tree is deprecated by KEP-0002"
+   },
+   {
+    "ref": "readme",
+    "quote": "We chose not to follow this approach because although less privileges on each node and centralized caching are good, we have not seen enough evidence that these features are commonly requested by users."
+   },
+   {
+    "ref": "comment:970449960",
+    "quote": "We'll drop this one from the release. Thanks for the update!"
+   },
+   {
+    "ref": "comment:1347545771",
+    "quote": "since this enhancement has graduated to stable can you please update"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13861,
+  "output": 928
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

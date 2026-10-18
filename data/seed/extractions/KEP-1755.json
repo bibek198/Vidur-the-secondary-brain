@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1755",
+ "input_hash": "0c8efe59bf165344",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1755 proposes a standard ConfigMap, \"LocalRegistryHosting\", that local cluster tools (Kind, K3d, Minikube, Microk8s, etc.) apply to describe how developer tools should reach the cluster's local registry, so tooling can push images without per-tool configuration. Current status is implementable, stage alpha, from 2020-06-10.",
+  "rationale": "Users must manually set up a local registry in each cluster and then configure every image tool with its hostname and port. The KEP removes that redundancy by having cluster tools publish one standard description of the registry that developer tools can read. It is kept deliberately narrow: no registry API, no multi-registry support, and no general capability detection.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "A standard CRD that configures a local registry in the cluster",
+    "why_not": "Listed as a non-goal; the KEP says that if all implementations agreed to such a CRD 'this KEP would become moot', and that approach 'would have substantial technical challenges'."
+   },
+   {
+    "option": "Supporting multiple registries per cluster",
+    "why_not": "Non-goal: 'This proposal assumes clusters have at most one registry, because that's how all existing implementations work.'"
+   },
+   {
+    "option": "A general-purpose cluster capability detection mechanism for developer tooling",
+    "why_not": "Non-goal: best practices for capability detection are 'moving fast', and local registries are the only practice mature enough to standardize now."
+   },
+   {
+    "option": "Modifying how local registries are implemented on these clusters",
+    "why_not": "Non-goal; the KEP only standardizes how existing registries are exposed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The ConfigMap specifies everything a tool might need to know about how to interact with the local registry."
+   },
+   {
+    "ref": "readme",
+    "quote": "Tools that configure a local registry should also apply a ConfigMap that communicates \"LocalRegistryHosting\"."
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal assumes clusters have at most one registry, because that's how all existing implementations work."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP is contingent on the maintainers of local clusters agreeing to it (specifically: Kind, K3d, Minikube, Microk8s, and others)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2550,
+  "output": 909
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

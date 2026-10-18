@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2589",
+ "input_hash": "6d152ca1af171dbc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2589 is a vendor-specific KEP that migrates the Portworx in-tree volume plugin to the Portworx CSI driver by enabling Portworx-specific CSI Migration feature gates, inheriting its design from parent KEP-625 (CSI Migration). Its status is implemented, stage stable.",
+  "rationale": "Portworx volume provisioning ran through the in-tree driver, so it needed to be migrated to the Portworx CSI driver as part of the parent CSI Migration KEP. The core in-tree to CSI migration code already existed in k/k, so this KEP only adds Portworx-specific feature gates. The sources do not explain the reasons for the timeline (beta and stable targets moved across releases), so only the design rationale is stated here.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Track the work as a standalone design proposal in the old design-proposal format",
+    "why_not": "The enhancements team said the proposal must use the KEP format, with a metadata file and a PRR review, to be accepted into a milestone."
+   },
+   {
+    "option": "Close the enhancement issue and track the work only under the parent KEP-625",
+    "why_not": "The enhancements team suggested this as an option if the parent KEP was the way the SIG targeted milestones, but the sources do not record that this was done."
+   },
+   {
+    "option": "Write a new migration design instead of reusing the parent CSI Migration design",
+    "why_not": "The readme says the KEP inherits all contents from its parent KEP and that the core migration code is out of scope, so only feature gates are added."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This inherits all the contents from its parent KEP. It will introduce two new feature gates to be used as described in its parent KEP."
+   },
+   {
+    "ref": "readme",
+    "quote": "The in-tree to CSI migration feature is already in place in k/k. We just need to enable Portworx specific feature gates for it to work for Portworx driver."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently the Portworx volume provisioning happens through Portworx in-tree driver. As part of the parent KEP"
+   },
+   {
+    "ref": "comment:3832523389",
+    "quote": "This enhancement is continuing in stage `stable` for v1.36 (correct me, if otherwise)"
+   },
+   {
+    "ref": "comment:2887670712",
+    "quote": "Given that this KEP has graduated to `stable`, once all the work is completed (including removing feature gates), could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12907,
+  "output": 975
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

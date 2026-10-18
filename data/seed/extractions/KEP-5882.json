@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5882",
+ "input_hash": "36eb3abe1a1a9697",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5882 proposes a new `.spec.podReplacementPolicy` field on Deployments so users can choose whether new pods are created only after terminating pods finish or immediately. The KEP is in implementable status at alpha stage.",
+  "rationale": "Deployments handle terminating pods inconsistently: Recreate waits for terminating pods, while RollingUpdate and scale-up do not, so pod count can exceed spec.replicas. This causes extra node autoscaling, slower rollouts under contention, and lost visibility into work done by terminating pods. The KEP adds a per-Deployment policy, modeled on the Job field, to let users pick the behavior.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Implement the behavior in a separate controller that manages ReplicaSets",
+    "why_not": "The KEP says there is a need for this to be implemented by the Deployment controller, because many existing workloads can benefit from this feature."
+   },
+   {
+    "option": "Model the field on Job's podReplacementPolicy (KEP-3939)",
+    "why_not": "Not rejected: the KEP explicitly builds the field as similar to Job's podReplacementPolicy."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add a new field `.spec.podReplacementPolicy` to Deployments to allow users to specify the desired behavior."
+   },
+   {
+    "ref": "readme",
+    "quote": "The Recreate Deployment strategy waits for terminating pods to terminate before creating (scheduling) new pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "The RollingUpdate deployment strategy does not wait for terminating pods and creates (schedules) new pods immediately."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to introduce a new `.spec.podReplacementPolicy` field (similar to Job's `.spec.podReplacementPolicy` in [kubernetes/enhancements#3939]"
+   },
+   {
+    "ref": "readme",
+    "quote": "There is a need for this feature to be implemented by a Deployment controller, because many existing workloads can benefit from this feature."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3322,
+  "output": 848
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

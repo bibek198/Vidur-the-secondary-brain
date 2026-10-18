@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1965",
+ "input_hash": "26854d088a36050a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1965 gives each kube-apiserver a unique identity stored in a coordination.k8s.io Lease in the kube-system namespace, so controllers can list live apiservers. The KEP is currently at implementable, stage beta.",
+  "rationale": "Existing apiserver IDs were the advertised IP addresses in the \"kubernetes\" endpoints, which fail when a load balancer gives all apiservers the same address. The proposal stores each apiserver's ID in a Lease, with creation and heartbeat handled by a post-start hook and expired leases garbage collected by another. The StorageVersion API (garbage collection of stale records) and API Priority and Fairness (unique reporter ID) are the stated consumers.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using advertised IP addresses from the kubernetes endpoints as IDs",
+    "why_not": "The readme says this breaks when a load balancer sets all kube-apiservers to the same advertise IP address."
+   },
+   {
+    "option": "Run the lease garbage collection in kube-controller-manager only",
+    "why_not": "The discussion in the PR was split; lavalamp preferred the cleanup in apiserver, saying \"I don't like having the cleanup routine in a different place than the writing routine in general\", while enj and deads2k leaned toward kube-controller-manager. The sources do not show a final resolution on this point in the KEP text provided."
+   },
+   {
+    "option": "Persist a stable identity across restarts (no PID or random suffix)",
+    "why_not": "lavalamp said \"I don't think I want people to get attached to specific apiservers (don't make them pets)\"; the discussion left this open and the sources do not record a final decision."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, such a list is already maintained in the “kubernetes” endpoints, where the kube-apiservers’ advertised IP addresses are the IDs."
+   },
+   {
+    "ref": "readme",
+    "quote": "a kube-apiserver will store its ID in a Lease object. All kube-apiserver Leases will be stored in the `kube-system` namespace."
+   },
+   {
+    "ref": "comment:1281290816",
+    "quote": "I'm inclined to merge this and then make changes in a follow-up, since this is just making the KEP true wrt the actual current state."
+   },
+   {
+    "ref": "rcomment:1224636141",
+    "quote": "IMO this is not ready for stable - IIUC nothing actually uses this functionality, so we have no proof or experience that it actually works."
+   },
+   {
+    "ref": "rcomment:1224685245",
+    "quote": "I think it's reasonable to say this feature shouldn't GA until StorageVersion API is Beta, which is currently the primary use-case for it."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13103,
+  "output": 1039
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

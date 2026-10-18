@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-989",
+ "input_hash": "4ad5815333b0115a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-989 proposed allowing an existing PersistentVolumeClaim in the same namespace to be used as a dataSource, so a CSI driver can provision a duplicate (clone) of that volume. The KEP is marked implemented, stage stable, with implementation tracked from 2020-12-16.",
+  "rationale": "Some storage back ends offer efficient native clone operations, but Kubernetes only allowed Snapshot objects as PVC dataSources, forcing users to manage two objects (snapshot and volume). The KEP adds the core PVC object to the permitted dataSource types and passes clone intent to CSI plugins that report clone capability. The sources describe the design and its scope but do not explain why the status was set to implemented; that status change was made through a retroactive KEP update discussed in PR #3007.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use snapshots to implement cloning (take a snapshot, then create a volume from it)",
+    "why_not": "The readme says some back ends implement cloning this way, but that requires two objects and the new volume may not be truly independent; back ends with native clone should perform a real clone."
+   },
+   {
+    "option": "Use Populators as a generic DataSource mechanism",
+    "why_not": "Non-goals state the KEP does not propose other DataSource types including Populators, and does not cover out-of-band cloning for back ends without clone features."
+   },
+   {
+    "option": "Add cloning to in-tree plugins or Flex drivers",
+    "why_not": "Non-goals state cloning will only be available in CSI; in-tree and Flex drivers are excluded."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes adding support for specifying existing PVCs in the DataSource field to indicate a user would like to Clone a Volume."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add the Core object PVC to the allowed types for PVC DataSource. Currently API validation only allows Snapshot Object Types"
+   },
+   {
+    "ref": "readme",
+    "quote": "Cloning will only be available in CSI, cloning features will NOT be added to existing in-tree plugins or Flex drivers"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9157,
+  "output": 981
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-5941",
+ "input_hash": "b36aa7c4b3b856e9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5941 (DRA Shared Consumable Capacity) reached status implementable at stage alpha. The design extends shared counters with a requestPolicy on CounterSet and a valueFrom mapping on device consumption, so device requests can draw from shared capacity.",
+  "rationale": "The discussion centered on modelling shared capacity (such as a shared PCIe root or NUMA zone pool) in DRA. Reviewers considered alternatives including scheduler-core shared counters and extending Partitionable counters with request policies. The approach that was converged on, per johnbelamaric, was to add requestPolicy to CounterSet and valueFrom to consumption instead of a new sharedCapacities field. The LGTM from johnbelamaric on 2026-06-16 was conditioned on follow-up edits, not on the design being redone.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Make shared counters part of the scheduler core, shared across DRA and ResourceFit plugins",
+    "why_not": "Raised by dom4ha and discussed by johnbelamaric and LionelJouin, who said it seemed like a completely new KEP and quite hard to model. It was not adopted for this KEP."
+   },
+   {
+    "option": "Extend Partitionable counters with request policy and default values in consumesCounters, as proposed by sunya-ch",
+    "why_not": "sunya-ch noted it would require changing PartitionableDevice so that Counter Value is no longer required. johnbelamaric instead proposed the CounterSet and valueFrom split, with the value-or-valueFrom relaxation."
+   },
+   {
+    "option": "A new sharedCapacities field",
+    "why_not": "johnbelamaric said 'I don't see why we need a new sharedCapacities' and suggested adding requestPolicy to sharedCounters instead."
+   },
+   {
+    "option": "Granular per-counter utilization metrics",
+    "why_not": "Judged too granular for the scheduler. The team aligned with the consumable capacity KEP and used the existing DRA metrics."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3314199558",
+    "quote": "I don't see why we need a new `sharedCapacities` - we can just at `requestPolicy` to the `sharedCounters`."
+   },
+   {
+    "ref": "rcomment:3343598478",
+    "quote": "yes, this captures it - I think this works for the use case and is quite flexible."
+   },
+   {
+    "ref": "comment:4721438658",
+    "quote": "@SchSeba given that it is late in your time zone and the deadline is in < 6 hours, I am going to lgtm this."
+   },
+   {
+    "ref": "comment:4721129862",
+    "quote": "We discussed around this with @sunya-ch and @SchSeba, I think this is more a complete new KEP."
+   },
+   {
+    "ref": "comment:5058185327",
+    "quote": "the implementation (code-related) PRs associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.37 milestone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11375,
+  "output": 1125
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

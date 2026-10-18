@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3973",
+ "input_hash": "4d79ffcec3724acb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3973 proposes adding a new status field, status.terminatingReplicas, to both Deployments and ReplicaSets so that the number of managed terminating pods is visible. It is observability only; scaling and rollout behavior are explicitly out of scope. The KEP is currently implementable at stage beta.",
+  "rationale": "Deployments can have more pods than their spec describes because terminating pods (marked with a deletionTimestamp) are not counted in .status.replicas. This causes unnecessary node autoscaling, slower rollouts under contention, and hides work still done by terminating pods. The KEP addresses this by reporting the terminating count in status, and it defers behavioral changes to future work (KEP-5882).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change scaling or rollout behavior to take terminating pods into account",
+    "why_not": "The KEP lists this as a non-goal: \"Changes to scaling or rollout behavior that take terminating pods into consideration.\" It is deferred to later efforts such as KEP-5882."
+   },
+   {
+    "option": "Alternatives section",
+    "why_not": "The document states only \"N/A\" for alternatives, so the sources do not record any other options that were weighed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add new fields `status.terminatingReplicas` to both Deployments and ReplicaSets in order to improve managed pod observability to eventually improve these scenarios in future efforts"
+   },
+   {
+    "ref": "readme",
+    "quote": "the actual number of replicas (pods) can be higher due to the terminating (marked with a `deletionTimestamp`) pods being present which are not accounted for in `.status.replicas`"
+   },
+   {
+    "ref": "readme",
+    "quote": "- Changes to scaling or rollout behavior that take terminating pods into consideration."
+   },
+   {
+    "ref": "readme",
+    "quote": "Deployments and ReplicaSets should indicate a number of managed terminating pods in their status field."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2728,
+  "output": 801
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,37 @@
+{
+ "kep": "KEP-2335",
+ "input_hash": "ce0d15e9a1b2b192",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2335 proposed restricting CRD OpenAPI v3 validation schemas to a \"structural schema\" subset, so that pruning, defaulting, server-side apply, read-only fields and protobuf can be built on it. The KEP is marked implemented, stage stable.",
+  "rationale": "OpenAPI v3 is very open and can express semantics that make advanced CRD features hard to implement. The proposal limits types and object field names to what is apparent from properties, items, additionalProperties and type, following a Structural Completeness principle. Existing v1beta1 CRDs keep working, while v1 enforces structural schemas on create and ratchets on update. The sources do not explain the status decision beyond the discussion about its PRR and stage handling.",
+  "outcome_reason": "null</reasoning_effort>\n<parameter name=\"alternatives\">[{\"option\": \"Keep the full OpenAPI v3 schema language for CRD validation\", \"why_not\": \"The sources say OpenAPI v3 is a poor input format because there is no one correct way to describe a given thing, and logical junctors make advanced features difficult or impossible to implement.\"}, {\"option\": \"Mark the KEP as implementable rather than implemented\", \"why_not\": \"The discussion records that a related KEP was retroactively declared beta and marked implemented, skipping PRR. The sources do not record a decision to revert this status for KEP-2335.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Here, we propose to impose a restriction called _structural schema_ to that language, which will * significantly reduce difficulty in moving forward with advanced features"
+   },
+   {
+    "ref": "readme",
+    "quote": "CRDs created via the `v1beta1` endpoints are not restricted such that existing CRDs keep working **as before**"
+   },
+   {
+    "ref": "readme",
+    "quote": "In the `v1` CustomResourceDefinition API we will enforce structural schemas on creation and do ratcheting validation on update"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5778,
+  "output": 836
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

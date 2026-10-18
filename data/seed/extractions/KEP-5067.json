@@ -1,0 +1,46 @@
+{
+ "kep": "KEP-5067",
+ "input_hash": "6608a9180b6af4b8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5067 adds a status.observedGeneration field to pod status, reusing metadata.generation, so the pod status can express which pod spec update the writer (kubelet) has reflected. The KEP is implemented and at stable stage.",
+  "rationale": "The ResizeStatus race between API server and Kubelet left a gap in knowing whether the latest resize was acknowledged by the Kubelet. The KEP addresses this generically for any pod update by leveraging metadata.generation and a new status.observedGeneration field. ObservedGeneration was preferred over copying the desired resources or whole podspec into status because it is more concise and consistent with resources like StatefulSet.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Add a 'desired resources' field to status, or an 'observed spec' field that copies the whole podspec into status",
+    "why_not": "ObservedGeneration expresses the same amount of information while being significantly more concise, and is consistent with other resources such as StatefulSet."
+   },
+   {
+    "option": "Bump generation only when a downward API referenced field changes (sftim suggestion)",
+    "why_not": "Offered as an optional alternative in review discussion; the sources do not record a decision against it beyond the KEP's chosen generation-based approach."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The idea is to leverage the existing `metadata.generation` field and add a new `status.observedGeneration` field to the pod status."
+   },
+   {
+    "ref": "readme",
+    "quote": "ObservedGeneration is preferable over these alternatives because it expresses the same amount of inforrmation while being significantly more concise"
+   },
+   {
+    "ref": "rcomment:1926078459",
+    "quote": "the singular status.observedGeneration field in the pod status means only a single writer can set it."
+   },
+   {
+    "ref": "rcomment:1949475844",
+    "quote": "I think a reasonable path in the kubelet here is to use feature enabled || pod status has non-zero observedGeneration to decide whether to propagate metadata.generation to status.observedGeneration."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10264,
+  "output": 814
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

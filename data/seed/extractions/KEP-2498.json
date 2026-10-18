@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2498",
+ "input_hash": "8bac09857e43dbb1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2498 proposes stable versioning (v1alpha2, eventually v1beta1) for kubeadm's configuration, which is currently unversioned, so that config files and the ConfigMap written for upgrades carry Kind and Version information. The KEP is in provisional status.",
+  "rationale": "A kubeadm upgrade failed after 1.10.0 because an embedded struct changed and a newer kubeadm could not deserialise the older format. Because the configuration is written and read by different kubeadm versions, the design requires explicit versions. The readme says version information will be mandatory going forward, and that conversion between versions will use apimachinery's conversion library.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue embedding structs in MasterConfiguration and invest in automated upgrade testing",
+    "why_not": "The readme says this would require 'a lot more' investment in automated testing to provide the same guarantees, so the KEP chose to duplicate structs instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Right now the configuration format is unversioned. This means configuration file formats can change between kubeadm versions and there's no safe way to update the configuration format."
+   },
+   {
+    "ref": "readme",
+    "quote": "Because the configuration is often written and read by different versions of kubeadm compiled by different versions of kubernetes, it's very important for this configuration file to be well-versioned."
+   },
+   {
+    "ref": "readme",
+    "quote": "Version information will be _mandatory_ going forward, both for user-generated configuration files and machine-generated configuration maps."
+   },
+   {
+    "ref": "readme",
+    "quote": "Rather than creating our own copies of all structs in the `MasterConfiguration` struct, we could instead continue embedding the structs. To provide our guarantees, we would have to invest a lot more in automated testing for upgrades."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2707,
+  "output": 749
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

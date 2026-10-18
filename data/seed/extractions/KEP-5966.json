@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5966",
+ "input_hash": "aacd2090a9cac88f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5966 proposes a new server-streaming RangeStream RPC on the etcd KV service that reuses RangeRequest, paginates internally with adaptive chunk sizing, pins a single MVCC revision, and derives the total count from streamed keys. Status is implementable, stage beta.",
+  "rationale": "The unary Range RPC buffers the entire response, causing server memory spikes, and paginated Range calls recompute the total count by walking the full index on every page. RangeStream addresses both by chunking results and computing the count once from the running tally. Reviewers agreed that server-side chunking avoids long-running read transactions from single large range requests, and the count was moved to the last chunk to avoid an extra tree scan.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Fall back transparently from RangeStream to unary Range when sort order is non-default or the server is old",
+    "why_not": "Reviewers chose to reject non-default sort order with an error and have clients use unary Range, since the contract differs and the server switching silently was judged less sensible."
+   },
+   {
+    "option": "Have MVCC return up to X bytes per page, deciding page size from expected result size, instead of adaptive chunking",
+    "why_not": "Raised by serathius as an alternative in review; the excerpt does not record a decision against it, and the design kept adaptive chunking."
+   },
+   {
+    "option": "Reuse the existing Kubernetes-side List interface method with a Stream option instead of a separate ListStream method",
+    "why_not": "Reviewers (jefftree, serathius) argued that reassembling the stream into one response would force bypassing the interface for concurrent chunk decoding, so a non-blocking ListStream was preferred; ahrtr's ListOptions Stream suggestion was adopted only for the etcd client-side design."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The server performs pagination internally with adaptive chunk sizing and pins to a single MVCC revision for consistency."
+   },
+   {
+    "ref": "readme",
+    "quote": "The total count is derived from the running tally of streamed keys, eliminating the separate index traversal required by paginated Range."
+   },
+   {
+    "ref": "rcomment:3016510617",
+    "quote": "returning an error and getting the client to use unary Range seems to make more sense."
+   },
+   {
+    "ref": "rcomment:3052080126",
+    "quote": "returning the count on the first chunk will require a full traversal to obtain the chunk. If we return on the last chunk, we can keep a running count and avoid the duplicate traversal."
+   },
+   {
+    "ref": "rcomment:3022970310",
+    "quote": "The batched range requests was band-aid added quickly many years ago to avoid sending large range requests with long running read txns to etcd."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9245,
+  "output": 1036
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

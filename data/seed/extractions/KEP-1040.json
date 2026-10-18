@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-1040",
+ "input_hash": "cc8c67103eeadd7f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1040 replaces the existing max-in-flight request handler in the apiserver with Priority and Fairness: each request is categorized into a priority level and a queue, with per-level concurrency pools, borrowing of unused concurrency, and even fairness among queues. The KEP is marked implemented, stage stable.",
+  "rationale": "The existing max-in-flight limits (mutating and readonly only) cannot stop one category of requests from crowding out others, and the two independent limits are not work-conserving. The design classifies requests into priority levels and queues so self-maintenance, controllers, and tenants can be protected from overload. Its stated goal priority order is overload protection, then fairness, then throughput.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep the existing max-in-flight limits for mutating and readonly requests",
+    "why_not": "The readonly/mutating split makes no other distinctions, so one subset of load can crowd out others, and the two limits are not work-conserving."
+   },
+   {
+    "option": "Auto-tune the capacity limits",
+    "why_not": "Non-goal: 'This KEP will not attempt auto-tuning the capacity limit(s).' Administrators configure each apiserver's limits instead."
+   },
+   {
+    "option": "Coordinate across apiservers or with a load balancer",
+    "why_not": "Non-goal: 'No coordination between apiservers nor with a load balancer is attempted.' Each apiserver protects itself independently."
+   },
+   {
+    "option": "Thread priority information through webhooks to avoid priority inversions",
+    "why_not": "Non-goal: the KEP instead asks the configuration to identify secondary requests and give them sufficiently high priority."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "each request is categorized to a priority level and a queue within that priority level; each priority level dispatches to its own concurrency pool"
+   },
+   {
+    "ref": "readme",
+    "quote": "Apart from the distinction between mutating and readonly, no other distinctions are made among requests; consequently there can be undesirable scenarios"
+   },
+   {
+    "ref": "readme",
+    "quote": "1. overload protection 1. fairness 1. throughput"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP will not attempt auto-tuning the capacity limit(s). Instead the administrator will configure each apiserver's capacity limit(s)"
+   },
+   {
+    "ref": "comment:1933552277",
+    "quote": "Remove the feature gate, planned for 1.31 (https://github.com/kubernetes/kubernetes/issues/121639)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12520,
+  "output": 961
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

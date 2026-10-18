@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5504",
+ "input_hash": "4eb5b69b51b6b251",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5504 proposes that clients can treat resourceVersion as a monotonically increasing integer and compare two resourceVersions for ordering via a new helper function, backed by a conformance test and documentation updates. Status is implemented, stage stable.",
+  "rationale": "Clients only had equality checks on resourceVersion, which blocks use cases such as storage version migration completion checks and informer staleness detection, while the apiserver already orders by it internally. The KEP exposes an ordering helper and conformance tests so clients can rely on the existing integer semantics. Reviewers agreed the change extends existing behavior rather than altering it, so it needed no feature gate.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Opt-in comparability indicators per API via discovery (Rust-trait-style markers)",
+    "why_not": "Liggitt argued it is reasonable to proceed without opt-in indicators in discovery, since in-tree and most extension servers already behave as comparable integers; non-comparable servers can instead return a non-integer format and the helper returns an error."
+   },
+   {
+    "option": "Make comparability a promise per API rather than blanket",
+    "why_not": "The thread notes this risks implying all APIs support comparison; the proposal instead relies on the helper's well-formedness check to guard against misinterpretation by non-integer servers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to extend some of the guarantees that the apiserver uses to the client as well, particularly the ability to consume the resource version as an integer"
+   },
+   {
+    "ref": "rcomment:2308414693",
+    "quote": "I think it's reasonable to proceed without needing opt-in comparability indicators in discovery"
+   },
+   {
+    "ref": "comment:3324552265",
+    "quote": "The addition of the conformance test in 1.35 will make it official, but the described approach is valid to use against any historical kube-apiserver as well."
+   },
+   {
+    "ref": "rcomment:2320462113",
+    "quote": "This is proposing a document change, test addition, and helper method... those aren't feature gated and would be GA in the first release"
+   },
+   {
+    "ref": "comment:3757069636",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12954,
+  "output": 900
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

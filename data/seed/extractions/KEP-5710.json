@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5710",
+ "input_hash": "a219f30e526afbf4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5710 adds workload-aware preemption to kube-scheduler by extending the Workload/PodGroup API (from KEP-4671) with pod group priority and a preemption unit, reusing the existing pod preemption algorithm as a simple first implementation. Its status is implementable, stage beta.",
+  "rationale": "Pod-centric preemption disrupts tightly-coupled workloads (e.g. AI training, multihost inference) by evicting single pods, which stalls the rest of the workload. The KEP defines units of preemption and their priority on the Workload/PodGroup API, and keeps the algorithm simple, deferring optimal algorithms to follow-ups. Discussion centered on how to handle preemptions already triggered and on whether the design should instead follow core PriorityClass.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Preemption-cost-aware placement search that evaluates all placements and victim sets to minimize cascading preemptions",
+    "why_not": "Non-goal: the KEP says 'Provide the most optimal preemption algorithm from day 1' is not a goal; the algorithm 'can come as a follow up', and reviewers noted exhaustive evaluation is too expensive."
+   },
+   {
+    "option": "Mutable preemption priority (PreemptionPriority) added now, as a way to mark workloads as preferred victims",
+    "why_not": "Reviewer wojtek-t said 'I will update the KEP and put that as a future extension' and that PreemptionPriority and mutability 'can be done later in an additive way'."
+   },
+   {
+    "option": "Use upstream core PriorityClass instead of a new priority field",
+    "why_not": "Raised as a concern in discussion ('we should have been using PriorityClass from the beginning'), but the sources do not record a decision to change the design; the KEP remains as implementable."
+   },
+   {
+    "option": "Change the principle of avoiding preemption when a workload can be scheduled without it",
+    "why_not": "Non-goal: the KEP states it does not change this principle and that any change would go into a dedicated KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We start with simple implementation, that is heavily based on the existing pod preemption algorithm."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `Workload` and `PodGroup` API introduced in [KEP-4671: Gang Scheduling using Workload Object] is extended to allow expressing the concept of pod group priority and to define the preemption unit."
+   },
+   {
+    "ref": "rcomment:2675280913",
+    "quote": "So I will update the KEP and put that as a future extension and we can discuss that later."
+   },
+   {
+    "ref": "rcomment:2731578179",
+    "quote": "So basically, what we want to is to run the preemption algorithm that assumes that \"all already triggerred preemptions are finished\" and on top of that state minimize the cost of additional preemptions."
+   },
+   {
+    "ref": "comment:4966141940",
+    "quote": "Here's where this enhancement currently stands: - [ ] All PRs to the Kubernetes repo that are related to your enhancement are linked in the above issue description"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10656,
+  "output": 1165
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

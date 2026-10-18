@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1923",
+ "input_hash": "220881aca44933de",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1923 changes the kube-scheduler so that a pod's .status.nominatedNodeName is evaluated first in the scheduling cycle; if the nominated node fits, the pod is placed there, otherwise the scheduler evaluates the remaining nodes as before. The KEP is implemented and at stable stage.",
+  "rationale": "After preemption, the nominated node is often the only node that satisfies the filters for the pending pod, yet the nominated name was not used in later scheduling attempts. Evaluating all nodes is slow in large clusters, so trying the nominated node first reduces latency. The status history records implemented from 2022-03-22.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Evaluate the nominated node and the rest of the nodes concurrently",
+    "why_not": "Reviewer alculquicondor proposed it, but ahg-g answered that it is 'not worth the complexity in my opinion. it is not expensive to evaluate a single node through filters.'"
+   },
+   {
+    "option": "Clear the nominated node on the first failed scheduling attempt and recompute it",
+    "why_not": "alculquicondor warned that 'removing the nominated node on the first failure is a source for other race conditions', and chendave kept the nominatedNode untouched, moving that issue to a separate topic (kubernetes/kubernetes#95752)."
+   },
+   {
+    "option": "Name the feature gate TryNominatedNodeFirst",
+    "why_not": "huang-wei suggested renaming it to PreferNominatedNode as more formal, and the reviewers were asked to agree on the new name; the final gate name is the one the KEP title uses."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to change the scheduling cycle such that nominated node of a pod is evaluated first and schedule the pod on that node if it fits."
+   },
+   {
+    "ref": "readme",
+    "quote": "When preemption happens in a previous scheduling cycle, there is a high chance that the nominated node is the *only* node that satisfies the filters for the unscheduled Pod that triggered preemption."
+   },
+   {
+    "ref": "rcomment:510219035",
+    "quote": "not worth the complexity in my opinion. it is not expensive to evaluate a single node through filters."
+   },
+   {
+    "ref": "comment:874452830",
+    "quote": "this KEP is marked \"Tracked\" for the 1.22 milestone"
+   },
+   {
+    "ref": "comment:1071977278",
+    "quote": "at least we should change the status in [kep.yaml](https://github.com/kubernetes/enhancements/blob/master/keps/sig-scheduling/1923-prefer-nominated-node/kep.yaml) to `implemented`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12229,
+  "output": 1029
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

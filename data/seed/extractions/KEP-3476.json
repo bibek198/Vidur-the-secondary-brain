@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3476",
+ "input_hash": "a7ef3ef7253d5cac",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3476 proposes new CRDs (VolumeGroupSnapshot, VolumeGroupSnapshotContent, VolumeGroupSnapshotClass) so users can take a crash-consistent snapshot of multiple volumes together, grouped by a label selector, for CSI volume drivers. Its current status is implementable, stage stable.",
+  "rationale": "Individually snapshotting volumes one after another, with or without quiescing the application, can yield inconsistent point-in-time state across volumes and takes longer. The design adds a group snapshot API so multiple volumes are captured at the same point in time for write-order consistency. The sources record that the design was refined over several review rounds, including how snapshot lists are reported when a storage system does not return per-volume snapshots, but they do not explain the final stable-stage decision itself.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Quiesce the application and take individual snapshots of each volume one after another",
+    "why_not": "The readme says application quiesce is time consuming, sometimes not possible, and taking individual snapshots one after another may take longer than a consistent group snapshot."
+   },
+   {
+    "option": "Create a VolumeGroup from an arbitrary set of existing PVCs in the initial scope",
+    "why_not": "Maintainers moved this to Phase 2 to keep scope smaller; xing-yang wrote \"Create VolumeGroup from existing PVCs with a selector is moved to Phase 2 as I want to make the scope of this KEP smaller initially.\""
+   },
+   {
+    "option": "Add a ConsistentGroupSnapshot flag or a group-type hint to VolumeGroup",
+    "why_not": "This was raised as a way to tell drivers which group type is wanted (group snapshot vs replication), but the sources do not record a final decision on it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal introduces a Kubernetes API that allows users to take a crash consistent snapshot of multiple volumes together."
+   },
+   {
+    "ref": "readme",
+    "quote": "application quiesce is time consuming. Sometimes it may not be possible to quiesce an application."
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal introduces new CRDs VolumeGroupSnapshot, VolumeGroupSnapshotContent, and VolumeGroupSnapshotClass."
+   },
+   {
+    "ref": "rcomment:975901655",
+    "quote": "Create VolumeGroup from existing PVCs with a selector is moved to Phase 2 as I want to make the scope of this KEP smaller initially."
+   },
+   {
+    "ref": "rcomment:687683605",
+    "quote": "If ReadyToUse is true and SnapshotList is empty, the volume group snapshot controller assumes the storage system does not return individual snapshots."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10812,
+  "output": 1064
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

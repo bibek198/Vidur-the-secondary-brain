@@ -1,0 +1,63 @@
+{
+ "kep": "KEP-6060",
+ "input_hash": "29a28d787ece16d9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6060 proposes authenticating API server calls to admission webhooks (and related aggregated-server callers) using short-lived service account tokens minted via TokenRequest, bound to an APIService or a webhook configuration. The KEP is marked implementable at alpha stage for v1.37.",
+  "rationale": "Webhooks currently need to verify callers by calling back to kube-apiserver (TokenReview or SubjectAccessReview), and the design aims to avoid that. The authorization check moves to token issuance, so the webhook only inspects claims in the token. Reviewers pushed for fewer tokens (one per client per webhook, cached and renewed) and for narrowly scoped \"attest\" permissions. The discussion records the leads' decision to allow bindings to APIService or to either WebhookConfiguration type, with \"attest\" on \"*\" required only for webhook-config bindings.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Bind tokens to the webhook configuration or Service/CRD instead of an APIService",
+    "why_not": "Reviewer liggitt asked whether this would make more sense, but pmengelbert answered that with webhook configurations as the bound object, kube-apiserver cannot perform the same authorization check without calling back to kube-apiserver. The team kept APIService binding and added webhook-configuration bindings as an option."
+   },
+   {
+    "option": "Mint a token per webhook invocation or per group/version per webhook",
+    "why_not": "Reviewers objected that it would be too many tokens. The agreed approach is to cache each token until expiry and refresh it then."
+   },
+   {
+    "option": "Randomize the kube-apiserver service account name",
+    "why_not": "liggitt said built-in service account names are not randomized elsewhere and the idea was more confusing than helpful. ahmedtd and enj raised the open question of a fixed name like system:serviceaccount:kube-system:kube-apiserver, and it was left open."
+   },
+   {
+    "option": "Use a wildcard APIService as the bound object for kube-apiserver",
+    "why_not": "pmengelbert proposed it first, then the team preferred allowing bindings to a WebhookConfiguration type instead of a wildcard APIService."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3415121914",
+    "quote": "Support 3 types of bindings: - `MutatingWebhookConfiguration` - `ValidatingWebhookConfiguration` - `APIService` When either of the webhook configurations is used as the bound object"
+   },
+   {
+    "ref": "rcomment:3414921888",
+    "quote": "In order to avoid the webhook talking back to `kube-apiserver` for `TokenReview` or `SubjectAccessReview`. This is all done to prevent aggregated API servers from probing policy information"
+   },
+   {
+    "ref": "rcomment:3437818184",
+    "quote": "Mention that token review and SAR make this a non-issue for everything but audit webhooks."
+   },
+   {
+    "ref": "rcomment:3437899202",
+    "quote": "I think we landed on not needing both feature gates because we can ensure that an old API server will never honor these incorrectly."
+   },
+   {
+    "ref": "comment:5108471483",
+    "quote": "The main PR for 1.37 merged last week (before code freeze): https://github.com/kubernetes/kubernetes/pull/140113 The rest are deferred until 1.38 per discussion with Sig AUTH."
+   },
+   {
+    "ref": "comment:5120099449",
+    "quote": "Those were never meant to be part of the release, and the library code they refer to doesn't have any specific coupling with a release"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11442,
+  "output": 1311
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

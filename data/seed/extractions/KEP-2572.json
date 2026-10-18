@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2572",
+ "input_hash": "904a4da5b3cd3d9c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2572 proposes changing the Kubernetes release cadence from 4 to 3 minor releases per calendar year, starting with Kubernetes 1.22, with each release cycle lasting 15 weeks and 2 weeks between cycles. The KEP formalizes this cadence and sets a lightweight policy for creating release schedules. Its status is implementable, stage alpha.",
+  "rationale": "The 2020 extended 1.19 schedule produced only three minor releases, and SIG Release received many questions about whether the project intended to keep three per year. Contributors and end users need predictable planning, and users cannot keep up with a minor update every three months. Moving to three releases adds room for triage, development, conferences, and release preparation, which the KEP says improves predictability and reduces risk.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the existing 4-releases-per-year cadence",
+    "why_not": "The readme says most organizations cannot keep up with a minor version update every 3 months, and the 4-release schedule is the one the KEP is changing away from; it also notes the 2020 three-release pattern was already happening ad hoc."
+   },
+   {
+    "option": "Long-term support (LTS) releases",
+    "why_not": "Listed as a non-goal. The readme says the project is not currently in a place to support LTS releases, though the idea may be revisited later."
+   },
+   {
+    "option": "Shorter maintenance/stability release at the end of the year",
+    "why_not": "Listed as a non-goal. The readme says nothing compelling has emerged to justify maintenance or stability releases, and that bug fixes and graduations should happen consistently through the year."
+   },
+   {
+    "option": "Accelerated release cycles",
+    "why_not": "Listed as a non-goal. The readme says the KEP proposes spending more time paying down tech debt rather than releasing faster."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The extended release schedule for 1.19 resulted in only three minor Kubernetes releases for 2020."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a transition to a *3-releases-per-calendar-year cadence*, beginning with the Kubernetes 1.22 Release."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current Kubernetes release cadence is so fast that most organizations cannot keep up with regularly making a minor version update every 3 months or going out of security support in a year."
+   },
+   {
+    "ref": "readme",
+    "quote": "The outcome of this KEP is written, lightweight policy for creating release schedules for Kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4260,
+  "output": 985
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

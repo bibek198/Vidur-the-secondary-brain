@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5365",
+ "input_hash": "141192461c1c7d04",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5365 adds an imageRef field to the pod status for ImageVolumes so the digest of the image used by an ImageVolume is reported, as containerStatuses already does for containers. The KEP is marked implementable at alpha.",
+  "rationale": "ImageVolume digests are not advertised in pod status, unlike container image digests in containerStatuses, which hurts monitoring, git-ops workflows, and KubeVirt live migration. The KEP adds a status field and leaves the pod spec unchanged. Reviewers pushed for the field to be named imageRef to match CRI, and asked for it to be documented in the CRI field so implementations know what to report.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Name the field imageID or ImageDigest",
+    "why_not": "A reviewer objected to imageID as ambiguous and said it had caused issues before; the team settled on imageRef, the same name used for container statuses."
+   },
+   {
+    "option": "Add API server validation that rejects imageRef for non-ImageVolume volumes",
+    "why_not": "The sources raise this as a question (sergeykanzhelev suggested it so edge cases are avoided) but do not record a decision on it."
+   },
+   {
+    "option": "Keep the field flat in the volume status",
+    "why_not": "deads2k suggested an intermediary struct for ImageVolume-specific status to match the discriminated union used in the volume spec; haircommander and iholder101 agreed in principle, but the sources do not confirm the final shape."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP aims to close this gap, by adding a new field to the pod's status that will contain the digest of the image."
+   },
+   {
+    "ref": "rcomment:2150814281",
+    "quote": "you can leave it in the documentation of the CRI field I think, so CRI implementations can see what to do. that can eventually be validated by critest"
+   },
+   {
+    "ref": "rcomment:2155251894",
+    "quote": "Yes, that would match the structure used when defining the values and provide clarity about what can be expected without reading docs"
+   },
+   {
+    "ref": "comment:3116236859",
+    "quote": "the implementation (code related) PR(s) associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.34 milestone"
+   },
+   {
+    "ref": "comment:5596254579",
+    "quote": "the current sole [criteria](https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/5365-ImageVolume-with-image-digest/README.md#beta) is that this would be supported on both cri-o and containerd"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13059,
+  "output": 1001
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-647",
+ "input_hash": "cff29a26b15313b4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-647 proposes adding OpenTelemetry-based distributed tracing to the Kubernetes API Server, exporting spans in OpenTelemetry format for incoming and outgoing requests and propagating context. Status is implemented, stage stable (implemented from 2025-07-31).",
+  "rationale": "The API Server's existing tracing (k8s.io/utils/trace) is described as a \"poor-man's form of tracing\", and distributed tracing is proposed to improve ease of use and analysis. Context propagation lets plugins such as admission webhooks add to API Server requests. Controller-side context propagation via object fields/annotations was removed from scope because it was \"large and controversial\", leaving the API Server request tracing as the agreed portion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Store trace context in object metadata (a field) for controller propagation",
+    "why_not": "Reviewers objected to unlimited lifespan, linearization of controller actions, and half-mandatory use; the author removed it: \"I decided that having controllers update this field is more trouble than it is worth, and removed this.\""
+   },
+   {
+    "option": "Use an annotation to carry trace context on objects, with controllers updating it",
+    "why_not": "Discussed as option 4/5 in the thread; the author judged controller updates costly (\"an extra write, which we would like to avoid\") and deferred the idea rather than adopting it in this KEP."
+   },
+   {
+    "option": "Record causal 'why' tuples outside objects and build graphs offline (lavalamp's proposal)",
+    "why_not": "Source says the author and reviewer did not converge: lavalamp said \"I can't in good faith say 'yes' to something including the rest of this proposal\" and asked for the API request tracing part to be split out; the sources do not record this alternative being adopted."
+   },
+   {
+    "option": "Run tracing exporter with a dedicated OpenTelemetry egress type for the master",
+    "why_not": "Source says the author suggested starting with the Master egress type and possibly delaying service-based config: \"we may want to delay this until after the initial implementation to gather feedback\"; the final choice of egress configuration beyond file-based config is not stated."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The API Server currently uses a poor-man's form of tracing (see github.com/kubernetes/utils/trace), but we can make use of distributed tracing to improve the ease of use"
+   },
+   {
+    "ref": "comment:634781913",
+    "quote": "the scope was large and controversial enough to make it difficult to drive consensus. At this point, i'm just trying to make some progress."
+   },
+   {
+    "ref": "comment:621365449",
+    "quote": "I can't in good faith say \"yes\" to something including the rest of this proposal, since I don't think it's theoretically sound."
+   },
+   {
+    "ref": "rcomment:409713179",
+    "quote": "I decided that having controllers update this field is more trouble than it is worth, and removed this."
+   },
+   {
+    "ref": "rcomment:502037917",
+    "quote": "I specified that if the configuration file path isn't specified, tracing is disabled."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9679,
+  "output": 1157
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

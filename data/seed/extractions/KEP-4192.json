@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4192",
+ "input_hash": "69e3eaed99ccf593",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4192 moves the Storage Version Migrator (SVM) controller in-tree into kube-controller-manager and moves its REST APIs in-tree under a new API group. Automatic migration is deferred to the user: the Migration resource is created manually rather than triggered automatically.",
+  "rationale": "Rewriting stored data via no-op updates (kubectl get | kubectl replace) is impractical at scale, especially for large resources like secrets, and needs automation. The KEP keeps scope small by moving the existing out-of-tree controller in-tree and leaving automatic triggering to future work. Reviewers agreed on paginated lists for alpha, with the OOM/memory risk of watch-list or pagination to be resolved before beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use streaming watch (watch-list) for SVM's list operations in alpha",
+    "why_not": "Reviewers noted watch-list does not support pagination/continue tokens and the approach was unproven; wojtek-t later said the plan of record is to not use it even after alpha."
+   },
+   {
+    "option": "Trigger migrations automatically from StorageVersion API hash changes",
+    "why_not": "Explicitly deferred: 'For Alpha, we will not trigger automatic storage version migration, and it will be deferred to the user.'"
+   },
+   {
+    "option": "Support continue tokens for resuming watch-list",
+    "why_not": "wojtek-t and logicalhan objected that resuming a watch-list with a continue token has subtly different semantics and gives users foot guns."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Move the existing SVM controller logic in-tree into KCM from its [original source](https://github.com/kubernetes-sigs/kube-storage-version-migrator)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Automatic storage version migration will be deferred to the user."
+   },
+   {
+    "ref": "rcomment:1344736875",
+    "quote": "How about we stick with paginated list for alpha and add a beta graduation criteria line item like"
+   },
+   {
+    "ref": "rcomment:1346222022",
+    "quote": "Okay, I think this answers my question. Can we make it super clear in the KEP that there will be no automatic triggering"
+   },
+   {
+    "ref": "comment:1747438471",
+    "quote": "PRR looks good, but I think we agree that \"on by default\" (beta), requires resolving the \"this may cause kube-apiserver OOMs and cascading failure even for pagination values due to memory explosion\"."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11770,
+  "output": 969
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

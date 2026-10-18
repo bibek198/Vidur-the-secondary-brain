@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4176",
+ "input_hash": "4c4a63c0565fa28a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4176 proposes a new CPUManager static policy option, `distribute-cpus-across-cores`, that prefers allocating CPUs from different physical cores on the same socket. The KEP status is implementable at stage alpha.",
+  "rationale": "Workloads that get two hyperthreads of one physical core can suffer cache and noisy-neighbor effects, so the option spreads allocations across cores while still using the L2 cache on one socket. Reviewers agreed the change is small and self-contained, and the option was approved after the KEP freeze deadline was missed due to reviewer bandwidth. Reviewers required that the option's interaction with existing options (notably full-pcpus-only and distribute-cpus-across-numa) be documented before alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a new CPU manager policy instead of a policy option",
+    "why_not": "A reviewer stated that it should be a policy option instead of a new one, and later clarified it is a new option, so existing feature gates are good enough."
+   },
+   {
+    "option": "Use NRI resource policy (Balloons, preferSpreadOnPhysicalCores) instead of changing the kubelet",
+    "why_not": "Maintainers said the NRI plugins do not replicate the static policy 1:1 and the approach differs from the static policy; the reviewer said either approach could move forward, but they were in favor of changing cpumanager."
+   },
+   {
+    "option": "Make the option error out or implicitly switch behavior when combined with full-pcpus-only",
+    "why_not": "A reviewer preferred treating the combination as a misconfiguration (error) for predictability, but the sources do not record a final decision on this; interaction was left as an open item."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to add a new `CPUManager` policy option called `distribute-cpus-across-cores` to the static CPUManager policy."
+   },
+   {
+    "ref": "comment:1935795250",
+    "quote": "@klueska I accepted the change and I think that's makes it more clear."
+   },
+   {
+    "ref": "rcomment:1484307726",
+    "quote": "It will move from being a `CPUManagerPolicyAlphaOption` to a `CPUManagerPolicyBetaOption` to not having a feature gate protecting it at all."
+   },
+   {
+    "ref": "comment:1936214464",
+    "quote": "Please file an exception request for this feature, as per the insructions here"
+   },
+   {
+    "ref": "review:1659462261",
+    "quote": "For alpha, we may just call it incompatible with everything else (but it will be much much nicer to have it elaborated), but past alpha we need a proper exploration here."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10602,
+  "output": 1006
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

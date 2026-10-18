@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5999",
+ "input_hash": "b3077a636c536e82",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5999 proposes HTTP/2 cleartext (h2c) support for kubelet container probes, currently at implementable/alpha for v1.37. The discussion settled on adding a Protocol field (HTTPProbeProtocol, pointer, with HTTP2 value) to HTTPGetAction rather than a dedicated h2cGet probe type, with no host override and no HTTP/1 fallback.",
+  "rationale": "Reviewers asked whether h2c should be built into the kubelet rather than handled by exec probes, and whether to extend httpGet or add a new probe type. The lead reviewer (aojea) preferred a pointer Protocol field because it leaves room for HTTP/3 and keeps a smaller API surface, while the dedicated type avoids new validation rules. Maintainers asked that new behavior be additive, so with the gate off the field is ignored, and the probe is identifiable from the pod spec so no new metric label is needed for alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Dedicated h2cGet probe type (mirrors the gRPC probe, numeric port only, no host field)",
+    "why_not": "Discussion favored extending httpGet with a Protocol field for a smaller API surface and future HTTP/3 support; the dedicated type needed extra validation rules for host, named ports and scheme. The sources do not record a final formal rejection of this option beyond that preference."
+   },
+   {
+    "option": "scheme: HTTP2_CLEARTEXT on httpGet",
+    "why_not": "Reviewers asked for a section explaining why it was rejected in favor of a new probe; the sources do not give the detailed reasoning beyond that request."
+   },
+   {
+    "option": "Separate protocol label on prober_probe_total metric",
+    "why_not": "Reviewer said no new metric label is needed for alpha since there is no fallback and the probe is uniquely identifiable; a later reviewer (haircommander) raised cardinality concerns about the existing metric's labels."
+   },
+   {
+    "option": "Include host override for h2c probes",
+    "why_not": "Validation rejects host override when protocol is HTTP2, matching gRPC probes that always target the pod IP, to avoid health-checking a different endpoint."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3272537215",
+    "quote": "I'm leaning towards adding `Protocol *HTTPProbeProtocol` , as we may want to have to add http/3 later and this paves the way"
+   },
+   {
+    "ref": "rcomment:3345492149",
+    "quote": "i think its good, will add a validation rule to reject host override when protocol is set to HTTP2, same logic as gRPC probes always targeting pod IP."
+   },
+   {
+    "ref": "rcomment:3378497904",
+    "quote": "Given the above, I believe the correct way, and this is how we've always treated new things is to ignore the new field."
+   },
+   {
+    "ref": "rcomment:3350816504",
+    "quote": "if there is never a fallback and the probe can be uniquily identified anyways, I do not see a reason to add a new metric"
+   },
+   {
+    "ref": "rcomment:3983216057",
+    "quote": "I am a bit concerned about this metric. I didn't realize it had pod_uid, pod and containers, which means it has very high cardinality."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12290,
+  "output": 1197
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

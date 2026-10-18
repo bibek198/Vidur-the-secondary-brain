@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2590",
+ "input_hash": "1c42b9283a589a49",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2590 proposed a new --subresource flag for kubectl get, patch, edit, apply and replace so users can fetch and update status, scale and resize subresources without kubectl --raw or curl. Per the status, it is implemented and at stage stable; apply support was dropped from the alpha scope.",
+  "rationale": "Fetching and patching subresources previously required kubectl --raw or curl, which the readme calls cumbersome and not user-friendly. The flag makes status, scale and resize first-class in kubectl while keeping the API contract identical to the full resource. During alpha review, SIG-CLI limited scope to get, patch, edit and replace because apply with a subresource is tricky, since last-applied annotations are not captured for subresources.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use curl or kubectl --raw to update subresources directly",
+    "why_not": "The readme calls this method cumbersome and not user-friendly, and says patching subresources with kubectl was not possible at all."
+   },
+   {
+    "option": "Include apply in the alpha scope",
+    "why_not": "soltysh suggested limiting alpha to get, patch, edit, replace given the tricky nature of apply, and ykakarap agreed to limit the scope to those commands."
+   },
+   {
+    "option": "Add an alpha- prefix to the flag name",
+    "why_not": "soltysh did not like this approach because the flag name would have to change eventually; nikhita chose a description that explicitly calls out alpha instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document proposes adding a new `--subresource` flag to the following kubectl subcommands: `get`, `patch`, `edit`, `apply` and `replace`."
+   },
+   {
+    "ref": "rcomment:627697914",
+    "quote": "Given the tricky nature of `apply` I will limit the scope to only `get, patch, edit, replace` for the alpha stage."
+   },
+   {
+    "ref": "rcomment:1068302385",
+    "quote": "It's totally fine, just add a note, that due to additional complexity and the nature of `kubectl apply` command we've decided not to expand it with this flag."
+   },
+   {
+    "ref": "comment:2698042155",
+    "quote": "This enhancement is now marked as `Tracked for code freeze` for the {current release} Code Freeze!"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11720,
+  "output": 899
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3998",
+ "input_hash": "d0ae26c856d8e9f2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3998 extends the Job API so an Indexed Job can be declared succeeded under a declared success policy, either when a set of specified indexes succeed or when a count of indexes succeed. When a policy is met, a new SuccessCriteriaMet condition is added and lingering pods are terminated. The KEP is implemented and at stable stage.",
+  "rationale": "Indexed Jobs are currently marked Completed only when all indexes succeed, which does not fit workloads such as MPI and PyTorch where only leader indexes determine success. The readme cites third-party frameworks (Kubeflow Training Operator, Flux Operator, JobSet) that already implemented their own success policies. The KEP adds a success policy to the Job API to address this, at the cost of more complexity in deciding when a Job terminates.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Support SuccessPolicy for NonIndexed Jobs",
+    "why_not": "Listed as a non-goal: \"Support SuccessPolicy for the job with `NonIndexed` mode\" was excluded from the first iteration because there are no effective use cases for NonIndexed jobs."
+   },
+   {
+    "option": "Keep current behavior where an Indexed Job completes only if all indexes succeed",
+    "why_not": "The motivation states this is \"currently not possible\" for workloads that only care about leader indexes, so the existing behavior does not meet the need."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP extends the Job API to allow setting conditions under which an Indexed Job can be declared as succeeded."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is currently not possible because the indexed job is marked as Completed only if all indexes succeeded."
+   },
+   {
+    "ref": "readme",
+    "quote": "we don't work on the job with `NonIndexed` mode in the first iteration since there aren't any effective use cases for the NonIndexed job."
+   },
+   {
+    "ref": "readme",
+    "quote": "Then, when the job meets one of the success policies, a new condition, `SuccessCriteriaMet,` is added."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2017,
+  "output": 834
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

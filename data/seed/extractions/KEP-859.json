@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-859",
+ "input_hash": "5aa3dc8ee7995639",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-859 proposes that kubectl add HTTP request headers to its requests to the kube-apiserver carrying the kubectl subcommand, whitelisted flag names and enum values, a generated session id, deprecation info, and an optional build metadata header. The KEP is now implemented and at stable stage.",
+  "rationale": "Requests from kubectl lose the context of the command that generated them, which cluster admins need for debugging and telemetry. The design sends only the subcommand, flag names and enumerated values (never arbitrary flag values or arguments), so the headers reveal usage without leaking data. Maintainers judged the usage data valuable enough to keep the feature, and the sources say the work was formalizing headers already in place rather than adding new code.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use a wrapper around kubectl to inject additional headers",
+    "why_not": "This is the alternative listed in the design document; the sources do not give a specific reason it was rejected."
+   },
+   {
+    "option": "Use X-Kubectl-* headers",
+    "why_not": "Changed to Kubectl-* headers after feedback that the IETF discourages X-* headers."
+   },
+   {
+    "option": "Make the header feature opt-in at the client level",
+    "why_not": "The maintainer said client-level opt-in is not useful because cluster admins need the context and cannot ask every user to set an environment variable."
+   },
+   {
+    "option": "Use the W3C baggage header to carry the data",
+    "why_not": "Suggested by a reviewer in 2025; the maintainer replied that the feature was already implemented years earlier and only formalized, with no code changes planned."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes sending http request headers with additional context about the kubectl command that created the request."
+   },
+   {
+    "ref": "readme",
+    "quote": "never include flag values directly, only use a predefined enumeration"
+   },
+   {
+    "ref": "rcomment:572270169",
+    "quote": "Making this opt-in at the client-level isn't particularly helpful, and the point is for cluster admins understand the context"
+   },
+   {
+    "ref": "comment:3411095132",
+    "quote": "It's been out there for several years by now, so we're just formalizing that fact. No actual code changes are planned other than that."
+   },
+   {
+    "ref": "comment:3772247440",
+    "quote": "With this one in, we can now close this as completed. /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12543,
+  "output": 915
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

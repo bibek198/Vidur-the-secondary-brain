@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4818",
+ "input_hash": "9e71380ae45c218c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4818 allows a zero value for the sleep duration of the PreStop Sleep action, which the parent KEP-3960 validation rejected. It was added behind the PodLifecycleSleepActionAllowZero feature gate and the KEP reached stable; its status is implemented.",
+  "rationale": "Validation rejected sleep.seconds = 0 (\"must be greater than 0\"), even though time.After() accepts zero and returns immediately, so a zero sleep is effectively a no-op. Users such as those whose admission webhooks inject a default PreStop sleep need a no-op hook to opt out. The proposal relaxes validation for new resources and updates while keeping existing zero-second resources working during downgrades.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Run exec preStop hook like [\"/bin/sh\",\"-c\",\"sleep 0\"]",
+    "why_not": "Requires a sleep binary in the image; the sleep action already exists as a PreStop hook, so allowing zero there is easier."
+   },
+   {
+    "option": "Support negative values or an infinite sleep as well",
+    "why_not": "Non-goals: negative values have the same effect as zero, and the KEP does not aim to delay pod termination indefinitely."
+   },
+   {
+    "option": "Add a kubelet-side feature gate check for zero values",
+    "why_not": "Kubelet already accepts zero via time.After(0), so the sreeram-venkitesh comment judged the gate unnecessary at the kubelet level."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It however doesn’t accept zero as a valid value for the sleep duration seconds. This KEP aims to add support for setting a value of zero with the sleep action of the PreStop hook."
+   },
+   {
+    "ref": "readme",
+    "quote": "Introduce a `PodLifecycleSleepActionAllowZero` feature gate which is disabled by default. When the feature gate is enabled, the `validateSleepAction` method would allow values greater than or equal to zero"
+   },
+   {
+    "ref": "rcomment:1768976418",
+    "quote": "Currently, kubelet accepts `0`. No validation is done at the kubelet level. The feature gate for `PodLifecycleSleepAction` is used inside `runSleepHandler` function"
+   },
+   {
+    "ref": "comment:2650563985",
+    "quote": "This KEP is for allowing zero value for the sleep duration and this was in alpha in 1.32."
+   },
+   {
+    "ref": "review:3281709119",
+    "quote": "thank you for updating the history as well! Very thoughtful of you! /lgtm /approve"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13363,
+  "output": 999
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

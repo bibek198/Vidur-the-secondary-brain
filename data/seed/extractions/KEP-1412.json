@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1412",
+ "input_hash": "799f6c0cdd620348",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1412 proposed an optional Immutable field on ConfigMap and Secret. When set to true, the apiserver rejects changes to data keys/values and to the Immutable field itself, and kubelets stop watching or polling those objects. The KEP reached stable status (implemented, stage stable).",
+  "rationale": "The readme states the problem: any update to a Secret or ConfigMap propagates to all mounted Pods, so a bad push can break an application, and kubelets must watch or poll every referenced object, which costs apiserver load. Marking objects immutable protects against accidental outages and reduces control-plane load. The goal was reached through the code and documentation changes that the discussion records as complete before the status was set to implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generalize immutability to all resource types (kubernetes/kubernetes#10179)",
+    "why_not": "wojtek-t said the particular semantic needed is not particularly useful for other resources, since the scalability goal requires that contents never change. He called the generalization complementary to this feature."
+   },
+   {
+    "option": "Feature-gate the validation so that immutability is removed on rollback",
+    "why_not": "liggitt said he would not feature gate validation, because previously persisted data should still be honored. msau42 agreed that keeping the object immutable after rollback is the desired behavior."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In this KEP, we are proposing to introduce an ability to specify that contents of a particular Secret/ConfigMap should be immutable for its whole lifetime."
+   },
+   {
+    "ref": "readme",
+    "quote": "If set to true, the machinery in apiserver will reject: - any updates explicitly changing keys and/or values stored in Secrets and/or ConfigMaps"
+   },
+   {
+    "ref": "comment:607220182",
+    "quote": "the conclusion was that the particular semantic that we need isn't particularly useful for other resources."
+   },
+   {
+    "ref": "rcomment:423734166",
+    "quote": "I would not feature gate validation."
+   },
+   {
+    "ref": "comment:780811806",
+    "quote": "kubernetes/website#26477 has merged This is now both: - code-complete - documentation complete"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7770,
+  "output": 861
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

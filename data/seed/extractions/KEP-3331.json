@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-3331",
+ "input_hash": "85115c938fe91eb9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3331 adds a structured, versioned AuthenticationConfiguration file (initially a `jwt` authenticator) to kube-apiserver, loaded via a single --authentication-config flag, to replace the growing flag-based OIDC configuration. Its status is implemented, stage stable (implementable from 2023-06-13, implemented from 2026-04-21).</summary>\n<parameter name=\"rationale\">The flag-based OIDC config is \"growing without bounds\", and users want features like multiple client IDs, claim mappings from nested claims, and validation rules. The proposal moves to a versioned config file and uses an expression language (CEL) for mappings and validation rules. Reviewers asked that the file fields mirror the existing flags so that migration is easy and behavior stays identical. The sources do not record the reasons for the implemented/stable transition beyond the dates.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Invest more into external software like Dex and make it the OIDC provider socket",
+    "why_not": "Listed under Alternatives in the design; the sources do not say why it was not chosen."
+   },
+   {
+    "option": "Do not add any more OIDC provider customization to Kubernetes",
+    "why_not": "Listed under Alternatives; the sources do not give a reason for rejecting it, and the Goals call for customization of claims validation and mappings."
+   },
+   {
+    "option": "Keep the flag-based config and switch existing aspects to CEL",
+    "why_not": "Reviewer enj said: \"We also risk regressions in the stable API if we try to make it use CEL under the hood.\" liggitt agreed not to switch existing aspects to CEL."
+   },
+   {
+    "option": "Take a file path for the config, which the reloader would watch",
+    "why_not": "enj said: \"IMO making this a file path would complicate the reloading code, and makes it harder to atomically replace the config.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Initially, only a `jwt` configuration will be supported, which will serve as the next iteration of the existing OIDC authenticator."
+   },
+   {
+    "ref": "readme",
+    "quote": "We want to migrate away from a flag-based config that is growing without bounds to a proper versioned config format."
+   },
+   {
+    "ref": "rcomment:982553233",
+    "quote": "when possible, prefer naming the file fields to match the flags (dropping the --oidc prefix, translating hyphens into camelCase, etc)"
+   },
+   {
+    "ref": "rcomment:1082623712",
+    "quote": "that people can migrate CLI config to file config as a first step with zero change in behavior"
+   },
+   {
+    "ref": "comment:1589786959",
+    "quote": "PRR is complete enough for alpha. Please consider what metrics you'll add for beta when this gets enabled by default."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11872,
+  "output": 1037
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

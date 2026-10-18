@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-1771",
+ "input_hash": "28d7934e89d057eb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1771 proposes that external cloud providers standardize semantic versioning so that major and minor versions of their releases (e.g., cloud-controller-manager v1.18.X) track the Kubernetes version they support; patch versions need not match. Status is implementable, stage alpha.",
+  "rationale": "External cloud providers had no standard for versioning their releases, and no documented version skew policy between cloud-controller-manager and Kubernetes, beyond an assumption based on the vendored k8s.io/kubernetes version. The KEP aims to make supported Kubernetes versions discoverable and reduce incompatibility from wide skew, such as an old vendored Kubernetes running on a much newer cluster. The readme also notes that users already upgrade cloud-controller-manager alongside Kubernetes, which supports tying the versions together.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Don't standardize semantic versioning of releases for external cloud providers",
+    "why_not": "The readme lists this as the only alternative, and the KEP's goals of standardizing versioning and reducing skew-related incompatibilities are presented as the reason it was not chosen. The source gives no further rejection reasoning."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to standardize all external cloud providers on a semantic versioning policy that ensures the vendored version of the cloud-controller-manager library is likely to match the version of the Kubernetes control plane."
+   },
+   {
+    "ref": "readme",
+    "quote": "release v1.18.X of cloud-controller-manager for provider Foo should support Kubernetes clusters on v1.18.X."
+   },
+   {
+    "ref": "readme",
+    "quote": "In practice we've learned that users upgrade the cloud-controller-manager along upgrades to the Kubernetes version."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2352,
+  "output": 747
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

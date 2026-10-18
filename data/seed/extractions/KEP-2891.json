@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2891",
+ "input_hash": "3d9d6d97bba64cf7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2891 proposed a simplified scheduler config: a new MultiPoint field that automatically registers a plugin at all (or a subset) of the scheduling extension points it implements. The team settled on \"option 2\", where MultiPoint is transparently unrolled into the existing extension points and plugins do not need an explicit Register() method. The KEP is at implementable, stage beta.",
+  "rationale": "End users must configure internal extension points such as PreFilter and PreScore for every plugin, which is confusing and invites misconfiguration. The KEP therefore adds a MultiPoint field so a plugin can be toggled across all its extension points at once. Reviewers favored option 2 because it keeps the config API narrow and needs less code and semantic ambiguity than an explicit Register() interface.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Option 1: MultiPoint with an explicit MultiPointPlugin interface and Register() method",
+    "why_not": "Reviewers judged it more code and ambiguity. huang-wei said \"I'm inclined to option 2 as it defines a smaller but workable scope, and less code complexity and semantic ambiguity to maintain.\" ahg-g also said \"I don't currently see a strong advantage to having an explicit register extension point.\""
+   },
+   {
+    "option": "Removing the existing extension points from the user's config",
+    "why_not": "The KEP lists this as a breaking API change that removes specificity for some users and developers. ahg-g stated that \"we want the config api to be narrow and concise\" and that the fine-grained config continues to be supported."
+   },
+   {
+    "option": "Forcing MultiPoint for all config (single simplified extension point with weight, as first proposed in issue #102303)",
+    "why_not": "Rejected because the old config approach remains officially supported. ahg-g noted \"Making a recommendation to only use MultiPoint isn't sufficient to introduce changes that break the old config approach since it is still officially supported.\""
+   },
+   {
+    "option": "Fusing PreScore+Score, PreFilter+Filter and PreBind+Bind in the config",
+    "why_not": "Raised by ahg-g as a possible later change, but alculquicondor objected that PreFilter can stand alone and \"This is not in consideration for merging.\" ahg-g said it could be considered for v1beta4."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This extension point will automatically register a plugin for all (or some) of the scheduling cycle extension points that the plugin implements."
+   },
+   {
+    "ref": "rcomment:702095107",
+    "quote": "Generally, I'm inclined to option 2 as it defines a smaller but workable scope, and less code complexity and semantic ambiguity to maintain."
+   },
+   {
+    "ref": "rcomment:703614870",
+    "quote": "it seems there is consensus on option 2, so I will be updating the KEP to focus on that implementation (with option 1 in the alternatives) before the deadline."
+   },
+   {
+    "ref": "rcomment:701919269",
+    "quote": "The users can still select a subset of extensions to enable for a specific plugin using the old configuration semantics."
+   },
+   {
+    "ref": "rcomment:703727902",
+    "quote": "One important point here is that this multipoint approach doesn't solve the problem of refactoring plugins to add new extension points since we will continue to support the fine grained configuration."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12057,
+  "output": 1241
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

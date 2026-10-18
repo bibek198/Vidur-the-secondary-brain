@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-1326",
+ "input_hash": "8a8dbc39fcfb728e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1326 proposes a policy for sig-docs on third-party and dual-sourced content in kubernetes.io docs, limiting docs to content required for Kubernetes to function in-project and linking rather than hosting third-party content. Current status is provisional (from 2020-12-30).",
+  "rationale": "The docs mix in-project Kubernetes material with product-specific third-party offering content, and no clear standard existed for it. The KEP's current goal is to clearly define the documentation required to deploy, operate and consume clusters using in-project code and its mandatory dependencies. Earlier struck-through proposals (e.g., a 180-day refresh rule and 90-day notice before removal) are no longer part of the active goals list.",
+  "outcome_reason": "Status is provisional, so no final outcome has been reached. The sources do not say why the KEP remains provisional.",
+  "alternatives": [
+   {
+    "option": "Approve third-party content without a vetting policy",
+    "why_not": "The KEP describes this as unacceptable: \"would degrade site outcomes across metrics of quality, searchability, and trust.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Docs may include third-party OSS content for components that require a third-party solution to function."
+   },
+   {
+    "ref": "readme",
+    "quote": "Third-party content must be linked whenever possible, rather than duplicated or hosted in k/website."
+   },
+   {
+    "ref": "readme",
+    "quote": "Clearly define what documentation is required so that readers understand how to deploy, operate and consume Kubernetes clusters using features from in-project code and its mandatory dependencies."
+   },
+   {
+    "ref": "rcomment:550305416",
+    "quote": "nit: title was changed in the README, probably should update it here too."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3826,
+  "output": 711
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

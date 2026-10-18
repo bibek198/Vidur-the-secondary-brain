@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-5501",
+ "input_hash": "d2ea5ead09274df0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5501 proposes that the kube-scheduler update a Pod's status conditions with the rejection message when a PreEnqueue plugin rejects it, using the new reason NotReadyForScheduling, via a delayed asynchronous API call behind the SchedulerPreEnqueuePodStatus feature gate. The KEP is in implementable status at stage beta.",
+  "rationale": "Pods rejected at PreEnqueue stay in a generic Pending state with no status feedback, which makes debugging hard, especially for transparent plugins like DRA. The design reuses framework.Status messages and applies a 5-second delayed dispatch with message de-duplication to limit API server load. It depends on SchedulerAsyncAPICalls so status patches do not block the scheduling loop.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Actively clearing the message when the rejecting plugin no longer rejects the Pod",
+    "why_not": "The readme's alternatives discussion notes it could cause confusion if the condition appears and disappears while the Pod remains Pending for another reason, and it adds API calls."
+   },
+   {
+    "option": "Reporting via the existing Unschedulable condition or a new condition, with the CA processing such Pods",
+    "why_not": "Reviewers concluded PreEnqueue rejections relate to the Pod itself, not nodes, so Unschedulable would make the Cluster Autoscaler process pods it cannot fix; a new reason NotReadyForScheduling was chosen instead."
+   },
+   {
+    "option": "Plugin opt-out from reporting (nil reasons) or per-plugin delay passed via PreEnqueueResult",
+    "why_not": "Reviewers (sanposhiho) argued opting out would hide why pods are stuck, and the author moved to an implicit, framework-level delay with no opt-out."
+   },
+   {
+    "option": "Keep SchedulingGated status solely via kube-apiserver",
+    "why_not": "Kept as a unified-message approach, so the scheduler skips redundant patches; moving it fully to kube-scheduler was left as an investigation because it would need a distinct reason and could add API calls."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If the delay period expires, the scheduler will asynchronously patch the Pod's status with the last-captured rejection message, using the new reason `NotReadyForScheduling`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The enablement of this feature will be dependent on the `SchedulerAsyncAPICalls` feature gate being enabled, as the asynchronous patching mechanism is critical to protect scheduler throughput."
+   },
+   {
+    "ref": "rcomment:2377973918",
+    "quote": "I think just the approach with delays (\"Implicit + Delayed (No opt-out)\") might be the best and simple solution."
+   },
+   {
+    "ref": "rcomment:2336905816",
+    "quote": "I think I was wrong with the CA use case and the PreEnqueue rejection shouldn't be processed by the CA"
+   },
+   {
+    "ref": "rcomment:2425536464",
+    "quote": "If we are unable to re-enable async API calls in v1.35, the reflect PreEnqueue feature will remain disabled by default (in alpha or beta)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11989,
+  "output": 1204
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

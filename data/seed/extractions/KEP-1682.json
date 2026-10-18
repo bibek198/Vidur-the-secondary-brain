@@ -1,0 +1,63 @@
+{
+ "kep": "KEP-1682",
+ "input_hash": "f92d8db7b28f985d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1682 adds CSIDriver.Spec.FSGroupPolicy so a CSI driver can declare whether its volumes support fsGroup-based ownership and permission changes, replacing the fragile fsType/accessMode heuristics kubelet used before bind mounting. The KEP is implemented and at stable stage.",
+  "rationale": "Kubelet guessed whether a volume supported fsGroup from imprecise heuristics such as fsType presence, so unsupported volumes (e.g., NFS) still had ownership changes attempted and users saw errors. The fix lets drivers opt in explicitly through a CSIDriver field. Reviewers pushed for an explicit enum rather than a nil-defaulted boolean so the legacy behavior is visible, and the default was clarified to match the existing OnlyRWO heuristic (fsGroup set, RWO access mode, fsType set).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the current heuristic (fsType and RWO checks in csi_mounter) with no API change",
+    "why_not": "The readme calls these heuristics fragile and says they cause problems with different storage types, which is the problem the KEP targets."
+   },
+   {
+    "option": "Use a plain boolean pointer defaulting to true",
+    "why_not": "gnufied said the current behavior is more nuanced than true, and msau42 wanted the nil behavior to be explicit with a type rather than hidden in a default."
+   },
+   {
+    "option": "Name the field ApplyFSGroup with Always/Never/OnDemand values",
+    "why_not": "huffmanca proposed this naming in the review thread, but the merged design uses the SupportsFSGroup/FSGroupPolicy-style values with OnlyRWO as the default. The sources do not say why the naming moved away from this proposal."
+   },
+   {
+    "option": "Fold the change into KEP-695 (skip permission change per pod)",
+    "why_not": "gnufied argued that per-driver support (this KEP) and per-pod recursive chown/chmod skipping (KEP-695) are different concerns and must stay separate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To solve this issue we will add a new field called `CSIDriver.Spec.FSGroupPolicy` that allows the driver to define if it supports volume ownership modifications via fsGroup."
+   },
+   {
+    "ref": "readme",
+    "quote": "if the volume does not support these operations (such as NFS), then the change is still attempted. This results in errors being reported to the user"
+   },
+   {
+    "ref": "rcomment:422388418",
+    "quote": "Actually I like the idea of making the \"nil\" behavior more explicit with a type. For someone coming in without any background on this behavior"
+   },
+   {
+    "ref": "rcomment:426999894",
+    "quote": "We only change permission of a CSI volume if pod has `fsGroup` and: 1. volume has `fsType` on it. 2. Volume has RWO access mode."
+   },
+   {
+    "ref": "comment:629581284",
+    "quote": "This KEP is about whether a CSI driver supports `fsGroup` permission handling at all or not and it is not about \"skipping volume ownership\"."
+   },
+   {
+    "ref": "comment:1008231798",
+    "quote": "Since the issue is in GA, could you please update this enhancements's KEP status to `implemented`, then close this issue?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13131,
+  "output": 1239
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1967",
+ "input_hash": "c1eb08e6347ee8e3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1967 proposed a SizeMemoryBackedVolumes feature gate so the kubelet sizes memory-backed emptyDir volumes as min(nodeAllocatable[memory], podAllocatable[memory], emptyDir.sizeLimit) instead of a fixed 50% of host memory. The KEP reached implemented status and stable stage.",
+  "rationale": "The default memory-backed emptyDir size was 50% of host memory, which couples pod definitions to the node they run on and makes them less portable. Sizing the volume from pod allocatable memory, optionally capped by sizeLimit, removes that coupling. The gate was in beta from 1.22 and was promoted to GA after the PRR and test-coverage review in the v1.32 cycle.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep the fixed 50% of host memory default",
+    "why_not": "The readme says this default is a coupling with the host that runs the pod and makes pod definitions less portable across node instance types and providers."
+   },
+   {
+    "option": "Size the volume from node allocatable memory alone",
+    "why_not": "The proposal uses the min of node allocatable, pod allocatable and sizeLimit, so the pod's own allowed usage bounds the volume; the readme says pods then see sizes 'based on actual allowed usage rather than a heuristic based on the node'."
+   },
+   {
+    "option": "Gate the change on LocalStorageCapacityIsolation",
+    "why_not": "Derek Carr said LocalStorageCapacityIsolation did not impact the size of memory backed volume, so the gate was kept separate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "sizing an empty dir memory backed volume as the minimum of pod allocatable memory on a host and an optional explicit user provided value"
+   },
+   {
+    "ref": "readme",
+    "quote": "The coupling of default memory backed volume size with the host that runs the pod makes pod definitions less portable across node instance types and providers."
+   },
+   {
+    "ref": "rcomment:483171869",
+    "quote": "LocalStorageCapacityIsolation did not impact the size of memory backed volume, so I kept it separate."
+   },
+   {
+    "ref": "comment:2947519194",
+    "quote": "Now it is GA and marked as implemented"
+   },
+   {
+    "ref": "comment:2405128166",
+    "quote": "all the KEP requirements are in place and merged into k/enhancements"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13765,
+  "output": 931
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

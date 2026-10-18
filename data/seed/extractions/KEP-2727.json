@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2727",
+ "input_hash": "7836d5b2fe452388",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2727 adds a native gRPC probe type (grpc: port, service) to Pod container Liveness, Readiness and Startup probes, so kubelet can call the standard gRPC health Check method without a packaged helper binary. Status is implemented, stage stable.",
+  "rationale": "Existing workarounds (an extra HTTP health endpoint, or shipping a gRPC client in the image for exec probes) carry overhead and limitations, and gRPC is widely used with load balancers. The KEP proposes kubelet-side gRPC probes using the standard health-checking Check method, with a static kube-probe User-Agent. Reviewers raised TLS and certificate handling, and the feature stayed beta for several releases while adoption was tracked.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Third-party solution such as grpc-ecosystem/grpc-health-probe",
+    "why_not": "The KEP lists it as the alternative and argues that exec probes with a bundled gRPC client have many limitations and overhead."
+   },
+   {
+    "option": "Expose an additional HTTP endpoint for health checks",
+    "why_not": "The motivation names it as an existing workaround with limitations and overhead, which native gRPC probes avoid."
+   },
+   {
+    "option": "Support the Watch method of the health service",
+    "why_not": "The proposal says Watch is not supported but may be considered in future iterations."
+   },
+   {
+    "option": "Use client certificates or verify the server certificate",
+    "why_not": "The proposal says the kubelet probe will not allow client certificates nor verify the server certificate; only unencrypted HTTP/2 and QUIC are excluded for now."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add gRPC probe to Pod.Spec.Container.{Liveness,Readiness,Startup}Probe."
+   },
+   {
+    "ref": "readme",
+    "quote": "As spec'd, the `kubelet` probe will not allow use of client certificates nor verify the certificate on the container."
+   },
+   {
+    "ref": "readme",
+    "quote": "Using `Watch` method of the healthcheck service is not supported, but may be considered in future iterations."
+   },
+   {
+    "ref": "comment:1266046752",
+    "quote": "This feature is in beta and enabled by default. Unfortunately there is not much adoption of it yet."
+   },
+   {
+    "ref": "comment:1028447778",
+    "quote": "We do insecure connection (equivalent of `-tls-no-verify` in grpc-health-probe), but it will be hard to support certificate-based checks"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14099,
+  "output": 971
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

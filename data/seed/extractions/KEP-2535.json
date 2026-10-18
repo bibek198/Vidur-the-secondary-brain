@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2535",
+ "input_hash": "97072a147b16ea1b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2535 ensures that images pulled with secrets are re-authenticated by the kubelet for IfNotPresent and Never pull policies, instead of trusting an image already on the node. The KEP is marked implementable at stage beta.",
+  "rationale": "Pods with IfNotPresent or Never pull policies could use a locally cached image without any registry authentication, so a second pod without credentials could reuse an image that a first authenticated pod pulled. The KEP makes the kubelet re-pull or fail on such images unless the credentials were already verified. Derek Wayne Carr asked that the authorization state survive kubelet restarts and node reboots before beta, and the sources record that persistence was agreed as a beta requirement.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Set the re-authentication behavior per pod in the pod spec",
+    "why_not": "SIG-Node rejected doing it at the pod spec; derekwaynecarr said \"we shouldn't need a flag to do this in the pod spec. this should be a security posture of the kubelet configuration and not the pod specification.\""
+   },
+   {
+    "option": "Always pull images (ImagePullPolicy Always injected by admission)",
+    "why_not": "The readme says this is the current workaround but is costly: it puts the registry in the critical path of every container start, and the KEP aims to avoid this."
+   },
+   {
+    "option": "Go directly to GA without a feature gate",
+    "why_not": "The alternatives section says discussions went back and forth, and the team chose an alpha feature gate with default off after further review."
+   },
+   {
+    "option": "Keep the cache in memory only and drop it on restart",
+    "why_not": "Only acceptable for alpha; derekwaynecarr required persistence across restarts and reboots before beta."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The kubelet will track container images and the list of authentication information that lead to their successful pulls. This data will be persisted across reboots of the host and restarts of the kubelet."
+   },
+   {
+    "ref": "readme",
+    "quote": "But after further review and discussion with MrunalP we'll go ahead and have a kubelet feature gate with default off for alpha in v1.23."
+   },
+   {
+    "ref": "rcomment:704805045",
+    "quote": "for alpha, in-memory is a good first step, but we should do better before beta and have this persist across reboot of host, and restart of kubelet."
+   },
+   {
+    "ref": "comment:1265970697",
+    "quote": "design consensus is not yet reached on this feature, and code implementation will not be worked on in 1.26."
+   },
+   {
+    "ref": "comment:4603048578",
+    "quote": "We are currently not planning GA for the feature in 1.37 as we would like to address the issue with preloaded images as raised in https://github.com/kubernetes/kubernetes/pull/138211."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13155,
+  "output": 1059
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

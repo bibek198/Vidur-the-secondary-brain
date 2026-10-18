@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-5328",
+ "input_hash": "0f0d4a4e352898ef",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5328 proposes a Node Declared Features framework: a new field declaredFeatures in node .status, populated by the Kubelet, that the kube-scheduler, admission controllers and the API server use to avoid placing or validating pods on nodes lacking required feature-gated features during version skew. Status is implementable, stage stable.",
+  "rationale": "Version skew means nodes may run older Kubelets without a newly enabled feature, so the scheduler may place a pod needing that feature on an incompatible node, leading to runtime or Kubelet admission failures. Declaring features on nodes lets control plane components handle this upfront, leaving the pod Pending with an event explaining the unmet requirement. The design limits declared features to those directly actionable by control plane components to keep the list manageable.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Node capabilities/feature lists with long-term or swap-style capabilities",
+    "why_not": "Reviewers (sergeykanzhelev, wojtek-t) objected that capabilities could grow the NodeStatus object indefinitely and be misused for configuration like swap or runtime handlers; scope was narrowed to temporary skew-related capabilities."
+   },
+   {
+    "option": "Automatic deprecation of capabilities once a feature becomes GA",
+    "why_not": "The author moved automatic deprecation to Alternatives Considered after reviewer concerns about poor code hygiene and scalability; it is not part of the proposal."
+   },
+   {
+    "option": "SemVer-based filtering in Node Selectors",
+    "why_not": "Raised by pravk03 as a potential alternative for further exploration; the sources do not say why it was not chosen."
+   },
+   {
+    "option": "Using NFD or swap-specific node status/allocatables instead",
+    "why_not": "Reviewers suggested allocatable resources or other statuses for non-feature-gate indications such as swap or SELinux vs AppArmor; the KEP text does not record a final decision on these."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal introduces a new field `declaredFeatures` to node's `.status` to expose information which the kube-scheduler, admission controller or the API server would use to make more informed decisions."
+   },
+   {
+    "ref": "readme",
+    "quote": "A pod without a matching node remains `Pending` with an event that details the unmet feature requirement, providing actionable user feedback"
+   },
+   {
+    "ref": "readme",
+    "quote": "To ensure the number of declared features remains manageable, the design requires that every declared feature be directly actionable by a control plane component."
+   },
+   {
+    "ref": "comment:3025872283",
+    "quote": "The KEP can be scoped for temporary capabilities to solve version skew use cases."
+   },
+   {
+    "ref": "rcomment:2376393667",
+    "quote": "we went away from this goal with the concern that the list will ever grow with little value and no option to purge."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10909,
+  "output": 1080
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

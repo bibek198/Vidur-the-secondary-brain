@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1855",
+ "input_hash": "dde1020802a9e1bd",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1855 proposes that kubelet fetch audience-bounded service account tokens for pods that CSI drivers mount volumes for, passing them to the driver in NodePublishVolume, and re-execute NodePublishVolume so tokens are refreshed. The KEP is implemented and at stable stage.",
+  "rationale": "Existing CSI drivers read service account tokens directly from the pod filesystem, which breaks under non-root drivers, exposes other pods' secrets via hostPath, defaults the audience to the API server, and fails when automountServiceAccountToken=false. Having kubelet request the token via TokenRequest and re-run NodePublishVolume moves the fetching logic out of each driver and keeps tokens from going stale. The status is implemented, stage stable, so the design was accepted and delivered.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Grant CSI drivers permission to call the TokenRequest API directly",
+    "why_not": "The readme says this \"will require non-trivial admission plugin to do necessary validation and every csi driver needs to reimplement the same functionality.\""
+   },
+   {
+    "option": "Limit the change to a single audience per CSI driver rather than a set of audiences",
+    "why_not": "Discussion raised multi-audience needs (e.g. secrets store with multiple Vault roles); the thread concluded with a single token carrying multiple audiences, and the readme does not record a final choice beyond the design goals. Reviewer mikedanese suggested a single audience, and this was not explicitly settled in the sources."
+   },
+   {
+    "option": "Kill or restart pods when token refresh fails",
+    "why_not": "Discussion favored only logging the error: zshihang said \"the error will only be logged\" because stale secrets might still work, repeated remounts overcome transient errors, and killing a pod may not fix fatal errors."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP will also give the CSI drivers an option to re-execute `NodePublishVolume` to mount volumes"
+   },
+   {
+    "ref": "readme",
+    "quote": "CSI driver will have access to the secrets of pods that do not use it because the CSI driver should have a `hostPath` volume"
+   },
+   {
+    "ref": "readme",
+    "quote": "This will require non-trivial admission plugin to do necessary validation and every csi driver needs to reimplement the same functionality."
+   },
+   {
+    "ref": "rcomment:443040359",
+    "quote": "i would still like to keep the current behavior where the error will only be logged because: 1. stale secrets might still work"
+   },
+   {
+    "ref": "comment:694898118",
+    "quote": "This is being implemented in kubernetes/kubernetes#93130 and currently targeted for v1.20"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10801,
+  "output": 1037
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

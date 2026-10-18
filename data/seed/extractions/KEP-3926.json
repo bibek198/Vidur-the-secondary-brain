@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3926",
+ "input_hash": "4a1e6deb894af390",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3926 proposes a way to identify resources that fail decryption or decoding, and adds a new delete option that lets a client delete such a resource through the Kubernetes API without direct etcd access. Its status is implementable at stage beta.",
+  "rationale": "If one object of a resource type cannot be decrypted, listing that type under a prefix containing it always fails, and today only direct etcd manipulation can remove it. The KEP improves retrieval errors to identify the failing object and adds an unsafe delete option that skips storage checks on read errors. Reviewers pushed back on partial lists for informers, so the proposal limits the new option to delete options.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Direct etcd manipulation (status quo)",
+    "why_not": "The readme says it \"Requires etcd access, bypasses all Kubernetes abstractions, risky, not audited.\""
+   },
+   {
+    "option": "Returning a partial list of objects when some fail to decrypt",
+    "why_not": "@dgrisonnet argued it is problematic for reflectors/informers, which would treat the objects as not present and a controller could try to re-create them; the thread concluded to update only the delete options and not the list options."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If a single object of a resource type cannot be decrypted, listing resources of that type in a path prefix containing the object always fails"
+   },
+   {
+    "ref": "readme",
+    "quote": "introduces a new delete option to ignore any storage checks in case such a read error occurs"
+   },
+   {
+    "ref": "rcomment:1151859312",
+    "quote": "Because of that, I tend to agree with the others that we should only update the delete options and not the list ones."
+   },
+   {
+    "ref": "readme",
+    "quote": "Drawbacks 1. **Potential for misuse:** The unsafe delete option bypasses safety mechanisms (finalizers, garbage collection)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12602,
+  "output": 765
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

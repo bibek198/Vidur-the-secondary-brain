@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-4595",
+ "input_hash": "3a7fd3da21658c5a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4595 proposes a mutually exclusive `expression` field for CRD additionalPrinterColumns, letting users define printer column values as CEL expressions alongside existing JSONPath. The KEP is currently merged in provisional state, not implementable for alpha.",
+  "rationale": "JSONPath printer columns cannot handle arrays, conditionals, multi-field computation, or duration formatting, and earlier JSONPath extension attempts broke compatibility. CEL is proposed as a richer alternative evaluated at Table request time. Benchmarks showed CEL FindResults roughly 15-50x slower than JSONPath, and reviewers (liggitt) objected because printer columns run per list item, so the KEP was merged only as provisional pending better performance.",
+  "outcome_reason": "The KEP was merged as provisional rather than implementable because CEL performance was not yet close enough to JSONPath. The 2025-06-18 comment says the documentation \"can't be merged as `implementable` in its current state until we get improved benchmark results for CEL (equivalent or at most 2x to the JSONPath cost)\". Later, the 2026 comment says the team will target alpha in 1.38 after revising benchmarks.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Extend JSONPath to support arrays and complex queries\", \"why_not\": \"Earlier attempts (PR #101205 and PR #67079) were not successful because of breaking changes to JSONPath, per the KEP.\"}, {\"option\": \"Allow CEL and JSONPath on the same column\", \"why_not\": \"Goals require each column to use only one method, either CEL or JSONPath, not both.\"}, {\"option\": \"Merge as implementable for alpha in 1.34\", \"why_not\": \"Reviewers required CEL cost near JSONPath parity; the KEP was instead merged as provisional, and the 2025-06-20 comment says it was removed from the 1.34 tracking sheet.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This approach has a few limitations such as not being able to support arrays, missing support for processing conditionals, not being able to compute column value from multiple fields"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP propses a new, mutually exclusive sibling field to `additionalPrinterColumns[].jsonPath` called `additionalPrinterColumns[].expression`."
+   },
+   {
+    "ref": "rcomment:2140145994",
+    "quote": "because printer columns runs on every item in a list, and there can be thousands of items in a list response, 20-50x performance costs do not seem reasonable to me"
+   },
+   {
+    "ref": "comment:2982624337",
+    "quote": "the KEP documentation can't be merged as `implementable` in its current state until we get improved benchmark results for CEL (equivalent or at most 2x to the JSONPath cost)"
+   },
+   {
+    "ref": "rcomment:2198079278",
+    "quote": "We COULD merge this as provisional. If we do that, the best thing to do would be to include or link to the analysis done so far"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11207,
+  "output": 1133
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

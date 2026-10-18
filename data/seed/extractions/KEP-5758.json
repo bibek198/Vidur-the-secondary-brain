@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5758",
+ "input_hash": "69655315a692228f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5758 proposes a per-container `ulimits` field in the Container SecurityContext, passed to runtimes through the CRI LinuxContainerSecurityContext. The KEP is at status implementable, stage alpha, and is limited to a small set of rlimits, with -1 (unlimited) allowed only under privileged Pod Security admission.",
+  "rationale": "Users cannot set rlimits such as nofile, memlock, or nproc per container; they inherit runtime and host defaults, and workarounds lack portability and security. Reviewers pushed for narrower scope: the discussion led to supporting only a limited set of rlimits and dropping nproc in favor of the pids cgroup, since RLIMIT_NPROC is per real UID and can cross container boundaries. Privileged-only use of -1 was adopted because baseline/restricted could otherwise approximate unlimited values.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Configure default ulimits in the container runtime",
+    "why_not": "The KEP says this applies a global default to all containers on a node, making mixed workloads with conflicting requirements impossible to support."
+   },
+   {
+    "option": "Add an entrypoint script that adjusts ulimits",
+    "why_not": "The KEP calls this not secure, lacks reproducibility, and is very inconvenient to use."
+   },
+   {
+    "option": "Use the ulimit-adjuster NRI plugin",
+    "why_not": "The KEP lists it as a viable alternative, and reviewers noted it needs no privilege or runtime change; the KEP does not record a rejection rationale beyond the feature being proposed. Reviewers also raised it as an option (samuelkarp), so this is a documented alternative rather than a settled rejection."
+   },
+   {
+    "option": "Support all rlimit types, aligned with docker and podman",
+    "why_not": "Reviewers asked to restrict the set; the author said the restriction was applied to support only a limited set of rlimits, with wider support deferred to beta or GA based on user feedback."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Configure default ulimits directly in the container runtime - This applies a global default to all containers on a node, making it impossible to support mixed workloads"
+   },
+   {
+    "ref": "rcomment:2790749361",
+    "quote": "RLIMIT_NPROC limits the number of processes per real user ID, which means it crosses the boundary for containers (where userns UID remapping is not used)."
+   },
+   {
+    "ref": "rcomment:2795003575",
+    "quote": "I would suggest dropping support for this in favor of pids cgroup support that we have."
+   },
+   {
+    "ref": "comment:3885591303",
+    "quote": "Only Pods with PSS in Privileged mode can use the ulimit feature"
+   },
+   {
+    "ref": "rcomment:2788167406",
+    "quote": "I have already added restrictions on the types of rlimit resources, supporting only a limited set of rlimits."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12284,
+  "output": 1100
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

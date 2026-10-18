@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-6030",
+ "input_hash": "ea2500189a7cb886",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6030 proposes allowing dynamic resize of memory-backed (tmpfs) emptyDir volumes via the pod /resize subresource, so the volume size can change in place alongside memory requests/limits. Its status is implementable, stage alpha, as of 2026-06-09.",
+  "rationale": "Memory-backed emptyDir volumes are charged against container and pod memory cgroups, and users want to resize the volume together with memory limits so the volume keeps a fixed share of pod memory. The discussion settled on restricting the feature to memory-backed emptyDir (not PVCs or inline CSI ephemeral volumes) and to cgroup v2, which avoids the coordination problems of general volume expansion. Reviewers (dchen1107 approved and lgtm'd; kannon92 approved with a hold for PRR nits) accepted the design after the shrink-safety and accounting questions were answered.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generic volume expansion for all volume types (PVCs, inline CSI ephemeral volumes)",
+    "why_not": "jsafrane noted kubelet has no knowledge of CSI volume size parameters, and the KEP restricts scope to emptyDir types; msau42 said restricting to emptyDir avoids the concurrency/coordination problem."
+   },
+   {
+    "option": "Add a top-level VolumeStatus capacity field or a generic per-volume status",
+    "why_not": "tallclair objected to EmptyDir-specific fields at the top level; natasha41575 said a generic capacity field would be confusing, so the status was placed under VolumeStatus.EmptyDir.SizeLimit."
+   },
+   {
+    "option": "Have the kubelet create an allocatedPod object and coordinate volume and cgroup actuation through it",
+    "why_not": "natasha41575 found it more complicated while keeping strict actuation ordering between cgroups and volume mounts, and was not convinced it was better."
+   },
+   {
+    "option": "Support cgroup v1 as well",
+    "why_not": "The discussion chose to support only cgroup v2; on cgroup v1 nodes kubelet marks the resize as Infeasible."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3384359236",
+    "quote": "only supporting cgroup v2 for this feature SGTM. I added to the KEP that if kubelet sees this resize request on a node with cgroup v1, it will mark the resize as `Infeasible`."
+   },
+   {
+    "ref": "rcomment:3358738963",
+    "quote": "I'm not proposing that all volume resizes be done via the /resize subresource, but for specifically mem-backed volumes, the volume is considered part of the pod's memory"
+   },
+   {
+    "ref": "rcomment:3359248628",
+    "quote": "This kep in particular avoids the concurrency/coordination problem by restricting this to only emptyDir types."
+   },
+   {
+    "ref": "rcomment:3384359545",
+    "quote": "If the volume shrink fails (usage > limit), we abort the transaction before shrinking cgroups."
+   },
+   {
+    "ref": "rcomment:3283651216",
+    "quote": "I'm not sure that we want to 'generically' represent it... We could theoretically add a top-level VolumeStatus.Capacity field"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10033,
+  "output": 1210
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

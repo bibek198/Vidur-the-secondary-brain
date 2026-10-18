@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3573",
+ "input_hash": "2ab4183723448246",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3573 Device Plugins (sig-node) added a vendor-independent mechanism for kubelet to discover, health-check, and allocate vendor devices (e.g. GPUs) via gRPC device plugins. Its status is implemented, stage stable, with Device Manager graduated to stable in v1.26.",
+  "rationale": "Kubelet natively handles very few devices, and it is not sustainable for every hardware vendor to add code into Kubernetes. The KEP provides an extension mechanism where vendors advertise devices to kubelet through plugins, which can run as DaemonSets or on bare metal. The proposal grew over releases from ListAndWatch and Allocate (v1.8) to GetDevicePluginOptions, GetPreferredAllocation, and PreStartContainer.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Dynamic Resource Allocation",
+    "why_not": "The readme says DRA was approved as an alpha feature in v1.25 and is primarily designed for dynamic allocation, and is expected to co-exist with the device plugin API rather than replace it."
+   },
+   {
+    "option": "Vendors adding device-specific code into Kubernetes",
+    "why_not": "The motivation states it is not a sustainable solution to expect every hardware vendor to add vendor specific code inside Kubernetes."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Instead, we want a solution for vendors to be able to advertise their resources to Kubelet and monitor them without writing custom Kubernetes code."
+   },
+   {
+    "ref": "readme",
+    "quote": "It is not a sustainable solution to expect every hardware vendor to add their vendor specific code inside Kubernetes to make their devices usable."
+   },
+   {
+    "ref": "readme",
+    "quote": "In Kubernetes v1.25, [Dynamic Resource Allocation](https://github.com/kubernetes/enhancements/tree/master/keps/sig-node/3063-dynamic-resource-allocation) enhancement proposal was approved for development as an alpha feature."
+   },
+   {
+    "ref": "comment:1270446637",
+    "quote": "With https://github.com/kubernetes/enhancements/pull/3574 merged this enhancement is tracked for the v1.26 release."
+   },
+   {
+    "ref": "comment:1347537710",
+    "quote": "since this enhancement has graduated to stable can you please update"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 6244,
+  "output": 929
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4622",
+ "input_hash": "4290d89cce1f3223",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4622 adds a TopologyManager policy option, max-allowable-numa-nodes, so operators can raise the hard-coded limit of 8 NUMA nodes that the TopologyManager supports. The KEP is implemented and at stable stage.",
+  "rationale": "The hard-coded limit of 8 NUMA nodes was a stop-gap against state explosion in hint generation, which made kubelets with more NUMA nodes crash. The option lets users on high-end CPUs with more than 8 NUMA nodes run the TopologyManager, at the cost of possibly slower pod admission. Reviewers agreed the feature is an escape hatch and that the real fix (reducing state explosion) is out of scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Adding a new kubelet configuration option",
+    "why_not": "Listed as an alternative in the KEP's Alternatives section; the sources do not say why it was not chosen."
+   },
+   {
+    "option": "Remaining in alpha until a proper solution reduces state explosion",
+    "why_not": "Raised by jpbetz in review; the discussion moved on to beta with the risk documented, and the sources do not record a decisive reason against it beyond the agreed text update."
+   },
+   {
+    "option": "Enforcing a minimum value of 8 and failing kubelet startup below it",
+    "why_not": "klueska argued setting a lower value should be no problem and a kubelet crash only occurs if the machine has more NUMA nodes than configured; ffromani said restricting the value is inconsistent with cadvisor reporting and would be a source of confusion."
+   },
+   {
+    "option": "Adding a gauge metric for the configured value",
+    "why_not": "klueska said a metric is not appropriate because the option is a node property that does not affect running workloads; the config is the right place to check it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current hard-coded value of 8 was added as a stop-gap 4 years ago to mitigate the state explosion that occurs when trying to enumerate the possible NUMA affinities"
+   },
+   {
+    "ref": "rcomment:1636042904",
+    "quote": "If your system has, say 9 NUMA nodes, then you will not be able to run kubernetes on it without this feature."
+   },
+   {
+    "ref": "rcomment:1636026982",
+    "quote": "I would say this feature is use-at-your-own-risk until we have a proper solution in place to reduce the state explosion."
+   },
+   {
+    "ref": "rcomment:1638404310",
+    "quote": "the actual *value* of this new setting doesn't impact the latency of pod admission. The latency is *only* influenced by the number of NUMA nodes your physical system has."
+   },
+   {
+    "ref": "rcomment:1635996331",
+    "quote": "I don't think a metric is appropriate. It is not a feature that is used by workloads."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10754,
+  "output": 1065
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

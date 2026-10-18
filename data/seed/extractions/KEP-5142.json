@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5142",
+ "input_hash": "d1c5c23f0fcd03cb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5142 proposes popping pods directly from the scheduler's backoffQ when the activeQ is empty, so potentially schedulable pods are retried without waiting for backoff to expire. Current status is implementable, stage beta.",
+  "rationale": "When activeQ is empty, kube-scheduler idles even though pods sit in backoffQ waiting out their penalty. The proposal lets the scheduler pop from backoffQ in that case, while keeping the periodic flush from backoffQ to activeQ to prevent starvation and error-backoff pods bypassing rate limiting. Discussion narrowed the scope to pods that were unschedulable, not those that got errors, and agreed to count attempts on every pop.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the original backoff behavior and wait for activeQ pods",
+    "why_not": "The KEP motivation says that when activeQ is empty the kube-scheduler idles even if pods are waiting in backoffQ, which this proposal aims to fix."
+   },
+   {
+    "option": "Merge activeQ and backoffQ into a single queue",
+    "why_not": "This is a non-goal: \"Refactor the scheduling queue by changing backoff logic or merging the activeQ with the backoffQ.\""
+   },
+   {
+    "option": "Pop directly from backoffQ for pods that got Error status too",
+    "why_not": "A reviewer said that pods in the backoffQ due to errors should not bypass backoff because it acts as rate limiting; the discussion says the first version distinguishes unschedulable from error cases."
+   },
+   {
+    "option": "Force a flush of backoffQ to activeQ whenever activeQ is empty",
+    "why_not": "Discussion clarified that the flush stays as-is and popping is separate; sorting by priority is handled by changing the backoffQ heap key to ignore milliseconds and compare priority, as macsko proposed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to pop the pod from the backoffQ when the activeQ is empty, however the current mechanism of moving pods from the backoffQ to activeQ (aka flushing) will still work as before"
+   },
+   {
+    "ref": "readme",
+    "quote": "pods that are in the backoffQ due to errors, should not bypass the backoff time, since it plays also rate limiting role"
+   },
+   {
+    "ref": "rcomment:1951303937",
+    "quote": "We agreed that it may be fine to increment attempts on every pop (we need to be prepared to see much higher values for attempts counter than before)"
+   },
+   {
+    "ref": "comment:3385685291",
+    "quote": "We've decided to hold on graduating this feature to GA for now, and to keep it enabled by default in v1.35."
+   },
+   {
+    "ref": "comment:3333127403",
+    "quote": "turn it off by default for now until we find that mitigation"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11606,
+  "output": 1075
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

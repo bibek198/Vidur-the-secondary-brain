@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-4815",
+ "input_hash": "050983a0ea8873ce",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4815 proposes letting structured-parameters DRA allocate both full devices and fixed-size partitions of them by adding counter sets (SharedCounters) in ResourceSlice, a ConsumesCounters field on devices, and per-device node selection, so drivers can advertise overlapping partitions that the scheduler will never allocate concurrently. The KEP is in implementable status at stage beta.",
+  "rationale": "DRA's move to structured parameters lost the ability to allocate partitions of a device on demand, and vendors could only advertise pre-partitioned, non-overlapping devices. The KEP keeps the user-facing request mechanism unchanged and adds counters that the scheduler tracks so conflicting overlapping partitions are never allocated together. Reviewers raised concerns about downgrade safety (old clients ignoring fields), which drove the later discussion of separate types and feature-gated failure behavior.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Top-level single 'bag' of resources not tied to any device (Option 1)",
+    "why_not": "Rejected because an abstract bag not tied to a device was perceived as non-intuitive, was verbose and error-prone, and did not support nested partitioning or sharing attributes."
+   },
+   {
+    "option": "Top-level 'DeviceShape' defining common capacities and resources (Option 4)",
+    "why_not": "Rejected because it was not flexible enough for device-specific attributes and did not allow nested partitions or devices combining resources from more than one source."
+   },
+   {
+    "option": "Separate pool objects owned outside the ResourceSlice (Option 7)",
+    "why_not": "Considered complicated because of lifecycle ownership of shared objects and what happens when they are missing; out of scope for the current KEP and may be considered later."
+   },
+   {
+    "option": "Adding the new fields directly to the existing BasicDevice type",
+    "why_not": "Pohly noted that extending the API this way breaks downgrades: an old scheduler would ignore consumesCapacityFrom and could allocate mutually exclusive devices, so a new PartitionableDevice type was preferred."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Instead, the proposed extensions provide the ability for a vendor to advertise \"overlapping\" partitions, such that the scheduler will never allocate conflicting ones at the same time."
+   },
+   {
+    "ref": "rcomment:1780933051",
+    "quote": "Where it gets really bad (IMHO) is for `ConsumesCapacityFrom`: an old scheduler would ignore that constraint and might allocate two devices which are mutually exclusive."
+   },
+   {
+    "ref": "rcomment:1814621371",
+    "quote": "we can't extend the API in this way because it breaks downgrades. An old scheduler will not recognize the new fields and attempt to allocate a device based solely on the fields that it DOES know about."
+   },
+   {
+    "ref": "comment:2639419158",
+    "quote": "\"Fail in sensible way\" in this case means that the scheduler must ignore devices which depend on partitioning when `DRAPartitionalDevices` is turned off."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13090,
+  "output": 1152
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

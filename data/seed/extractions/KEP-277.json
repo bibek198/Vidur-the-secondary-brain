@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-277",
+ "input_hash": "c8b6ad1dd61f4095",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-277 adds Ephemeral Containers: a temporary container added to an already-running pod, sharing its namespaces, to support troubleshooting via a `kubectl debug`-style workflow. Status is implemented, stage stable.",
+  "rationale": "Debugging running pods required binaries that were not in the pod image at creation time. The proposal adds a new container type that can be attached to a live pod, with restrictions (no restarts, no resource reservation, no service fields) so it is not used as a service building block. Discussion shows the API was refined over several releases, including a beta moved back to alpha for an API change, and a later move toward stable.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse the existing containers field with a new container type parameter",
+    "why_not": "The reviewer noted it would not work because of the target container, and the maintainer said the container list was kept mostly immutable to limit kubelet state machine complexity and to guide users to use pods as intended."
+   },
+   {
+    "option": "Copy binaries into pods or build large images with all needed tools",
+    "why_not": "The proposal states ephemeral containers are an alternative to copying binaries to pods or building large container images that may have every binary you might need."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Ephemeral containers are not the building blocks of services: they're an alternative to copying binaries to pods or building large container images that may have every binary you might need."
+   },
+   {
+    "ref": "rcomment:556488884",
+    "quote": "The main argument against using the existing containers field at the time is that it's (mostly) immutable, and we'd like it to stay that way."
+   },
+   {
+    "ref": "comment:877368099",
+    "quote": "this KEP was in alpha and approved for beta in 1.21, but we decided to change part of the API and pushed beta to 1.23."
+   },
+   {
+    "ref": "comment:1151683299",
+    "quote": "We hope to promote the feature to GA in 1.25, do you have any concerns?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12176,
+  "output": 780
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

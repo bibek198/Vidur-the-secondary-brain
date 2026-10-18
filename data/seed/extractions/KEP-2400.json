@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2400",
+ "input_hash": "535c17da21857a79",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2400 proposed basic Linux node swap support: the kubelet can start with swap on, workloads get zero swap by default via the CRI, and the kubelet swapBehavior field (NoSwap or LimitedSwap) toggles the feature. Status is implemented and stable.",
+  "rationale": "Kubernetes did not support swap on Linux because it is hard to guarantee and account for pod memory when swap is involved. The KEP adds swap to nodes in a controlled way, with no per-pod API and only two basic behaviors, so users can test it and build follow-up extensions. Discussion raised concerns about eviction, confidentiality of tmpfs and secrets, and per-pod opt-out, which the sources show were deferred to follow-up work rather than resolved in this KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a new kubelet option or API for swap limits, including a string-valued per-container setting",
+    "why_not": "The maintainers asked to omit the option and infer the swap limit from what the kubelet detects on the host; the KEP keeps swap configuration automatic and implicit."
+   },
+   {
+    "option": "Expose swappiness as a configuration knob",
+    "why_not": "Reviewers said no user story needed it and it can be configured at the host level, so it was dropped from the KEP scope."
+   },
+   {
+    "option": "Disable eviction or make the eviction manager swap-aware in this KEP",
+    "why_not": "The KEP lists making eviction swap-aware as a non-goal; the maintainers said eviction limitations were acceptable to address in a follow-up KEP."
+   },
+   {
+    "option": "Per-pod swap disablement (for example via admission webhooks, labels, or taints) as a GA blocker",
+    "why_not": "The 2025 discussion pushed for it, but the author argued it is outside this KEP's scope, which only enables or disables swap at node level; the sources do not show it was adopted into this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP does not introduce any APIs that allow customizing how the feature behaves, but instead only determines whether the feature is enabled or disabled"
+   },
+   {
+    "ref": "readme",
+    "quote": "Within the scope of this KEP we will support only two basic behaviors: `NoSwap` and `LimitedSwap`."
+   },
+   {
+    "ref": "rcomment:631456892",
+    "quote": "Please omit this new option and instead assume the swap limit is inferred by what the kubelet detects on the host."
+   },
+   {
+    "ref": "rcomment:623519323",
+    "quote": "By default, even if you let the kubelet run with swap on, this proposal disables any swap being allocated to Kubernetes workloads via the CRI."
+   },
+   {
+    "ref": "comment:2965974116",
+    "quote": "This KEP aims to introduce basic swap enablement and leave further extensions to follow-up KEPs."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11020,
+  "output": 1070
+ },
+ "extracted_at": "2026-10-15T22:45:39Z"
+}

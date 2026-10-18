@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1490",
+ "input_hash": "f56a3ac3eafb0680",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1490 is a vendor-specific KEP for migrating the in-tree Azure disk storage plugin to CSI. It inherits its content from the parent CSI Migration KEP (625) and adds two feature gates. Its status is implemented, stable.",
+  "rationale": "Azure disk and Azure file migration were initially tracked together, but the Windows CSI dependency blocked beta for both. The KEP was narrowed to Azure disk, which went beta in 1.19 and GA in 1.24 via k/k PR 107681. Azure file was split out into a separate issue (#1885).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep Azure disk and Azure file migration in one KEP",
+    "why_not": "The maintainers asked to split it because the two functionalities graduate separately: \"Since this enhancement involves two distinct functionalities, I am thinking if a new enhancement should be created\""
+   },
+   {
+    "option": "Go beta on 1.18 as originally planned",
+    "why_not": "The Windows CSI dependency blocked it: \"azure disk & file won't go BETA on 1.18 since there is dependency on csi windows\""
+   },
+   {
+    "option": "Keep the migration at beta for 1.20",
+    "why_not": "This was an option the maintainers chose, not rejected: \"Spoke to @msau42 and this will be remaining in beta for 1.20\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:577039967",
+    "quote": "azure disk & file won't go BETA on 1.18 since there is dependency on csi windows, if we go beta, that means all requests for built-in driver would be redirected to csi driver"
+   },
+   {
+    "ref": "comment:654141770",
+    "quote": "Since this enhancement involves two distinct functionalities, I am thinking if a new enhancement should be created tracking the Azure file in-tree to CSI driver migration."
+   },
+   {
+    "ref": "comment:625797481",
+    "quote": "Azure disk & azure file migration would go beta in 1.19, here is the PR: https://github.com/kubernetes/kubernetes/pull/90896"
+   },
+   {
+    "ref": "comment:1086647005",
+    "quote": "https://github.com/kubernetes/kubernetes/pull/107681 is already merged, so we could close this issue now?"
+   },
+   {
+    "ref": "comment:1121144610",
+    "quote": "This feature has been **fully implemented** and is now **GA** in K8s version 1.24."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7732,
+  "output": 941
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

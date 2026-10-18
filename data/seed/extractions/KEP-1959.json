@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1959",
+ "input_hash": "255c54385c290378",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1959 proposes a new Service field spec.loadBalancerClass so that multiple Service Type=LoadBalancer implementations can coexist in one cluster, and lets users opt out of the cloud provider's default implementation. The KEP is at implementable status, stage stable.",
+  "rationale": "When Service Type=LoadBalancer is enabled by a cloud provider, it applies globally to every such Service in the cluster, which blocks using multiple load balancer implementations. The KEP chose a lightweight Service field over a new ServiceClass resource, since Gateway/GatewayClass APIs were already in development. The discussion in the sources is mainly about the PRR (production readiness review) process in the KEP repository, not about the design choice itself.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Introduce a new ServiceClass resource",
+    "why_not": "The readme says \"Introducing a new resource like `ServiceClass` is probably not worthwhile given that there are new APIs already in development.\""
+   },
+   {
+    "option": "Use a per-provider opt-out annotation",
+    "why_not": "The goals state a aim to \"prevent every cloud provider from implementing a custom 'opt-out' annotation for their load balancer.\""
+   },
+   {
+    "option": "Wait for the Gateway/GatewayClass APIs to mature",
+    "why_not": "The readme says that \"until Gateway/GatewayClass APIs become mature, we should support similar functionality for Services of Type=LoadBalancer.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a light-weight approach for Service Type=LoadBalancer by introducing a Service field `service.spec.loadBalancerClass`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Introducing a new resource like `ServiceClass` is probably not worthwhile given that there are new APIs already in development."
+   },
+   {
+    "ref": "readme",
+    "quote": "prevent every cloud provider from implementing a custom \"opt-out\" annotation for their load balancer."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add a new field `spec.loadBalancerClass` in Service which allows for multiple implementations of Service Type=LoadBalancer in a cluster."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4891,
+  "output": 893
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3017",
+ "input_hash": "34af7a066f9b1d7d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3017 adds an optional `unhealthyPodEvictionPolicy` field to PodDisruptionBudget so users can choose whether Running-but-not-Ready pods are always evictable or stay subject to the PDB. The default keeps the existing behavior.",
+  "rationale": "Running pods that are not Ready can block eviction even when enough pods exist above the PDB threshold, which deadlocks node drains and tools like cluster-autoscaler. Other users rely on the current behavior to protect data, and changing the default would break them. An opt-in field lets each user pick the behavior.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change the default behavior so non-Ready Running pods are always evictable",
+    "why_not": "The KEP says \"We can't change the behavior of a GA API\" and that changing behavior to support one use-case would create problems for other users."
+   },
+   {
+    "option": "Keep current behavior with no change",
+    "why_not": "The KEP states \"the evidence is that it doesn't address the needs of users\", and the deadlock on eviction remains."
+   },
+   {
+    "option": "Provide a safe solution for preventing data-loss in PDB",
+    "why_not": "This is a non-goal: \"Providing a safe solution for preventing data-loss. Not because this isn't important, but it is unclear if PDB is the right tool for this.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we add a new field `unhealthyPodEvictionPolicy` that allows users to specify what should happen to these not Healthy (Ready) pods"
+   },
+   {
+    "ref": "readme",
+    "quote": "If a `unhealthyPodEvictionPolicy` is not provided, the default will be the current behavior."
+   },
+   {
+    "ref": "readme",
+    "quote": "Changing the default behavior was considered but rejected for two reasons: * We can't change the behavior of a GA API"
+   },
+   {
+    "ref": "readme",
+    "quote": "This can block automated tooling like the cluster-autoscaler and draining of nodes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2712,
+  "output": 803
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2129",
+ "input_hash": "cb8ddab5b338b128",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2129 proposed deprecating and removing cAdvisor v1 JSON metrics (ContainerInfo and MachineInfo endpoints) from the kubelet, as a step toward removing cAdvisor APIs from the kubelet. Its status is implemented, stage stable.",
+  "rationale": "cAdvisor only supports Linux and a small set of runtimes, so sig-node wants vendors to replace cAdvisor without double-collection cost. The JSON endpoints were already disabled by default from 1.18 and re-enableable via --enable-cadvisor-json-endpoints, and the KEP re-visits removal given concerns raised about removing them permanently. Out of scope: Prometheus cAdvisor metrics, the Summary API, and the kubelet's cAdvisor dependence.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the cAdvisor json endpoints, either removing them later or keeping cAdvisor in the kubelet",
+    "why_not": "Listed as the alternative in the KEP; the KEP instead pursues removal as a step toward removing cAdvisor from the kubelet."
+   },
+   {
+    "option": "Consume the metrics in JSON format from Prometheus instead of from cAdvisor directly",
+    "why_not": "Raised as a possible migration path by a reviewer (ehashman) in rcomment:565517608; the sources do not say it was adopted as the decision."
+   },
+   {
+    "option": "Keep cAdvisor json metrics as part of the original metrics overhaul KEP",
+    "why_not": "The readme says this was originally part of the metrics overhaul KEP but was removed from it because it had not been completed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "cAdvisor json metrics were disabled by default starting in 1.18, and could be re-enabled by setting `--enable-cadvisor-json-endpoints` to true."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, given the concerns about removing the endpoints, we want to re-visit the deprecation and removal of these metrics before removing them permanently."
+   },
+   {
+    "ref": "comment:721973637",
+    "quote": "The `--enable-cadvisor-json-endpoints` flag only covers cAdvisor json APIs defined in https://github.com/google/cadvisor/tree/master/info"
+   },
+   {
+    "ref": "comment:855797713",
+    "quote": "/milestone 1.21 since this should be closed, we have implemented it in 1.21."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4860,
+  "output": 958
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

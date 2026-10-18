@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3720",
+ "input_hash": "6232fd54c56dae00",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3720 proposes freezing the old k8s.gcr.io image registry so that no new digests or tags are pushed after the 1.27 release, with all new images published exclusively to registry.k8s.io. The status is implementable, stage stable.",
+  "rationale": "Running public image registries is very expensive and consumes a significant part of the project's infrastructure budget. The project is exceeding its budget because end users will take a long time to upgrade to v1.25, so freezing the old registry by 1.27 is meant to push users to registry.k8s.io sooner. Registry.k8s.io is GA and community-controlled, and the redirect from k8s.gcr.io did not work out.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Redirect k8s.gcr.io to registry.k8s.io",
+    "why_not": "The readme says a plan to redirect k8s.gcr.io to registry.k8s.io 'didn't work out', so the project backported the new registry defaults to 1.24, 1.23 and 1.22 instead."
+   },
+   {
+    "option": "Keep pushing new images to the old registry",
+    "why_not": "The readme lists this as the alternative, but the project is exceeding its infrastructure budget, so the freeze is proposed instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Running public image registries is very expensive and eats up a significant chunk of the project's Infrastructure budget."
+   },
+   {
+    "ref": "readme",
+    "quote": "we want to incentivise our end users to move to the new registry as fast as possible by freezing the registry by 1.27."
+   },
+   {
+    "ref": "readme",
+    "quote": "Freeze the `k8s.gcr.io` image by not pushing any new digests or tags after 1.27 release."
+   },
+   {
+    "ref": "readme",
+    "quote": "There was a plan to redirect `k8s.gcr.io` to `registry.k8s.io` but it didn't [work out]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2318,
+  "output": 774
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

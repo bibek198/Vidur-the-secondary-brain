@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2360",
+ "input_hash": "1bca2ee390f4dd0b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2360 proposes a new `enableServiceLinks` field in PodSpec so application developers can disable injection of service environment variables into their Pods, while keeping the current injection as the default.",
+  "rationale": "Kubernetes injects environment variables for every service in the namespace into Pods, in Docker-links syntax, and there is no way to turn this off. The design cites accidental coupling, incompatibility with images that fail at startup when certain service links are defined, and slow pod startup in namespaces with many services. The chosen fix is an opt-out field, with the existing behaviour kept as the default so the change is non-breaking.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Rely on DNS for service discovery and keep service environment variables as they are",
+    "why_not": "The readme says DNS is preferred over service links but gives no reason to keep injection unchangeable; the goals require users to be able to choose whether to inject them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "They can choose to disable them via the new `enableServiceLinks` field in `PodSpec`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current behaviour will continue to be the default behaviour, but the developer may choose to disable these environment variables"
+   },
+   {
+    "ref": "readme",
+    "quote": "Accidental coupling. * Incompatibilities with container images that no longer utilize service links and explicitly fail at startup time"
+   },
+   {
+    "ref": "readme",
+    "quote": "Do this in a backwards-compatible, non-breaking way. Default to the current behaviour."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1936,
+  "output": 657
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

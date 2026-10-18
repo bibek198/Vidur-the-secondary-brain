@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-592",
+ "input_hash": "d2275fd642f0bf69",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-592 proposed a TTL mechanism that limits the lifetime of finished resources such as Jobs and Pods, so they are cleaned up automatically after a time-based expiry. The KEP is now implemented and at stable stage.",
+  "rationale": "Finished Jobs and Pods that are not owned by a higher-level controller are hard to clean up, and they can accumulate and overload a cluster. A global resource quota alone does not solve this, because users cannot create new resources until old ones are removed. The TTL timer starts when the Job or Pod finishes and the object is removed once the TTL expires.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Rely on a cluster-wide (global) resource quota to prevent overload",
+    "why_not": "The readme says users would not be able to create new resources without cleaning up old ones first, so a quota alone is not enough."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The TTL timer starts when the Job/Pod finishes, and the finished Job/Pod will be cleaned up after the TTL expires."
+   },
+   {
+    "ref": "readme",
+    "quote": "Even if we can avoid the overload issue by implementing a cluster-wide (global) resource quota, users won't be able to create new resources without cleaning up old ones first."
+   },
+   {
+    "ref": "readme",
+    "quote": "Make it easy to for the users to specify a time-based clean up mechanism for finished resource objects."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2010,
+  "output": 617
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3221",
+ "input_hash": "fac38d317b718a55",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3221 proposed a structured AuthorizationConfiguration file for kube-apiserver to define an ordered authorization chain with multiple webhooks, per-webhook failurePolicy, and CEL matchConditions pre-filtering. The KEP reached implemented status at stable stage.",
+  "rationale": "The existing --authorization-* flags allow only one webhook, which prevents admins from building ordered chains with multiple webhooks and explicit deny behavior. The design adds a config file where each authorizer has a type and webhook settings, including failurePolicy (Deny or NoOpinion) and matchConditions to limit invocations. Reviewers pushed for pre-filtering and for not using the kubeconfig format for webhook credentials, and the discussion records these as concerns that shaped the scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Multiple flags to define additional webhooks",
+    "why_not": "Listed as the alternative in the readme; the proposal instead chose a structured config file with ordered authorizers, though the readme does not record a detailed reason beyond the Goals."
+   },
+   {
+    "option": "Reuse clientcmd AuthInfo for webhook credentials",
+    "why_not": "enj objected: \"I would _really_ like to avoid use of any of the `clientcmd` API here. It is an old and large API with questionable levels of flexibility.\""
+   },
+   {
+    "option": "Defer pre-filtering (CEL matchConditions) to a later version",
+    "why_not": "100mik proposed pursuing pre-filtering as a target for v1alpha2, but deads2k argued for requiring it in an initial implementation: \"There is a good case to require prefiltering in an initial implementation to make it safe to use.\" The final design includes matchConditions."
+   },
+   {
+    "option": "Use a separate CEL expression language per webhook format (beta)",
+    "why_not": "enj argued that users should not learn two CEL filter styles: \"does it really provide value to the end user to have to learn _two_ slightly different ways to write CEL filters?\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This limits admins from creating authorization chains with multiple webhooks that validate requests in a certain order."
+   },
+   {
+    "ref": "readme",
+    "quote": "Allow resource/user based pre-filtering of webhooks using CEL to prevent unnecessary invocations."
+   },
+   {
+    "ref": "rcomment:1187811575",
+    "quote": "Controls the authorization decision when a webhook request fails to complete or returns a malformed response."
+   },
+   {
+    "ref": "comment:1263924635",
+    "quote": "There is a good case to require prefiltering in an initial implementation to make it safe to use."
+   },
+   {
+    "ref": "rcomment:1230077263",
+    "quote": "Think about this way: does it really provide value to the end user to have to learn _two_ slightly different ways to write CEL filters?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11598,
+  "output": 1087
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

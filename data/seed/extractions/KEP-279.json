@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-279",
+ "input_hash": "556de06c383edd93",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-279 limits Node self-labeling by kubelets: NodeRestriction admission blocks kubelets from setting labels in the k8s.io and kubernetes.io namespaces except an allowlist, and reserves the node-restriction.kubernetes.io/* prefix for administrators. Status is implemented, stage stable, from 2020-12-22.",
+  "rationale": "Kubelets had total authority over their own Node labels, which made centralized label management hard and let a compromised node escalate privileges. The proposal restricts self-set labels to an allowlist and reserves a prefix for admin-driven node isolation. Per the discussion, the feature was completed in 1.19 after a deprecation/skew period, and the KEP was later marked implemented; the status is given as a fact.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep kubelets free to set arbitrary node labels via --node-labels",
+    "why_not": "The readme states this approach 'greatly compromises security' and makes label management difficult across N kubelet command lines."
+   },
+   {
+    "option": "Restrict only the labels and taints via a separate proposal (kubernetes/community#911)",
+    "why_not": "The discussion says work on limiting node control over labels/taints/addresses was planned as a separate proposal; the sources do not say it replaced this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Modify the `NodeRestriction` admission plugin to prevent Kubelets from self-setting labels within the `k8s.io` and `kubernetes.io` namespaces"
+   },
+   {
+    "ref": "readme",
+    "quote": "Reserve and document the `node-restriction.kubernetes.io/*` label prefix for cluster administrators that want to label their `Node` objects centrally"
+   },
+   {
+    "ref": "comment:622577972",
+    "quote": "Yes, this is completed in 1.19. Relevant PRs: * https://github.com/kubernetes/kubernetes/pull/90307"
+   },
+   {
+    "ref": "comment:623653514",
+    "quote": "This didn't follow alpha, beta, GA cycle, but basically it's GA now."
+   },
+   {
+    "ref": "comment:482690590",
+    "quote": "We are waiting out a deprecation period for the kubelet, and will finish this out in 1.16"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9951,
+  "output": 894
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

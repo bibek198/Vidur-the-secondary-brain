@@ -1,0 +1,40 @@
+{
+ "kep": "KEP-5978",
+ "input_hash": "8f2547037183cff1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5978 proposed a cluster-scoped ClusterResourceClaimTemplate in Kubernetes so Pods and PodGroups could reference a shared template by name. The KEP was withdrawn and the capability is to be built out-of-tree instead.",
+  "rationale": "Reviewers questioned whether cluster admins would actually manage ClusterResourceClaimTemplates, since ResourceClaims are normally part of the workload itself. Maintainers judged that a ClusterResourceClaimTemplate only adds value as an admin-level abstraction, and that the in-tree API surface was not justified for 1.37. The group agreed to move the idea to an out-of-tree controller that copies templates into namespaces.</rationale>\n<parameter name=\"outcome_reason\">Withdrawn because the maintainers concluded that the feature is most appropriately done out-of-tree, and they did not want to add the in-tree API surface for 1.37. The sources say \"we don't proceed with this KEP for 1.37 (and potentially never)\" and that the decision was to \"withdraw this KEP\".</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\":\"Pod field resolves to a namespaced ResourceClaimTemplate and falls back to a ClusterResourceClaimTemplate of the same name\",\"why_not\":\"liggitt said ambiguous resolution is hard to reason about and can cause race conditions, and it changes the meaning of the field for existing clients.\"}, {\"option\":\"Separate ResourceClaimTemplateRef field with kind (ResourceClaimTemplate or ClusterResourceClaimTemplate)\",\"why_not\":\"pohly said having two equivalent ways to reference a template is confusing; he preferred a separate clusterResourceClaimTemplateName field.\"}, {\"option\":\"Authorize ClusterResourceClaimTemplate usage by checking whether the pod's service account can get the template\",\"why_not\":\"pohly said the controller has no credentials of the user who created the reference, and that referencing a cluster template grants no extra privileges.\"}, {\"option\":\"Separate CRD and controller that generates namespaced ResourceClaimTemplates\",\"why_not\":\"Not chosen as the in-tree path; it was instead the basis of the out-of-tree direction the group settled on (a controller copying RCTs from a special namespace).\"}]",
+  "evidence": [
+   {
+    "ref": "rcomment:3415018672",
+    "quote": "I think that's reasonable. @troychiu WDYT? Instead of doing this in-tree, we create a separate controller in k-sigs? We would therefore withdraw this KEP."
+   },
+   {
+    "ref": "rcomment:3423315389",
+    "quote": "I think that makes sense. Maintaining an out-of-tree controller looks good enough. I have marked this KEP as `withdrawn`."
+   },
+   {
+    "ref": "rcomment:3401218880",
+    "quote": "ClusterResourceClaimTemplate makes sense when it will be used as an additional abstraction between cluster admin and users"
+   },
+   {
+    "ref": "comment:5046682478",
+    "quote": "We decided that it is most appropriately done out-of-tree. For example, a controller that copies RCTs from a special namespace to other namespaces (that's one approach)."
+   },
+   {
+    "ref": "comment:4119530033",
+    "quote": "ambiguous reference resolution from an object depending on what else exists at a given point in time is pretty hard to reason about"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10547,
+  "output": 1232
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

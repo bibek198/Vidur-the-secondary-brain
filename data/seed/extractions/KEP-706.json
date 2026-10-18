@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-706",
+ "input_hash": "42f92fd6d32a2cd3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-706 proposes a common, portable way for applications to request external services (e.g., MySQL, DNS, SMTP) using the same Kubernetes objects across environments, with credentials returned in a common Secret format. The KEP is currently in provisional status, provisional since 2020-12-17.",
+  "rationale": "Applications that rely on SaaS or managed services cannot be deployed unchanged across providers because each environment requires different resources. The KEP addresses this by defining the same resource for requesting a service and the same Secret schema for credentials, whether the service is cloud-managed or cluster-managed. The sources give the problem and goals but do not explain the reasoning behind the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Modify the Kubernetes Service Catalog to use CRDs and return common secret credentials",
+    "why_not": "The readme says it would be a complicated re-write to the service catalog and would still require the open service broker to be implemented in all environments, even where a simpler controller model could be used."
+   },
+   {
+    "option": "Replace Kubernetes Service Catalog",
+    "why_not": "This is listed as a non-goal, so the KEP does not intend to replace Service Catalog."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the same resource is declared asking for the service (e.g., MySQL) and the credentials to use the service are returned in a common manner"
+   },
+   {
+    "ref": "readme",
+    "quote": "The solution proposed here could work with the service catalog in environments it makes sense and use other models in other environments."
+   },
+   {
+    "ref": "readme",
+    "quote": "Provide a common way to request common services (e.g., MySQL) * Provide a common means to obtain credentials to use the service"
+   },
+   {
+    "ref": "readme",
+    "quote": "An alternative is to modify the service catalog to leverage CRDs and return common secret credentials."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2420,
+  "output": 753
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1498",
+ "input_hash": "c37a837b64bdc2ae",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1498 proposed extending the patch-fix support window for each Kubernetes minor release from about 9 months to about 14 months (12 months support plus 2 months upgrade period). Its status is recorded as implemented, stage stable, from 2021-01-15.",
+  "rationale": "Users needed annual support cycles to match business planning, and a survey showed about a third of production users were on versions out of the 9-month window. The KEP proposed a 14-month cadence, formalizing the existing practice of keeping patch branch CI about 6-7 weeks beyond the 9-month phase. The status-related discussion in the sources concerns the KEP's status metadata and PRR process, not the support-policy substance.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "No change to the 9-month support window",
+    "why_not": "The readme says this 'continue[s] to leave users unsatisfied' and that many users fail to upgrade within 9 months."
+   },
+   {
+    "option": "Longer support period of 2, 3, or 5 years",
+    "why_not": "The readme says this is 'hard to implement in the current context of the project's practices' and that all the work in the KEP would be required anyway first."
+   },
+   {
+    "option": "Change the release cadence to produce more stable releases",
+    "why_not": "The readme calls this 'orthogonal' and notes it 'may also do the opposite' for supportability."
+   },
+   {
+    "option": "Tim St. Clair's devel/stable split proposal, or Lubomir Ivanov's 18-month LTS proposal",
+    "why_not": "The readme says both 'may be compatible and complementary with the change proposed in this KEP' and are possible future changes rather than alternatives to this one."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The goal of this KEP is to increase patch-fix support for each Kubernetes release from the current 9 months to 1 year."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposal is to extend the Kubernetes support cadence from 9 months to 14 months. The 14 months proposed here is essentially 12 months of support and 2 months of upgrade period."
+   },
+   {
+    "ref": "readme",
+    "quote": "The survey conducted in early 2019 by the WG LTS showed that a significant subset of Kubernetes end-users fail to upgrade within the 9-month support period."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7901,
+  "output": 983
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

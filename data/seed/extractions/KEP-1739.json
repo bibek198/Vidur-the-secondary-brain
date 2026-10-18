@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1739",
+ "input_hash": "98f86cbccd06c0c8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1739 proposes a replacement for kubeadm's Kustomize-based customization with raw kubectl-style patches, introduced via a new --experimental-patches flag that later graduates to --patches. The KEP is currently implementable at stage beta.",
+  "rationale": "The kubeadm team decided raw patches are preferable to Kustomize because Kustomize adds an undesired dependency. Patches are applied the way kubectl applies them, keeping the same goal of amending kubeadm-generated manifests and configuration during init, join, and upgrade. The Kustomize feature was alpha and has been removed, so this KEP supplies its replacement.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using the existing Kustomize feature",
+    "why_not": "The kubeadm maintainers have reservations about using this approach, per the Motivation section, due to the dependency it introduces."
+   },
+   {
+    "option": "Support instance-specific configuration persisted in the kubeadm-created cluster",
+    "why_not": "To match the flexibility of patches it would need to store configuration in low-level formats such as corev1.Pod, and it is not clear whether the kubeadm ComponentConfig will support this in the future."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The kubeadm team has decided that it is more beneficial if the project moves to using raw patches instead of Kustomize."
+   },
+   {
+    "ref": "readme",
+    "quote": "Kustomize introduces an undesired dependency which can be avoided by using patches in a similar way kubectl uses them."
+   },
+   {
+    "ref": "readme",
+    "quote": "Once the feature graduates to Beta the flag will be renamed to `--patches`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Once the flag is introduced, the existing flag `--experimental-kustomize` will be marked as deprecated."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-20190722-Advanced-configurations-with-kubeadm-(Kustomize)",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "This KEP proposes a replacement for the feature introduced by the kubeadm KEP \"20190722-Advanced-configurations-with-kubeadm-(Kustomize)\"."
+   }
+  ],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2298,
+  "output": 878
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

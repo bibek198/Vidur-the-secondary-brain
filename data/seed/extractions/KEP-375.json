@@ -1,0 +1,53 @@
+{
+ "kep": "KEP-375",
+ "input_hash": "a52759c064fd0b73",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-375 (CPU Manager, sig-node) is in status implementable at stage alpha. The discussion on PR #3350 covers the KEP update: renumbering to the new tracking number, documenting policy options, and adding two kubelet metrics (cpu_manager_pinning_requests_total and cpu_manager_pinning_errors_total) so admins can confirm pinning works.</summary>\n<parameter name=\"rationale\">Reviewers (deads2k) required a way to tell whether the per-node CPU pinning feature works at scale for PRR sign-off, and pod status does not show pinning. Derek Wayne Carr noted pinning is a node-local decision with no pod API field, and that admission rejects pods that do not fit. The agreed response was two kubelet metrics, which deads2k accepted as sufficient once the KEP names them.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "No new metric; rely on cgroup-aware monitoring of assigned cpusets",
+    "why_not": "derekwaynecarr suggested this, but deads2k asked for a kubelet metric to confirm the feature works at scale, and ffromani committed to adding metrics."
+   },
+   {
+    "option": "Add a third metric tracking pod admission requests and rejections",
+    "why_not": "ffromani said admission results are already reflected in pod status, and he changed the text to mention only the two metrics."
+   },
+   {
+    "option": "Improve the checkpoint-policy error log line instead of adding metrics",
+    "why_not": "andrewsykim proposed clearer logging for the state file path, but that was a separate GA improvement, not a replacement for the metrics."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:986181497",
+    "quote": "there is no 'pin this pods cpu' feature advertised in the pod API itself by design."
+   },
+   {
+    "ref": "rcomment:987993910",
+    "quote": "with your metrics update, they know this based on the `cpu_manager_pinning_requests_total` metric."
+   },
+   {
+    "ref": "rcomment:987212060",
+    "quote": "The metrics described in this thread look good to me. If you update the KEP with these names (even before the impl merges), that will do."
+   },
+   {
+    "ref": "rcomment:988105906",
+    "quote": "We should mention the metrics here instead of selecting `Other`"
+   },
+   {
+    "ref": "rcomment:985610995",
+    "quote": "I updated the KEP number with the newest one, because it's a bit more practical to work on."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7679,
+  "output": 930
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

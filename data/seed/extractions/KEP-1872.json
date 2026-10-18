@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-1872",
+ "input_hash": "a125e544c5378b57",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1872 proposed registering admission webhooks from a manifest file loaded by kube-apiserver at startup via AdmissionConfig, so enforcement has no gap at startup and the webhooks cannot be altered through the API. Its status is provisional, and kep.yaml records it as replaced by KEP-5793.",
+  "rationale": "The proposal closes the enforcement gap between kube-apiserver start and creation of webhook configuration objects, and keeps those webhooks out of API-modifiable objects. Reviewers (lavalamp, deads2k, liggitt) objected that the design does not work for other resource types, has no status reporting, and splits the source of truth. Discussion moved toward a general solution, and the maintainers' replacements were named as #101815 and #101762.",
+  "outcome_reason": "The sources say the KEP is replaced by KEP-5793 (kep.yaml record). They do not describe why KEP-5793 was created or how it differs in detail. The status is provisional and was never moved to implementable in the sources.",
+  "alternatives": [
+   {
+    "option": "Adding Deny policies to RBAC to block access to webhook configuration objects",
+    "why_not": "The README says this has far-reaching consequences, such as redesigning or changing the implementation of object watchers."
+   },
+   {
+    "option": "A controller that reads a directory of manifests into etcd, plus an authz plugin that blocks non-system changes (lavalamp's option 1)",
+    "why_not": "Suggested by reviewers as an alternative. The sources do not say it was adopted; a comment says Vivek would explore bootstrapping objects from a file in a future KEP."
+   },
+   {
+    "option": "An authz-only mechanism plus a super-super-user account (lavalamp's option 2)",
+    "why_not": "Suggested by reviewer lavalamp, who described it as too heavy-handed. The sources do not say it was adopted."
+   },
+   {
+    "option": "Restarting kube-apiserver to apply changes to the webhook file (deads2k's suggestion)",
+    "why_not": "Raised as an alternative in review. The sources do not record a rejection rationale beyond the reviewer's view that the access degree is comparable."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This configuration is loaded as manifest based webhooks in api servers. These webhooks are called by validating and mutating admission plugins along with dynamically loaded webhooks"
+   },
+   {
+    "ref": "comment:703761276",
+    "quote": "This design has the following problems: * Doesn't work for other types (e.g. CRDs). * No way for status to be reported on the \"virtual\" resources."
+   },
+   {
+    "ref": "comment:841426903",
+    "quote": "I filed https://github.com/kubernetes/kubernetes/issues/102019 to capture the feature request."
+   },
+   {
+    "ref": "comment:839969440",
+    "quote": "Anyway, the replacements to this approach at the moment are: * #101815 * #101762"
+   },
+   {
+    "ref": "comment:669224512",
+    "quote": "I think this is good to merge as provisional, but I'd like to see some more exploration on a few points before going to implementable."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-5793",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-1872 is replaced by KEP-5793 Manifest Based Admission Control Config"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7519,
+  "output": 1233
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

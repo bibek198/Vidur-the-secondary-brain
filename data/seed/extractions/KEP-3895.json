@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3895",
+ "input_hash": "0e58c522e6489b70",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3895 added an interactive flag (--interactive / -i) to kubectl delete. It previews the resources to be deleted and asks the user to confirm with y before deleting. The KEP is marked implemented and stable.",
+  "rationale": "Deletes are irreversible and mistakes (mistyping, hasty tab completion) are easy to make. Making confirmation the default would break backwards compatibility, so the KEP adds an opt-in flag to ask for confirmation before deleting. Deletion is limited to the UIDs shown in the preview, so resources that changed after the preview are not removed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make confirmation the default behavior of kubectl delete",
+    "why_not": "Due to the backwards compatibility concerns, seeking confirmation from a user before proceeding to genuinely delete as default, is out of the table."
+   },
+   {
+    "option": "Use a --interactive=never|once|always style option, as rm does",
+    "why_not": "Proposed by atiratree in review as an alternative; the sources do not say it was adopted. Reviewer ardaguclu noted it was 'not sure how feasible/hacky it is to do with cobra'."
+   },
+   {
+    "option": "Server-side deletion protection",
+    "why_not": "Listed as a non-goal. Reviewer soltysh suggested a ValidatingAdmissionWebhook for server-side protection instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Due to the backwards compatibility concerns, seeking confirmation from a user before proceeding to genuinely delete as default, is out of the table."
+   },
+   {
+    "ref": "rcomment:1194860374",
+    "quote": "The system is moving constantly, we should be operating on the view that was created during the first invocation and to which user explicitly agreed to."
+   },
+   {
+    "ref": "comment:1997305070",
+    "quote": "I think, we can close this issue as completed as it has been promoted to stable in 1.30."
+   },
+   {
+    "ref": "comment:1742434321",
+    "quote": "after removal of this environment variable, `interactive` flag can be used directly and will be enabled by default."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10747,
+  "output": 836
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

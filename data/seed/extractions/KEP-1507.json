@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-1507",
+ "input_hash": "b5a1d3004ce5b3c0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1507 proposed adding an optional AppProtocol field to ServicePort and EndpointPort, mirroring the AppProtocol attribute already present on EndpointSlices. The KEP is implemented and at stable stage.",
+  "rationale": "Application protocols were only expressible through cloud-specific annotations, which the KEP describes as a poor user experience. Since application protocol is a per-port property, the proposal adds a built-in per-port field to Services and Endpoints, with validation matching EndpointSlices. The status is implemented, stage stable, with implementable from 2020-10-06 and implemented from 2025-05-20.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue using cloud-specific annotations for application protocol",
+    "why_not": "The KEP states annotations are cloud specific and cannot provide the ease of use of a built-in attribute like AppProtocol."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The lack of direct support for specifying application protocols for ports has led to widespread use of annotations, providing a poor user experience and general frustration"
+   },
+   {
+    "ref": "readme",
+    "quote": "Since application protocols are specific to each port specified on a Service or Endpoints resource, it makes sense to have a way to specify it at that level."
+   },
+   {
+    "ref": "readme",
+    "quote": "In both Endpoints and Services, a new `AppProtocol` field would be added. In both cases, constraints validation would directly mirror what already exists with EndpointSlices."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2156,
+  "output": 641
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

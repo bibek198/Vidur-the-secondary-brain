@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-624",
+ "input_hash": "e3e217c4ae2641f2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-624 Scheduling Framework adds plugin extension points compiled into the Kubernetes scheduler, so scheduling features can be implemented as plugins while keeping the core simpler. Its status is implemented, stage stable.",
+  "rationale": "The scheduler was growing more complex with each feature, and the existing extender webhooks had limited extension points, JSON marshaling overhead, no way to signal aborted scheduling, and no access to the scheduler cache. The framework instead offers in-process plugins that can be enabled, disabled, and reordered through ComponentConfig. Per the discussion, the feature had no feature flag and no versioned API, so the team declared it implemented rather than tracking graduation through beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Replace the existing scheduler with a new implementation",
+    "why_not": "Previous versions of the document proposed this, but the current proposal dropped it: the framework extends the existing scheduler instead."
+   },
+   {
+    "option": "Keep using scheduler extender webhooks",
+    "why_not": "The readme lists their limits: few extension points, JSON marshaling and HTTP call cost, no abort notification, and no access to the scheduler cache."
+   },
+   {
+    "option": "Graduate the framework to beta in 1.16, 1.17, or 1.20",
+    "why_not": "Beta was postponed to 1.17 for API stability confidence, then delayed again; in 2020 the lead said there was no versioned API to graduate and proposed marking it implemented instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The scheduling framework is a new set of \"plugin\" APIs being added to the existing Kubernetes Scheduler."
+   },
+   {
+    "ref": "readme",
+    "quote": "Plugins are compiled into the scheduler, and these APIs allow many scheduling features to be implemented as plugins, while keeping the scheduling \"core\" simple and maintainable."
+   },
+   {
+    "ref": "comment:692050134",
+    "quote": "this feature is not guarded by a feature flag and there is really no notion of versions for this api yet. We may declare this as implemented and graduated in 1.20 and close this issue."
+   },
+   {
+    "ref": "comment:703806200",
+    "quote": "The above PR merged marking 624 as implemented in 1.19. Please feel free to close this issue."
+   },
+   {
+    "ref": "comment:708",
+    "quote": "we decided to postpone promotion to beta to 1.17 in order to have higher confidence about stability of the API."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7807,
+  "output": 962
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

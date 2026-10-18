@@ -1,0 +1,26 @@
+{
+ "kep": "KEP-2343",
+ "input_hash": "3c701ea8a5d97bfc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2343 proposes automated storage version migration using a storage version hash. Its status is provisional, and the only supplied discussion is a 2021-02-09 approval comment on a PR.",
+  "rationale": "The sources supplied do not describe the problem or the design in detail. The one comment is a lgtm from @wojtek-t on PR #2460, saying he approved the original and will approve this revision. The status is provisional, so the KEP has not been accepted as implementable.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "comment:775734599",
+    "quote": "Since you approved the original one, I will simply lgtm this one :) /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 1487,
+  "output": 369
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

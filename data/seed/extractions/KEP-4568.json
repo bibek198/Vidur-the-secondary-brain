@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4568",
+ "input_hash": "9ca1187db1284f6d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4568 proposes mitigations for kube-apiserver and etcd overload during watchcache initialization or reinitialization, including returning 429 for requests that would otherwise be delegated to etcd or hang on an uninitialized watchcache, and gating readiness on builtin-type watchcache initialization via a PostStartHook. Its status is implementable, stage stable.",
+  "rationale": "Watchcache initialization is effectively a list from etcd that can take tens of seconds or more, during which hanging watches consume API Priority and Fairness seats and unindexed lists with resourceVersion=0 are sent to etcd, risking control plane outage. The readme states that watches hang until initialization finishes and that a PostStartHook only reports healthy once, so reinitialization would not affect readyz. Sources do not explain the final stable-stage rationale beyond maintainer comments that the resilient initialization is mature and ready for GA.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use a readiness check or PostStartHook alone to gate initialization",
+    "why_not": "The discussion says a PostStartHook is reported healthy once and never reverts to false, so later reinitialization would not be reflected in readyz; requests would instead return 429."
+   },
+   {
+    "option": "Pass all requests to etcd when watchcache is not initialized",
+    "why_not": "The readme says that for lists with ResourceVersion=0 delegating to etcd is particularly problematic, and passing too many such requests down can bring down the control plane."
+   },
+   {
+    "option": "Make streaming lists the only allowed lists during initialization",
+    "why_not": "A maintainer replied that streaming lists will never be allowed here because they are served from watchcache, so they cannot be served while it is uninitialized."
+   },
+   {
+    "option": "Ship the feature directly as beta behind an alpha-free path versus starting at alpha",
+    "why_not": "Reviewer deadads2k initially opposed going directly to beta; the final decision recorded in the discussion was two feature gates both going directly to beta, one disabled by default and one enabled by default."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "For watch requests, unless it's a consistent watch request (setting RV=\"\") - which isn't really used by none of our core components, it is always handled by the watchcache."
+   },
+   {
+    "ref": "rcomment:1551459459",
+    "quote": "it's reported as healthy as soon as it succeeds for the first time: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apiserver/pkg/server/hooks.go#L238-L245 [and it never changes back to false later]"
+   },
+   {
+    "ref": "rcomment:1560626418",
+    "quote": "No. Streaming lists will never be allowed here as they are served from watchcache - so if the watchcache is not initialized, we will not be able to serve them at all."
+   },
+   {
+    "ref": "rcomment:1572211192",
+    "quote": "two separate feature-gates - both going directly to beta - one of them disabled by default, second enabled by default"
+   },
+   {
+    "ref": "comment:2621607478",
+    "quote": "ResilientWatchCacheInitialization has been enabled on since 1.31, so it seems mature enough"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12809,
+  "output": 1200
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

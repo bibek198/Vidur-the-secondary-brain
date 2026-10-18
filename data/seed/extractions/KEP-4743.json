@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4743",
+ "input_hash": "e16e6adc508f66a3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4743 proposes a standardized etcd-Kubernetes code interface, owned by SIG-etcd, that formalizes the implicit contract between Kubernetes and etcd so it can be tested and reviewed. Its status is provisional.",
+  "rationale": "The implicit Kubernetes-etcd contract is undocumented, which hurts testability and causes incorrect usage (e.g. issue #110210). The KEP defines an interface in the etcd client adopted by Kubernetes, scoped to the etcd3 store and master leases, with no new behavior beyond what etcd supports. Comments show enhancements tracking was dropped for v1.32 because there is no user-facing change and the process overhead was not justified.",
+  "outcome_reason": "The sources give a status of provisional, with the KEP opted out of v1.32 tracking and marked Deferred for that cycle. The sources do not say why it was not advanced further after that.",
+  "alternatives": [
+   {
+    "option": "Track the KEP through the standard enhancements process for v1.32 alpha",
+    "why_not": "Maintainers opted out: \"the overhead of KEP template, PRR and other processes makes it not worth it.\""
+   },
+   {
+    "option": "Keep the implicit contract undocumented",
+    "why_not": "The KEP aims to codify the contract so that \"we will improve the testability of both Kubernetes and etcd, prevent common errors in their interaction\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "By formalizing this contract, we will improve the testability of both Kubernetes and etcd, prevent common errors in their interaction, and establish a framework for the future evolution of this critical contract."
+   },
+   {
+    "ref": "comment:2396740504",
+    "quote": "There is no user facing change, just a refactor to align internal apiserver code to match an interface. We created a KEP just to document the decision and collect consensus."
+   },
+   {
+    "ref": "comment:2396740504",
+    "quote": "however the overhead of KEP template, PRR and other processes makes it not worth it."
+   },
+   {
+    "ref": "comment:2405456935",
+    "quote": "Since this enhancement has been opted out from the current `v1.32` milestone, it's now marked as `Deferred` for the current v1.32 release cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5057,
+  "output": 878
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4427",
+ "input_hash": "723e518b4c1e8a33",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4427 relaxes validation of dnsConfig.searches entries so they may contain underscores or be a single dot, behind a RelaxedDNSSearchValidation feature gate (disabled by default). Status is implemented, stage stable.",
+  "rationale": "Strict RFC-1123 validation rejects search strings such as abc_d.example.com, which legacy SRV-based workloads need, and rejects the single dot used to avoid internal lookups. The KEP limits the relaxation to search strings only, so other names stay strictly validated. Validation distinguishes new resources from updates so that clusters can be downgraded safely.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep strict RFC-1123 validation and rewrite resolv.conf from inside the pod",
+    "why_not": "The readme says this typically requires running the pod with higher privileges than the workload requires."
+   },
+   {
+    "option": "Allow any characters in the DNS search string",
+    "why_not": "Listed as a non-goal: the KEP only allows underscore and a single dot, not arbitrary characters."
+   },
+   {
+    "option": "Always apply relaxed validation, with no feature gate",
+    "why_not": "The proposal introduces a gate disabled by default, and keeps strict validation for new resources when the gate is off, so there is no compatibility change while it is disabled."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes relaxing the checks on DNS search strings only."
+   },
+   {
+    "ref": "readme",
+    "quote": "Introduce a RelaxedDNSSearchValidation feature gate which is disabled by default."
+   },
+   {
+    "ref": "readme",
+    "quote": "Allowing underscores in the search string allows integration with legacy workloads without allowing anyone to define these names within Kubernetes."
+   },
+   {
+    "ref": "readme",
+    "quote": "As long as the gate is disabled, there is no compatibility change, so cluster downgrades are not affected by the feature."
+   },
+   {
+    "ref": "readme",
+    "quote": "A workaround is to re-write the resolv.conf file from inside the pod. This typically requires running the pod with higher privileges than the actual workload requires, however."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3566,
+  "output": 852
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

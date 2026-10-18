@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3756",
+ "input_hash": "c9862acb39fe4262",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3756 reverses the kubelet startup order so VolumeManager first reconstructs the actual state of world (ASW) from the host OS and /var/lib/kubelet/pods, then completes it with API server data. It was gated behind feature gate NewVolumeManagerReconstruction and split out of KEP-1710 so it could graduate separately. Status is implemented, stable.",
+  "rationale": "After a kubelet restart, the kubelet loses track of volumes mounted for running Pods and relies on imperfect recovery from the API server and the OS. The KEP reconstructs all found volumes from the OS without requiring the API server, so the ASW records real mount details such as mount options, which KEP-1710 needs. It also aims to fix #105536 (volumes not unmounted after restart) and make volume cleanup more robust.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep reconstruction inside KEP-1710 as one feature",
+    "why_not": "The readme says the work 'can be useful outside of SELinux relabeling and could graduate separately', so it was split out with its own feature and gate."
+   },
+   {
+    "option": "Ship directly without a feature gate",
+    "why_not": "The readme says 'it changes large parts of kubelet, and we'd like to have it behind a feature gate to provide users a way to get to the old implementations in case of problems.'"
+   },
+   {
+    "option": "Graduate through alpha first",
+    "why_not": "The owner stated 'We're going directly to beta', since the alpha phase already happened under KEP-1710."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we'd like to have a separate feature + feature gate to be able to graduate VolumeManager reconstruction faster"
+   },
+   {
+    "ref": "readme",
+    "quote": "We propose to reverse the kubelet startup process. 1. Quickly reconstruct ASW from the OS and add **all** found volumes to ASW when kubelet starts as *uncertain*."
+   },
+   {
+    "ref": "comment:1410274749",
+    "quote": "**We're going directly to beta**, because we had alpha phase in https://github.com/kubernetes/enhancements/issues/1710"
+   },
+   {
+    "ref": "comment:2126943204",
+    "quote": "This went GA in 1.30 and is marked as implemented, https://github.com/kubernetes/enhancements/pull/4532 /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9326,
+  "output": 919
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

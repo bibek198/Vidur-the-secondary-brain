@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-669",
+ "input_hash": "db68eb2870f7568e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-669 proposed building out-of-tree OpenStack cloud-controller-manager support with feature parity to kube-controller-manager. Its status is recorded as implemented, stage stable, from 2020-12-23.",
+  "rationale": "The KEP tracks delivery of the OpenStack cloud-controller-manager. The readme states the provider is implemented, tested and documented and has run in production. The status was set to implemented via a PR that landed before PRR was required, and reviewers in PR #3007 debated whether a KEP at stable should be marked implemented, leading to a validation rule.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the KEP at implementable (the status used for perma-beta items), as argued by johnbelamaric for general KEPs",
+    "why_not": "The sources note this was argued for permabeta KEPs in general, but the KEP's recorded status is implemented, which is the stated fact. The sources do not say this option was adopted for KEP-669."
+   },
+   {
+    "option": "Require a PRR file before implemented status",
+    "why_not": "The sources say the KEP skipped PRR because it was moved to implemented via a PR that landed before PRR was required; a PRR file was added later in PR #3007, and reviewers noted PRR may not explicitly cover out-of-tree work."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The OpenStack Cloud Provider is implemented, tested and documented, It is being released with matching kubernetes version"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "Given that this KEP is related to prow, and not to anything that is contained in a kubernetes release, I think this is pretty uncontroversial"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4513,
+  "output": 853
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

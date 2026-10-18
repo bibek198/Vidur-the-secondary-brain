@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-956",
+ "input_hash": "2ca07634dea8ea82",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-956 proposed a new Bookmark watch event type, opted into via a new ListOptions.AllowWatchBookmarks boolean, so the apiserver can tell a watcher that all objects up to a given resourceVersion have been processed. The KEP is recorded as implemented at stage stable.",
+  "rationale": "Restarting a watch that observes few changes forces the apiserver to reprocess events between the last received resourceVersion and the current one, which adds load and can cause \"resource version too old\" errors. A Bookmark event carries only a resourceVersion, and a boolean opt-in keeps old clients working because the official decoder would break on the new event type. The graduation evidence cited in the discussion is the observed drop in watch-related load in 5k-node tests.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Send Bookmark events to all clients by default",
+    "why_not": "The readme says the change would break existing clients such as the official decoder, so an explicit opt-in flag was chosen instead."
+   },
+   {
+    "option": "Introduce a v2 watch API",
+    "why_not": "The readme says that waiting for a v2 watch API was not wanted: \"Given that we don't want to wait for v2 version of watch API with that change, an obvious requirement for introducing it is backward compatibility.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "As a result, we will extend `ListOptions` (which is how we pass options to watch) with a boolean field where user can opt-in for watch bookmarks"
+   },
+   {
+    "ref": "readme",
+    "quote": "Unfortunately, such a change would break existing clients, as an example [official decoder][]."
+   },
+   {
+    "ref": "comment:512715543",
+    "quote": "As described in KEP, the criteria for graduation was to observe the expected drop on our graphs."
+   },
+   {
+    "ref": "comment:534023350",
+    "quote": "Yes - I would like to promote it to GA in 1.17."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7949,
+  "output": 776
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

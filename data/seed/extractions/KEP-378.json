@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-378",
+ "input_hash": "a54ca16fa1f5eb35",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-378 (Kubernetes Bootstrap Checkpointing) proposed checkpointing annotated control-plane pods to the filesystem via a kubelet flag, --bootstrap-checkpoint-path, gated as Alpha. Its recorded status is implemented, stage stable, from 2020-12-29; the discussion concerns the status/stage labelling rather than the feature design.",
+  "rationale": "The design goal was to record annotated Pods to the filesystem and have the kubelet load them on restart, to enable self-hosting. The status of \"implemented\" with stage \"stable\" was assigned retroactively during a 2021 KEP cleanup (PR #3007), which the sources say skipped PRR review. Participants disagreed on whether it should be \"implemented\" or \"implementable\", and the sources do not record a final resolution beyond the status shown.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the KEP at implementable/alpha without a PRR review",
+    "why_not": "The sources say the KEP was initially declared implementable at alpha before PRR was required, and a later PR retroactively declared it beta and implemented, skipping PRR."
+   },
+   {
+    "option": "Mark the KEP as implementable (suggested by johnbelamaric for perma-beta-style items)",
+    "why_not": "The sources show this was argued in the PR discussion, but do not show it was adopted for KEP-378; the recorded status remains implemented."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "Given that this KEP is related to prow, and not to anything that is contained in a kubernetes release, I think this is pretty uncontroversial"
+   },
+   {
+    "ref": "readme",
+    "quote": "The enablement of this feature is gated by a single command line flag that is passed to the kubelet on startup, ```--bootstrap-checkpoint-path``` , and will be denoted that it is ```[Alpha]```."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4578,
+  "output": 942
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2451",
+ "input_hash": "9e599cdd19ed76f8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2451 proposed a ServiceAccountToken volume projection so pods receive a service account token requested from the TokenRequest API, distributed as a volume instead of long-lived secrets. The KEP is recorded as replaced by KEP-1205 Bound Service Account Tokens; status is replaced.",
+  "rationale": "The KEP addressed the security and scalability problems of storing service account tokens as secrets by delivering node-requested tokens through a projected volume. The sources state that the KEP was closed because it was replaced by issue #542 (the Bound Service Account Tokens enhancement) and that the replacement KEP was merged. Reviewers also asked for a note linking the README to the replacing work.",
+  "outcome_reason": "The sources say it was replaced by KEP-1205 Bound Service Account Tokens (referenced as issue #542), and the status history records replacement from 2021-05-07. They do not give a detailed technical reason beyond that the replacement KEP was merged.",
+  "alternatives": [
+   {
+    "option": "Implement all token injection as a flex volume or CSI plugin",
+    "why_not": "The readme says both flex volume and CSI are alpha and unlikely to graduate soon, and virtual kubelets may not be able to run flex volumes."
+   },
+   {
+    "option": "Remove service accounts and service account tokens from core and use an external mechanism",
+    "why_not": "The readme says service account tokens are a fundamental part of the API, and other core features need service account integration, which would force all users to install an extension."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubernetes should implement a ServiceAccountToken volume projection that maintains a service account token requested by the node from the TokenRequest API."
+   },
+   {
+    "ref": "comment:834661560",
+    "quote": "/close because it is replaced by https://github.com/kubernetes/enhancements/issues/542 and the KEP is merged"
+   },
+   {
+    "ref": "rcomment:623308531",
+    "quote": "probably worth adding a note/link in the README for this as well"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-1205",
+    "relation": "replaced_by",
+    "ref": "comment:834661560",
+    "quote": "/close because it is replaced by https://github.com/kubernetes/enhancements/issues/542 and the KEP is merged"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2409,
+  "output": 887
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

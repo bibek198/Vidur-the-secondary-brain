@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1333",
+ "input_hash": "65eef79ca33aa2a0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1333 proposes a process to ensure Kubernetes components and conformance tests have no dependencies on beta REST APIs or features, so that distributions can pass conformance without enabling non-GA features. The KEP is currently implementable at stage beta.",
+  "rationale": "Production distributions should not have to enable non-GA features or REST APIs to pass conformance tests, which hurts consistency across distributions. The KEP identifies beta dependencies in components and conformance tests, resolves them, and prevents new ones. Its goals include demonstrating conformance tests passing with all beta APIs and features disabled.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Resolve conformance profile questions",
+    "why_not": "Explicitly a non-goal; the KEP points to kubernetes/community issue 2651 for that work."
+   },
+   {
+    "option": "Resolve questions about GA-but-optional features",
+    "why_not": "Explicitly a non-goal; deferred to kubernetes/community issue 3997."
+   },
+   {
+    "option": "Resolve code-level dependencies on pre-v1.0.0 components",
+    "why_not": "Explicitly a non-goal of this KEP."
+   },
+   {
+    "option": "Forbid beta APIs or features in conformant clusters",
+    "why_not": "Non-goal: distributors may still enable beta REST APIs and features; the KEP only ensures conformance tests do not require them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A production distribution should not be required to enable non-GA features or REST APIs in order to pass conformance tests."
+   },
+   {
+    "ref": "readme",
+    "quote": "For each category, we should identify and resolve existing dependencies, and prevent future occurrences."
+   },
+   {
+    "ref": "readme",
+    "quote": "Demonstrate passing conformance tests on a cluster with all beta REST APIs and features disabled"
+   },
+   {
+    "ref": "readme",
+    "quote": "Forbid beta REST APIs or features from being enabled in conformant clusters by distributors"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2180,
+  "output": 800
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

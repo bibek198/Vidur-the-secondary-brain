@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4872",
+ "input_hash": "2ac9501b3477e196",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4872 proposes that the kube-apiserver validate that a kubelet serving certificate's Common Name equals system:node:<nodename> when connecting to kubelets, to stop a node from impersonating another node using a certificate for a reused IP. Its status is implementable at alpha stage; the sources show it was revised to be opt-in via a new CLI flag.",
+  "rationale": "Cloud IPs get reassigned faster than kubelet serving certificates expire, so a certificate issued to an old node can be used for a new node sharing that IP. The proposal adds CN validation in the kube-apiserver, which already knows the target node name when it connects for logs, exec, and port-forward. Reviewers asked for opt-in behavior so that existing configurations see no default change.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep validation on by default behind a feature gate only",
+    "why_not": "enj asked for the feature to be opt-in: \"The default today is no TLS verification at all so it does not make sense for us to tighten this in a way that will just cause upgrade failures.\""
+   },
+   {
+    "option": "Per-node client-go transports for the custom CN check",
+    "why_not": "liggitt warned it would leak transports: \"This approach looks like it will make a new transport per node, which gets held forever in the transport tlsCache\""
+   },
+   {
+    "option": "Name the feature NodeCertificateNameValidation",
+    "why_not": "Suggested by sftim as a naming alternative in review; the sources do not record it being adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose that the Kube API server is modified to validate the Common Name (CN) of the kubelet's serving certificate to be equal to"
+   },
+   {
+    "ref": "rcomment:2144039088",
+    "quote": "Invert this and make it opt-in via a new flag that must be set in addition to `--kubelet-certificate-authority`."
+   },
+   {
+    "ref": "comment:2971521734",
+    "quote": "Okay, let's go with requiring opt-in so there are no default behavior changes and we are fully backwards compatible with any existing configuration."
+   },
+   {
+    "ref": "rcomment:2100581232",
+    "quote": "the approach in https://github.com/kubernetes/kubernetes/pull/131450 looks the most likely"
+   },
+   {
+    "ref": "comment:5048814072",
+    "quote": "Per @enj, deferring to v1.38 as the dependent KEP slipped. Removing from v1.37 tracking."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12169,
+  "output": 955
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4742",
+ "input_hash": "266a2776b105955f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4742 proposes a built-in admission plugin, PodTopologyLabels, that copies standard node topology labels (topology.kubernetes.io/zone, topology.kubernetes.io/region, kubernetes.io/hostname) onto pods/binding so Pods can read them via the Downward API. The KEP is currently at implementable status, stage beta.",
+  "rationale": "Workloads such as AI/ML, CNI plugins and sharded databases need node topology, and today they must use privileged init containers that query the API. The KEP makes the labels available synchronously at binding time, since env vars and downward API values can only be set at pod start. Scope was narrowed to the standard labels to limit exposure of node information to pods.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Expose all node labels via the downward API",
+    "why_not": "Proposed alternative in review; the discussion notes it has too many security risks as Nodes are often shared by many tenants, and the non-goal excludes non-standard node labels by default."
+   },
+   {
+    "option": "Helper controller copying selected node labels to Pods (label or annotation)",
+    "why_not": "Controller was judged not viable due to a race with the scheduler; the reviewer said 'I don't think controller was ever viable due to race with scheduler'."
+   },
+   {
+    "option": "Sidecar or init container fetching topology from the Kubernetes API, or a published container image writing to emptyDir",
+    "why_not": "Reviewers (sftim) raised these as workarounds; the KEP's Motivation says these workarounds need elevated privileges, and the KEP argues for a more secure, consistent built-in approach."
+   },
+   {
+    "option": "Kubelet sets the labels on the pod or a controller copies them asynchronously",
+    "why_not": "Thockin: 'We don't really want async copying from node->pod because env vars can only be set at pod start. So we need a synchronous mechanism, which is why @munnerz went with Binding.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a built-in admission plugin to copy standard node topology labels to Pods."
+   },
+   {
+    "ref": "comment:2641327621",
+    "quote": "We don't really want async copying from node->pod because env vars can only be set at pod start. So we need a synchronous mechanism"
+   },
+   {
+    "ref": "rcomment:1953666591",
+    "quote": "I decided to only include the standard labels for now as it's safer and doing `*.topology.k8s.io/*` doesn't seem that much more extensible"
+   },
+   {
+    "ref": "rcomment:1953671855",
+    "quote": "before Beta, we should have another debate about whether `PodTopologyLabels` is enabled-by-default built-in admission."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12519,
+  "output": 1017
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

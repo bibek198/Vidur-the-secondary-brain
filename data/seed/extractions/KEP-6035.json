@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-6035",
+ "input_hash": "816b3f45f4fc1a01",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6035 (Exec session identity propagation, sig-node) is implementable at alpha. It proposes letting the API server inject an audit ID, exposed as an environment variable (KUBERNETES_EXEC_AUDIT_ID), into exec sessions so runtime tools can correlate in-session activity with API audit logs. The KEP was merged with KEP-6090 into a single KEP, per the discussion.",
+  "rationale": "The discussion says interactive kubectl exec sessions are not visible in audit logs beyond the initial connect event, so a correlation key must reach the runtime layer. Reviewers pushed back on the design: sigtrapd said the audit ID is API-server-set and overrides user input, while others questioned whether env vars (vs. headers or baggage) are the right carrier and whether generic user env vars are safe. Status is implementable at alpha; the record does not show a final approval of the API review, which was still pending.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "OpenTelemetry baggage rendered into prefixed env vars",
+    "why_not": "Discussion says baggage would still render into prefixed env vars at the process boundary, so the outcome is the same with extra indirection; sergeykanzhelev said it may be better only if generic env vars are removed."
+   },
+   {
+    "option": "Reject user-supplied KUBERNETES_* env entries via API validation (Option A)",
+    "why_not": "Proposed as a way to resolve the distinguishability concern in the later comment, but the sources do not show it was adopted or rejected; it is described as a follow-on option by sigtrapd."
+   },
+   {
+    "option": "Rely on existing audit log configuration",
+    "why_not": "Per the latest comment from sigtrapd, this only covers ExecSyncRequest (where the command is visible), not interactive kubectl exec sessions, which are not sent through the API server after upgrade."
+   },
+   {
+    "option": "API server checks kubelet version before allowing the feature",
+    "why_not": "haircommander said this is not the right move, since past features did not do this; errors surfacing to cluster admins were suggested instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4707885614",
+    "quote": "The KEPs #6035 and #6090 Have been merged into one single KEP. I have addressed all the questions that were raised in the previous round of review."
+   },
+   {
+    "ref": "rcomment:3453863474",
+    "quote": "On the smushing concern, the API server enforces a hard override for `KUBERNETES_EXEC_AUDIT_ID` regardless of what the user supplies"
+   },
+   {
+    "ref": "rcomment:3395748536",
+    "quote": "Whether this KEP will touch the CRI or not is still a question I don't know the answer to."
+   },
+   {
+    "ref": "comment:5058356092",
+    "quote": "the implementation (code-related) PRs associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.37 milestone."
+   },
+   {
+    "ref": "comment:4739140636",
+    "quote": "We have opened a PR to trigger the API review #6205"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-6090",
+    "relation": "replaced_by",
+    "ref": "comment:4707885614",
+    "quote": "The KEPs #6035 and #6090 Have been merged into one single KEP."
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10905,
+  "output": 1225
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

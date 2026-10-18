@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2328",
+ "input_hash": "5a15e4d620c34352",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2328 proposed adding instance metadata service (IMDS) support to cloud-controller-manager by introducing a cloud-node-manager daemonset that handles instance-level interfaces (Instances and Zones), so nodes can initialize from IMDS and reconcile IP addresses. The KEP is recorded as implemented, stage stable.",
+  "rationale": "Moving node information retrieval to CCM made every node depend on cloud APIs, which are rate-limited and can throttle large clusters. The proposal keeps control-plane interfaces in CCM and moves instance-level interfaces to a daemonset, with an optional --enable-node-controller switch. The sources in this record do not show a design rationale for the implemented status itself; the discussion concerns how the status was set on PR #3007.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep node initialization centralized in cloud-controller-manager (--enable-node-controller=true)",
+    "why_not": "The readme says this mode means CCM does all node initialization, which the proposal identifies as the source of cloud API throttling for large clusters."
+   },
+   {
+    "option": "Introduce a separate cloud-provider plugin (CPI) registered into kubelet",
+    "why_not": "The readme says the plugin's daemonset would need to be schedulable before kubelet fully initialized nodes, requiring kubelet to initialize twice; separating it into cloud-node-manager was judged clearer."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "So the proposal aims to add IMDS support back with CCM, so that the kubernetes cluster could still be scaled to a large number of nodes."
+   },
+   {
+    "ref": "readme",
+    "quote": "For instance-level interfaces, a new daemonsets would be introduced and implement instance-level interfaces (who’s name is `cloud-node-manager`)."
+   },
+   {
+    "ref": "comment:938971717",
+    "quote": "@spiffxp 2021-10-08 on PR #3007: /hold For comment /uncc @alisondy @ahg-g /cc @jeremyeder @justaugustus @kikisdeliveryservice @LappleApple @mrbobbytables"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6034,
+  "output": 945
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

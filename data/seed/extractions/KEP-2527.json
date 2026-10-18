@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2527",
+ "input_hash": "e87b1ab9a30b9514",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2527 proposed removing or clarifying the \"rebuild-from-observation\" litmus test for API status fields, acknowledging spec/status as an access-control split, and documenting patterns (such as trusted ACK of spec) for APIs that need controllers to save non-observable state. The KEP is implemented and stable.",
+  "rationale": "The original litmus test (\"if I erased the whole status struct, would everything in it be reconstructible from observation?\") no longer matches how APIs behave, and it forced reviewers to reject or complicate designs. Spec/status is also used for access control: controllers own status while users own spec, which is why externalIPs was treated as a CVE while LoadBalancer status was trusted. The KEP therefore proposes to drop the test and document an allocation/binding pattern that requires trusted acknowledgement.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the from-observation rule for status unchanged",
+    "why_not": "The KEP says the ideal 'does not seem to be surviving contact with the real world' and that the rule was a detriment to APIs in review."
+   },
+   {
+    "option": "Retroactively apply the new pattern to existing GA APIs",
+    "why_not": "This is an explicit non-goal of the KEP."
+   },
+   {
+    "option": "Provide arbitrary storage for controller state",
+    "why_not": "This is an explicit non-goal of the KEP."
+   },
+   {
+    "option": "Provide distinct access control for subsets of spec or status",
+    "why_not": "This is an explicit non-goal of the KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to clarify or remove this guidance, especially as it pertains to state that is not derived from observation."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP further proposes to add guidance for APIs that want to implement an \"allocation\" or \"binding\" pattern which requires trusted ACK."
+   },
+   {
+    "ref": "readme",
+    "quote": "I no longer find this to be useful to our APIs, and in fact I find it to be a detriment."
+   },
+   {
+    "ref": "readme",
+    "quote": "Unfortunately that ideal does not seem to be surviving contact with the real world."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2554,
+  "output": 861
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

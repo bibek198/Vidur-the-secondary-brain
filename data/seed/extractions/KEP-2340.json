@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2340",
+ "input_hash": "b0f89689907a47a0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2340 proposes serving consistent (quorum) LIST/GET reads from the apiserver watch cache, using etcd progress notifications to confirm the cache is at least as fresh as a revision read from etcd. The KEP is in status implementable, stage stable.",
+  "rationale": "Reads from etcd are costly at scale, since the apiserver must fetch, deserialize, filter and convert every object, for example 150k pods for each kubelet list. Reflectors used resourceVersion=\"0\" to avoid this, which leaves the \"stale read\" problem open. Serving consistent reads from the watch cache, once it is confirmed up to date through etcd progress events, aims to fix stale reads without the scale cost. Later discussion found that some etcd versions had broken progress notifications, which affected how the feature could be enabled by default.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing and keep resourceVersion=\"0\" reflector lists",
+    "why_not": "The readme says this \"leaves the 'stale read' problem unsolved\", though a reflector relist fix mitigates it."
+   },
+   {
+    "option": "Let clients manage the initial resource version themselves without the cache optimization",
+    "why_not": "The readme says clients that switch to resourceVersion=\"\" \"will pay a high scale/performance cost\" and that clients may get tracking wrong."
+   },
+   {
+    "option": "Dynamic fallback based on watch cache wait time",
+    "why_not": "The readme says \"Simple fallback will rather not do a better job then just a manual fallback.\""
+   },
+   {
+    "option": "Add a new list option to bypass the watch cache for debugging",
+    "why_not": "Maintainers concluded in PR #4608 discussion that \"we should not create a new option for bypassing the watch cache\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If the reflectors instead use a consistent read for their initial list request, they could not \"going back in time\" when components are restarted and this issue would be solved."
+   },
+   {
+    "ref": "readme",
+    "quote": "For example, when kubelets requests pods schedule against it in a 5k node cluster with 30pods/node, the kube-apiserver must list the 150k pods from etcd"
+   },
+   {
+    "ref": "comment:1695669462",
+    "quote": "Conclusion, manual watch notification are totally broken on unpatched etcd versions. We cannot depend on them at all"
+   },
+   {
+    "ref": "comment:1640185697",
+    "quote": "20-50 times reduction of latency"
+   },
+   {
+    "ref": "comment:3303489655",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11986,
+  "output": 1039
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

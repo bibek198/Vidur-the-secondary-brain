@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5468",
+ "input_hash": "b1521cce25ea7b55",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5468 introduces a formal approach for testing cluster invariants across an entire end-to-end test run, with ownership, opt-in/out, and flake-demotion rules to limit \"tragedy of the commons\" flakes in CI. Its status is implemented at stage stable (implementable from 2025-09-30, implemented from 2025-10-14).",
+  "rationale": "SIG Testing received repeated requests to check invariants spanning whole e2e suite runs (e.g., a declarative validation mismatch metric), but suite-wide failures risk flaking in jobs whose authors are not watching. The KEP formalizes the approach with rules: invariants must have documented owners, tests are repeated before merge, and flaking invariants can be demoted with a [Flaky] tag. The maintainer noted it does not affect production binaries, only e2e.test, and was captured so the decision process and maintenance would be recorded.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Targeting integration tests instead of e2e tests",
+    "why_not": "Listed as a non-goal: 'Targeting integration tests. - We are specifically aiming for end to end tests for this purpose.'"
+   },
+   {
+    "option": "Enabling completely arbitrary checks",
+    "why_not": "Listed as a non-goal in the KEP; the approach is restricted to invariant checks with rules and guardrails."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we will formalize the approach in this KEP and introduce a principled approach with rules and guardrails"
+   },
+   {
+    "ref": "readme",
+    "quote": "all invariant **MUST** have clearly documented owners, which will be surfaced with the failure results"
+   },
+   {
+    "ref": "readme",
+    "quote": "New invariants will be tested many times before merge, and may be demoted at any time by tagging the associated sentinel test `[Flaky]`"
+   },
+   {
+    "ref": "comment:3372827760",
+    "quote": "This one is unusual in that it does not impact any binaries you would run in prod (only e2e.test) but we wanted the formal decision making to be captured"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 5640,
+  "output": 826
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

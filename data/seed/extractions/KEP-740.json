@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-740",
+ "input_hash": "eee5091c19dc5f66",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-740 proposes letting kube-apiserver sign service account tokens through an external signer reached over a gRPC API (ExternalJWTSigner), so keys can live in HSMs or cloud KMSes and never leave the signer. Current status is implementable, stage stable.",
+  "rationale": "Service account signing keys are loaded from disk at kube-apiserver start, so rotation needs a restart and anyone with filesystem access can read the signing material. The KEP addresses both by moving signing out of process, while keeping issued tokens and OIDC discovery identical to internal signing. Reviewers required a benchmark of the gRPC overhead, a unix-socket-only transport to mitigate SSRF, and a startup readiness check on the initial public key fetch.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep file-based service account keys loaded at process start",
+    "why_not": "Rotation requires a kube-apiserver restart and signing material stays exportable from the apiserver filesystem, which are the two problems the KEP's Motivation names."
+   },
+   {
+    "option": "Expose the signer over an abstract unix socket instead of a filesystem socket",
+    "why_not": "Reviewers discussed this in the thread; the source says the abstract-socket option was raised for pod isolation but the thread records the filesystem socket as the chosen mitigation, with a note that pod isolation is weakened. The sources do not record a final decision to adopt abstract sockets."
+   },
+   {
+    "option": "Add x5c verification support to the API server so the remote signer can be removed from the critical path",
+    "why_not": "Suggested by enj as a way to reduce outage risk, but the sources do not record it being adopted in this KEP."
+   },
+   {
+    "option": "Return key_id-plus-full-JWK schema like SPIFFE's wire format",
+    "why_not": "Rejected: liggitt said the SPIFFE format 'inlined the whole jwk schema, which is... *very* flexible', and the team chose the minimal key_id / key schema instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes updates that will allow Kubernetes distributions to integrate with key management solutions of their choice (eg: HSMs, cloud KMSes)."
+   },
+   {
+    "ref": "rcomment:1765455162",
+    "quote": "To mitigate this risk, the API will only be accessible over a unix socket protected by standard file permissions."
+   },
+   {
+    "ref": "rcomment:1765454483",
+    "quote": "We need to benchmark / document the overhead inherent in the grpc call out"
+   },
+   {
+    "ref": "rcomment:1792163691",
+    "quote": "We'll stick with the proposed minimal `key_id` / `key` schema proposed."
+   },
+   {
+    "ref": "rcomment:1792358450",
+    "quote": "For alpha, settled on not doing anything in-tree for the legacy token controller"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11336,
+  "output": 1085
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-902",
+ "input_hash": "e490cfe8fb1dccc1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-902 adds an optional Preempting (PreemptionPolicy) field to PriorityClass and PodSpec so pods of a given priority can wait in the scheduling queue without preempting lower-priority pods. The status is implemented at stage stable; the feature went GA in 1.24.",
+  "rationale": "Batch workloads with backlogs of unscheduled pods could have partially completed work discarded when higher-priority pods preempt them. The KEP makes preemption optional per PriorityClass, defaulting to true for backward compatibility. The field is copied into PodSpec at admission so the scheduler does not need to read PriorityClasses. Per the discussion, the GA graduation (PR #3110 and related k/k and k/website PRs) was completed in 1.24.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Protecting pods from preemption instead",
+    "why_not": "Listed as a non-goal: \"Protecting pods from preemption. PodDisruptionBudget should be used.\""
+   },
+   {
+    "option": "Keep preempting as the only behavior, with no new field",
+    "why_not": "The motivation states that adding the non-preempting option \"allows users to prioritize the scheduling queue, without discarding incomplete work.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal makes the preempting behavior optional for a PriorityClass, by adding a new field to PriorityClasses, which in turn populates PodSpec."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add a Preempting field to both PodSpec and PriorityClass. This field will default to true, for backwards compatibility."
+   },
+   {
+    "ref": "comment:1121150002",
+    "quote": "This feature has been **fully implemented** and is now **GA** in K8s version 1.24."
+   },
+   {
+    "ref": "comment:1038592930",
+    "quote": "All pr for GA have been merged."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11420,
+  "output": 767
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

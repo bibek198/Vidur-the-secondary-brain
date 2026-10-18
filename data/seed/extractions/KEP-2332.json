@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2332",
+ "input_hash": "7203a779fa0b5889",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2332 proposes recursive pruning of CustomResource fields not specified in the structural OpenAPI validation schema, opt-in via preserveUnknownFields in v1beta1 and always enabled in v1, with x-kubernetes-preserve-unknown-fields as the opt-out for subtrees. The KEP is recorded as implemented at stable stage, from 2021-02-09.",
+  "rationale": "CustomResources store arbitrary JSON, unlike native Go types that prune unknown fields during unmarshalling, which causes consistency and security concerns. Pruning aligns CRD behaviour with native types, keeps etcd contents predictable, and blocks attacks that rely on future fields becoming active after upgrade. The status \"implemented\" in the sources reflects a later bookkeeping update, and the discussion shows it was set retroactively without a PRR file.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Skeleton schema approach for pruning",
+    "why_not": "The proposal says it was dropped because of its complex semantics, and the structural schema matches schema generators and JSON unmarshalling behaviour instead."
+   },
+   {
+    "option": "Allow nested x-kubernetes-preserve-unknown-fields: false to re-enable pruning for a subtree",
+    "why_not": "It might encourage non-Kubernetes-like API types and no clear use case was identified, so it was deferred and may be added later."
+   },
+   {
+    "option": "Per-version opt-in or opt-out of pruning via preserveUnknownFields in CustomResourceDefinitionVersion",
+    "why_not": "A CRD with semi-enabled pruning does not serve the data consistency and security goals; the proposal rejects it."
+   },
+   {
+    "option": "Use recursive additionalProperties semantics instead of a new vendor extension",
+    "why_not": "OpenAPI v3 constructs do not apply recursively, so a recursive interpretation would diverge from that pattern."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add pruning of all fields which are not specified in the OpenAPI validation schemas given in the CRD."
+   },
+   {
+    "ref": "readme",
+    "quote": "Pruning enforces consistency of data stored in etcd. Objects cannot suddenly render unaccessible because unexpected data breaks decoding."
+   },
+   {
+    "ref": "readme",
+    "quote": "we stop pruning even for `additionalProperties: false` or any other additional properties schema."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6667,
+  "output": 1097
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

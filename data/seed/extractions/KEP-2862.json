@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2862",
+ "input_hash": "85e5ae14ea63e2fe",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2862 adds fine-grained authorization subresources (healthz, pods, and configz) for the Kubelet's authenticated API on port 10250, so monitoring and logging agents can read these endpoints without the coarse `proxy` subresource. The existing `proxy` subresource remains supported for backward compatibility. Status is implementable, stage stable.",
+  "rationale": "The Kubelet API on port 10250 authorized `/healthz` and `/exec` with the same `proxy` subresource, so agents that only needed to list pods had to be granted exec-level power. The read-only port 10255 was disabled by default, pushing agents onto 10250. The KEP adds new subresources while keeping `proxy` working, and it documents the previously undocumented endpoints.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep granting the coarse `proxy` subresource to monitoring agents",
+    "why_not": "The readme says that doing so \"grants many other powerful permissions to these agents which could be exploited by an attacker to escalate privilege.\""
+   },
+   {
+    "option": "Make the Kubelet API node-restricted or create a new Kubelet API",
+    "why_not": "The readme lists both as non-goals: \"Create a new Kubelet API\" and \"Make the kubelet API node-restricted.\""
+   },
+   {
+    "option": "Remove existing authorization subresources",
+    "why_not": "Removing existing subresources is a stated non-goal, and the goals require changes to be backwards compatible and not break users on upgrade."
+   },
+   {
+    "option": "Keep `/configz` under `proxy` only",
+    "why_not": "The discussion raised this as an open question (sergeykanzhelev asked why configz stays under proxy). The readme table still lists configz with a new subresource, so the sources do not record a final resolution beyond the table."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, the Kubelet API authorization uses a coarse authorization scheme, where actions like reading health status and the ability to exec into a pod require the same RBAC permissions."
+   },
+   {
+    "ref": "readme",
+    "quote": "These changes should be backwards compatible. - These changes should not break users on upgrade."
+   },
+   {
+    "ref": "readme",
+    "quote": "This way users who were previously using the `proxy` authorization subresource to grant access to the `/healthz` kubelet endpoint can update their ClusterRole or Role by replacing the `proxy` subresource with the `healthz` subresource."
+   },
+   {
+    "ref": "rcomment:1750749412",
+    "quote": "A workload that is only authorized to use the new subresources will lose access."
+   },
+   {
+    "ref": "rcomment:1750728237",
+    "quote": "\"subresource\" is a little overloaded here. These are represented as subresources in the `SubjectAccessReview`, but aren't really subresources in the sense of the Kubernetes REST API."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13328,
+  "output": 1085
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3027",
+ "input_hash": "21a0fc883b37b664",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3027 proposes using the SLSA framework as the standard for hardening the Kubernetes release software supply chain, aiming for the highest achievable SLSA level, with work staged level by level. Its status is provisional, starting 2021-12-17.",
+  "rationale": "Kubernetes releases are key links in many downstream software supply chains, so the project wants to give consumers the highest assurance of artifact integrity. The KEP adopts SLSA as the hardening standard and proposes to advance through its levels in a predictable manner, starting with SLSA 1 as mostly a documentation effort. The goal is SLSA Level 4, with the option to declare a level unimplementable if its changes are too disruptive.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Declare a specific SLSA level unimplementable and stop work on it",
+    "why_not": "The readme allows this only if the community deems changes too disruptive; it is a fallback path, not the chosen approach, and the KEP instead works through the remaining requirements."
+   },
+   {
+    "option": "Make concrete technical or process changes within this KEP",
+    "why_not": "Non-Goals state the KEP does not propose concrete implementation details; such changes (signing, metadata, key management, code review) are to be handled in separate KEPs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to use SLSA as a standard framework for hardening the Kubernetes release software supply chain."
+   },
+   {
+    "ref": "readme",
+    "quote": "Starting with SLSA 1, which is mostly a documentation effort, we plan to start having the discussions and presenting the necessary KEPs to work our way up."
+   },
+   {
+    "ref": "readme",
+    "quote": "The ideal outcome of this KEP would be to have a Kubernetes release process that complies with SLSA Level 4"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP does not aim to propose concrete technical implementation details or process improvements to achieve each SLSA level."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3196,
+  "output": 799
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

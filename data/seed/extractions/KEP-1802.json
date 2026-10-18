@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1802",
+ "input_hash": "95839c346755e93f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1802 introduces Kustomize Components: a new `Component` kustomization kind and a `components` field that lets overlays mix reusable, sequentially applied configuration pieces. The KEP is recorded as implemented at alpha stage.",
+  "rationale": "Overlays that each modify different aspects of the same base resource cannot be composed, because sibling overlays clone and patch resources in parallel and collide on GVKN IDs. Components are evaluated after the parent's resources are accumulated and are applied sequentially, so multiple components can transform the same resources. The status history shows it was provisional from 2020-12-23 and implemented from 2021-06-04, and the reviewers said the feature works without feature gates.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Merge resources with the same GVKN produced by sibling kustomizations (kustomize PR #1217)",
+    "why_not": "Merging YAMLs is not the same as patching the same YAML sequentially; an old field may resurface depending on merge order."
+   },
+   {
+    "option": "Share stock patches in a common directory that overlays mix and match",
+    "why_not": "It requires the --load_restrictor none flag and does not cover generating and transforming resources."
+   },
+   {
+    "option": "Define generators/transformers and reuse them in overlays",
+    "why_not": "Users would have to move the generators/transformers of kustomization.yaml into separate files, adding boilerplate."
+   },
+   {
+    "option": "Define a merge behavior on GVKN collision (kustomize issue #1292)",
+    "why_not": "It has the same problem as PR #1217: merging YAMLs is not the same as sequentially patching them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The main distinction is that they are evaluated **after** the resources of the parent kustomization (overlay or component) have been accumulated, and **on top** of them."
+   },
+   {
+    "ref": "readme",
+    "quote": "Multiple components can extend and transform the same set of resources **sequentially**. This is in contrast to overlays, which cannot alter the same base resources"
+   },
+   {
+    "ref": "rcomment:635673334",
+    "quote": "This particular feature is a field in Kustomization. It has been implemented and documented, and works without any feature gates."
+   },
+   {
+    "ref": "rcomment:645700302",
+    "quote": "I believe consensus was reached in the sig to move forward with this, the KEP just wasn't updated."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 5126,
+  "output": 927
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

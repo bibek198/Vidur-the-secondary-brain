@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4438",
+ "input_hash": "20dc11cda3dbe22e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4438 defers restarting sidecar containers during Pod termination to a separate feature gate, so that the base sidecar containers feature (KEP-753) can progress without the required kubelet Pod lifecycle refactoring. The KEP is in implementable status at alpha stage.",
+  "rationale": "The feature of restarting sidecars during Pod termination requires fundamental Pod lifecycle changes that the authors judged too risky for a beta enabled by default. The sidecar containers code was already well tested, so the authors split the work into a separate feature gate to let KEP-753 reach GA faster. The KEP is therefore a decision to decouple the two features rather than to ship the termination restart on the original timeline.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Introduce KEP-753 together with the restart during Pod termination feature",
+    "why_not": "The readme says this \"would have required a significant refactoring of the kubelet and the Pod lifecycle, which would introduce a risk of disruption to users.\""
+   },
+   {
+    "option": "Go directly to beta for the termination restart feature",
+    "why_not": "The readme says \"such changes cannot be introduced in beta (enabled by default) without risking disruption to users.\" A reviewer (wojtek-t) also asked for a rationale and risk paragraph before a direct beta target was considered."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The reason for this KEP is that restarting sidecar containers during Pod termination requires fundamental changes to the Pod lifecycle"
+   },
+   {
+    "ref": "readme",
+    "quote": "we are introducing a separate feature gate for the sidecar containers KEP to decouple the two features and allow users to use sidecar containers without the refactoring"
+   },
+   {
+    "ref": "readme",
+    "quote": "This feature was originally planned for beta release in the initial KEP, but after further analysis, we decided to postpone and introduce a separate feature gate for it."
+   },
+   {
+    "ref": "readme",
+    "quote": "The alternative would be to introduce KEP-753 with the restart during Pod termination feature. However, this would have required a significant refactoring of the kubelet and the Pod lifecycle"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12335,
+  "output": 858
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

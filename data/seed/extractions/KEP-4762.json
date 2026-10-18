@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4762",
+ "input_hash": "571ce5b626b9d19b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4762 proposes a new podSpec field `hostnameOverride` that lets users set an arbitrary FQDN as a pod's hostname, written into the pod's /etc/hosts. When set, it overrides `hostname`, `subdomain`, and `setHostnameAsFQDN`, and once GA the Kubelet always respects it. The KEP is at status implementable, stage stable.",
+  "rationale": "Traditional applications may depend on the hostname for permissions or service operations, but Kubernetes pod hostnames always carry the cluster suffix, so they cannot match DNS-based expectations during migration. The proposal adds a dedicated override field so the Kubelet can use an arbitrary FQDN without changing the legacy hostname behavior. The design document acknowledges the drawback that this conflicts with the pod's potential DNS records and is not a standard Kubernetes use case.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Configure hostnameOverride via kube-apiserver (defaulting/REST logic writes the computed value)",
+    "why_not": "The design says it would require teaching kube-apiserver about the cluster-suffix, and that it is challenging to pass kube-apiserver configuration options through REST or default logic."
+   },
+   {
+    "option": "Migrate legacy projects or find alternatives",
+    "why_not": "The document lists this as an alternative only; it does not say why it was not chosen beyond repairing or replacing the traditional projects."
+   },
+   {
+    "option": "Relax hostname validation to accept FQDN strings",
+    "why_not": "The design says doing so would cause the loss of the DNS resolution records for the pod, and it keeps subdomain and setHostnameAsFQDN handling tangled with the hostname."
+   },
+   {
+    "option": "Custom setHostnameAsFQDN value",
+    "why_not": "setHostnameAsFQDN is currently a boolean, and changing it to a Custom value would be disruptive to the existing API."
+   },
+   {
+    "option": "Init container running privileged `hostname` command",
+    "why_not": "The document states it can achieve the same goal but does not give a reason for rejecting it; it requires privileged mode."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "introduces a new field `hostnameOverride` for the podSpec, which, if set, once the API is GA will always be respected by the Kubelet"
+   },
+   {
+    "ref": "readme",
+    "quote": "it will inevitably always carry the `cluster-suffix`, which will never be possible for services that expect to use DNS to match the hostname."
+   },
+   {
+    "ref": "readme",
+    "quote": "it is undoubtedly in conflict with the current pod's potential DNS records, and using it will bring more confusion to users."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, since `setHostnameAsFQDN` is currently a boolean type, modifying it would be disruptive to the existing API."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2718,
+  "output": 1089
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

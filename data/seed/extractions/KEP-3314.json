@@ -1,0 +1,46 @@
+{
+ "kep": "KEP-3314",
+ "input_hash": "e87c815a7b403d62",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3314 proposes an optional CSI SnapshotMetadata gRPC API that lets backup applications list allocated blocks of a snapshot and changed blocks between snapshot pairs, served through an external-snapshot-metadata sidecar. The KEP is currently in status implementable at stage beta.",
+  "rationale": "Backup tools need efficient differential backups of CSI block volumes without loading the Kubernetes API server with large metadata payloads. The design adds a CSI service plus a community sidecar that handles auth and forwards calls to the driver over a UNIX socket, with a SnapshotMetadataService CR for discovery. The source says the aggregated API server alternative was rejected because large CBT payloads would be proxied through the API server.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Aggregated API server (KEP-3367)",
+    "why_not": "The design says it was deemed unsuitable because of the potentially large amount of CBT payloads that will be proxied through the K8s API server."
+   },
+   {
+    "option": "Volume populator storing CBT payloads on intermediary storage",
+    "why_not": "The source says the amount of pod creation/deletion churn and latency incurred made this solution inappropriate."
+   },
+   {
+    "option": "CRD returning a RESTful callback endpoint to the caller",
+    "why_not": "The source says it was superseded by the aggregation extension mechanism because more structured request and response payloads were required."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The aggregated API server solution described in [#3367][0] was deemed unsuitable because of the potentially large amount of CBT payloads that will be proxied through the K8s API server."
+   },
+   {
+    "ref": "readme",
+    "quote": "The mechanism that enables this direct access utilizes a proxy service sidecar to shield the CSI drivers from managing the individual Kubernetes clients."
+   },
+   {
+    "ref": "readme",
+    "quote": "The previous design which involved generating and returning a RESTful callback endpoint to the caller, to serve CBT payloads was superceded by the aggregation extension mechanism"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13899,
+  "output": 828
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-548",
+ "input_hash": "3423fa2f46789e46",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-548 proposed graduating ScheduleDaemonSetPods to stable so DaemonSet pod placement is decided only by the scheduler, with scheduling code removed from the DaemonSet controller. Its status is implemented at stage stable, with the feature reported as GA in 1.17.",
+  "rationale": "The feature had been beta since 1.12 and the KEP's goals were to promote it to stable and remove scheduling-related code from the DaemonSetController. The graduation was reported as done in 1.17, and the KEP status was later changed from implementable to implemented. Early comments show the change was debated, with SIG scheduling deciding on this direction in 2018.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the DaemonSet controller's scheduling code and leave the feature in beta",
+    "why_not": "Not chosen per the sources; the KEP goals state the aim was to promote the feature to stable and remove scheduling related codes in DaemonSetController."
+   },
+   {
+    "option": "Keep the KEP at implementable after GA",
+    "why_not": "Sources show the KEP was still marked implementable after GA in 1.17, and maintainers asked for it to be updated to implemented; PR #1437 was opened for this."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We wish to graduate ScheduleDaemonSetPods feature to make scheduling decisions only in the scheduler and remove the scheduling related code in the DaemonSetController."
+   },
+   {
+    "ref": "comment:570601479",
+    "quote": "Since this graduated to GA in 1.17, I'd like to close this issue out but the KEP is still marked as implementable."
+   },
+   {
+    "ref": "comment:571610083",
+    "quote": "Thanks, I've opened #1437 to mark it as implemented"
+   },
+   {
+    "ref": "comment:362761563",
+    "quote": "There has been more discussions and the SIG scheduling has decided to go in this direction."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10026,
+  "output": 781
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

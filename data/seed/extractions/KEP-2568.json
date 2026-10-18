@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2568",
+ "input_hash": "674f87d03a46dcda",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2568 proposes running the kubeadm-managed control-plane components (kube-apiserver, kube-controller-manager, kube-scheduler, etcd) as non-root by setting runAsUser/runAsGroup, dropping capabilities, and setting the seccomp profile to runtime/default. Its status is implementable at alpha stage.",
+  "rationale": "Running containers as root means a container escape can lead to root on the host, as CVE-2019-5736 showed. kubeadm is meant to provide a best-practice cluster setup, so the KEP applies the non-root practice to its control-plane pods. The KEP limits scope to control-plane components and excludes kubelet and kube-proxy.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "No alternatives considered",
+    "why_not": "The design document states 'Alternatives: None' and gives no other options."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If containers are running as root an escape from a container may result in the escalation to root in host."
+   },
+   {
+    "ref": "readme",
+    "quote": "`kubeadm` which is a tool built to provide a \"best-practice\" path to creating clusters is an ideal candidate to apply this to."
+   },
+   {
+    "ref": "readme",
+    "quote": "Run the control-plane components as non-root, by assigning a unique uid/gid to the containers in the Pods using the `runAsUser` and `runAsGroup` fields"
+   },
+   {
+    "ref": "readme",
+    "quote": "Drop all but cap_net_bind_service from `kube-apiserver` Pod, this will allow us to run as non-root while still being able to bind to ports < 1024."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2446,
+  "output": 686
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

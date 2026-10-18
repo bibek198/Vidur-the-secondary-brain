@@ -1,0 +1,63 @@
+{
+ "kep": "KEP-3983",
+ "input_hash": "46ce8792de983a65",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3983 adds a --config-dir flag to the kubelet so that drop-in .conf files in a directory are merged, in alphanumeric order, over the base kubelet configuration. The KEP is marked implemented and stage stable.",
+  "rationale": "Kubelet configuration is often managed by several entities, and editing one shared file causes races and overwrites. Drop-in files let each owner manage its own file, following a common Linux pattern. The design was accepted with the flag empty by default, so drop-in support is opt-in, and dynamic reconfiguration of a running kubelet was explicitly kept out of scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reinstate the now deprecated Dynamic Kubelet Configuration",
+    "why_not": "Listed as an alternative in the readme; the sources say the project was moving away from dynamic kubelet config, so the drop-in approach was chosen instead."
+   },
+   {
+    "option": "Continue to rely on CLI flags or systemd drop-in files",
+    "why_not": "Listed as an alternative in the readme; the sources do not give a detailed reason for rejecting it."
+   },
+   {
+    "option": "Default --config-dir to /etc/kubernetes/kubelet.conf.d",
+    "why_not": "Discussion moved to an empty default to align with --config; sergeykanzhelev later asked whether a default was needed, and the sources do not record a final resolution beyond the readme's beta plan."
+   },
+   {
+    "option": "Keep the flag gated only by the KUBELET_CONFIG_DROPIN_DIR_ALPHA environment variable",
+    "why_not": "The readme says the environment variable is removed in beta; reviewers also asked for a feature gate to prevent accidental alpha use, and a feature gate was added."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The flag will be empty by default and if not specified, drop-in support will not be enabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "As part of this optimization, we will remove the `KUBELET_CONFIG_DROPIN_DIR_ALPHA` environment variable, simplifying configuration management."
+   },
+   {
+    "ref": "readme",
+    "quote": "Dynamically reconfiguring running kubelets if drop-in contents change."
+   },
+   {
+    "ref": "comment:3349002808",
+    "quote": "I would think this is enough adoption for GA. Do you want to help promote this to stable?"
+   },
+   {
+    "ref": "comment:3757870956",
+    "quote": "@kannon92 @mrunalp can you lgtm pls - I fixed the latest stage"
+   },
+   {
+    "ref": "comment:2356131070",
+    "quote": "The merging process for files in the drop-in dir is incorrect and must be fixed before graduating."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13714,
+  "output": 1042
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

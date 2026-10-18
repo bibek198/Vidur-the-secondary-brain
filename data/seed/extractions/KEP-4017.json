@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4017",
+ "input_hash": "a7bc38f92535a9a6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4017 proposes setting the pod index as a label on pods created by StatefulSet controllers (apps.kubernetes.io/pod-index) and by Indexed Job controllers (batch.kubernetes.io/job-completion-index). The KEP is implemented and at stable stage.",
+  "rationale": "The pod index was only available as a StatefulSet pod name suffix, which requires parsing, or as a Job annotation, which the downward API can expose but which cannot be used for selection, metrics/log filtering, or traffic routing. Making the index a label allows selectors and the downward API to use it. The stated goal is that adding the label should not disrupt existing workloads.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep parsing the StatefulSet pod name to learn the ordinal",
+    "why_not": "The readme calls pod-name parsing a hacky solution and notes the index cannot be used by the downward API or for filtering and routing."
+   },
+   {
+    "option": "Keep the Indexed Job completion index only as an annotation",
+    "why_not": "The readme says annotations cannot easily be used for selecting pods or filtering metrics/logs, which is the gap the KEP addresses."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Indexed Jobs set the pod index as an annotation, which means it can be utilized by the downward API, however, it cannot easily be used for selecting pods based on their index"
+   },
+   {
+    "ref": "readme",
+    "quote": "we propose to set the pod index as a **label** on pods for both StatefulSets and Indexed Jobs"
+   },
+   {
+    "ref": "readme",
+    "quote": "Adding the label should not be disruptive to existing workloads."
+   },
+   {
+    "ref": "readme",
+    "quote": "StatefulSet pod label: `apps.kubernetes.io/pod-index` - IndexedJob pod label: `batch.kubernetes.io/job-completion-index` (same as existing annotation)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2205,
+  "output": 784
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

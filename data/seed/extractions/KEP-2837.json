@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2837",
+ "input_hash": "c0514921c32eafd6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2837 extends the Pod API with pod-level resource requests and limits for non-extended resources (CPU, Memory, Hugepages), in addition to existing container-level settings. Its status is implementable, stage stable.",
+  "rationale": "Resource allocation on PodSpec is container-centric, and the Pod API lacks a way to set resource constraints for the pod as a whole. The KEP adds pod-level requests and limits so users can control a pod's total consumption without configuring each container, complementing rather than replacing container-level settings. Reviewers (thockin: \"Better to get a heuristic in than miss the boat\") approved the design, with the pod-level request heuristic noted as the main point of contention.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Pod resizing (in-place) as an alternative to pod-level resources",
+    "why_not": "Yujuhong noted that resizing requires integrating with autoscaling, adds delay, and risks the resize request being denied. The maintainers later chose to treat in-place pod resize with pod-level resources as a separate feature."
+   },
+   {
+    "option": "Derive pod-level request only when all containers set requests",
+    "why_not": "ndixita said the team wanted to keep it simple to use, and deriving only when all containers set requests would lead to different behavior in different scenarios. The sources do not record a final decision on this point beyond the approved design."
+   },
+   {
+    "option": "Pod-level limit as the basis for the Burstable cgroup with container limits required",
+    "why_not": "The sources show mrunalp asking whether a pod-level limit should be required in some case, but no rejection is recorded; the sources do not say why this was not adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP proposes extending the Pod API to support Pod-level resource limits and requests for non-extended resources (CPU, Memory and Hugepages), in addition to the existing container-level settings."
+   },
+   {
+    "ref": "readme",
+    "quote": "This new feature of resource specification at pod-level would complement, not replace, the existing container-level limits, providing users with greater flexibility."
+   },
+   {
+    "ref": "rcomment:1785698170",
+    "quote": "for simplicity @tallclair and I decided that we will add in-place pod resize with pod-level resources as a separate feature."
+   },
+   {
+    "ref": "review:2352987599",
+    "quote": "Overall LGTM, Better to get a heuristic in than miss the boat."
+   },
+   {
+    "ref": "rcomment:1790913575",
+    "quote": "This is THE main point of contention in this KEP - there are multiple heuristics / semantics we could use and they all have read tradeoffs."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10217,
+  "output": 1006
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

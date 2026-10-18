@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5517",
+ "input_hash": "e3b84ba12f2e27ce",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5517 proposes unifying node allocatable resource accounting (CPU, Memory, Ephemeral-storage, Hugepages) between the scheduler's standard resource tracking (NodeResourcesFit) and DRA (DynamicResources), so that pod spec requests and DRA ResourceClaim allocations do not double-book the same node resources. The KEP is at implementable status, stage alpha, with scope narrowed to API and scheduler changes.",
+  "rationale": "Two independent accounting systems for the same node resource lead to overcommitment in the scheduler, and the kubelet is unaware of DRA allocations, which can affect QoS and cgroups. The proposal creates a single ledger by having the scheduler combine pod spec requests with DRA claim requests, with the kubelet changes deferred. Reviewers pushed for a narrower alpha: the maintainers agreed to limit scope to API and scheduler changes and to reject sharing of native resource claims.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Override pod spec requests with claim requests (silent override)",
+    "why_not": "Reviewers objected that silent override is confusing; the author replaced override with a max policy and later with additive accounting for alpha."
+   },
+   {
+    "option": "Reject pods with double accounting at apiserver validation time",
+    "why_not": "Raised as a question in review; the sources record it as explored but do not give a rejection rationale. Validation was moved to the DynamicResources plugin at scheduling time instead."
+   },
+   {
+    "option": "Framework-level consumable counter or treating NodeAllocatable as a CounterSet",
+    "why_not": "Proposed by reviewers as a possible future option; the author and maintainers deferred it as post-alpha because it would be a significant framework change."
+   },
+   {
+    "option": "Include kubelet QoS and eviction integration in alpha",
+    "why_not": "Deferred: the author says QoS integration needs more discussion and may need a second alpha cycle; the scope was limited to API and scheduler changes."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The standard resource (`NodeResourcesFit` plugin) and DRA (`DynamicResources` plugin) will be enhanced to synchronize their accounting, creating a single, authoritative ledger."
+   },
+   {
+    "ref": "comment:3872912126",
+    "quote": "Sharing native resource claims between pods is excluded from alpha. The `DynamicResources` plugin will be updated to reject any pod that references a claim already in use by an existing pod."
+   },
+   {
+    "ref": "rcomment:2719355333",
+    "quote": "The reason for not including this is to limit the scope of first alpha to API and scheduler changes."
+   },
+   {
+    "ref": "comment:3886888864",
+    "quote": "We’ve successfully narrowed the scope to the most essential components."
+   },
+   {
+    "ref": "rcomment:2750351982",
+    "quote": "For alpha, the supported policies (`AddPerClaim`, `AddPerReference`) are additive to what is requested in the pod spec."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11703,
+  "output": 1139
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

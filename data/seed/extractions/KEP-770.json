@@ -1,0 +1,38 @@
+{
+ "kep": "KEP-770",
+ "input_hash": "48b2849961d2bfd3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-770 proposes skipping the attach/detach flow in Kubernetes for CSI plugins that do not support attaching. The design was first implemented via a design proposal, and this KEP records the missing details. Status is implemented, stage stable.",
+  "rationale": "The readme says the design lets Kubernetes skip attach/detach for CSI plugins that don't support attaching, and that the KEP adds details missing from the original design proposal. The feature was tracked for several releases (1.14 through 1.18) with docs and code PRs chasing release deadlines. The KEP was moved to implemented via kubernetes/enhancements PR #2598, and the discussion covers only status-metadata cleanup, not the technical design.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document presents a design to be able to skip the attach/detach flow in Kubernetes for CSI plugins that don't support attaching."
+   },
+   {
+    "ref": "readme",
+    "quote": "The detailed design was originally implemented as a design proposal. This KEP contains details that are missing from the design proposal."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "is the PR that moved this KEP to implemented. It landed after https://github.com/kubernetes/enhancements/pull/2672"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7478,
+  "output": 651
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

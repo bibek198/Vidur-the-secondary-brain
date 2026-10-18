@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-541",
+ "input_hash": "e3f9f3b9e119843a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-541 introduced external credential providers: an exec-based authentication flow in kubeconfig-based client libraries where a binary supplies bearer tokens or mTLS credentials. The KEP is now implemented and at stable stage.",
+  "rationale": "Static kubeconfig credentials must be provisioned in advance, sit in plaintext on disk, and tend to be long-lived, which blocks rotation and hardware-backed key use. Moving provisioning into an external executable lets clients rotate credentials without restarting and keeps vendor-specific logic out of Kubernetes. The sources also show the goal of deprecating the gcp and azure auth options, which the exec flow was meant to replace.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep static kubeconfig credentials (status quo)",
+    "why_not": "The readme lists three problems with it: credential rotation needs a client restart and extra tooling, credentials must exist in a plaintext file, and credentials must be long-lived."
+   },
+   {
+    "option": "Pass the request to the executable via stdin",
+    "why_not": "A review comment notes the request is passed in an environment variable so that stdin can be used for user interaction."
+   },
+   {
+    "option": "Reuse clientcmd Cluster Extensions to carry cluster info into the plugin",
+    "why_not": "Reviewers raised concerns that clientcmd is an old API group with problems; the discussion moved toward a separate type surfaced in the exec package, and the cluster-info work was merged in 1.20 instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Client authentication credentials for Kubernetes clients are usually specified as fields in `kubeconfig` files. These credentials are static and must be provisioned in advance."
+   },
+   {
+    "ref": "readme",
+    "quote": "A new authentication flow in libraries around `kubeconfig` based on executables. Before performing a request, client executes a binary and uses its output for authentication."
+   },
+   {
+    "ref": "readme",
+    "quote": "Deprecation of `gcp` and `azure` authentication options (`keystone` has already been deprecated and removed)."
+   },
+   {
+    "ref": "comment:901390178",
+    "quote": "With the status marked as `implemented`, I'm going to close this issue :). Great job everyone!"
+   },
+   {
+    "ref": "comment:722381525",
+    "quote": "all of the 1.20 items for this issue are merged! Delivery Status (as of 2020-11-05)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12191,
+  "output": 940
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

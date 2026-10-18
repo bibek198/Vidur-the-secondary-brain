@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2305",
+ "input_hash": "89d3978c22229b2b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2305 proposes dynamically configuring an allowlist of label values for a metric at runtime, so that a metric dimension can be bound to a known set of values without coupling that change to a Kubernetes code release. The status is implemented, stage stable.",
+  "rationale": "Metrics with unbounded label dimensions can cause memory problems in the components that expose them. Past fixes required re-releasing the binary: deleting labels or metrics, or retroactively adding accepted value sets. The KEP aims to bind a metric dimension to a known set of values that is not tied to code releases, with the allowlist supplied through a new component metric flag.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Manually track all values a label can take while adding a new label, with rigorous PR review",
+    "why_not": "The readme says this approach is manual and error prone."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we want to be able to *dynamically configure* an allowlist of label values for a metric *at runtime*."
+   },
+   {
+    "ref": "readme",
+    "quote": "Fixing these issues is currently a manual process, both laborious and time-consuming. We don't have a standard prescription for resolving this class of issue."
+   },
+   {
+    "ref": "readme",
+    "quote": "The allowlist will be ingested via a new-added component metric flag."
+   },
+   {
+    "ref": "readme",
+    "quote": "But this approach is manual and error prone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2169,
+  "output": 606
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

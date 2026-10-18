@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-757",
+ "input_hash": "54f27c65459019e8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-757 (PID limiting, sig-node) provides administrator-controlled pod-to-pod and node-to-pod PID isolation. Its status is implemented at stage stable, with the feature graduated to GA in 1.21 after running on by default via kubelet config for several releases.",
+  "rationale": "Pid exhaustion by user pods can make a host unstable and stop host daemons such as the runtime and kubelet from running, so administrators need to limit PIDs per pod and per node. The feature was graduated stage by stage: node-to-pod isolation went to beta in 1.15, and the GA promotion was finished for 1.21. A maintainer said there was no end-user API change in the promotion because the feature was already on by default through kubelet config.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Per-pod PID request knob via PodSecurityPolicy or LimitRange",
+    "why_not": "Deferred as a non-goal in the design; anticipated to be tracked under a separate GranularPidLimitsPerPod feature gate."
+   },
+   {
+    "option": "Promote the pid limit e2e test to conformance during GA",
+    "why_not": "Raised as a question in the issue by sergeykanzhelev; the sources do not record a decision to do so."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal defers the following: - ability for a user to request additional number of pid resources per pod"
+   },
+   {
+    "ref": "comment:488044296",
+    "quote": "we are graduating the node to pod pid isolation to beta for 1.15 per the kep."
+   },
+   {
+    "ref": "comment:726427165",
+    "quote": "There is no end user api change in the promotion. The feature has been on by default via kubelet Config for multiple releases."
+   },
+   {
+    "ref": "comment:756414400",
+    "quote": "This is GA'd. I don't see the reason to keep it open."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10019,
+  "output": 754
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

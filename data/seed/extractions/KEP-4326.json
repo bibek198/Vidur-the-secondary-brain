@@ -1,0 +1,37 @@
+{
+ "kep": "KEP-4326",
+ "input_hash": "d5b0206f155ecdbe",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4326 proposes an etcd storage version (SV) persisted in the etcd DB file to make etcd data upgrades and downgrades safe, plus an etcdutl migrate command to avoid starting and stopping every intermediate server version on multi-minor upgrades. The KEP is in provisional status.",
+  "rationale": "Etcd data is not versioned, so upgrades cannot be reverted and downgrades are essentially unsupported, forcing users to rely on backup-before-upgrade. The proposal introduces a storage version to record data compatibility and a migrate command to simplify upgrades. The status is provisional, and the only recorded reason in the sources is that a reviewer pushed it back to provisional because the PRR was not filled in and reviewed.",
+  "outcome_reason": "The sources say the KEP was pushed back to provisional because the Production Readiness Review (PRR) was not filled in and reviewed, so it could not pass improved validation.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Alternative approach to etcd data versioning from the original etcd Downgrades Design document\", \"why_not\": \"The readme names this alternative but gives no reasoning for rejecting it; the excerpt does not explain why the storage version proposal was preferred.\"}]",
+  "evidence": [
+   {
+    "ref": "rcomment:1397412602",
+    "quote": "pushing back to provisional as PRR was not filled in and reviewed [to pass improved validation]"
+   },
+   {
+    "ref": "readme",
+    "quote": "Introduce etcd storage version (SV) that is stored and persisted within the etcd DB file."
+   },
+   {
+    "ref": "readme",
+    "quote": "To simplify etcd data upgrade and downgrade process we will also introduce etcdutl migrate command"
+   },
+   {
+    "ref": "readme",
+    "quote": "there is no way to safely downgrade etcd data after it was touched by newer version"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2379,
+  "output": 751
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

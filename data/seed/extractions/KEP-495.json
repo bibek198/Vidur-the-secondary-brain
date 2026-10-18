@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-495",
+ "input_hash": "7654020d411f6d41",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-495 added an opt-in pod-level `ShareProcessNamespace` boolean so all containers in a pod share one PID namespace, with CRI updated to support Container, Pod and Node PID modes. The feature was hidden behind a feature gate, which was later removed in 1.19, and the KEP is recorded as implemented at stable stage.</summary>\n<parameter name=\"rationale\">The design addresses the lack of PID namespace sharing between containers in a pod, which had been an implicit API relied on by some images. The default of false keeps per-container PID namespaces, so existing `pid == 1` expectations stay backward compatible. A maintainer later reported the feature complete after the feature gate was removed in 1.19.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep each container in a separate PID namespace with no pod-level option",
+    "why_not": "The motivation notes that an implicit API had formed around shared PIDs, so the design adds an explicit per-pod opt-in while keeping the default unchanged."
+   },
+   {
+    "option": "Add a per-container PID sharing configuration",
+    "why_not": "Per-container configuration of PID namespace sharing is listed as a non-goal."
+   },
+   {
+    "option": "Support multiple shared PID namespaces per pod",
+    "why_not": "Multiple shared PID namespaces per pod is listed as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We will add support for configuring pod-shared process namespaces by adding a new boolean field `ShareProcessNamespace` to the pod spec."
+   },
+   {
+    "ref": "readme",
+    "quote": "The default to false means that each container will have a separate process namespace."
+   },
+   {
+    "ref": "comment:580322213",
+    "quote": "The only remaining item for this feature is to finish removing the feature gate in 1.19."
+   },
+   {
+    "ref": "comment:691021803",
+    "quote": "Looks like the PodShareProcessNamespace feature gate was removed in 1.19, anyway (#90096, @tedyu) This feature is complete."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10269,
+  "output": 861
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

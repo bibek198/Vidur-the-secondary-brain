@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3521",
+ "input_hash": "386b3ba66bcddfa4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3521 adds a `.spec.schedulingGates` field to Pod so integrators can mark a Pod as not yet ready for scheduling; the scheduler parks gated Pods until all gates are removed. The KEP is implemented and at stable stage.",
+  "rationale": "Pods are considered schedulable once created, so Pods waiting on missing resources or external criteria keep churning the scheduler and downstream tools such as Cluster Autoscaler. The gates field lets users and controllers hold Pods out of scheduling until ready, without marking them Unschedulable. Discussion then focused on how gates interact with spec.nodeName, the format of the field, and downgrade behavior.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Boolean `.spec.schedulingPaused` field",
+    "why_not": "The readme says it \"cannot support multiple independent controllers to control specific aspect a Pod's scheduling readiness.\""
+   },
+   {
+    "option": "Blocking spec.nodeName while scheduling is paused",
+    "why_not": "Commenters raised that a human admin or client may intentionally set nodeName to force placement, and that unaware schedulers need predictable behavior; the discussion did not settle on a hard block."
+   },
+   {
+    "option": "Keep gates as a flag rather than a list (readiness-gate style)",
+    "why_not": "The thread moved toward a list-based format, with one option similar to finalizers and another similar to readinessGates; the sources do not show a final choice beyond the readme's `.spec.schedulingGates` list."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "For Pods carrying non-nil `.spec.schedulingGates`, they will be \"parked\" in scheduler's internal unschedulablePods pool, and only get tried when the field is mutated to nil."
+   },
+   {
+    "ref": "readme",
+    "quote": "This approach is not chosen because it cannot support multiple independent controllers to control specific aspect a Pod's scheduling readiness."
+   },
+   {
+    "ref": "rcomment:1093646045",
+    "quote": "Fine-grained control on k8s fields is a general topic. So I'd like to move it to future work to not block beta."
+   },
+   {
+    "ref": "comment:2020564863",
+    "quote": "If they are writing something that is intended to roll pod creation and scheduling into a single step, and are acting as both pod creator and scheduler, setting spec.nodeName on create is logically coherent."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10009,
+  "output": 944
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

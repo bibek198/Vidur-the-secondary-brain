@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1900",
+ "input_hash": "4839ef5b1b8ea605",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1900 proposed tightening validation of VolumeSnapshot and VolumeSnapshotContent via a CRD schema update and a separately deployed validating webhook server that enforces immutability, rolled out in three phases for backwards compatibility. Its status is implemented, stage stable.",
+  "rationale": "The community identified missing validation on snapshot custom resources as a gap that had to be closed before the VolumeSnapshot feature could reach GA. The proposal stages the tightening (webhook-only with ratcheting validation, then CRD schema change with a v1 version, then storage version change) so that existing invalid objects can be cleaned up before stricter rules apply. The status history shows implementable from 2020-10-02 and implemented from 2021-01-19.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Sig-storage wide webhook design",
+    "why_not": "Not accepted because the scope would be too big."
+   },
+   {
+    "option": "Wait until immutable fields for CRDs are implemented",
+    "why_not": "The sources list this as an alternative but do not state why it was not chosen; the KEP instead keeps a webhook to enforce immutability until immutable CRD fields exist."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Tighten validation on `VolumeSnapshot` and `VolumeSnapshotContent` by updating the CRD validation schema and providing a webhook server to enforce immutability."
+   },
+   {
+    "ref": "readme",
+    "quote": "This gap will need to be resolved before the feature can be brought to GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "The first phase is webhook-only, and will use [ratcheting validation](#backwards-compatibility)."
+   },
+   {
+    "ref": "comment:764749365",
+    "quote": "I'm closing out this issue since the enhancement is GA and KEP has been updated to `implemented`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12804,
+  "output": 761
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2436",
+ "input_hash": "7d230d405de20c05",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2436 proposes a migration mechanism for HA clusters moving cloud-specific controllers from kube-controller-manager to cloud-controller-manager, using secondary leader-election locks shared between the two components. Status is implemented, stage stable.",
+  "rationale": "SIG Cloud Provider is extracting in-tree cloud code and removing it from kube-controller-manager, so existing HA clusters need a low-risk way to switch. The KEP adds a primary lock plus configurable secondary migration locks so only one component runs a given cloud controller at a time, including across version skew. The source says this path is for clusters with very strict availability requirements, and that clusters that can tolerate downtime should disable in-tree providers and deploy the CCM instead.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Take the control plane down, reconfigure components to use the CCM, then bring it back up",
+    "why_not": "The KEP says this is suitable only where downtime is tolerable; it is not acceptable for environments with strict uptime requirements, which is the case this KEP targets."
+   },
+   {
+    "option": "Change every controller so two instances of the same controller can run in KCM and CCM at once",
+    "why_not": "The KEP calls this a massive change to all controllers that may need other synchronization, and says the controller manager should provide the migration mechanism instead of each controller."
+   },
+   {
+    "option": "Do nothing (no migration mechanism)",
+    "why_not": "The KEP's drawbacks note that if downtime is allowed, KCM and CCM need no migration mechanism; for strict-uptime clusters, without coordination, the same controller could run in both places during upgrade."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a mechanism in which HA clusters can safely migrate “cloud specific” controllers between the kube-controller-manager and the cloud-controller-manager via a shared resource lock between the two components."
+   },
+   {
+    "ref": "readme",
+    "quote": "If a cluster can tolerate short intervals of downtime, it is recommended to update your cluster with in-tree cloud providers disabled, and then deploy the respective out-of-tree cloud-controller-manager."
+   },
+   {
+    "ref": "readme",
+    "quote": "this KEP proposes a _primary_ and N configurable _secondary_ (a.k.a migration) leader election locks in the KCM and the CCM."
+   },
+   {
+    "ref": "readme",
+    "quote": "Change all controllers so that they can handle a situation where two instances of the same controller are running in both KCM and CCM."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3024,
+  "output": 979
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2494",
+ "input_hash": "6946f300f18f4b05",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2494 proposes conventions for storing Kubernetes manifests and metadata for an operator as container images in OCI-compliant registries, and linking metadata-only images to runnable images. The KEP is in provisional status, dated from 2021-02-15.",
+  "rationale": "There is no standard way to transmit Kubernetes manifests and metadata between clusters or to associate them with runnable images, and existing methods (git, operator-registry bundles, helm, appregistry) are non-standard. Packaging the data as container images gives identity, distribution, replication, signing, and ingress for free. The KEP explicitly defers OCI artifacts because registry, tooling, and kubelet support are lacking, with a migration path planned later.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use OCI artifacts directly",
+    "why_not": "Not all registries support OCI yet, few registries or tools support OCI artifacts, and kubelet cannot pull an OCI artifact into a cluster. The KEP says it would be desirable to move to OCI artifacts when these roadblocks are removed."
+   },
+   {
+    "option": "Keep using git repositories, operator-registry directory bundles, helm charts, or appregistry",
+    "why_not": "These are the non-standard methods the motivation identifies as lacking a common way to associate and transmit manifests and metadata."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "There is no standard way to associate and transmit kube and kube-like manifests and metadata between clusters, or to associate a set of manifests with one or more runnable container images."
+   },
+   {
+    "ref": "readme",
+    "quote": "There is currently no way for kubelet to pull an OCI artifact into a cluster. This limits the ways in which manifest bundles can be used to offcluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "None of these problems are insurmountable, and it would be desirable to move to OCI artifacts when these roadblocks are removed."
+   },
+   {
+    "ref": "readme",
+    "quote": "By standardizing on a container format for this data, we get many other features for free, such as: identity, distribution, replication, deduplication, signing, and cluster ingress."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2445,
+  "output": 852
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

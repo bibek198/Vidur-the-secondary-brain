@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2593",
+ "input_hash": "33f4fbfb5471145c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2593 proposed a new CIDR allocator for NodeIPAM, controlled by a new ClusterCIDR resource, to allocate multiple discontiguous pod CIDR blocks with node affinity and per-node block sizes. The KEP was withdrawn and the feature is to be developed out of tree.",
+  "rationale": "The current NodeIPAM allocates each node a fixed-size range from one cluster CIDR that must be sized up front, which wastes addresses and cannot be extended without restart. The proposal added a ClusterCIDR-driven allocator to support multiple discontiguous blocks, node affinity, and variable block sizes. The readme states the KEP was withdrawn and the feature will move out of tree, referencing a sig-network mailing list thread; the excerpt does not give further reasoning.",
+  "outcome_reason": "The readme says: \"THIS KEP HAS BEEN WITHDRAWN AND THIS FEATURE WILL BE DEVELOPED OUT OF TREE\". It links a sig-network mailing list thread, but the excerpt does not summarize the reasons for the move.",
+  "alternatives": [
+   {
+    "option": "Keep the feature in-tree under this KEP",
+    "why_not": "The readme says the KEP was withdrawn and the feature will be developed out of tree; no in-tree reason is given in the excerpt."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "IMPORTANT: THIS KEP HAS BEEN WITHDRAWN AND THIS FEATURE WILL BE DEVELOPED OUT OF TREE"
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal enhances how pod CIDRs are allocated for nodes by adding a new CIDR allocator that can be controlled by a new resource 'ClusterCIDR'."
+   },
+   {
+    "ref": "readme",
+    "quote": "The size is specified during cluster startup time and cannot be modified later on."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2578,
+  "output": 789
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2155",
+ "input_hash": "6727c48cff074ad9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2155 adds typed Apply functions to client-go's typed clients, taking a generated, strongly typed apply configuration instead of a []byte payload passed to Patch with ApplyPatchType. Its status is implemented, stage stable.",
+  "rationale": "Calling server-side apply from client-go required Patch with ApplyPatchType and a hand-serialized payload, which lacked type safety and made it easy to send zero-valued required fields by mistake. The chosen design generates typed apply configurations and an Apply method per typed client. Maintainers chose to keep the field manager in ApplyOptions rather than as a separate argument, and to avoid a client-side GetForApply helper because it allowed reuse of objects from the wrong source.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generated structs where all fields are pointers",
+    "why_not": "Discussed as an alternative; the readme lists limitations, including that enum values cannot be inlined with ptr.StringPtr() and that direct struct access allows unsafe conversions from Get results without managed fields."
+   },
+   {
+    "option": "Client method GetForApply that returns an object ready for apply conversion",
+    "why_not": "Rejected in the KEP after review: the comment says 'having client.GetForApply() is a rejected alternative', and the discussion noted that tight coupling makes objects hard to reuse outside a GET context."
+   },
+   {
+    "option": "Utility function GetApplied(client, ctx, name, fieldManager, opts) instead of a client method",
+    "why_not": "Mentioned in discussion as a possible alternative; the author said they preferred a GetApplied function directly on the client, and the sources do not record a decision to adopt it."
+   },
+   {
+    "option": "Keep the field manager as a separate Apply parameter",
+    "why_not": "A reviewer (lavalamp) said there should not be two ways of passing the field manager, since callers could give different values; the design moved back to ApplyOptions."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, the only way to invoke server side apply from client-go is to call `Patch` with `PatchType.ApplyPatchType` and provide a `[]byte` containing the YAML or JSON"
+   },
+   {
+    "ref": "readme",
+    "quote": "`Apply` functions should be included in the typed clients generated for client-go and should accept the apply configuration using a strongly typed representation"
+   },
+   {
+    "ref": "rcomment:570545897",
+    "quote": "I've updated the KEP and explained that having `client.GetForApply()` is a rejected alternative."
+   },
+   {
+    "ref": "rcomment:570637258",
+    "quote": "I think we shouldn't have two ways of passing the field manager because then people could tell us different things and then what do we do?"
+   },
+   {
+    "ref": "comment:887817444",
+    "quote": "Server-side apply is going to GA in 1.22 (it didn't quite make the 1.21 release), and this change will go GA as part of SSA."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7845,
+  "output": 1106
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

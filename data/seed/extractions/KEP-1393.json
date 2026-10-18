@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1393",
+ "input_hash": "1531e6284a74b085",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1393 adds an OIDC-compatible discovery document and JWKS endpoint to the API server so relying parties can authenticate Kubernetes service account tokens without calling TokenReview. The KEP is marked implemented, stage stable.",
+  "rationale": "Relying parties cannot verify KSA tokens without the API server, because no standard way exists to get the signing public keys. The API server would serve an OIDC discovery doc and a JWKS of the public keys from --service-account-key-file and --service-account-signing-key, so existing OIDC libraries can validate tokens. The goal is OIDC compatibility, not full compliance, and the design explicitly avoids changing token format or issuance.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Serve a complete discovery doc with placeholder values",
+    "why_not": "The readme says this would be revisited only if broad compatibility with the current design proves impossible, so it is a fallback, not the chosen path."
+   },
+   {
+    "option": "Keep using TokenReview or provider-specific key retrieval",
+    "why_not": "The readme states this makes the API server scale with authentication load and forces separate credential management across clusters, which the proposal aims to remove."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A non-resource API will be added to the apiserver that will expose an [OIDC discovery](https://openid.net/specs/openid-connect-discovery-1_0.html)- compatible document."
+   },
+   {
+    "ref": "readme",
+    "quote": "Our goal is *not* OIDC *compliance*. We aren't trying to make the KSA token process fully compliant with OIDC specifications."
+   },
+   {
+    "ref": "rcomment:1018441474",
+    "quote": "it sounds like it was maybe unintentional, but it like the KEP had `implementable` status on initial merge"
+   },
+   {
+    "ref": "comment:815874102",
+    "quote": "Can you update the `kep.yaml` to reflect a status of `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12261,
+  "output": 789
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

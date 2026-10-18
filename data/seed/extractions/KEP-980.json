@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-980",
+ "input_hash": "b6870e7ce45dc35e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-980 adds a service.kubernetes.io/load-balancer-cleanup finalizer to Services of type LoadBalancer so the Service is not fully deleted until the cloud load balancer resources are cleaned up. Its status is implemented at stage stable, set from 2020-12-16.",
+  "rationale": "Service controller can leave orphaned load balancer resources after a Service is deleted, which customers reported repeatedly. The proposal blocks Service deletion with a finalizer until cleanup finishes, and rolls it out in phases so downgrades stay safe. The sources in this record do not explain the status label itself beyond a PR-process dispute over whether implemented requires a PRR file.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave the finalizer addition off permanently behind a feature gate",
+    "why_not": "The proposal says the gate is removed in a later release so both the remove and add logic are enabled by default: \"Then in a later release we will remove the feature gate and enable both the 'remove' and 'add' logic by default.\""
+   },
+   {
+    "option": "Add the finalizer to new services without a first release that includes the remove logic",
+    "why_not": "The proposal says the first release must include the remove logic so downgrades are safe: \"the first release will include the 'remove finalizer' logic with the 'add finalizer' logic behind a gate.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To ensures that downgrades can happen safely, the first release will include the \"remove finalizer\" logic with the \"add finalizer\" logic behind a gate."
+   },
+   {
+    "ref": "readme",
+    "quote": "This finalizer will not be removed until cleanup of the correlating load balancer resources are considered finished by service controller."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5268,
+  "output": 854
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

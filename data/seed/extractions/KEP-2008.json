@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2008",
+ "input_hash": "da3a60fd5020222f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2008 proposes adding container checkpointing to the CRI API and kubelet API for a single container, with the forensic analysis use case as the focus. The KEP is at implementable status, stage beta.",
+  "rationale": "The motivation is that a checkpointed copy of a running container can be restored in a sandbox for forensic analysis without the original attacker noticing. The KEP deliberately limits scope to single-container forensic checkpointing, with pod checkpointing and migration left out, to keep the change small and reviewable. Discussion shows that maintainers and commenters pushed for wider use cases (migration, restore semantics), which the sources do not show being resolved in this KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Trigger checkpoint from a privileged sidecar container and restore through an init container",
+    "why_not": "The KEP says checkpoint/restore is already deeply integrated into container runtimes, and that going another way in Kubernetes would make the process much more complicated and fragile."
+   },
+   {
+    "option": "Checkpoint and restore whole pods (pod-level migration, cloning via a source pod reference)",
+    "why_not": "The KEP lists pod checkpointing as a non-goal left for future enhancements; commenters proposed pod cloning, but the sources do not record a decision to adopt it here."
+   },
+   {
+    "option": "Restore by creating the container on restore if it does not exist (the Podman approach)",
+    "why_not": "The sources record a disagreement: the KEP's approach requires the container to be created before restore, matching Docker/containerd, and a commenter argued this fits Kubernetes better because mounts depend on the pod ID. The sources do not show the final resolution."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The goal of this KEP is to introduce *checkpoint* to the CRI API. This includes extending the *kubelet* API to support checkpointing single containers with the forensic use case in mind."
+   },
+   {
+    "ref": "readme",
+    "quote": "Checkpointing a pod is not part of this proposal and left for future enhancements."
+   },
+   {
+    "ref": "readme",
+    "quote": "The reason to integrate checkpoint restore directly into Kubernetes and not with helpers like sidecar and init containers is that checkpointing is already, for many years, deeply integrated into multiple container runtimes and engines"
+   },
+   {
+    "ref": "comment:742497802",
+    "quote": "The idea behind this KEP is to start with minimal changes to make it easy to review. The downside of this is that it makes it impossible to see where this will be going."
+   },
+   {
+    "ref": "comment:952595477",
+    "quote": "One of main reasons for this very specific checkpoint/restore use case is to make sure the implementation is as small as possible and easy to review"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9382,
+  "output": 1042
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

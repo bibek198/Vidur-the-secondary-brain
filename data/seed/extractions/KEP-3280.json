@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3280",
+ "input_hash": "c6876263c8c4e21b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3280 proposed letting cluster administrators guarantee PodDisruptionBudgets during scheduler preemption by adding a field to the PriorityClass API, so that PDBs of pods in that class can only be violated by preemptors at or above a given priority. The KEP is marked implementable at alpha, but its implementation did not merge for 1.27 and the work was later tracked in KEP-4665.",
+  "rationale": "The scheduler's PDB handling during preemption is best effort: if no victim avoids a PDB violation, preemption still removes the pod. The design moves the control to PriorityClass rather than PDB, because PDB creators are namespace-scoped and could conflict with cluster-scoped priorities. Reviewers agreed that cluster administrators should own this setting and that system-critical priorities must never be blocked.",
+  "outcome_reason": "The sources say the implementation PRs did not merge by the 1.27 code freeze, so the enhancement was removed from the release. Later, the axezhan comment says the work continues in a new KEP, #4665. The sources do not say why the original KEP lost its implementation owner or stalled beyond the freeze miss.",
+  "alternatives": [
+   {
+    "option": "Add PreemptLowerPriorityWithoutViolatePDB to the preemptor's PreemptionPolicy",
+    "why_not": "The alternatives section says that to guarantee some pods' PDBs, all other pods' PreemptionPolicy would need changing, which has a relatively large cost."
+   },
+   {
+    "option": "Add a PreemptionPolicy field to the PodDisruptionBudget API",
+    "why_not": "Reviewers said the PDB is namespaced, so a namespace-constrained user could let low-priority pods block high-priority preemption. liggitt and the discussion moved the field to PriorityClass instead."
+   },
+   {
+    "option": "Add scheduler plugin args with a PriorityClassesAllowViolatePDB list",
+    "why_not": "The alternatives section calls it too mandatory and inflexible at cluster scope, and says schedulers must restart to update the args."
+   },
+   {
+    "option": "Always fall back to deletion when eviction fails, or prefer the eviction API",
+    "why_not": "The thread raises this as a possible mitigation for the disruption-controller race, and atiratree says the fallback to delete should happen at all times to keep the best-effort case backward compatible. The sources do not record a final decision on it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this proposal allows cluster administrators to define PriorityClasses that restrict PDB violations during preemption to satisfy the needs for high availability of services"
+   },
+   {
+    "ref": "rcomment:1093550980",
+    "quote": "it's agreed this disruption policy should be imposed to PrirotyClass (cluster-scoped) instead of PDB (namespaced)"
+   },
+   {
+    "ref": "rcomment:1083853660",
+    "quote": "we can address this by only adding a field in the PriorityClass rather than PDB, which would allow for this expected behavior to be defined and managed consistently by the cluster administrator"
+   },
+   {
+    "ref": "comment:1469039403",
+    "quote": "Unfortunately the implementation PRs associated with this enhancement have not merged by code-freeze so this enhancement is getting removed from the release."
+   },
+   {
+    "ref": "comment:2146476198",
+    "quote": "This will be tracked in a new KEP #4665."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12152,
+  "output": 1259
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-5311",
+ "input_hash": "c88163e0b43d7494",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5311 relaxes Service name validation from DNS-1035 label rules (apimachineryvalidation.NameIsDNS1035Label) to DNS label rules (NameIsDNSLabel), so Service names may start with a digit. The KEP is implemented and at stable stage.",
+  "rationale": "Service name validation was stricter than for most other Kubernetes resource names. Relaxing it removes the NameIsDNS1035Label check that only Services used, and lets users follow the same naming conventions as their other resources. The stated drawback is that third-party tooling may not be compatible with the new validation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep NameIsDNS1035Label for Services",
+    "why_not": "The readme says Service name validation is stricter than most other resource names and the change is meant to bring it in line with them. The Alternatives section is marked N/A, so the sources do not record a rejected alternative."
+   },
+   {
+    "option": "Remove NameIsDNS1035Label from the whole codebase",
+    "why_not": "This is listed as a non-goal: the KEP does not change validation for other resource types, though the readme mentions removing the function as part of the change."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Additionally, this change also allows users to name their Services with the same conventions as other of their resources, ie: Service names can now start with a digit."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposal is to change this validation to `apimachineryvalidation.NameIsDNSLabel`, allowing Service names to start with a digit."
+   },
+   {
+    "ref": "readme",
+    "quote": "3rd party tooling being incompatible with the new validation could introduce issues for users"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1861,
+  "output": 702
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

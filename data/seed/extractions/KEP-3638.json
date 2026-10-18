@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-3638",
+ "input_hash": "c8d0b1e5ed4774fa",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3638 lets kubectl fall back to external plugins (kubectl-<cmd>-<sub>) when a built-in subcommand does not exist, instead of returning an \"unknown command\" error. It is gated behind the KUBECTL_ENABLE_CMD_SHADOW environment variable; current status is implementable at stage beta.",
+  "rationale": "SIG CLI receives many requests to add subcommands to built-in commands such as kubectl create for new resources, including CRs, but adding them statically increases binary size and maintenance burden. The proposal lets plugins fill that gap for subcommands that do not exist, and reviewers limited shadowing to avoid overriding built-ins. The sources also record a concern that a future built-in could shadow an existing plugin, which the design answers with an env-var-based force escape hatch.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "A new --use-plugin flag to explicitly invoke a plugin, allowing shadowing of existing subcommands",
+    "why_not": "The KEP judges it hurts usability without gain: users must pass the flag every time, the flag cannot be passed to plugins, and there is no clear use case for shadowing existing subcommands."
+   },
+   {
+    "option": "Using both a flag and an env var for enablement and the force-plugin escape hatch",
+    "why_not": "Reviewer soltysh preferred keeping only an environment variable for alpha and beta, since the env var is more appropriate for these cases than a flag."
+   },
+   {
+    "option": "Warning users when a newly added built-in shadows an existing plugin name",
+    "why_not": "Ardaguclu noted it would require checking for external plugins on every command, which is a downside; the sources do not record it being adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "shadowing functionality will be hidden behind the environment variable and will only be used after exporting"
+   },
+   {
+    "ref": "rcomment:1082445622",
+    "quote": "I'd suggest not using flag and env variable, but only keep the env var for alpha and beta."
+   },
+   {
+    "ref": "rcomment:1082445622",
+    "quote": "Once this mechanism is fully stable, it'll be fully acceptable to shadow some sub-commands, but not all."
+   },
+   {
+    "ref": "rcomment:1346777749",
+    "quote": "I've updated the KEP by setting environment variable to true instead removing it."
+   },
+   {
+    "ref": "rcomment:1091241222",
+    "quote": "What happens if Kubernetes later adds a new `kubectl create foo` that happens to match a shadowed name? The new built-in takes precedence?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9167,
+  "output": 989
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3744",
+ "input_hash": "af0bc60c0d991a05",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3744 proposes a process for updating supported Kubernetes release-1.x branches to build and release with new minor versions of Go, so patch releases use a supported Go version while preserving their stability and compatibility. Status is implementable, stage stable.",
+  "rationale": "Kubernetes release branches historically stayed on one Go minor version, so the last months of each minor version's 14-month support window could lack Go security fixes. Go changes that break behavior made backporting risky, and the KEP's answer is a staged process: land prerequisite changes on the development branch, backport low-risk ones to release branches, and only then move release branches to the new Go minor version once conditions are met.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Request the go team backport security fixes to more than two minor versions",
+    "why_not": "The percentage of patch releases containing security-related content has risen in recent years, so \"security fixes only\" would not necessarily mean fewer patch releases on older minor versions; not all security fixes can be cleanly backported."
+   },
+   {
+    "option": "Maintain a custom patched version of older go minor versions with security fix backports",
+    "why_not": "It is not clear that all changes with security implications would be consistently noticed and backported, and staffing a fork would be an ongoing cost; a custom distribution also loses benefits of the standard widely tested distribution and could confuse security scanners."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Because of this inconsistency, Kubernetes release branches historically remained on a single go minor version, and risked being unable to pick up go security fixes"
+   },
+   {
+    "ref": "readme",
+    "quote": "Update release-1.x branches to build/release using go 1.N once all of these conditions are satisfied"
+   },
+   {
+    "ref": "readme",
+    "quote": "Prioritize making the prereq changes as minimal and low-risk as possible. Merge those changes to the default Kubernetes development branch *prior* to updating to go 1.N."
+   },
+   {
+    "ref": "readme",
+    "quote": "go 1.N has been released at least 3 months"
+   },
+   {
+    "ref": "readme",
+    "quote": "The primary drawback is risk of a user-facing regression in a patch release due to a go version change."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4587,
+  "output": 860
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

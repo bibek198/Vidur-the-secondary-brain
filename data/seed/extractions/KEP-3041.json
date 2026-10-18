@@ -1,0 +1,62 @@
+{
+ "kep": "KEP-3041",
+ "input_hash": "a096a2cfa023015c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3041 proposes cleaning up Kubernetes e2e test labels: renaming/removing NodeFeature and NodeSpecialFeature, adding [FeatureGate:], stage labels ([Alpha], [Beta], [Deprecated]), and an [Environment:] label, with [NodeConformance] kept but documented. The KEP is marked implementable at stage beta, so it was approved directionally with details to be iterated.",
+  "rationale": "The single universal [Feature:] label is applied inconsistently and mixes meanings (platform, feature gate, optional feature), making tests hard to tag and filter, and no tests can be run with all beta feature gates off. The KEP separates special-environment labels from feature-development labels to clarify these dimensions. Reviewers agreed on parts (dropping NodeFeature/NodeSpecialFeature, adding stage labels, testing with gates disabled) but disputed the FeatureGate split and naming, so the approval was directional.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Rename the Feature label to Functionality or Capability instead of adding FeatureGate",
+    "why_not": "Reviewers noted the rename has massive CI config churn and back-compat issues; sergeykanzhelev said 'the back compat was mostly the reason to keep the Feature naming'."
+   },
+   {
+    "option": "Use [Feature:foo] alone for feature gates, without a separate [FeatureGate:] label",
+    "why_not": "spiffxp questioned the value of FeatureGate: 'I'm not sure I understand what value [FeatureGate:] adds that makes it worth being distinct from [Feature:]'; no agreed resolution is recorded."
+   },
+   {
+    "option": "Use helper functions such as framework.It with framework.WithFeatureGate instead of textual tags",
+    "why_not": "pohly proposed this to reduce redundancy, but the sources say it was to be finished in a separate PR (kubernetes/kubernetes#112894), not adopted as part of this KEP's text."
+   },
+   {
+    "option": "Rename [NodeConformance] to a clearer term such as [NodeDefault] or [NodeBase]",
+    "why_not": "The KEP's Non-Goals exclude renaming it: 'renaming of it is not in a scope of this KEP'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Eliminate the `[NodeFeature:]` label by renaming to `[Feature:]` when applicable. - Document the meaning of `[NodeConformance]` label."
+   },
+   {
+    "ref": "readme",
+    "quote": "As `[NodeConformance]` may be a confusing term and may be confused with the k8s Conformance tests, renaming of it is not in a scope of this KEP."
+   },
+   {
+    "ref": "comment:1270837177",
+    "quote": "The direction I'm not clear on is splitting Feature/FeatureGate, I'm continuing to mull this over."
+   },
+   {
+    "ref": "review:1133752814",
+    "quote": "I'm fine approving directionally and iterating. Like, I'm not happy with the names, and I'm still not convinced about FeatureGate, but others seem fine with it."
+   },
+   {
+    "ref": "rcomment:989468278",
+    "quote": "yes, the back compat was mostly the reason to keep the `Feature` naming. Alternative may be `Capability`, but again, it will require a lot of renaming."
+   },
+   {
+    "ref": "comment:2492385022",
+    "quote": "I am dropping NodeSpecialFeature and NodeAlphaFeature from both k/k and k/test-infra. That issue tracks the work."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12684,
+  "output": 1322
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1659",
+ "input_hash": "f8cb76a7871b2ee7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1659 proposed declaring the existing topology.kubernetes.io/region and topology.kubernetes.io/zone labels \"standard\" with more rigorous definitions, and deciding whether a third topology level is needed. The KEP is now implemented at stage stable.",
+  "rationale": "Kubernetes treats topology as arbitrary, but the region and zone labels are hard-coded and not extensible, and they have been sufficient for most users. The KEP aims to standardize a small set of well-defined topology concepts so that Service topology and load-balancer implementations can rely on them. The sources do not explain in detail why the KEP moved to implemented beyond the status history and the maintainers' discussion of how PRR applies to it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Status quo: keep topology arbitrary",
+    "why_not": "The readme says the main drivers for abandoning it are in the Motivation: cloud load-balancers lack arbitrary topology APIs and other systems standardized on two or three levels."
+   },
+   {
+    "option": "Keep the labels undocumented and non-standard",
+    "why_not": "The proposal is to document those labels as \"standard\" and give them more rigorous definitions, which the readme presents as the goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to declare those labels, and possibly one more, as \"standard\" and give them more well-defined meanings and semantics."
+   },
+   {
+    "ref": "readme",
+    "quote": "In trying to simplify the way Service topology might work, we are proposing that standardizing on a small set of well-defined topology concepts will be a net win for the project"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented. It landed after"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6430,
+  "output": 822
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

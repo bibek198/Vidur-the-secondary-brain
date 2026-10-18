@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3705",
+ "input_hash": "894d222227558207",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3705 extends kubelet --node-ip so that clusters using an external cloud provider can specify dual-stack node IPs (including IPv4/IPv6 family selectors), and defines how kubelet passes that intent to the cloud provider via the provided-node-ip annotation. Status is implemented, stage stable.",
+  "rationale": "Kubelet accepted dual-stack --node-ip only without a cloud provider, so cloud-provider clusters could not override both node IPs. The KEP limits the change to --node-ip values that older kubelets would have rejected, leaving default behavior unchanged. The annotation rename was dropped from scope and the feature was moved to a staged rollout. Testing gaps for dual-stack cloud jobs were discussed during review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Pass 0.0.0.0 and :: through to the cloud provider and let them mean 'any IP of that family'",
+    "why_not": "For compatibility reasons the existing behavior of --cloud-provider external --node-ip :: cannot change, so the KEP adds new IPv4/IPv6 syntax instead."
+   },
+   {
+    "option": "Rename the alpha.kubernetes.io/provided-node-ip annotation as part of this KEP",
+    "why_not": "The Non-Goals say renaming the annotation is no longer planned as part of this feature."
+   },
+   {
+    "option": "Replace --node-ip with a new plural --node-ips flag now",
+    "why_not": "The KEP says a new --node-ips flag would need a larger redesign and 'will have to wait for another KEP'."
+   },
+   {
+    "option": "Support nodes whose cloud does not know the requested node IP",
+    "why_not": "It is a non-goal: the KEP does not add the ability to use node IPs not already known to the cloud provider."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Allow administrators of clusters using external cloud providers to override both node IPs on a node in a dual-stack cluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "Changing the node-IP-selection behavior in any currently-existing Kubernetes cluster. This means that the default behavior when `--node-ip` is not specified will remain the same"
+   },
+   {
+    "ref": "readme",
+    "quote": "Renaming `alpha.kubernetes.io/provided-node-ip` annotation. This was also proposed in the original version of this KEP, but is no longer planned as part of this feature."
+   },
+   {
+    "ref": "comment:2346985704",
+    "quote": "Yes, it seems so. Status is `implemented`: https://github.com/kubernetes/enhancements/blob/96793299c9cdbdf9033a99592602c3ea7d14a0b3/keps/sig-network/3705-cloud-node-ips/kep.yaml#L9"
+   },
+   {
+    "ref": "rcomment:1064846292",
+    "quote": "We can't test the behavior of dual-stack `--node-ip` in clouds unless we have dual-stack e2e jobs in those clouds."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12204,
+  "output": 1133
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

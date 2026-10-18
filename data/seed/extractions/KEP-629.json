@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-629",
+ "input_hash": "b2f4144841dba464",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-629 proposes adopting the AWS ALB Ingress Controller as an Ingress controller for Kubernetes clusters on AWS, using Application Load Balancers to fulfill Ingress resources. The KEP is in provisional status, dated from 2020-12-30.",
+  "rationale": "The sources say existing controllers such as nginx do not use native AWS features. The proposal aims to exploit ALB features (host/path routing, TLS termination, WebSockets, HTTP/2) and integrate with WAF and Cognito. The readme gives no explicit reason for the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Existing Ingress controllers such as nginx",
+    "why_not": "The readme says they 'didn't take advantage of native AWS features', so they do not leverage ALB or integrate with AWS services such as WAF and Cognito."
+   },
+   {
+    "option": "Replacing the nginx ingress controller",
+    "why_not": "The readme lists this as a non-goal: 'This project does not replacing nginx ingress controller'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "existing Ingress controllers like nginx didn't take advantage of native AWS features"
+   },
+   {
+    "ref": "readme",
+    "quote": "AWS ALB Ingress Controller aims to enhance Ingress resource on AWS by leveraging rich feature set of ALB"
+   },
+   {
+    "ref": "readme",
+    "quote": "* This project does not replacing nginx ingress controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "Support running multiple Ingress controllers in cluster * Support portable Ingress resource(no annotations)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1958,
+  "output": 691
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

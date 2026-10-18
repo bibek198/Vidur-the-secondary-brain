@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-793",
+ "input_hash": "11b72a019affd84f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-793 proposed promoting the kubelet-applied beta.kubernetes.io/os and beta.kubernetes.io/arch Node labels to GA (kubernetes.io/os and kubernetes.io/arch), with a staged deprecation of the beta labels. The KEP's current status is implementable at stage alpha, per the provided status fact.",
+  "rationale": "The labels had existed since Kubernetes 1.3 and were widely used, so the KEP sought to mark them stable. To keep backward compatibility, kubelets report both beta and GA labels from 1.14, the node controller reconciles them, and beta labels are removed in 1.18. Discussion shows 1.14 milestone tracking, unit-test-based testing decisions, and a docs PR, but the sources do not record a final GA graduation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep only beta labels reported by kubelets",
+    "why_not": "Not stated in the sources; the proposal instead adds GA labels while keeping beta labels for a deprecation window."
+   },
+   {
+    "option": "Add an e2e test for label presence on all nodes",
+    "why_not": "Reviewers liggitt and the KEP reviewers considered unit tests sufficient: 'in my opinion, yes'; yujuhong was on the fence about e2e."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A new set of GA labels will be added in 1.14: kubernetes.io/os kubernetes.io/arch"
+   },
+   {
+    "ref": "readme",
+    "quote": "kubelet will continue reporting beta labels until 1.18. In v1.14, - announce the deprecation of the beta OS and GA labels"
+   },
+   {
+    "ref": "comment:466604279",
+    "quote": "I am on the fence of whether an e2e test is needed. I can add one to check whether both beta and GA labels are applied to all nodes"
+   },
+   {
+    "ref": "comment:467467681",
+    "quote": "in my opinion, yes"
+   },
+   {
+    "ref": "comment:482292110",
+    "quote": "was this feature completed and adopted as stable for 1.14? If so, lets close out this issue and clear out the labels."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3637,
+  "output": 853
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

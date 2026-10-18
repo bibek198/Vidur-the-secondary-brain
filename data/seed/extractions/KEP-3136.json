@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3136",
+ "input_hash": "54806415553959e0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3136 changes the kube-apiserver so that newly introduced beta APIs are disabled by default, while existing beta APIs and new versions of already-enabled beta APIs stay on by default. Cluster-admins opt in to specific beta resources through an extended --runtime-config flag (group/version/resource=true).",
+  "rationale": "Beta APIs are not considered stable, and defaulting them on exposes most production clusters to bugs and future migration pain. The PRR survey reports over 90% of cluster-admins keep these APIs enabled, so defaulting on puts them in nearly every production cluster. Conformance no longer depends on non-stable APIs, so disabling them by default is now practical.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change feature gate defaults so beta features are off by default",
+    "why_not": "The KEP lists this as a non-goal: \"Change feature gate defaults. Feature gates control new features (not just new APIs) and they are on by default for beta features.\""
+   },
+   {
+    "option": "Disable all beta APIs, including existing ones and new versions of existing beta APIs",
+    "why_not": "Goal 2 requires continuing to enable existing beta APIs and new versions of existing beta APIs by default, so that v1beta2 of an enabled group stays enabled."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "From the Kubernetes release where this change is introduced, and onwards, beta APIs will not be enabled in clusters by default."
+   },
+   {
+    "ref": "readme",
+    "quote": "We observed these problems as we removed long-standing beta APIs and the PRR survey tells us that over 90% of cluster-admins leave production clusters with these APIs enabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is now practical to do since conformance no longer relies on non-stable APIs."
+   },
+   {
+    "ref": "readme",
+    "quote": "New beta APIs will be placed into the `DisableVersions` stanza instead of the `EnableVersions` stanza"
+   },
+   {
+    "ref": "readme",
+    "quote": "To enable a beta API, a cluster-admin will have to add the appropriate `--runtime-config` flags."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2350,
+  "output": 856
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

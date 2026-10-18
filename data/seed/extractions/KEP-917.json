@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-917",
+ "input_hash": "86a120af5c52f4a8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-917 proposed managing the kubernetes/kubernetes vendor folder with go modules and defining go.mod files for published components such as k8s.io/client-go and k8s.io/api. Its status is implemented, stage stable (implementable from 2020-12-30, implemented from 2021-05-05).",
+  "rationale": "Godep was unmaintained, had slow vendor verification (about 30 minutes in the pull-kubernetes-godeps job) and functional problems with diamond dependencies. Go modules were the go toolchain's supported dependency mechanism, and go1.13 was planned to enable them by default. The KEP also cited a 10x rebuild speedup over Godep in preliminary tests and reproducible vendor directories across OSes.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Continue using godep for vendor management",
+    "why_not": "The readme says the tool is unmaintained (\"Please use dep or another tool instead.\"), and the project had to maintain its own fork; it also had performance and functional problems."
+   },
+   {
+    "option": "Use an alternate dependency tool such as dep or glide",
+    "why_not": "The readme says some of these tools (like glide) are also unmaintained, and go modules have stronger support statements from the go tool."
+   },
+   {
+    "option": "Stop vendoring in k8s.io/kubernetes as part of the move to go modules",
+    "why_not": "The readme says vendoring is still necessary for reproducible builds in hermetic environments based on published repositories, and that moving away from vendoring is orthogonal and could be pursued later."
+   },
+   {
+    "option": "Stop publishing staging component repositories and have consumers reference modules inside a clone of k8s.io/kubernetes",
+    "why_not": "The readme says pre-1.15 SHAs would not be available as modules, vanity import meta tags cannot point to a nested path, and cloning the very large kubernetes repo is unpleasant for consumers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Manage the vendor folder in `kubernetes/kubernetes` using go modules, and define `go.mod` module files for published components like `k8s.io/client-go` and `k8s.io/api`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The plan of record](https://blog.golang.org/modules2019) is for go1.13 to enable go modules by default and deprecate GOPATH mode."
+   },
+   {
+    "ref": "readme",
+    "quote": "The tool is unmaintained (the project readme states \"Please use dep or another tool instead.\"), and we have had to make our own fork to work around some edge cases."
+   },
+   {
+    "ref": "readme",
+    "quote": "To ensure reproducible builds in hermetic build environments based solely on the published repositories, vendoring is still necessary"
+   },
+   {
+    "ref": "comment:493685255",
+    "quote": "The only documentation changes are developer facing and have already merged: * https://github.com/kubernetes/client-go/blob/master/INSTALL.md#go-modules"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3507,
+  "output": 1120
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

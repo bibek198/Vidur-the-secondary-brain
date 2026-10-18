@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-6164",
+ "input_hash": "5b9e1f8b7343e1d5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6164 proposes eliminating Kubernetes internal API types by making the internal (hub) type memory-identical to the preferred served version, to remove costly conversions. Status is implementable, stage stable, and the change is treated as unconditionally on with no feature gate.",
+  "rationale": "Conversion between internal and external API objects allocates new objects on every request, which drives memory spikes during bulk operations such as LIST and relist after apiserver restarts. The author's experiment showed memory-identical types cut allocations sharply (for 1000 pods, 21,005 allocs to 5 allocs). Because the change is internal-only and cannot be feature gated, SIG leads agreed to mark it stable on its first release, with a go/no-go checkpoint within two releases.</parameter>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Fully remove the internal type concept now and use the versioned hub everywhere",
+    "why_not": "Reviewers (liggitt) objected that this would lose the benefit of a decoupled internal type during alpha/beta development. The author then split the work into phases and focused 1.37 on making the internal type memory-identical with the preferred version, leaving the broader question for another day."
+   },
+   {
+    "option": "Gate the change behind a feature gate and launch as alpha",
+    "why_not": "The author said it is an internal-only change to how Go source is managed and cannot be feature gated; SIG leads chose to mark it stable on the first release, as was done for the gogo dependency KEP."
+   },
+   {
+    "option": "Type-alias stable versions as the internal version only, instead of changing all types",
+    "why_not": "This was proposed by liggitt as a narrower plan and the author accepted scoping down to it; it is not an alternative the sources reject, but it was folded into the phased plan rather than chosen as a separate path."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4664336072",
+    "quote": "I've split this into two phases where the first one focuses on making the internal type memory identical with the preferred served type."
+   },
+   {
+    "ref": "rcomment:3377062171",
+    "quote": "I've updated this to commit to a go/no-go decision within 2 releases. Either we've migrated some easy cases + pod + CRD or we'll revert the change."
+   },
+   {
+    "ref": "rcomment:3381766219",
+    "quote": "This is a internal only change to how we manage go source code and so it is not possible to feature gate it."
+   },
+   {
+    "ref": "rcomment:3398266107",
+    "quote": "Type aliasing stable versions as the internal version seems reasonable."
+   },
+   {
+    "ref": "comment:4663634670",
+    "quote": "This suggests that even *before* we invest in aliases, there is a big performance boost for making the internal types memory-identical with the preferred version."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11580,
+  "output": 1030
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

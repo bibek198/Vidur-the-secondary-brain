@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2906",
+ "input_hash": "634d89e93aeb1744",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2906 proposes a new `Catalog` API kind recognized by `kustomize build` that lists Kustomize (KRM-style) functions and their runtime info, so users can reference functions without specifying runtimes explicitly. It is currently provisional at alpha stage.",
+  "rationale": "Today users must explicitly give function container images or runtimes in every config, and discovery and installation of functions is manual. The KEP adds a Catalog that Kustomization, Component and Composition resources can reference, with trust gated by a `--trusted-catalog` flag. Reviewers raised concerns about network dependence, immutability and the overlap with the plugin registry, and the thread records these as open items. The status is provisional, and the maintainer said it could be merged as provisional with minor unresolved bits.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing and keep explicit runtime references in each resource",
+    "why_not": "The readme says this leaves module discoverability and ease of use at a cost: \"users can continue to leverage explicit references to runtimes, at the cost of module discoverability and ease of use.\""
+   },
+   {
+    "option": "A separate tool outside kustomize that supports the catalog and installs function runtimes, like Krew does for kubectl",
+    "why_not": "The readme says such a tool \"would provide a less integrated experience and would require users to execute steps outside of the `kustomize build` flow\"."
+   },
+   {
+    "option": "Support ConfigMap as a secondary GVK via additionalAPIVersionKinds",
+    "why_not": "A reviewer said the approach \"complicates things a little too much\" and that the team decided not to support the ConfigMap use case (rcomment:714135627)."
+   },
+   {
+    "option": "Localize catalogs with a `kustomize localize` command to avoid network fetches",
+    "why_not": "This was only raised as a possible option in review (rcomment:697730758); the thread does not record a decision to adopt it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In order to standardize function discovery, introduce a `Catalog` API `kind` recognized by `kustomize build`."
+   },
+   {
+    "ref": "readme",
+    "quote": "When a resource is processed by `kustomize build` and a catalog is referenced but not specified using the `--trusted-catalog=\"\"` flag, an error will occur."
+   },
+   {
+    "ref": "rcomment:726566985",
+    "quote": "Given that our plan is merge this KEP as provisional soon-ish, we can merge this KEP mostly as-is."
+   },
+   {
+    "ref": "comment:940461596",
+    "quote": "There are some minor unresolved bits. Nothing major to block this KEP to be merge as provisional."
+   },
+   {
+    "ref": "rcomment:697641316",
+    "quote": "I would be reluctant to add a network call for something that can be in my CI/CD pipeline."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12566,
+  "output": 1075
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

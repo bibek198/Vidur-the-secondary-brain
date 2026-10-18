@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-4603",
+ "input_hash": "4f4429015ddf5f00",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4603 proposes an alpha-gated change to kubelet CrashLoopBackOff: lower the initial backoff from 10s to 1s and the maximum from 5 minutes to 1 minute, plus a node-level opt-in config for a faster curve. The KEP is in status implementable, stage alpha.",
+  "rationale": "The fixed exponential backoff (10s, 20s, ... capped at 5 minutes) is considered too conservative, which delays recovery for failing containers and prevents faster restarts for workloads such as gaming and AI/ML. The KEP front-loads the decay curve and lowers the cap, while keeping the API surface small and making node stability risk measurable through benchmarking and observability. Approval was given at the provisional stage on the condition that the remaining topics (rapid restart, node-level opt-in, benchmarking, Job API interaction, kubelet overhead) would be covered in follow-up KEP PRs for 1.32.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "restartPolicy: Rapid (a new per-container restart policy value)",
+    "why_not": "Moved out of the proposal to Alternatives Considered; reviewers did not like the API enough given its complexity to back out of it, so the 1.32 release was deferred. The source says: \"I did decide today with @tallclair to wait for 1.32 to put this in an actual release because we don't like the API I suggested enough for how complicated it might be to back out of it.\""
+   },
+   {
+    "option": "Treat Succeeded pods the same as failed pods or give constant/instant backoff for Succeeded pods",
+    "why_not": "Not in the current scope. The KEP says it will NOT change backoff behavior for Pods transitioning from Success differently from Failed, and the early version that addressed the Success case was dropped."
+   },
+   {
+    "option": "Lower the maximum CrashLoopBackOff duration within this KEP",
+    "why_not": "Split out into KEP-5593: Configure the max CrashLoopBackOff delay."
+   },
+   {
+    "option": "Make backoff configuration cluster-admin only via feature gates",
+    "why_not": "Feature gates are only temporary, so the reviewer said cluster-wide configuration should be a KubeletConfiguration option. The KEP adopted a per-node kubelet config rather than a flag."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Provide an alpha-gated change to get feedback and periodic scalability tests on changes to the global initial backoff to 1s and maximum backoff to 1 minute"
+   },
+   {
+    "ref": "readme",
+    "quote": "This design seeks to change the existing initial value for the backoff curve to 1s to stack more retries earlier, and reduce the maximum backoff for a given restart from 5 minutes to 1 minute"
+   },
+   {
+    "ref": "comment:2400350171",
+    "quote": "The KEP itself documented well the risk mitigation strategies: * Conservative Defaults * Node-Level Opt-in * Alpha Stage and Feature Gates * Extensive Testing"
+   },
+   {
+    "ref": "comment:2387149471",
+    "quote": "@lauralorenz and @tallclair indicates they are going to be covered in the following KEP PRs for 1.32, which makes this implementable. /approve at the provisional state"
+   },
+   {
+    "ref": "comment:2166609206",
+    "quote": "I did decide today with @tallclair to wait for 1.32 to put this in an actual release because we don't like the API I suggested enough for how complicated it might be to back out of it."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-5593",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "Originally, this KEP included a proposal to lower the maximum CrashLoopBackOff duration. This has been split into [KEP-5593: Configure the max CrashLoopBackOff delay]"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 15048,
+  "output": 1405
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

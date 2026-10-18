@@ -1,0 +1,37 @@
+{
+ "kep": "KEP-970",
+ "input_hash": "f7873b4aa17daf38",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-970 proposes redesigning the kubeadm config file format: decoupling kubeadm ComponentConfig types from other components, separating cluster-wide, control-plane instance, node/kubelet, and runtime settings, and using specialized substructures instead of a flat object. Its current status is implementable at alpha stage, from 2020-12-29.",
+  "rationale": "The kubeadm config file has grown into the only way to set many options (external etcd, control plane and kube-proxy/kubelet parameters), and it also serves as a persisted cluster spec used by later commands like kubeadm upgrade. The KEP aims to give it a more stable, reliable format as a prerequisite for graduating kubeadm to GA. The source notes the change is costly: differences from the current format may confuse users, and the codebase impact needs a high commitment from the SIG.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "providing a more stable and reliable config file format is considered one of the top priorities for graduating kubeadm itself to GA"
+   },
+   {
+    "ref": "readme",
+    "quote": "with the aim to provide a better support for high availability clusters, it should be provided a clear separation between cluster wide settings"
+   },
+   {
+    "ref": "readme",
+    "quote": "The differences from the current kubeadm config are relevant and kubeadm users can get confused."
+   },
+   {
+    "ref": "readme",
+    "quote": "The impacts on the current codebase are considerable it is required an high commitment from the SIG."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2316,
+  "output": 640
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

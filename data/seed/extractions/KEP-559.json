@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-559",
+ "input_hash": "d4c10bfe5a3a0d50",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-559 proposed a separate mutually exclusive field, subPathExpr, so volume subPaths could be built from environment variables (e.g. per-pod unique log directories) without sidecar init containers. The feature was implemented and reached stable (GA) in Kubernetes 1.17; the KEP status was later flipped to implemented.",
+  "rationale": "Two pods on the same host writing same-named log files to a shared hostPath volume clash, and the existing subPath cannot be set from an env var without a breaking API change. The alpha subPath-from-env approach (VolumeSubPathEnvExpansion) was blocked by backward-compatibility concerns, so a new separate field was chosen. The sources say the new field was delivered and the feature graduated to GA in 1.17, and the KEP was later set to implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse the existing subPath field and expand env vars in it (alpha VolumeSubPathEnvExpansion)",
+    "why_not": "Breaking change for existing users' subpaths; reviewers (liggitt, thockin) blocked it on backward-compatibility grounds, and msau42 agreed the API concerns were valid."
+   },
+   {
+    "option": "subPathFrom with a fieldRef",
+    "why_not": "The KEP says it would fix subPath to a single value and would not allow concatenation such as $(NAMESPACE)/$(POD_NAME)."
+   },
+   {
+    "option": "Symlinks or sidecar init containers as workarounds",
+    "why_not": "The KEP calls these messy configuration overhead; the goal was to remove the need for complex initContainers."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The api change proposed is to create a Mutually Exclusive Field separate from the `subPath` called `subPathExpr`"
+   },
+   {
+    "ref": "readme",
+    "quote": "Because of the mentioned breaking changes, this implementation cannot proceed forward"
+   },
+   {
+    "ref": "comment:463915422",
+    "quote": "It got moved to a separate field. PR was open at https://github.com/kubernetes/kubernetes/pull/71351 and had lgtm for API"
+   },
+   {
+    "ref": "comment:570602414",
+    "quote": "Since this graduated to GA in 1.17, I'd like to close this issue out but the KEP is still marked as implementable."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12966,
+  "output": 978
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

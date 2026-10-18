@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2227",
+ "input_hash": "ba0b2f44655d7d9d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2227 introduces the well-known annotation kubectl.kubernetes.io/default-container so kubectl commands (exec, attach, cp, logs) can pick a default container when --container is omitted, and deprecates kubectl.kubernetes.io/default-logs-container. The KEP is at implementable status, stage stable.",
+  "rationale": "Operators running Pods with multiple containers must pass --container to every command, and the first-container default ties behaviour to container order, so commands like kubectl exec hit the wrong container (e.g. a service mesh sidecar). A single generic annotation avoids a new pod spec field, which the KEP says \"would change pod spec and is not acceptable\". Consumers outside kubectl are not covered, per the Non-Goals.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a general default container name field to the pod spec",
+    "why_not": "The KEP states this 'would change pod spec and is not acceptable'."
+   },
+   {
+    "option": "Use the -c / --container option in kubectl commands",
+    "why_not": "Listed under Alternatives without a stated rejection reason; the KEP keeps the -c flag and adds the annotation as a default when it is omitted (johnbelamaric: 'we'll certainly still need the -c flag')."
+   },
+   {
+    "option": "Keep kubectl.kubernetes.io/default-logs-container alongside the new annotation, with logs preferring it",
+    "why_not": "Reviewers (rikatz, pacoxu) raised keeping both; the KEP ultimately chose deprecation, with the old annotation working until 1.25 and its support later removed in 1.25 per the tracking comments."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Define a default well-known annotation for Pods called `kubectl.kubernetes.io/default-container` which points to Kubectl (and other commands) what's the default container to be used"
+   },
+   {
+    "ref": "readme",
+    "quote": "We don't have a general default container name attribute for pod, and this would change pod spec and is not acceptable."
+   },
+   {
+    "ref": "readme",
+    "quote": "We need add a deprecation warn message for users with default-logs-container annotation and keep the old annotation working until 1.25."
+   },
+   {
+    "ref": "comment:877946082",
+    "quote": "1.25 https://github.com/kubernetes/kubernetes/pull/109254 , remove deprecated kubectl.kubernetes.io/default-logs-container support"
+   },
+   {
+    "ref": "rcomment:1068018224",
+    "quote": "we agreed to promote this to GA right away."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13014,
+  "output": 984
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

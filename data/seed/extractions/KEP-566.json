@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-566",
+ "input_hash": "3842b78f2e1da0eb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-566 proposed making CoreDNS the default cluster DNS for Kubernetes, replacing kube-dns, after CoreDNS reached GA in v1.11. The KEP is marked implemented and stable.",
+  "rationale": "CoreDNS was already GA in Kubernetes v1.11 and installable as an alternative to kube-dns in several tools. The proposal aimed to make it the default for the remaining install tools (kube-up, kops, minikube) and to provide a process for updating its image. The status is implemented and stable, but the excerpt provided does not describe the implementation steps or outcome.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep kube-dns as the default and leave CoreDNS as an optional install alternative",
+    "why_not": "The excerpt states the purpose of the proposal is to make CoreDNS the default DNS, replacing kube-dns. The excerpt gives no reason this alternative was chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the purpose of this proposal is to make CoreDNS as the default DNS for Kubernetes, replacing kube-dns."
+   },
+   {
+    "ref": "readme",
+    "quote": "Make CoreDNS the default DNS for Kubernetes for all the remaining install tools (kube-up, kops, minikube)."
+   },
+   {
+    "ref": "readme",
+    "quote": "kubeadm (already done for Kubernetes v1.11)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1992,
+  "output": 622
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

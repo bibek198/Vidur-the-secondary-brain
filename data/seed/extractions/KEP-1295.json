@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1295",
+ "input_hash": "82f55e70c9a16365",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1295 adds an opt-in InsecureSkipTLSVerifyBackend option to PodLogOptions so kube-apiserver can fetch pod logs from kubelets whose serving certificates have expired, with an optional kubectl flag. The KEP is recorded as implemented, stage stable.",
+  "rationale": "On self-hosted clusters a kubelet serving certificate can expire, so the apiserver cannot verify it and cluster-admins cannot get pod logs. The proposal lets a client opt into skipping backend TLS verification, arguing that apiserver credentials are client certificates that an evil kubelet cannot replay and that the risk is limited to false log data. The status history records implementation from 2021-01-07; the discussion shows the KEP was tracked for 1.21 and removed from that milestone at code freeze for lack of a tracked code PR.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Non-goal: allowing any bidirectional traffic proxied to kubelets",
+    "why_not": "Explicitly excluded from scope: \"Allow any bidirectional traffic proxied to kubelets. This may be a future objective, but is not in scope for the current KEP.\""
+   },
+   {
+    "option": "Adding a kubectl flag only, without an API change",
+    "why_not": "The proposal requires the API change: \"This will include an API change and an addition argument to `kubectl log`\"; the kubectl flag is described as a nice-to-have built on the API field."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "If a client chooses, it should be possible to bypass the default behavior of the kube-apiserver and allow the kube-apiserver to skip TLS verification of the kubelet to allow gathering logs."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is safe because the kube-apiserver's credentials are always client certificates which cannot be replayed by an evil-kubelet and risk is contained to an evil-kubelet returning false log data."
+   },
+   {
+    "ref": "readme",
+    "quote": "The streamer for logs already prevents redirects (see https://github.com/kubernetes/kubernetes/blob/4ee9f007cbc88cca5fa3e8576ff951a52a248e3c/pkg/registry/core/pod/rest/log.go#L83) , so an evil kubelet intercepting this traffic cannot redirect the kube-apiserver to use its high powered credentials for a nefarious purpose."
+   },
+   {
+    "ref": "comment:794814392",
+    "quote": "we are removing this enhancement from 1.21 release due to no code PR being tracked for this enhancement."
+   },
+   {
+    "ref": "comment:791889716",
+    "quote": "this KEP has been marked as implemented in the KEP document."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5790,
+  "output": 1045
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

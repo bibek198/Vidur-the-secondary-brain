@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-3935",
+ "input_hash": "4fdd780fcf31f3d5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3935 extends the supported node-to-control-plane version skew from n-2 to n-3, so kubelet and kube-proxy from the oldest supported minor version work with control plane components from the newest. The proposal starts with v1.25 nodes and v1.28 control planes and adds testing on testgrid first. Status is implemented, stage stable.",
+  "rationale": "Upgrading across three minor versions currently forces nodes to be updated twice, and node updates are more disruptive than control plane updates. The KEP argues that n-2 skew was never meant to be the limit and that the yearly support period creates a four-version overlap, so allowing n-3 restores the original intent. The chosen starting node version (1.25) was picked so it would not disrupt in-flight feature plans that assume at most 2-version skew.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep the existing n-2 node skew policy and require nodes to be upgraded twice on a three-version jump",
+    "why_not": "The KEP says this forces two node upgrades per year, and node upgrades are more disruptive than control plane upgrades because every pod on upgraded nodes must be drained or rescheduled."
+   },
+   {
+    "option": "Have kubeadm or other cluster management tools expand node skew support",
+    "why_not": "The KEP explicitly leaves kubeadm's skew unchanged and says tool maintainers may choose to use the extra skew but are not required to."
+   },
+   {
+    "option": "Change the number of supported minor versions or the support duration",
+    "why_not": "The KEP lists these as non-goals and does not propose changes to them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "so that node components (kubelet and kube-proxy) for the **oldest** supported minor version work with control plane components (kube-apiserver, kube-scheduler, kube-controller-manager, cloud-controller-manager) for the **newest** supported minor version."
+   },
+   {
+    "ref": "readme",
+    "quote": "Node upgrades are inherently more disruptive than control plane upgrades to workloads, for several reasons"
+   },
+   {
+    "ref": "readme",
+    "quote": "There is nothing magical about the number 2 in the existing version skew policy. That policy intended to allow the oldest supported node to work with the newest supported control plane"
+   },
+   {
+    "ref": "readme",
+    "quote": "1.25 nodes / 1.28 control planes"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4486,
+  "output": 920
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

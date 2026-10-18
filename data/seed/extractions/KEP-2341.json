@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2341",
+ "input_hash": "1d3df7f628b31c2b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2341 proposes expanding the discovery API so clients can tell whether two resource endpoints (e.g., extensions/v1beta1 replicasets and apps/v1 replicasets) serve the same set of objects. Its status is provisional, as of 2021-02-09.",
+  "rationale": "Some workload objects such as replicasets are reachable through multiple group endpoints, which causes separate resource quotas, admission webhook rules that miss new aliasing endpoints, and duplicate storage migration work. The proposal lets clients detect aliasing endpoints programmatically, which the design says improves both correctness and efficiency. The status is provisional and the excerpt shows only the PR approval, so the source does not give further reasons for the decision.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Adding to the discovery API a reference to the canonical endpoint",
+    "why_not": "The readme says that because resource names are explicitly exposed, clients might use the information in unintended ways."
+   },
+   {
+    "option": "Serving a list of all sets of aliasing resources via a new API",
+    "why_not": "The readme says aggregated apiservers make such a design complex, for example in how they register resource aliases."
+   },
+   {
+    "option": "Hard coding UUIDs for built-in resources, instead of hashes",
+    "why_not": "The readme says this doesn't work for CRDs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to expand the discovery API to enable clients to tell if resource endpoints (e.g., `extensions/v1beta1/replicaset` and `apps/v1/replicaset`) are referring the same set of objects."
+   },
+   {
+    "ref": "readme",
+    "quote": "User can bypass the resource quota of one endpoint by using the other endpoint."
+   },
+   {
+    "ref": "readme",
+    "quote": "prevent clients from relying on the implementation details of the mechanism."
+   },
+   {
+    "ref": "comment:775734599",
+    "quote": "Since you approved the original one, I will simply lgtm this one :) /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2729,
+  "output": 808
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

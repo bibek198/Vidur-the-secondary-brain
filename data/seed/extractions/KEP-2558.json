@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2558",
+ "input_hash": "42bca67cc72d3ab9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2558 proposed publishing field-level versioning (prerelease status, minimum Kubernetes version, and feature gate) for built-in API fields in OpenAPI via a vendor extension derived from comment tags. The KEP was withdrawn; its status is withdrawn at alpha stage.",
+  "rationale": "The problem was that feature gate comments in kube_features.go are not parseable and new fields lack a mapping to the feature gate that controls them, so alpha fields are hard to identify. The KEP proposed a +lifecycle comment tag on fields, emitted as an x-kubernetes-version OpenAPI extension, with a linter checking feature gate names. Withdrawal came later: in 2024 Thockin noted the project had settled on +featureGate tags, which was the original goal, and jpbetz agreed the KEP should be withdrawn without a champion.",
+  "outcome_reason": "Withdrawn on 2024-10-31 via PR #4937. Thockin said \"We have a de-facto norm of +featureGate now, which was the original goal\", and jpbetz approved the withdrawal saying \"without a champion, I agree that marking the KEP this way is appropriate.\"",
+  "alternatives": [
+   {
+    "option": "Extend prerelease-lifecycle-gen to record field-level metadata",
+    "why_not": "The KEP says that generator only covers packages, and that field-level data would not be surfaced in OpenAPI, which makes it harder for other tools to consume."
+   },
+   {
+    "option": "Single-line marker such as +k8s:openapi-gen:prerelease=alpha,minVersion=v1.20,featureGate=Frobber2D",
+    "why_not": "The KEP says this would limit the metadata to openapi-gen, and reviewers preferred separate, simpler marker lines."
+   },
+   {
+    "option": "Allow multiple prerelease statuses per field in comment tags",
+    "why_not": "The KEP says this risks greatly increasing OpenAPI schema size, with CRDs that embed several PodTemplateSpecs able to exceed the 1MB etcd limit."
+   },
+   {
+    "option": "Add comment tags to all non-GA types and list GA types as exceptions",
+    "why_not": "The KEP lists this as an alternative that may be considered in the future, after feedback on the field-level proposal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:2448213842",
+    "quote": "https://github.com/kubernetes/enhancements/pull/4937 marks this as withdrawn. We have a de-facto norm of +featureGate now, which was the original goal"
+   },
+   {
+    "ref": "comment:2448740596",
+    "quote": "An interesting idea, but yes, without a champion, I agree that marking the KEP this way is appropriate. /lgtm /approve"
+   },
+   {
+    "ref": "comment:1517993734",
+    "quote": "I see https://github.com/kubernetes/kubernetes/pull/103022 was closed for inactivity. I just want some common form across API comments - did we get too ambitious?"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes changes to the kube-openapi generator to add a new vendor extension field `x-kubernetes-api-lifecycle` in OpenAPI."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14164,
+  "output": 1191
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

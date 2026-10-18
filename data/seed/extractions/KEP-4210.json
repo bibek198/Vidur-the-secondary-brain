@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4210",
+ "input_hash": "7adc1890ca0ab46a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4210 adds an optional Kubelet setting, ImageMaximumGCAge, plus a feature gate, so that images unused for a set time are garbage collected regardless of disk usage. Status is implemented, stage stable.",
+  "rationale": "Kubelet image GC only runs when disk usage crosses a threshold, so images from an old release (e.g. after an automatic upgrade) can sit on disk until then. The KEP adds an age-based trigger, defaulting to 0 (disabled), and the sources say it is opt-in and best-effort. Maintainers also raised reliability concerns, and sergeykanzhelev asked that the setting be explicitly documented as best effort; the sources do not record how those were resolved beyond the implemented status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a Kubelet garbage collection plugin system",
+    "why_not": "Too complicated, probably won't be needed."
+   },
+   {
+    "option": "Delegate image GC responsibility down to CRI",
+    "why_not": "Would cause code duplication between CRI implementations, out of scope for this."
+   },
+   {
+    "option": "Make ImageMinimumGCAge independent of the disk usage threshold",
+    "why_not": "ImageGCMinimumAge is only relevant under disk pressure, and ImageMaximumGCAge seeks to qualify otherwise unqualified images; the authors found the distinction clear, and the backwards compatibility issues were judged not worth the config size savings."
+   },
+   {
+    "option": "Skip the alpha phase and go directly to beta",
+    "why_not": "Raised by kannon92 as a question; the sources do not record a decision on it beyond the KEP being added with a feature gate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "An additional approach is to define a way for an admin to request images are cleaned up after they're unused for a certain period of time."
+   },
+   {
+    "ref": "readme",
+    "quote": "To begin, this option will be set to 0, which will be interpreted as \"disabled\". In the future, a more reasonable default may be chosen."
+   },
+   {
+    "ref": "rcomment:1346160558",
+    "quote": "afaict we still require a feature gate, even for optional fields like this one."
+   },
+   {
+    "ref": "rcomment:1344774299",
+    "quote": "we should clearly state the best effort nature of this setting than - it will simplify the design."
+   },
+   {
+    "ref": "comment:2407981896",
+    "quote": "One direction to go is to allow more granular configuration on what falls under this policy and what is not."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11861,
+  "output": 964
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

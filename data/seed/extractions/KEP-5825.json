@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5825",
+ "input_hash": "fb2370f0b1fede12",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5825 adds server-side streaming RPCs (e.g., StreamContainers, StreamPodSandboxes) to CRI's List* operations so results stream one item per message instead of one unary response, avoiding the 16 MB gRPC limit. The KEP is at implementable status, stage alpha.",
+  "rationale": "CRI List* RPCs return all results in one unary response, which fails on nodes with 10k+ containers once the response exceeds the 16 MB gRPC message limit. The KEP moved from token-based pagination to server-side streaming after reviewers (cpuguy83, fuweid, ningmingxiao) argued streaming handles gRPC size limits more effectively. The maintainer then approved the streaming approach, and the KEP is at implementable status, stage alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Token-based pagination (AIP-158 style) with page_size or PaginationMode in the request",
+    "why_not": "Discussion showed version-skew problems (old kubelet with new runtime would drop next page tokens) and it required more complexity from every runtime. The author refactored the KEP to streaming after feedback from cpuguy83, fuweid and ningmingxiao; the KEP text says it was refactored 'to use server-side streaming instead of pagination'."
+   },
+   {
+    "option": "Lock container creation/deletion until the full list is served, or checkpoint the list in CRI",
+    "why_not": "Locking was seen as a pretty unfortunate performance implication; checkpointing was raised as an alternative but not chosen. Sources do not give a further detailed reason beyond these comments."
+   },
+   {
+    "option": "Keep unary List* and let runtimes cap response size",
+    "why_not": "Sources note that 100k containers at ~1.5 KB each would be ~150 MB, exceeding the limit; a cap alone does not return the full list. The sources do not record a full rejection rationale for this option."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposed solution introduces new streaming RPCs (e.g., `StreamContainers`, `StreamPodSandboxes`) that stream results one item at a time, bypassing the per-message size limit."
+   },
+   {
+    "ref": "comment:3885449093",
+    "quote": "I’ve refactored the KEP to use server-side streaming instead of pagination. This handles the gRPC size limits much more effectively."
+   },
+   {
+    "ref": "comment:3885620034",
+    "quote": "/lgtm the new approach works for me, good suggestion @cpuguy83 @fuweid WDYT @samuelkarp @SergeyKanzhelev"
+   },
+   {
+    "ref": "rcomment:2794305329",
+    "quote": "When all containers have been sent, the runtime returns `nil` from the gRPC handler, which closes the stream and signals `io.EOF` to the kubelet."
+   },
+   {
+    "ref": "rcomment:2790517162",
+    "quote": "I would not want this to be mandated by CRI. The runtime should be able to order responses however it needs for efficient storage and query"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10829,
+  "output": 1145
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

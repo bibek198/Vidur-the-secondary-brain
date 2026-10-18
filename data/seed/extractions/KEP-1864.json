@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1864",
+ "input_hash": "97be27bccf043aa5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1864 adds an opt-in field, allocateLoadBalancerNodePorts, to Service.Spec so users can stop Kubernetes from allocating node ports for Service type=LoadBalancer. The default stays true, so existing behavior is unchanged.",
+  "rationale": "Some LoadBalancer implementations (e.g. MetalLB, kube-router) do not use the automatically allocated node ports. Those unused ports limit the number of load balancers and expose ports that may fail compliance rules. The proposal lets clusters opt out while leaving the default behavior unchanged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep allocating node ports for all LoadBalancer Services",
+    "why_not": "The readme lists the drawbacks: the number of load balancers is capped by available node ports, and unused node ports are exposed even though they are not used."
+   },
+   {
+    "option": "Automatically deallocate node ports when disabled on existing Services",
+    "why_not": "The proposal states that existing node ports are not deallocated when the field is set to false. Users must remove the nodePort field explicitly, because kubectl apply merges server-side node ports back in."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add a new field `allocateLoadBalancerNodePorts` to `Service.Spec` that allows a user to opt out of node ports for Service Type=LoadBalancer."
+   },
+   {
+    "ref": "readme",
+    "quote": "Though most implementations of Service Type=LoadBalancer do require node ports, there are several implementations that do not."
+   },
+   {
+    "ref": "readme",
+    "quote": "if `allocateLoadBalancerNodePort: false`, stop allocating new node ports but don't deallocate existing node ports."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals\n* Changing default values/behavior for Service Type=LoadBalancer"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2231,
+  "output": 766
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

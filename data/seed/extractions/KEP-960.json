@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-960",
+ "input_hash": "51e557dc23d918b9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-960 proposed driving the Kubernetes conformance testing framework from an explicit, reviewable list of behaviors, with tooling to seed behaviors from API schemas, generate tests and scaffolding, and report coverage. The KEP was withdrawn.",
+  "rationale": "Coverage was measured by which API endpoints tests hit, which does not reflect the behavior encoded in create/update payloads. No single explicit list of conforming behaviors existed, and test writing and promotion was slow and manual. The KEP was withdrawn because reworking existing tests to this methodology proved more extensive than expected, and separate reviewer pools were not the bottleneck in test creation and promotion.",
+  "outcome_reason": "The KEP's own note states it is withdrawn after initial implementation attempts showed the rework effort was far larger than expected, and that the problems it targeted (notably separate reviewer pools) were not the bottleneck in test creation and promotion.",
+  "alternatives": [
+   {
+    "option": "Keep measuring conformance coverage by API endpoints hit by tests",
+    "why_not": "The KEP argues endpoint coverage cannot show how much the tests actually check the behavior in the payloads."
+   },
+   {
+    "option": "Keep behaviors tracked as GitHub issues",
+    "why_not": "The KEP proposes explicit documentation and tracking in the repository so behaviors can be reviewed independently of tests, rather than in GitHub issues."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "After initial attempts at implementation it became clear that the effort to rework existing tests to follow this methodology was more extensive than expected."
+   },
+   {
+    "ref": "readme",
+    "quote": "the problems this KEP intended to solve (particularly separate reviewer pools) have not proven to be the bottleneck in test creation and promotion."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current measurements are based upon identifying which API endpoints are exercised by the tests."
+   },
+   {
+    "ref": "readme",
+    "quote": "There is no single, explicit list of behaviors that comprise the expected behavior of a conformant cluster."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2501,
+  "output": 834
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4563",
+ "input_hash": "8212bd1059e5d627",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4563 proposes a new declarative EvictionRequest API (evictionrequest.coordination.k8s.io) and controller so that pods can be evicted cooperatively through a list of interceptors, falling back to API-initiated eviction only when no interceptor is active. The KEP is at status implementable, stage alpha.",
+  "rationale": "Current API-initiated eviction and PodDisruptionBudgets cannot handle single-replica apps, HPA-scaled apps, or cases where the application needs time or resources before termination, and they block or are overridden during node drains. The KEP adds a coordination contract where interceptors act on a pod before the controller evicts it. Reviewers raised concerns about complexity and whether incremental PDB/Eviction API changes would suffice, and the author responded that incremental changes could not address the problems.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Incremental improvements to PodDisruptionBudgets and the Eviction API",
+    "why_not": "Reviewer soltysh suggested tackling smaller problems first; the author replied: \"I do not see how we can incrementally improve the situation for PDBs and eviction API to address the problems at hand.\""
+   },
+   {
+    "option": "Pod API (state in the Pod object itself)",
+    "why_not": "The author stated: \"We have analyzed the problem and found serious concurrency, obsevability and extensibility issues.\""
+   },
+   {
+    "option": "Liens API (in-use protection KEP)",
+    "why_not": "The author stated: \"Liens do not offer any reconciliation mechanism, and it is very hard/impossible for an actor to communicate a deletion intention.\""
+   },
+   {
+    "option": "Modeling the request as a finalizer on deletionTimestamp (reviewer thockin's suggestion)",
+    "why_not": "The author argued that the deletion either has not happened yet or never will: \"The deletion triggers pod termination with TerminationGracePeriodSeconds which is not what some applications desire.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add a new declarative EvictionRequest API to manage the eviction of pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "Use API-initiated Eviction API of pods that support the eviction request process, only if there are no active interceptors."
+   },
+   {
+    "ref": "comment:2154826769",
+    "quote": "I would prefer not to have a new API, but at this time, I do not see how we can incrementally improve the situation for PDBs and eviction API to address the problems at hand."
+   },
+   {
+    "ref": "comment:3450864490",
+    "quote": "Liens do not offer any reconciliation mechanism, and it is very hard/impossible for an actor to communicate a deletion intention."
+   },
+   {
+    "ref": "comment:3385474499",
+    "quote": "The deletion triggers pod termination with `TerminationGracePeriodSeconds` which is not what some applications desire."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13156,
+  "output": 1101
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

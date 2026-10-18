@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3726",
+ "input_hash": "6b5fd6c28ef98dc3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3726 rephrases the Service port appProtocol field description and declares standard kubernetes.io-prefixed protocol names (e.g. kubernetes.io/h2c) for common protocols that are not IANA service names. The KEP is implemented and at stable stage.",
+  "rationale": "The appProtocol field only pointed to IANA service names or domain-prefixed names, so implementations gave the same value different meanings (HTTP2 means TLS in GKE but h2c in Istio). The proposal fixes this by defining well-known kubernetes.io-prefixed names for common protocols. The sources state the goals of building consensus and helping implementations interoperate, but do not give further reasons for the chosen approach.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep IANA service names or domain-prefixed names only",
+    "why_not": "The motivation says this loose definition led implementations to do different things for common protocols, such as HTTP2 in GKE versus Istio."
+   },
+   {
+    "option": "Support multiple appProtocol values for the same port",
+    "why_not": "It is listed as a non-goal, suggested as follow-up work."
+   },
+   {
+    "option": "Validate or monitor appProtocol values",
+    "why_not": "Validation and monitoring of appProtocol implementations are explicit non-goals of this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This loose definition has led us to; 1. Have instances where implementations do different things for common protocols."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP suggests a different description for the `AppProtocol` field and proposes to declare standard Kubernetes protocol names for common protocols that are not IANA service names."
+   },
+   {
+    "ref": "readme",
+    "quote": "Those common protocols will be well defined strings prefixed with ‘kubernetes.io’. `kubernetes.io/h2c` as an example."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support multiple AppProtocols values for the same port to improve interoperability (suggested as a followup work though)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2471,
+  "output": 814
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

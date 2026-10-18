@@ -1,0 +1,62 @@
+{
+ "kep": "KEP-4781",
+ "input_hash": "ffa2c10bf8d81a96",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4781 proposes that kubelet restarts no longer reset containers' Started and Ready statuses to False, so pod status is preserved across restarts. It relies on the probe manager's detection results, and gated behind a deprecated feature gate ChangeContainerStatusOnKubeletRestart that lets admins temporarily re-enable the old behavior. Status is provisional, stage deprecated.",
+  "rationale": "Today a kubelet restart sets Started and Ready to False for all pods on the node, disrupting services that were working. The KEP keeps the existing status on short restarts and lets the prober re-establish the real state, while a prolonged restart with NotReady node still sets Ready to false. Reviewers asked for a deprecation period, and the author said a wait of at least two release cycles is expected before the gate is locked.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Earlier approach in KEP-4784 that inherits the Start state from the previous container and waits on startupProbe",
+    "why_not": "The author found the implementation cumbersome with potential edge cases after tracing pod status transitions, and replaced it with the probe manager approach in PR #5493."
+   },
+   {
+    "option": "Full alpha to beta to GA feature gate lifecycle",
+    "why_not": "The author said that since the change is not significant, a deprecated gate with a shorter lifecycle is enough."
+   },
+   {
+    "option": "Add a random wait before periodic probing after startup, as suggested by thockin",
+    "why_not": "The author said their proposal does not include this and instead runs the probe after a random delay between 0 and 1 times PeriodSeconds, which the reviewer did not require."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes improving Pod readiness management in the kubelet to ensure that the status of Pods is not unilaterally modified, and is instead preserved during kubelet restarts."
+   },
+   {
+    "ref": "rcomment:2298474718",
+    "quote": "consistently relying on the detection results of the probeManager. This approach simplifies the implementation and helps us avoid certain edge cases."
+   },
+   {
+    "ref": "rcomment:2319189503",
+    "quote": "Deprecated feature gates typically have a shorter life cycle. Since this feature is not a significant change, we do not need it to go through the full life cycle"
+   },
+   {
+    "ref": "rcomment:2325446616",
+    "quote": "For a short kubelet restart, we can confidently assume that the container's state has not changed. Therefore, we can retain the container's state"
+   },
+   {
+    "ref": "comment:4613094833",
+    "quote": "I don't intend to move forward with this feature in v1.37. Deprecated feature gates typically require three releases before they are locked to their default values"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-4784",
+    "relation": "replaced_by",
+    "ref": "comment:3216819408",
+    "quote": "A new PR #5493 has been opened to supersede this one. /close"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12385,
+  "output": 1101
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

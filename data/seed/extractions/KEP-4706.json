@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-4706",
+ "input_hash": "145f0f504256635d",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4706 proposed deprecating kustomize in kubectl (alpha in v1.31), then disabling it by default and removing it in v1.36. The KEP was rejected after a sig-architecture discussion, and kustomize stays part of kubectl.",
+  "rationale": "The KEP argued that kubectl should not promote one customization tool over others, that kustomize's release cycle mismatched kubectl's, and that some kustomize dependencies were problematic. Reviewers (liggitt, thockin, and others) objected that removal would break many users and automation, and that the motivations were vague. The KEP's own note says the sig-architecture discussion on Oct 17th, 2024 decided not to pursue the topic further, mainly because of kustomize's widespread adoption.",
+  "outcome_reason": "The sources state the decision was to not pursue the removal and to keep kustomize as part of kubectl, made at the sig-architecture meeting on Oct 17th, 2024. The status was changed to rejected in PR #4984. Earlier, the enhancement was dropped from v1.31 and deferred.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Freeze kustomize-in-kubectl and warn users to use kustomize directly\", \"why_not\": \"Discussed by thockin as a middle ground; liggitt said freezing is not viable because dependencies that cannot be updated become unfixable vulnerabilities.\"}, {\"option\": \"Keep kustomize in kubectl but exec an external kustomize binary (compatibility mode)\", \"why_not\": \"Proposed by codablock and koba1t; benthelder said users would still have to install kustomize separately and it would still break a lot of automation.\"}, {\"option\": \"Embed kustomize binaries with go embed and exec them from a temp directory\", \"why_not\": \"koba1t raised it as an experiment; thockin said it has the same security problems with none of the visibility of vendored code and exec is not always available.\"}, {\"option\": \"Staged deprecation and removal (v1.31 alpha, v1.34 beta disabled by default, v1.36 removal)\", \"why_not\": \"This is the KEP's proposed path; it was rejected after the sig-architecture discussion, with the stated reason being widespread community adoption.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "it was decided not to pursue this topic further, and retain kustomize as part of kubectl. The primary reason for this decision was the widespread adoption of the tool by the community."
+   },
+   {
+    "ref": "comment:2165806646",
+    "quote": "we should not just break them without very very good reasons. I think the KEP enormously underestimates the impact."
+   },
+   {
+    "ref": "comment:2341180894",
+    "quote": "there's not agreement on the motivations of the KEP that we even *should* pursue removal. That seems important to settle first."
+   },
+   {
+    "ref": "comment:2506018548",
+    "quote": "the decision was made to **not to** pursue this topic further, and leave kustomize as is, part of kubectl."
+   },
+   {
+    "ref": "comment:2233048060",
+    "quote": "we'll be bringing this topic for discussing with sig-arch in the next weeks. Due to that I'm dropping this from 1.31 release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10599,
+  "output": 1182
+ },
+ "extracted_at": "2026-10-15T22:45:18Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4317",
+ "input_hash": "430935583ee5472a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4317 proposes a PodCertificateRequest API type and a PodCertificate projected volume source so the kubelet can deliver X.509 certificates to pods without bearer tokens. The KEP's status is implemented, stage stable.",
+  "rationale": "Issuing X.509 certificates through certificates.k8s.io does not by itself get certificates to workloads. The KEP adds a narrowly scoped PodCertificateRequest type and a PodCertificate projected volume so kubelet provisions keys and chains for pods, with no bearer tokens at any step. Discussion shows the design was narrowed during API review: the request type replaced a CSR-extension approach, and certificate lifetime is bounded through maxExpirationSeconds rather than a fixed rule.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Encode pod coordinates in CertificateSigningRequest objects (labels, spec fields, or embedded in spec.request)",
+    "why_not": "The discussion says none of the options met all goals, and a dedicated type for kubelet to request a pod certificate was preferred: \"As painful as it is, option 4 seems to meet the goals the best.\""
+   },
+   {
+    "option": "Encode pod identity as Subject RDNs instead of a PodIdentity critical extension",
+    "why_not": "The KEP records that this was considered and the extension was chosen, citing that the ability to mark it critical might matter; a reviewer noted RDNs would be simpler to maintain across languages."
+   },
+   {
+    "option": "Subresource on ServiceAccounts that issues certificates, or HTTP Message Signatures, or HMAC one-time tokens",
+    "why_not": "These are listed as Alternatives in the KEP; the sources give only brief notes on them (HTTP Message Signatures is still a draft, HMAC tokens are not a big improvement over reused bearer tokens) and do not record a full rejection rationale."
+   },
+   {
+    "option": "HSM or external signing support for private keys in this KEP",
+    "why_not": "Deferred: \"After API review, we decided to defer any HSM / external signing support to a future iteration.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A PodCertificateRequest API type, analogous to CertificateSigningRequest but narrowly scoped to the job of issuing certificates directly to pods."
+   },
+   {
+    "ref": "rcomment:1739962050",
+    "quote": "After API review, we decided to move to use a new PodCertificateRequest type. This significantly cuts down the number of parties that need to care about the X.509 extension"
+   },
+   {
+    "ref": "rcomment:1739962609",
+    "quote": "After API review, we decided to defer any HSM / external signing support to a future iteration."
+   },
+   {
+    "ref": "rcomment:1794301123",
+    "quote": "Kube-apiserver will restrict `maxExpirationSeconds` based on a per-signer configuration."
+   },
+   {
+    "ref": "rcomment:1794292039",
+    "quote": "As discussed on slack, we will only set the client cert usages."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11805,
+  "output": 1138
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

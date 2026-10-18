@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2902",
+ "input_hash": "1a36ff3964779a9b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2902 proposes a new static CPUManager policy option, `distribute-cpus-across-numa`, that spreads CPU allocations evenly across NUMA nodes when an allocation needs more than one NUMA node. Its status is implementable, stage beta.",
+  "rationale": "By default the static CPUManager packs CPUs onto one NUMA node until full and spills the rest over, which slows barrier-synchronized parallel workloads that run only as fast as their slowest worker. The option distributes CPUs evenly across NUMA nodes to address this. The sources show the KEP was marked implementable in 2021, deferred from beta in 2022, and re-targeted for beta in v1.33 after its code PRs merged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the default packed allocation with no new option",
+    "why_not": "The motivation section says packing causes bottlenecks in parallel code relying on barriers, which the KEP aims to fix."
+   },
+   {
+    "option": "Add a new CPUManager policy instead of an option",
+    "why_not": "The summary says policy options allow tweaks without introducing an entirely new policy, and this KEP follows that framework."
+   },
+   {
+    "option": "Distribute remaining CPUs by simply striping one-by-one from the lowest NUMA node",
+    "why_not": "Reviewers suggested choosing the NUMA node that gives a more balanced allocation across all previous allocations; the final text is not in the excerpt."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to add a new `CPUManager` policy option called `distribute-cpus-across-numa` to the `static` `CPUManager` policy."
+   },
+   {
+    "ref": "readme",
+    "quote": "By default, the `CPUManager` will pack CPUs onto one NUMA node until it is filled, with any remaining CPUs simply spilling over to the next NUMA node."
+   },
+   {
+    "ref": "comment:1019797733",
+    "quote": "This feature will not be graduating to beta in 1.24. I have updated the description to bump beta graduation to 1.25."
+   },
+   {
+    "ref": "comment:2742838365",
+    "quote": "All the Beta requirements for this enhancement have been merged. We should retain this enhancement in v1.33 milestone."
+   },
+   {
+    "ref": "rcomment:1946732245",
+    "quote": "we always fallback to packed CPU allocation if resources are fragmented such that it is not possible to distribute CPUs."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11070,
+  "output": 947
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

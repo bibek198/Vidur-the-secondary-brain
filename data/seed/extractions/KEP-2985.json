@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2985",
+ "input_hash": "74d13bd14c7cae1f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2985 proposes a public KRM functions registry: a sig-cli-sponsored repo hosting a centralized index of KRM functions, plus a website that presents function docs and examples so users can discover them. The KEP is provisional at alpha stage, dated from 2021-10-12.",
+  "rationale": "Function contributions are limited because some companies do not allow employees to contribute to repos owned by other companies, so the KEP aims for a vendor-neutral index. It is meant to improve Day 0 discovery and Day 2 version lookup for users of orchestrators such as Kustomize and Kpt. Reviewers raised open questions about publisher definitions, static versus dynamic catalogs, exec-based function trust, and the KRMFunction schema, and many were marked unresolved during provisional review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep functions only in vendor-owned repos such as the Google kpt-functions-catalog",
+    "why_not": "The readme says that not everyone in the community can contribute to it for various reasons, such as a company's policy, so a vendor-neutral registry is proposed instead."
+   },
+   {
+    "option": "Replace or compete with Catalog as the publication format",
+    "why_not": "This is a stated non-goal: Catalog should be used by this Registry, and its internal format is left to the Catalog KEP."
+   },
+   {
+    "option": "Use dynamically generated catalogs for declarative use",
+    "why_not": "A reviewer argued that dynamic catalog generation from a versionless URL with a query param would lead to non-reproducible builds, and suggested static versioned catalogs for declarative use. The thread does not record a final decision on this."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "not everyone in the community can contribute to it for various reasons. E.g. a company’s policy may not allow its employees to contribute to repo owned by another company"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to create a public KRM functions registry. There will be 2 components to back the registry"
+   },
+   {
+    "ref": "readme",
+    "quote": "Replace or compete with Catalog as publication format for collections of functions. Catalog should be used by this Registry"
+   },
+   {
+    "ref": "rcomment:721808901",
+    "quote": "One way to solve the freshness of the index is that we do both on-demand (e.g. merging PR) and cron-based (e.g. nightly) site building."
+   },
+   {
+    "ref": "rcomment:727557678",
+    "quote": "As long as the schema we propose supports it in theory, I think it's reasonable to implement container-based only in the initial pass"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10003,
+  "output": 978
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1024",
+ "input_hash": "ad2ee7840e3fb040",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1024 proposes running a node-local DNS caching agent as a DaemonSet so pods reach a cache on their own node instead of the kube-dns service IP. The KEP is recorded as status implemented, stage stable, from 2020-12-16.",
+  "rationale": "The design aims to cut DNAT and conntrack overhead, allow UDP-to-TCP upgrades to kube-dns, and give node-level DNS metrics. The discussion does not explain the original implemented decision; it concerns the later 2021 cleanup of KEP status fields (PR #3007). Reviewers debated whether this KEP should be \"implemented\" or \"implementable\" and whether PRR applied, since the KEP is out-of-tree and tied to prow. The sources do not record a final resolution specific to KEP-1024 beyond the recorded status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Service IP used as the nodelocaldns listen address",
+    "why_not": "Per the readme, this approach works only for iptables mode of kube-proxy, because ipvs mode binds all service IPs to a dummy interface and load-balances to endpoints, so the packets can be dropped when there are no endpoints."
+   },
+   {
+    "option": "A nodelocaldns service with a same-node endpoint requirement",
+    "why_not": "The readme says this depends on same-node endpoint support (kubernetes/community PR 2846) that was not yet available when the KEP was written."
+   },
+   {
+    "option": "Run a full kube-dns instance on every node",
+    "why_not": "The readme says this would consume much more resources, since each instance would also watch Services and Endpoints."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will consume much more resources since each instance will also watch Services and Endpoints."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "Given that this KEP is related to prow, and not to anything that is contained in a kubernetes release, I think this is pretty uncontroversial"
+   },
+   {
+    "ref": "comment:942669259",
+    "quote": "adds an extra validation check for `status:implemented == stage:stable`, it turns out nothing else violates this so I'd rather keep it as a rule"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6544,
+  "output": 941
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

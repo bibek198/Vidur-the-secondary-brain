@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4951",
+ "input_hash": "cadd4e90af4600c0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4951 adds an optional per-HPA `tolerance` field to `HPAScalingRules` so users can override the cluster-wide `--horizontal-pod-autoscaler-tolerance` for scale-up and scale-down separately. Status is implemented, stage stable.",
+  "rationale": "The cluster-wide 10% tolerance is too coarse for large deployments, slows scale-ups, and cannot vary per workload. The KEP lets each HPA set its own tolerance, falling back to the global value when unset. The design is gated by the HPAConfigurableTolerance feature gate and validated in kube-apiserver.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change the cluster-wide --horizontal-pod-autoscaler-tolerance flag",
+    "why_not": "The KEP lists customizing the cluster-wide tolerance as a non-goal; the flag is too coarse since appropriate values are workload-dependent. Users on non-managed clusters could change it, which the Alternatives section mentions only as a workaround."
+   },
+   {
+    "option": "Use the API from kep-853 (configurable HPA scale velocity)",
+    "why_not": "The KEP says the exact API was previously proposed in kep-853, but it was decided to implement it separately."
+   },
+   {
+    "option": "Emit an HPA status message when tolerance blocks a scale action",
+    "why_not": "The author found no straightforward way to do this and said it would be kept outside this KEP as only tangentially related."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal adds a parameter to HPAs allowing users to configure this tolerance per HPA resource."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `tolerance` field is optional, and when not specified the HPA will continue to use the value of the global `--horizontal-pod-autoscaler-tolerance`"
+   },
+   {
+    "ref": "rcomment:1837303254",
+    "quote": "The new field is optional, and its absence results in no changes to the current autoscaling behavior"
+   },
+   {
+    "ref": "rcomment:1841143948",
+    "quote": "I've set this to `kube-apiserver` (validation) and `kube-controller-manager` (to gate the logic)."
+   },
+   {
+    "ref": "rcomment:1857418986",
+    "quote": "If it's as complicated as I currently see this, I'd keep this outside of this KEP as this is only tangentially related to the problem addressed here."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 8149,
+  "output": 938
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

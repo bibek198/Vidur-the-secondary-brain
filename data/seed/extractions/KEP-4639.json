@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4639",
+ "input_hash": "13834a96a7aa5ccf",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4639 adds a new VolumeSource that mounts OCI images and OCI artifacts as read-only directories inside a pod, so files can be shared among containers without being baked into the main image. The KEP is implemented and at stable stage.",
+  "rationale": "Sharing files between containers currently requires copying them with an init container and a shell, or bundling them into the main image. The KEP scopes the work to directory mounts only, leaves single-file and manifest-list cases out, and leaves runtime-level format handling to the CRI runtimes. Discussion pushed toward kubelet owning the lifecycle with the runtime serving pull and unmount requests, and some reviewers preferred an out-of-tree CSI driver instead.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Out-of-tree CSI driver (for example csi-driver-image-populator)",
+    "why_not": "The readme lists it as an alternative to be documented, and reviewers (kfox1111) noted drivers had poor adoption because clusters did not deploy them. The sources do not record a final rejection rationale beyond the decision to implement in-tree."
+   },
+   {
+    "option": "Shared volumes inside a single pod or an init container copying files",
+    "why_not": "The author (sallyom) said this required packaging a shell in the model image and an init container, which the new VolumeSource is meant to remove."
+   },
+   {
+    "option": "Extend the CRI PullImage RPC with a target path field",
+    "why_not": "Proposed by haircommander as a way to reduce RPC duplication; mrunalp responded that the kubelet should own lifecycle decisions and the runtime should service requests. The sources do not show it was adopted."
+   },
+   {
+    "option": "Single-file mounts or manifest-list handling in the first version",
+    "why_not": "The readme's non-goals and the 2024-06-14 meeting summary explicitly leave single-file and manifest-list cases out for now, restricting output to directories and matching architecture."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The enhancement leaves single file use case out for now and restrict the mount output to directories."
+   },
+   {
+    "ref": "comment:2168848683",
+    "quote": "It will be simpler to leave single file use case out for now and restrict the mount output to directories."
+   },
+   {
+    "ref": "rcomment:1625116240",
+    "quote": "Yes, it would be best let kubelet be responsible for lifecycling decisions and let the runtime service the requests."
+   },
+   {
+    "ref": "rcomment:1627218663",
+    "quote": "Most of the in-tree advantages listed here can be done with an external CSI driver."
+   },
+   {
+    "ref": "rcomment:1644966300",
+    "quote": "In order to remove the need for a shell & init container, I propose a new OCI VolumeSource."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9844,
+  "output": 1045
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

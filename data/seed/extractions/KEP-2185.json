@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2185",
+ "input_hash": "53a394f976f6bef2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2185 proposed replacing the ReplicaSet controller's deterministic downscale victim selection (youngest Pods first) with a randomized selection, so that imbalanced failure-domain spreading can be corrected by repeated scale operations. The status is implemented, stage stable.",
+  "rationale": "The existing heuristic removes the most recently started Pods, which can preserve cross-failure-domain imbalance after repeated up and down scales. The KEP adds a randomized tie-breaking step to the ReplicaSet downscale victim selection while still softly preferring newer Pods. Discussion settled on adding a random UID-based comparison after the existing timestamp criteria, since a random value must be assigned before sorting.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the existing always-delete-newest-first ordering",
+    "why_not": "The summary states this heuristic 'tends to preserve the imbalance after repeated up and down scales', which is the problem the KEP targets."
+   },
+   {
+    "option": "Randomly pick within a scale bucket only when the bucket has more than one Pod, limiting the sorting needed",
+    "why_not": "Raised by soltysh in review as an alternative; the sources do not record it being adopted or rejected explicitly."
+   },
+   {
+    "option": "Use a random number as the sort key computed inside the Less function",
+    "why_not": "alculquicondor stated the random number 'would have to be produced before calling sort (and not in the Less function) otherwise it leads to undefined behavior'; the UID was chosen instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose a randomized approach to the downscale Pod victim selection algorithm of the ReplicaSet controller to mitigate ReplicaSet imbalance across failure domains."
+   },
+   {
+    "ref": "rcomment:555055525",
+    "quote": "the last sorting key can be a random number or the pods' uuid"
+   },
+   {
+    "ref": "rcomment:555107614",
+    "quote": "The random number would have to be produced before calling sort (and not in the `Less` function) otherwise it leads to undefined behavior."
+   },
+   {
+    "ref": "readme",
+    "quote": "Preserve the existing behavior that always downscales the newer Pods first. This order was never guaranteed in the API or user documentation."
+   },
+   {
+    "ref": "comment:2214972470",
+    "quote": "I just added the documentation update PR that was missing in the description. With that, we are all set."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 10547,
+  "output": 940
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-575",
+ "input_hash": "5281161f2c4165f5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-575 adds defaulting for Custom Resources: default values declared via the OpenAPI v3 `default` field in structural schemas are applied during deserialization, after webhook admission, and on read from storage. The KEP is marked implemented, stage stable.",
+  "rationale": "CRDs could not get native-style defaulting, and mutating webhooks cannot default on etcd reads, so new fields on GET stayed unset. The design applies defaults only where a field is undefined (not for null, empty lists/maps, or zero values), matching OpenAPI semantics. Discussion records the feature moving through alpha, beta, and GA (defaulting targeted for stable in v1.17), and the status was later set to implemented in 2021.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Native-type defaulting semantics (default on null and empty lists/maps and zero values)",
+    "why_not": "The readme says it was decided against because the semantics are an accidental API convention, and 'default if undefined' is simpler and matches OpenAPI v3 default semantics."
+   },
+   {
+    "option": "Separate x-kubernetes-legacy-default field with legacy null/empty defaulting",
+    "why_not": "The readme lists it only as a possible future addition if more native-like defaulting is needed; it was not adopted in this KEP."
+   },
+   {
+    "option": "Mutating admission webhooks for defaulting",
+    "why_not": "The readme states webhooks are not adequate because admission does not run when reading from etcd, and they are complex to operate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "applying specified defaults where an object field is undefined (`if _, ok := obj[field]; !ok` => default)"
+   },
+   {
+    "ref": "readme",
+    "quote": "they are not adequate as it is not possible to set default values of newly added fields on GET because admission is not run in the storage layer"
+   },
+   {
+    "ref": "comment:533129905",
+    "quote": "Pruning released as stable in v1.16.0 Defaulting targeted for stable in v1.17.0"
+   },
+   {
+    "ref": "comment:611698458",
+    "quote": "I'm going ahead and closing this since the corresponding KEPs are `implemented`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11568,
+  "output": 858
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

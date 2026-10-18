@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-1860",
+ "input_hash": "a7cf66704b5e857c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1860 proposes a new `ipMode` field in a Service's `loadBalancer` status so that the cloud controller can tell kube-proxy not to bind the LoadBalancer external IP to nodes. The value `VIP` keeps the current behaviour (default) and `Proxy` disables the shortcut. The KEP is marked implemented, stage stable.",
+  "rationale": "kube-proxy (iptables and ipvs) binds Service LoadBalancer external IPs to each node, which breaks health checks from some providers' LBs (ipvs) and bypasses LB features like TLS termination and PROXY protocol. The proposal lets the cloud provider set `ipMode` on the status returned by EnsureLoadBalancer, replacing the hacky use of `Hostname` as a workaround. The sources provided do not describe the implementation or rollout beyond the status history.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "A kube-proxy flag set by the cloud provider or the operator",
+    "why_not": "The readme says that with a self-hosted cluster the user must know how the cloud's load balancers work and set the flag on kube-proxy accordingly, which is why the field-based approach was preferred."
+   },
+   {
+    "option": "Keep using the Hostname hack on the Service to bypass kube-proxy binding",
+    "why_not": "The readme calls this hacky and says the KEP should give a solution to it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The solution would be to add a new field in the `loadBalancer` field of a `Service`'s `status`, like `ipMode`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The value `VIP` would be the default one (if not set for instance), keeping the current behaviour."
+   },
+   {
+    "ref": "readme",
+    "quote": "The value `Proxy` would be used in order to disable the the shortcut."
+   },
+   {
+    "ref": "readme",
+    "quote": "Some cloud providers (DigitalOcean, Scaleway, ...) have features at the LB level (TLS termination, PROXY protocol, ...)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently there is some hacky workaround that set the `Hostname` on the `Service` in order to bypass kube-proxy binding"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5263,
+  "output": 883
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

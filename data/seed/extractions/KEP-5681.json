@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5681",
+ "input_hash": "2f46869888c9940d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5681 proposes conditional authorization: authorizers may return conditions alongside Allow/Deny/NoOpinion, the WithAuthorization filter lets requests proceed when conditions can evaluate to Allow, and a built-in AuthorizationConditionsEnforcer validating admission plugin enforces the conditions against the object. Status is implementable, stage alpha.",
+  "rationale": "Authorizers today cannot scope access by the content of a write payload or stored object, since authorization happens before admission and without request body access. The design uses partial evaluation so that requests that can never be authorized are rejected at authorization time, and defers the data-dependent check to the validating admission stage where objects are available. The KEP is marked implementable at alpha, and its discussion still has open questions on aggregated API servers, old-version fail-closed behavior, and secondary authorization checks.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Out-of-tree implementation of conditional authorization",
+    "why_not": "Reviewers noted that none of the listed alternatives proposes implementing this out of tree, and asked that it be recorded as an alternative with reasons; the sources do not give a final reason beyond the author's reply that the alternatives section would be expanded."
+   },
+   {
+    "option": "ValidatingAdmissionPolicy",
+    "why_not": "Reviewer lmktfy said it is a viable alternative and asked the KEP to explain why the existing in-tree solution was not considered; the sources do not record that explanation."
+   },
+   {
+    "option": "External authorizer short-circuiting with NoOpinion and zero conditions for special cases",
+    "why_not": "Author replied that a NoOpinion condition is meant to attenuate only the current authorizer's allow policies without affecting later authorizers, which a whole-authorizer short-circuit does not do."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A new, always-on `k8s.io/apiserver`-built-in `AuthorizationConditionsEnforcer` validating admission plugin (ordered before other validating webhooks)"
+   },
+   {
+    "ref": "readme",
+    "quote": "Conditional Authorization is only supported for certain requests, namely whenever admission is invoked (verbs `create`, `update`, `patch`, `delete`, `deletecollection` and connect requests)."
+   },
+   {
+    "ref": "rcomment:2511810289",
+    "quote": "None of the alternatives proposes implementing this out of tree. We should either record that that's an alternative (that we don't recommend), or explain why it can't be."
+   },
+   {
+    "ref": "rcomment:2543170173",
+    "quote": "A viable alternative for this is ValidatingAdmissionPolicy. We might want to explain why we don't consider the existing in-tree solution."
+   },
+   {
+    "ref": "rcomment:2589424976",
+    "quote": "The use-case for a `NoOpinion` condition is to effectively _attenuate the every allow policies of the current authorizer_, without affecting later authorizers."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11356,
+  "output": 1123
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

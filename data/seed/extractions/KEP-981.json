@@ -1,0 +1,38 @@
+{
+ "kep": "KEP-981",
+ "input_hash": "0dcef9f554420b61",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-981 extends PodDisruptionBudgets to work with any resource that implements the scale subresource, so PDBs with maxUnavailable can find the desired replica count for custom controllers. Status is implemented, stage stable.",
+  "rationale": "The PDB controller could only look up desired replicas for four built-in workload controllers (Deployment, StatefulSet, ReplicaSet, ReplicationController), so PDBs with max unavailable did not work for CRD-based operators. The scale subresource already gives a generic way to read desired replicas and is used by the autoscaler, so the KEP reuses it. The stated goal is to add this support without a major performance impact.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently only four of the basic workload controllers are supported for PDBs, namely Deployment, StatefulSet, ReplicaSet and ReplicationController."
+   },
+   {
+    "ref": "readme",
+    "quote": "The scale subresource allows any resource to specify its desired number of replicas and a generic way to look up this information."
+   },
+   {
+    "ref": "readme",
+    "quote": "As more users start deploying custom controllers/operators based on CRDs (EtcdCluster, MySQLReplicaSet...), it is inconvenient that they cannot take advantage of PDBs."
+   },
+   {
+    "ref": "readme",
+    "quote": "Implement support for scale subresources in PDBs - Avoid major performance impact from the change"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2044,
+  "output": 630
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5381",
+ "input_hash": "803ba1549ff6880f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5381 proposes making PersistentVolume.spec.nodeAffinity mutable so storage providers can update volume accessibility, with kubelet failing pods that land on nodes violating the updated affinity. Its current status is implementable at alpha.",
+  "rationale": "Changing a volume's accessibility (e.g., migrating zone to regional storage, enabling features not supported on all nodes) leaves nodeAffinity stale, so the scheduler places pods on nodes that cannot reach the volume or rejects nodes that can. The KEP makes the field mutable, relies on the scheduler re-scheduling pending pods, and has kubelet fail pods that do not match the volume affinity. Reviewers accepted it for alpha after PRR approval, with the trade-offs to be documented more fully before beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Implement the change through VolumeAttributesClass (VAC)",
+    "why_not": "The authors initially planned it in VAC, but unresolved questions from months of meetings led them to focus on making PV nodeAffinity mutable instead; VAC topology support was dropped from this KEP."
+   },
+   {
+    "option": "Split into two feature gates or two KEPs (kubelet handling of mis-scheduled pods vs. mutating nodeAffinity)",
+    "why_not": "wojtek-t said 'No - definitely not two keps. There are different keps with multiple FGs.' huww98 noted that tracking two feature gates in two KEPs was an open question; the discussion of rollout ordering was not settled as a split."
+   },
+   {
+    "option": "Enforce compatibility rules so new nodeAffinity must not shrink the accessible set",
+    "why_not": "huww98 proposed not enforcing it: SPs are asked not to disrupt running workloads, and the affinity is ignored for running pods, similar to requiredDuringSchedulingIgnoredDuringExecution."
+   },
+   {
+    "option": "Target the whole KEP for v1.35 instead of v1.34",
+    "why_not": "The KEP was moved to v1.35 because 'we have not reached enough agreements' before enhancements freeze; the v1.34 milestone was later closed without it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to make `PersistentVolume.spec.nodeAffinity` field mutable, making it possible to change the affinity of the volume."
+   },
+   {
+    "ref": "readme",
+    "quote": "When a Pod is scheduled to a node that does not match volume node affinity, kubelet should fail the Pod."
+   },
+   {
+    "ref": "comment:3411786430",
+    "quote": "I think it's good enough for alpha. I actually like the extra thoughts about mis-scheduled pods and failing them in kiubelet. /lgmt /approve"
+   },
+   {
+    "ref": "comment:3412278518",
+    "quote": "I think it's acceptable for Alpha from PRR POV. That said, we should much better reflect all the tradeoffs we're making"
+   },
+   {
+    "ref": "comment:2967613873",
+    "quote": "After discussions, we have not reached enough agreements, and I would like to move this to 1.35."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12346,
+  "output": 1176
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2392",
+ "input_hash": "24ce9fad85fa9506",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2392 proposes architectural changes to run the Cloud Controller Manager, moving cloud provider functionality out of Kubernetes core and providing a generic controller manager library for out-of-tree providers. Its status is provisional (from 2021-02-06).",
+  "rationale": "Kubernetes core has seven in-repo cloud provider dependencies, and core is locked against adding new ones, so every change to a provider requires OSS PR approval and a release. The KEP aims to decouple provider code from core releases and to provide a generic controller manager library with feature parity for out-of-tree providers. The sources do not record a final decision beyond the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Side-car process: cloud-interface in tree becomes a GRPC call-out to a side-car",
+    "why_not": "The KEP says the authors believe different providers will want different control loops, so a cloud controller manager is needed anyway, and centralizing the effort there limits the proliferation of new processes across the cluster."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We are trying to remove any dependencies from Kubernetes Core to any specific cloud provider. Currently we have seven such dependencies."
+   },
+   {
+    "ref": "readme",
+    "quote": "Have a generic controller manager library available for use by the per cloud provider controller managers."
+   },
+   {
+    "ref": "readme",
+    "quote": "In addition it should limit the proliferation of new processes across the entire cluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "Removing and fully deprecating in-tree cloud provider code. That will be coverd in KEP-0013."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2647,
+  "output": 683
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

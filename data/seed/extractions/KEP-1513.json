@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1513",
+ "input_hash": "bcc8b277f3677eea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1513 proposed a generic Certificates API (CertificateSigningRequest resource) so clients can request x509 certificates from a CA through an approver/signer workflow. The KEP's status is implemented, stage stable, and the sources say it went stable in 1.19.",
+  "rationale": "The API gives Kubernetes clients a programmatic way to obtain x509 certificates, originally to support Kubelet TLS Bootstrap and later out-of-core PKI needs. The design separates approval (authentication and authorization of a CSR) from signing (constructing the certificate), with both interacting through the Kubernetes resource model. A kikisdeliveryservice comment says the KEP \"went stable\" in 1.19, and the sources describe the work as completed in that release cycle.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Build specialized certificate issuance (e.g. LetsEncrypt) directly into Kubernetes",
+    "why_not": "Listed as a non-goal: \"Build in support for specialized certificate issuance (e.g. [LetsEncrypt](https://letsencrypt.org/)).\""
+   },
+   {
+    "option": "Use a built-in signer such as kubernetes.io/legacy-unknown for user applications",
+    "why_not": "Maintainer guidance says legacy-unknown is only supported via the v1beta1 API, and that new signers should be defined as named signerNames building on this API, e.g. spiffe.io/... or kubernetes.io/... proposals."
+   },
+   {
+    "option": "Back-fill token/duration hint honoring into existing kubernetes signer definitions",
+    "why_not": "Maintainer said that since the field is an addition, existing implementations would not honor it, so in-tree signers would honor it only from a stated version forward (rcomment:637435291, PR #2759, not merged as part of this KEP)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The Certificates API enables automation of x509 credential provisioning by providing a programmatic interface for clients of the Kubernetes API to request and obtain x509 certificates from a Certificate Authority (CA)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals - Build in support for specialized certificate issuance (e.g. LetsEncrypt)."
+   },
+   {
+    "ref": "comment:691334281",
+    "quote": "It looks like this KEP went stablein 1.19. Could you please update the KEP to have a status of implemented?"
+   },
+   {
+    "ref": "comment:625968251",
+    "quote": "The API explicitly allows requesting a named signer in a CertificateSigningRequest, so that other signers can make use of it."
+   },
+   {
+    "ref": "comment:848156775",
+    "quote": "This PR is attempting to update an already GA/implemented KEP. For ref, the underlying issue is closed"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9945,
+  "output": 1065
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

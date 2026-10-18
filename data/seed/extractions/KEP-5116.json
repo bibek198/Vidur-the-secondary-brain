@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5116",
+ "input_hash": "e7e58eb50453d0a8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5116 proposes streaming JSON and Protocol Buffer encoders for LIST (collection) responses served by the Kubernetes API server, encoding items one by one instead of marshalling the whole response into one block. The status is implemented, stage stable.",
+  "rationale": "Existing encoders marshal a LIST response into one block, so large LISTs (especially CRDs) hold gigabytes in API server memory until the client finishes reading. Streaming per-item encoding reduces and stabilizes peak memory, at the cost of some extra CPU and allocations. The scope is narrowed to collection types with conventional list structure, and YAML, as=Table and CBOR are non-goals.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Rely on WatchList (KEP-3157) instead",
+    "why_not": "The readme says \"we cannot depend on all users migrating to WatchList\"."
+   },
+   {
+    "option": "Wait for json/v2 promotion from experimental",
+    "why_not": "The readme notes it \"comes with even more risk\" and testing showed problems even with v1 compatibility enabled."
+   },
+   {
+    "option": "Run a runtime parity check between optimized and standard serialization",
+    "why_not": "Reviewers discussed it; liggitt argued unit tests can cover byte-for-byte comparison fully, and benluddy agreed constraining supported types made the extra check unnecessary."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Existing encoders marshall response into one block allocating GBs of data and keeping it until client reads the whole response."
+   },
+   {
+    "ref": "readme",
+    "quote": "Encoding items one by one significantly reduces the memory footprint required by the API server."
+   },
+   {
+    "ref": "readme",
+    "quote": "This alternative: Similar benefits can be achieved using `WatchList` effort, however we cannot depend on all users migrating to `WatchList`."
+   },
+   {
+    "ref": "comment:2644529393",
+    "quote": "stream json after optimization: cpu 6.22 c mem 60 Gb qps 0.1 - before optimization: cpu 11 c mem 146Gb"
+   },
+   {
+    "ref": "comment:2760630656",
+    "quote": "There is a ongoing discussion whether this KEP should supersede of KEP-3157 as on server side it achieves better results without need for separate api."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13584,
+  "output": 909
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

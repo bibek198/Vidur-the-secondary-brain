@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-3466",
+ "input_hash": "a04170b36e7ee91f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3466 adds a new /metrics/slis endpoint on Kubernetes components that returns health-check SLI data in Prometheus format, so monitoring agents can scrape it at higher frequency and build SLIs/alerts without a specialized parser. Status is implemented, stage stable.",
+  "rationale": "Health-check data is exposed in an unstructured format that external agents must parse and configure to turn into SLIs, which makes availability SLOs hard to build. The KEP proposes a uniform, structured SLI endpoint per component to fix this, with minimal per-component diff. Creating SLOs themselves is explicitly out of scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Status quo (keep unstructured health endpoints and implement parsing in an external component)",
+    "why_not": "The KEP states that this means you basically need to implement this in an external component, which is the problem being addressed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This process does not lend itself readily to the creation of availability SLOs, since we basically require an outside agent to parse the health endpoint and convert this signal into an SLI."
+   },
+   {
+    "ref": "readme",
+    "quote": "We are proposing to add a new endpoint on Kubernetes components `/metrics/slis` which returns SLI data in prometheus format."
+   },
+   {
+    "ref": "readme",
+    "quote": "Creation of SLOs are out of scope. This KEP specifically targets the creation of signals which can be used as SLIs."
+   },
+   {
+    "ref": "readme",
+    "quote": "Slight increase of memory usage for components (i.e. the breadth of the prometheus metric label values)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1912,
+  "output": 686
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

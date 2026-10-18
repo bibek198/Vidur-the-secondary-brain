@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1929",
+ "input_hash": "0ee00e4d34af8562",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1929 proposes a new `// +default` marker on built-in Go API types so defaults are declared in the types and emitted into OpenAPI, with defaulting functions generated from them. Status is implementable, stage stable, implementable from 2020-10-05.",
+  "rationale": "Built-in defaults live only in hand-written defaulting code, so they cannot be read from OpenAPI, which blocks SSA from filling in keys for associative lists and blocks CRDs embedding built-in types from getting the same defaults. The KEP adds a declarative marker that is routed to generated defaulters, and it keeps the existing defaulting mechanism unchanged. Reviewers raised open issues (struct default semantics, null and zero-value removal, JSON vs YAML syntax) and a reviewer said the KEP should not be marked implementable until a major gap was addressed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generate defaulting methods only, with no declarative marker",
+    "why_not": "A reviewer proposed this as simpler (\"Wouldn't it be simpler to just also generate defaulting methods?\"), but the KEP does not say it was rejected; a later reviewer also argued that generating defaulters alone is simpler, and the author chose to generate defaulting functions as an additional layer while keeping the current mechanisms."
+   },
+   {
+    "option": "Operate on JSON for defaulting instead of generating defaulters for native types",
+    "why_not": "A reviewer preferred this, but the KEP does not record a rejection; the author's reply was that operating on JSON or built-in types should be equivalent if the stated steps are followed."
+   },
+   {
+    "option": "Use reflection-based defaulting in the (de)serialization pipeline",
+    "why_not": "A reviewer objected that the project had just removed reflection-based conversion from the stack and did not want another pipeline step; the KEP does not say whether this was adopted or dropped."
+   },
+   {
+    "option": "Use a single-line YAML value syntax for the marker",
+    "why_not": "The author changed the format to YAML, but a reviewer recommended strict JSON because of YAML quoting and type-detection problems; the final syntax choice is not stated in the sources."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We're proposing using the `// +default` marker to declaratively define defaults (and have kubebuilder use that as well) since that mechanism still doesn't exist for built-in."
+   },
+   {
+    "ref": "comment:704240039",
+    "quote": "agree it should not be marked implementable with TBD approvers and unresolved questions"
+   },
+   {
+    "ref": "comment:704144325",
+    "quote": "At least there is a major part missing in the KEP. Please add that. Without I question the status \"implementable\"."
+   },
+   {
+    "ref": "rcomment:496171832",
+    "quote": "I'm planning on generating defaulting functions and keep the current mechanisms unchanged, this is just an additional layer."
+   },
+   {
+    "ref": "comment:703809142",
+    "quote": "I'd like this to make the enhancements freeze and it's 99% there. If you could send a follow-up getting the remaining comments addressed, that'd be great, thanks. /lgtm"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11320,
+  "output": 1183
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

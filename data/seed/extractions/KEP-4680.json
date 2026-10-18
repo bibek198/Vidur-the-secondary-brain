@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4680",
+ "input_hash": "229e82659559225c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4680 proposes exposing device health (served by Device Plugin or DRA) in Pod Status and events, so users can see when a Pod uses a failed or unhealthy device. The KEP is currently implementable at stage beta.",
+  "rationale": "Pods consuming failing devices crash-loop with little information about the cause, so the KEP surfaces device health in Pod Status. The design is intentionally small and keeps the change limited to health, excluding other device or CPU assignment details. Reviewers raised open questions about device identifiers (ResourceID) and a separate gRPC health interface for DRA, which the KEP resolves by keeping health-only reporting. The status is a fact given as implementable, stage beta, and the source confirms it has not GA'd.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "A Pod Resources-like API exposed by kubelet to query via kubectl or a node port",
+    "why_not": "The readme says it opens a new API surface and it would be impossible to get status for Pods that have already completed."
+   },
+   {
+    "option": "Exposing DRA status via ResourceClaims",
+    "why_not": "The readme says this leads to a debate on security so kubelet is limited to which statuses it can set; the alternative was not chosen."
+   },
+   {
+    "option": "Reporting health for CPUs or other resources in this KEP",
+    "why_not": "The readme says the KEP is intentionally scoped small and the Non-Goals exclude other resource assignment; sergeykanzhelev said he wanted to minimize changes in a single KEP."
+   },
+   {
+    "option": "Using a Conditions list for health",
+    "why_not": "Discussion shows this was questioned (johnbelamaric) and the author said a plain status value is reasonable and copied from NodeCondition-like types; the source does not record a final decision to drop Conditions."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP will fix this by exposing device health via Pod Status. This KEP is intentionally scoped small, but can be extended later"
+   },
+   {
+    "ref": "readme",
+    "quote": "Exposing unhealthy devices in Pod Status will provide a generic way to understand that the failure is related to the unhealthy device"
+   },
+   {
+    "ref": "readme",
+    "quote": "The race condition between pod termination and health updates would require significant complexity to fix (tombstoning ClaimInfo entries in the DRA manager), which was deemed not worth the benefit."
+   },
+   {
+    "ref": "rcomment:1634840006",
+    "quote": "The device plugin API doesn't (technically) report health status either. The \"health\" of a device is instead inferred as follows"
+   },
+   {
+    "ref": "comment:5342637568",
+    "quote": "This KEP has not graduated to stable. It is still in beta. kep.yaml still has status: implementable, not implemented."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12483,
+  "output": 1058
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

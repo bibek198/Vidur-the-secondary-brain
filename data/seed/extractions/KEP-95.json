@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-95",
+ "input_hash": "0cac0350ffbdf04f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-95 proposed graduating CustomResourceDefinitions from beta to GA (stable), by listing the remaining essential improvements: defaulting and pruning, a restricted v1 OpenAPI schema subset with a v1beta1 compatibility plan, a schema generator for Kubebuilder, and GA-ready webhook conversion and subresources APIs. The status is implemented, stage stable.",
+  "rationale": "CRDs had been in beta since Kubernetes 1.7 and were in widespread use, and the KEP states that feedback suggested they were nearing GA quality. The stated guiding principle was that missing features that push users toward non-Kubernetes-like APIs, or that cannot be added after a GA API exists, belong on the GA list. Full feature parity with native resources was explicitly a non-goal.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep CRDs in beta and add features incrementally",
+    "why_not": "The readme says the goal is to itemize the remaining improvements needed to move CRDs to GA, and that CRDs were already nearing GA quality. The sources do not record a specific rejection of this option."
+   },
+   {
+    "option": "Require full feature parity with native Kubernetes resource types before GA",
+    "why_not": "The readme explicitly lists full feature parity as a non-goal: \"Full feature parity with native kubernetes resource types is not a GA graduation goal.\""
+   },
+   {
+    "option": "Move CRD features like validation to GA in 1.11 or 1.12",
+    "why_not": "Maintainers declined for those releases: \"GA is not planned for 1.11\" and \"this will stay in beta for 1.12\". The sources do not give a reason beyond these statements."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Full feature parity with native kubernetes resource types is not a GA graduation goal. See above guiding principles."
+   },
+   {
+    "ref": "readme",
+    "quote": "If a feature cannot be added as an after-thought of a GA API, it or some preparation belongs on this list."
+   },
+   {
+    "ref": "readme",
+    "quote": "Defaulting and pruning for custom resources is implemented"
+   },
+   {
+    "ref": "comment:359771755",
+    "quote": "We will go to GA once all the issues that are not crossed out in https://github.com/kubernetes/kubernetes/issues/58682 will be complete."
+   },
+   {
+    "ref": "comment:524909297",
+    "quote": "Everything in the original post for planned 1.15* work looks to be merged."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12518,
+  "output": 961
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

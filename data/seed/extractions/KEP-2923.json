@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2923",
+ "input_hash": "cf0944a1bd656857",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2923 proposes a vendor-specific CSI migration for the in-tree Ceph RBD storage plugin, inheriting its design, test plan and PRR from parent KEP-625 and adding two feature gates. Status is implementable, stage beta.",
+  "rationale": "The Ceph RBD KEP is a vendor-specific child of the generic CSI Migration KEP (625), so it inherits design, test plan and PRR from it and adds its own feature gates. Reviewers questioned the third gate (InTreePluginCephRBDUnregister), which led maintainers to say it is not part of CSI migration design and is a general in-tree plugin disabling question. The beta implementation PR (kubernetes/kubernetes#108632) was made off by default, and the KEP was repeatedly removed from release milestones for missing freeze criteria.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Put the InTreePluginCephRBDUnregister gate under the CSI migration KEP's feature gates",
+    "why_not": "Maintainers said the flag 'is not part of the CSI migration design' and that it is 'a more general problem of how do we disable in-tree volume plugins'."
+   },
+   {
+    "option": "Replace the alpha feature gate entry with a beta entry",
+    "why_not": "msau42 said 'Instead of replacing alpha with beta, it should be a new entry for beta.'"
+   },
+   {
+    "option": "Use a config setting instead of a feature flag",
+    "why_not": "Raised as a question by ehashman; msau42 noted the flag is alpha and could change, but no decision to switch to config is recorded in the sources."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document present as a vendor specific KEP for the parent KEP CSI Migration. This inherits all the contents from its parent KEP."
+   },
+   {
+    "ref": "rcomment:704967233",
+    "quote": "technically speaking, this `InTreePluginCephRBDUnregister` flag is not part of the CSI migration design. It is just happen to be related with CSI Migration feature."
+   },
+   {
+    "ref": "rcomment:783310699",
+    "quote": "Instead of replacing alpha with beta, it should be a new entry for beta."
+   },
+   {
+    "ref": "comment:1081315312",
+    "quote": "This PR is the implementation to move to beta and off by default: https://github.com/kubernetes/kubernetes/pull/108632"
+   },
+   {
+    "ref": "comment:1563333955",
+    "quote": "sent out an email for the deprecation of Ceph RBD in-tree driver in 1.28"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10391,
+  "output": 988
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

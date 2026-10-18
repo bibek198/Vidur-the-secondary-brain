@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3094",
+ "input_hash": "4a14f77c7bcc7ce8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3094 adds two new fields to TopologySpreadConstraint so users can explicitly choose whether taints/tolerations are considered when computing pod topology spread skew. The KEP is implemented and at stable stage.",
+  "rationale": "Tainted nodes were counted like regular nodes in skew calculation, which could leave pods Pending when the constraint could only be met on tainted nodes. The change was made opt-in rather than a changed default because changing the default implicitly would be a breaking user-facing change, so an explicit switch was added instead.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change the current behavior implicitly so tainted nodes are excluded by default",
+    "why_not": "The community considered this a breaking user-facing change, so for backwards compatibility a switch for end-users was added instead."
+   },
+   {
+    "option": "Support specific taints in an array",
+    "why_not": "Listed as a non-goal; the authors judged there was no strong end-user demand, so it was delayed until needed."
+   },
+   {
+    "option": "Add an extendable field not limited to taints",
+    "why_not": "Huang-Wei proposed it during review, but the discussion settled on the explicit policy fields (nodeAffinity and nodeTaints policies) in the proposal; the source does not say this option was rejected in detail."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Introduce two new fields to `TopologySpreadConstraint` to define all node inclusion policies including nodeAffinity and nodeTaint."
+   },
+   {
+    "ref": "readme",
+    "quote": "we decided to add a feature as switch for end-users. - We have also discussed about whether to support specific taints"
+   },
+   {
+    "ref": "comment:2887661989",
+    "quote": "Given that this KEP has graduated to `stable`, once all the work is completed (including removing feature gates)"
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently when calculating pod topology spread skew, tainted nodes are treated the same as other regular nodes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13329,
+  "output": 796
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

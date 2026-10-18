@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-554",
+ "input_hash": "95ef2aaaca9305cb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-554 proposed per-node dynamic volume attach limits, tracked in the CSINode object, and a single scheduler predicate covering both in-tree and CSI volumes. The KEP's status is implemented at stable stage, per the given fact; the feature graduated to GA in 1.17.",
+  "rationale": "The existing limits came from cluster-wide defaults on Node objects, and CSI limits used prefixed, SHA-hashed resource names that were not user-readable. The proposal moves limits to CSINode and lets in-tree and CSI drivers share one limit. Discussion shows the feature stayed in beta through 1.13-1.16 and was announced as GA for 1.17, after which the KEP was updated to implemented. The sources do not explain the later 2021 PR dispute over status labels in detail.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep cluster-global defaults and in-tree-only hard-coded predicates (MaxEBSVolumeCount, MaxGCEPDVolumeCount, etc.)",
+    "why_not": "The design doc says it is 'problematic for CSI' and that the resource names cannot be made readable, and it prevents in-tree and CSI drivers from sharing a limit."
+   },
+   {
+    "option": "Proposal #730 (CSI volume limits via node resource names)",
+    "why_not": "The readme says this proposal 'replaces #730' and integrates in-tree and CSI volumes into one predicate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal replaces [#730](https://github.com/kubernetes/enhancements/pull/730) and integrates volume limits for in-tree volumes"
+   },
+   {
+    "ref": "readme",
+    "quote": "Track volume limits for CSI driver in `CSINode` object instead of `Node` and update scheduler to use `CSINode` object"
+   },
+   {
+    "ref": "comment:538360002",
+    "quote": "we intend to graduate this feature to GA in v1.17."
+   },
+   {
+    "ref": "comment:571058904",
+    "quote": "Hi @jeremyrickard, I just created https://github.com/kubernetes/enhancements/pull/1433 to update the KEP status."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-730",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "This proposal replaces [#730](https://github.com/kubernetes/enhancements/pull/730) and integrates volume limits for in-tree volumes"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12652,
+  "output": 1014
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

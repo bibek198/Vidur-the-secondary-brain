@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1491",
+ "input_hash": "7456b856cd1fd8fb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1491 adds a vSphere-specific CSI migration: the in-tree vSphere volume plugin is migrated to the vSphere CSI driver, with two new feature gates, inheriting all content from parent KEP-625 (CSI Migration). The KEP reached stable and is marked implemented.",
+  "rationale": "The readme states this is a vendor-specific KEP that inherits everything from parent KEP 625 and adds two feature gates. Because the test plan and graduation criteria lived in the parent KEP, sig-release repeatedly asked for them to be completed, and the discussion shows the KEP moved through beta (1.25 with gate on by default) to stable in 1.26. Stable was granted after msau42 accepted the resolution of FCD-related compatibility issues.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Delay GA until FCD compatibility issues with some storage systems are resolved",
+    "why_not": "Proposed by msau42 on 2022-11-04, but after the issues were documented and resolved he said he was comfortable proceeding with promotion to GA this release."
+   },
+   {
+    "option": "Track the vSphere migration separately with its own full test plan and graduation criteria in this KEP",
+    "why_not": "The sources say the KEP inherits its content from the parent KEP 625, and the test plan and graduation criteria were completed in the parent KEP, so this KEP did not carry them itself."
+   },
+   {
+    "option": "Remove the feature from the in-tree tracking sheet because it also has out-of-tree CSI driver components",
+    "why_not": "xing-yang stated that a feature requiring an in-tree change should stay tracked as an in-tree enhancement, and the vSphere migration has in-tree changes."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document present as a vendor specific KEP for the parent KEP CSI Migration. This inherits all the contents from its parent KEP."
+   },
+   {
+    "ref": "comment:1307765158",
+    "quote": "It looks like they have all been resolved, so I am comfortable proceeding with the promotion to GA this release."
+   },
+   {
+    "ref": "comment:1347549426",
+    "quote": "since this enhancement has graduated to stable can you please update"
+   },
+   {
+    "ref": "comment:1305856289",
+    "quote": "FCDs are still VMDKs, and have the same backingDiskURL path. Even after vmdk is converted to FCD, we can still operate on it using in-tree vSphere volume plugin."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12236,
+  "output": 958
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

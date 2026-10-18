@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5030",
+ "input_hash": "079d6052eeefe606",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5030 proposes making cluster-autoscaler aware of CSI volume attach limits when simulating scale-up (via templated CSINode objects for upcoming nodes), and having the kube-scheduler NodeVolumeLimits plugin refuse pods needing a CSI volume on nodes lacking that driver, but only when a cluster admin explicitly opts in via CSIDriver. Status is implementable, stage beta.",
+  "rationale": "Cluster-autoscaler ignores CSI attach limits for upcoming nodes, so it packs too many volume-using pods per node and undershoots scale-ups. The scheduler plugin also treats a missing CSINode as unlimited, letting pods land on nodes before their drivers publish. The KEP fixes CA simulation and makes the scheduler behaviour opt-in so that CA and scheduler changes stay decoupled and default behaviour is preserved.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Taint new nodes and have the CSI driver remove the taint once it starts",
+    "why_not": "Listed only as an alternative in the KEP and used by some vendors; the KEP does not say why it was not chosen."
+   },
+   {
+    "option": "Reuse the GPULabel pattern / scale-from-0 tags for node readiness",
+    "why_not": "Reviewers (towca) said the GPULabel pattern is limited and cross-provider tags should not be introduced; the proposal instead defers template predictions to cloud-provider integrations via TemplateNodeInfo()."
+   },
+   {
+    "option": "Make the scheduler change on by default",
+    "why_not": "Maintainers chose to delay default enablement of the scheduler feature gate until CA changes are GA and one more release has passed, due to CA/scheduler version skew during upgrades."
+   },
+   {
+    "option": "Node Readiness Gates proposal (kubernetes/enhancements#5233) for CSI readiness",
+    "why_not": "Described as a possible long-term solution; the author said the KEP is not blocked by it and plans to use the DRA-style design for now."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Only when explicitly opted in in CSIDriver instance, the scheduler CSI plugin assumes that \"no information about a CSI driver published in a CSINode\" means \"the node cannot handle any volumes\"."
+   },
+   {
+    "ref": "readme",
+    "quote": "For fake \"upcoming\" Nodes created in-memory by CA during scale-up simulations the corresponding \"upcoming\" CSINode is not created/taken into account."
+   },
+   {
+    "ref": "rcomment:2421812533",
+    "quote": "I am proposing that - we delay beta graduation(enabled by default) of scheduler featuregate until CAS change has been made GA and one more release has passed."
+   },
+   {
+    "ref": "rcomment:2421031674",
+    "quote": "predicting the CSI limits in scale-from-0 scenarios will be fully delegated to cloud-provider integrations via NodeGroup.TemplateNodeInfo()"
+   },
+   {
+    "ref": "comment:3398784548",
+    "quote": "I do think we need some form of approval from SIG scheduling though, given that there are changes in kube-scheduler proposed (however minimal)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12186,
+  "output": 1211
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

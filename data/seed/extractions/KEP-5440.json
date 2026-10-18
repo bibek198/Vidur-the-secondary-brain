@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5440",
+ "input_hash": "acbd807c5bff92d0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5440 proposes relaxing Job update validation so that CPU, memory, GPU, and extended resource requests and limits in a suspended Job's pod template can be mutated, letting a higher-level controller size a job before unsuspending it. The KEP is at stage beta and status implementable.",
+  "rationale": "Once a Job's resource requirements are fixed at creation, a queue or secondary controller cannot adjust them to current cluster capacity, GPU availability, or queue priority. The proposal relaxes update validation only for container resource specs on suspended jobs, which the readme says has minimal impact on the job controller because new pods simply use the updated specs. Running jobs are excluded to avoid disrupting workloads.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Allow mutating resource specs of running jobs",
+    "why_not": "Non-goals say this 'could disrupt running workloads and complicate resource management'."
+   },
+   {
+    "option": "Allow mutating resource specifications of pods directly",
+    "why_not": "Listed as a non-goal in the readme; the change targets the job pod template instead."
+   },
+   {
+    "option": "Support in-place pod resource updates",
+    "why_not": "The readme says this is 'covered by separate KEPs' and is out of scope."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This is a proposal to relax update validation on suspended jobs to allow mutating resource specifications in the job's pod template"
+   },
+   {
+    "ref": "readme",
+    "quote": "This change has minimal impact on the job-controller, as the job controller will use the updated resource specifications when creating new pods for the job."
+   },
+   {
+    "ref": "readme",
+    "quote": "Allow mutating resource specifications of jobs that are currently running. This could disrupt running workloads and complicate resource management."
+   },
+   {
+    "ref": "comment:3480919263",
+    "quote": "cc @macsko for lgtm as a current scheduling lead"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2875,
+  "output": 774
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

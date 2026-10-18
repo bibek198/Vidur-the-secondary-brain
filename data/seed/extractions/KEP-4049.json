@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4049",
+ "input_hash": "95cdbb4fd66cadcc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4049 proposes extending the VolumeBinding scheduler plugin's node scoring to account for dynamic provisioning, based on free/allocatable storage capacity, with a global VolumeBindingArgs option to prefer nodes with least or maximum allocatable capacity (default: maximum). Current status is implementable, stage beta.",
+  "rationale": "Scoring of nodes for PV provisioning only considered static (pre-created) PVs, so dynamic provisioning ignored free capacity; for local storage, admins want room for volume expansion or tighter packing. Reviewers raised concerns that summing static and dynamic scores could cancel out, so the design moved to scoring dynamic provisioning separately when static PVs are absent. Discussion also led to the feature gate being checked so that disabling it restores static-only scoring.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Separate scores for static and dynamic provisioning (method A)",
+    "why_not": "Discussed as more precise, but the author judged adding another scheduler plugin for dynamic-provisioned volumes to be going too far; a compromise implementation was chosen instead."
+   },
+   {
+    "option": "Weighted sum of static and dynamic scores (method B)",
+    "why_not": "Reviewers (xing-yang) noted it gives the same weighted score regardless of individual scores; the author moved away from it toward method A-style separation."
+   },
+   {
+    "option": "Summing pre-created PV and dynamic provisioning scores",
+    "why_not": "msau42 warned the scores could cancel each other out and lead to suboptimal placement and fragmentation for both configurations."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Node scores based on available space can be taken into account when performing dynamic provisioning."
+   },
+   {
+    "ref": "readme",
+    "quote": "The default setting is to prefer a node with the maximum allocatable."
+   },
+   {
+    "ref": "rcomment:1323650156",
+    "quote": "If we add the two scores together, then the two scores cancel each other out and it becomes a suboptimal choice for both configurations."
+   },
+   {
+    "ref": "rcomment:1791605886",
+    "quote": "the current design separates the scores for static and dynamic provisioning to avoid"
+   },
+   {
+    "ref": "comment:2401333668",
+    "quote": "The lgtm label has been added. Could you please approve it if there are no issues?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13224,
+  "output": 908
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

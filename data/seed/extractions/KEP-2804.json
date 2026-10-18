@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2804",
+ "input_hash": "f9cff33860b5da4e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2804 proposes defining standard lifecycle conditions (Waiting, Running, Progressing, Available, and related ones) for Deployment, DaemonSet, ReplicaSet/ReplicationController, StatefulSet and Job, so that workload controllers expose their state explicitly. It is currently implementable at alpha stage.",
+  "rationale": "Only the Deployment controller exposes a full status today, so the other workload controllers lack a consistent way to show their lifecycle state. The KEP extends conditions to the other controllers to consolidate this. The stated alternative, checking fields like AvailableReplicas and Replicas, is described as not always foolproof.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue to check AvailableReplicas, Replicas and other fields instead of having explicit conditions",
+    "why_not": "The KEP says this is not always foolproof and can cause problems."
+   },
+   {
+    "option": "Modify the existing states of the Deployment controller or change the definitions of statuses",
+    "why_not": "This is listed as a non-goal, so existing Deployment states are left unchanged."
+   },
+   {
+    "option": "Introduce a new API for existing conditions",
+    "why_not": "This is listed as a non-goal."
+   },
+   {
+    "option": "Add a Conditions field to CronJob",
+    "why_not": "This is listed as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Today only deployment controller has a status to fully reflect the state during its lifecycle."
+   },
+   {
+    "ref": "readme",
+    "quote": "Continue to check AvailableReplicas, Replicas and other fields instead of having explicit conditions."
+   },
+   {
+    "ref": "readme",
+    "quote": "This is not always foolproof and can cause problems."
+   },
+   {
+    "ref": "readme",
+    "quote": "The main goal of this enhancement is to compare all the workload conditions and consolidate the workload controller lifecycle state."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2210,
+  "output": 774
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2449",
+ "input_hash": "c77bffd3bb956262",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2449 proposed moving ExternalDNS out of the Kubernetes incubator into the kubernetes GitHub organization or kubernetes-sigs, under sponsorship of sig-network. Its status is recorded as implemented, stage stable.",
+  "rationale": "The Kubernetes incubation initiative was officially over, and ExternalDNS was still in the kubernetes-incubator organization, which was to be shut down. The KEP argues that shutting the project down or moving it outside official Kubernetes organizations would hurt users and fragment the community. The sources do not describe the move itself, so the basis for the implemented status is limited to the status history and the PR discussion about status labels.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Shut down the project",
+    "why_not": "The KEP says this would cause the community to rebuild the same solution and leave existing users without a future proof working solution."
+   },
+   {
+    "option": "Move the project outside the Kubernetes organizations, e.g. to Zalando's organization",
+    "why_not": "The KEP says this would hurt user trust and risk fragmentation, and that Zalando's organization would lack neutrality for the ecosystem."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The incubation has been officially discontinued and to quote @thockin \"Incubator projects should either become real projects in Kubernetes, shut themselves down, or move elsewhere\""
+   },
+   {
+    "ref": "readme",
+    "quote": "we propose to move ExternalDNS out of the Kubernetes incubator, to live either under the kubernetes or kubernetes-sigs organization to keep being a vital part of the Kubernetes ecosystem."
+   },
+   {
+    "ref": "readme",
+    "quote": "The most natural would be Zalando’s organization, being the company that put most of the work on the project."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "is the PR that moved this KEP to implemented. It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6092,
+  "output": 819
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,30 @@
+{
+ "kep": "KEP-423",
+ "input_hash": "a000b77b8504ba97",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-423 proposes graduating AWS Network Load Balancer (NLB) support in Kubernetes from alpha to beta. The KEP is in the implementable status at stage alpha.",
+  "rationale": "NLB support has been an alpha feature since Kubernetes v1.9, and the design document states that its code and API have since stabilized. The stated goal is to promote NLB support to beta. The status is implementable, so the decision is not yet final in the sense of shipped; the stage is still alpha.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Since then, the code and API has been stabilized. Therefore, we would like to graduate NLB support from Alpha to Beta."
+   },
+   {
+    "ref": "readme",
+    "quote": "Promote AWS Network Load Balancer support to beta version."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1680,
+  "output": 426
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

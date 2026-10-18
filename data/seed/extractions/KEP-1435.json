@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-1435",
+ "input_hash": "a680fa50570c32fb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1435 proposed relaxing Kubernetes API validation so that a type=LoadBalancer Service can declare ports with different L4 protocols (e.g., UDP and TCP on the same port number), with cloud provider LB controllers determining the actual exposure. The status is implemented, stage stable.",
+  "rationale": "Users wanted one IP address exposing multiple L4 protocols, but the API rejected mixed-protocol LoadBalancer Services because some clouds bill per protocol. The KEP proposed removing that validation restriction and analysing how billing and backing load balancer capabilities would be affected per cloud, with the option to make the feature configurable. The excerpt does not record the final implementation details or the outcome of that analysis.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the restriction that rejects Services with different protocols on type=LoadBalancer",
+    "why_not": "The KEP states that end users found it more beneficial to remove the restriction, and that the current rule forces workarounds such as two separate Services on clouds like GCE."
+   },
+   {
+    "option": "Create two separate LoadBalancer Services, one per protocol",
+    "why_not": "The KEP says this workaround does not exist in all cloud implementations, so it cannot serve as a general solution."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current restriction that rejects a Service creation request if it has two different protocol definitions was introduced because some cloud implementations may charge their load balancer users on a \"per protocol\" basis."
+   },
+   {
+    "ref": "readme",
+    "quote": "The first thing proposed here is to relax the API validation in Kubernetes that currently rejects Service definitions with different protocols if their type is LoadBalancer."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP is to investigate how the removal of that restriction would affect the billing of load balancer resources in the different clouds"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2337,
+  "output": 772
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

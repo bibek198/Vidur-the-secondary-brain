@@ -1,0 +1,45 @@
+{
+ "kep": "KEP-1205",
+ "input_hash": "11942f643e68bd28",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1205 Bound Service Account Tokens proposed an API for workloads to request audience-, time- and eventually key-bound JSON Web Tokens, plus a new distribution mechanism for service account tokens with a backwards-compatible migration path. Its status is implemented, stage stable, and kep.yaml records that it replaces KEP-2451 Service Account Token Volumes.",
+  "rationale": "The existing service account token mechanism did not meet sig-auth's security and scalability requirements, so the KEP introduces a new provisioning mechanism. The design had to migrate from the existing mechanism backwards compatibly. Reviewers focused on upgrade and rollback safety: they required an upgrade test before enabling the feature by default and asked for metrics on stale tokens and CA configmap sync errors. The KEP was approved in PRR review by deads2k.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP describes an API that would allow workloads running on Kubernetes to request JSON Web Tokens that are audience, time and eventually key bound."
+   },
+   {
+    "ref": "rcomment:474122280",
+    "quote": "Before we automatically enable this feature in existing environments on upgrade, we need tests that ensure that path will function properly."
+   },
+   {
+    "ref": "rcomment:493833006",
+    "quote": "I think just `serviceaccount_stale_tokens_total`: ``` kubectl get --raw /metrics | grep serviceaccount_stale_tokens_total"
+   },
+   {
+    "ref": "comment:775332134",
+    "quote": "Good thought and time put into refining the failure modes and how to detect them. This is an excellent PRR example. /approve /lgtm"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2451",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-1205 replaces KEP-2451 Service Account Token Volumes"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6707,
+  "output": 785
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

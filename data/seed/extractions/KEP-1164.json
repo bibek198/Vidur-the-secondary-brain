@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1164",
+ "input_hash": "74ce18b89a962b1f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1164 proposed deprecating the SelfLink field in ObjectMeta and ListMeta, then removing it, by gating the code that sets it behind a feature gate and eventually deleting the field. The KEP status is implemented, stage stable.",
+  "rationale": "The README argues SelfLink adds no useful information, since the server sets it to the request URL, and that setting it costs performance through memory allocations and a late mutation in the generic apiserver. The plan was to deprecate in v1.16, switch off the feature gate in v1.20, and remove the code in v1.21. Later discussion shows the timeline slipped: wojtek-t said graduation to stable would be delayed to 1.24 to allow more time. Downstream reports of breakage, such as an NFS provisioner failing with \"selfLink was empty\", appeared during this period.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove SelfLink in v1.21 as originally planned",
+    "why_not": "The sources show the removal was delayed. wojtek-t said 'we will be delaying graduating to stable to 4 releases after beta (i.e. 1.24) just to give more time on it', and the status is now implemented at stable."
+   },
+   {
+    "option": "Keep SelfLink and introduce source-cluster or location fields instead",
+    "why_not": "This was explicitly a non-goal: 'Introduce location/source-cluster fields to ObjectMeta or ListMeta objects.'"
+   },
+   {
+    "option": "Skip the Beta stage and disable the gate directly",
+    "why_not": "The sources say deads2k suggested a Beta stage in which the field stays present but is not propagated, so people can give feedback and re-enable it before fixing their stuff if needed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "I propose to remove that field after necessary (long enough) deprecation period."
+   },
+   {
+    "ref": "readme",
+    "quote": "We will also introduce a feature gate to allow disabling setting `SelfLink` fields and opaque the logic setting it behind this feature gate."
+   },
+   {
+    "ref": "comment:756102263",
+    "quote": "we will be delaying graduating to stable to 4 releases after beta (i.e. 1.24) just to give more time on it."
+   },
+   {
+    "ref": "comment:679129617",
+    "quote": "This is what @deads2k suggested before Alpha that we should have Beta when the field will be there but it will not be propagated, to give people change for feedback"
+   },
+   {
+    "ref": "comment:1121147364",
+    "quote": "Since this feature has been **fully deprecated** now in K8s version 1.24. Please update the [kep.yaml]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7063,
+  "output": 1005
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3140",
+ "input_hash": "aedfa191f192cee5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3140 adds an optional `.spec.timeZone` field to the CronJob resource so users can set the IANA time zone name used to schedule Jobs, instead of relying on the kube-controller-manager's local time zone. Empty or unset keeps the current behavior.",
+  "rationale": "CronJob schedules were evaluated in the time zone of kube-controller-manager, which users could not control per resource. Earlier objections centered on needing an external tz database, but Go 1.15's time/tzdata lets the database be embedded in the binary. With CronJob now GA, the proposal adds the field to satisfy the original request.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Specify the time zone as an offset to UTC",
+    "why_not": "The design says using the name instead seems more user friendly."
+   },
+   {
+    "option": "Keep relying on the kube-controller-manager time zone",
+    "why_not": "The proposal exists to satisfy the original request for time zone support, which the status quo does not provide; the sources do not give a further reason."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Starting from [golang 1.15](https://go.dev/doc/go1.15) `time/tzdata` package can be embedded in the binary thus removing the requirement for external database."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add the field `.spec.timeZone` to the CronJob resource. The cronjob controller will take the field into account when scheduling the next Job run."
+   },
+   {
+    "ref": "readme",
+    "quote": "In case the field is not specified or is empty, the controller will maintain the current behavior, which is to rely on the time zone of the kube-controller-manager process."
+   },
+   {
+    "ref": "readme",
+    "quote": "Another approach was to specify time zone as an offset to UTC, but using the name instead seems more user friendly."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2117,
+  "output": 740
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

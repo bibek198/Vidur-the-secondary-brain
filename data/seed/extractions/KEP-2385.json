@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2385",
+ "input_hash": "297c6ed170aefefa",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2385 proposes a new key:value generator plugin framework for Kustomize SecretGenerator, letting users specify a plugin type and instance under kvSources in GeneratorArgs, with Go plugins as the first supported type. Its status is implementable, stage alpha.",
+  "rationale": "Users need to generate Secrets from secret management tools, but Kustomize only reads secret values from local files, and running arbitrary commands from kustomization.yaml raises security concerns. The proposal adds a pluginType/name/args syntax so that builtin generators and future plugin types share one API. Go plugins come first so kustomize contributors can add generators without forking, and the developer bears the responsibility for bundling the binary with its shared libraries.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep reading secret values only from local files via files/env/literals",
+    "why_not": "The readme says this 'raises security concerns about file lifetime and access' and gives no way to integrate with secret management tools."
+   },
+   {
+    "option": "Execute arbitrary commands from kustomization.yaml to read secret values",
+    "why_not": "The readme says this 'introduces concerns in a world where kustomization files can be used directly from the internet when a user runs kustomize build'."
+   },
+   {
+    "option": "Execute-binary plugin type as the first supported type",
+    "why_not": "The readme says other kinds of plugins, such as an execute-this-binary plugin, 'should be subsequently easy to add, and could be appropriate for end user use (but would require consideration in a KEP first)'. So it was deferred, not chosen first."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently Kustomize only supports reading secret values from local files which raises security concerns about file lifetime and access."
+   },
+   {
+    "ref": "readme",
+    "quote": "Reading secret values from the execution of arbitrary \"commands\" in a kustomization.yaml file introduces concerns in a world where kustomization files"
+   },
+   {
+    "ref": "readme",
+    "quote": "The first type supported will be [goplugins](https://golang.org/pkg/plugin), to enable kustomize source code contributors to add custom KV generators"
+   },
+   {
+    "ref": "readme",
+    "quote": "Other kinds of plugins, e.g. an _execute this binary_ plugin, should be subsequently easy to add, and could be appropriate for end user use (but would require consideration in a KEP first)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Kustomize maintainers expect developers who use a goplugin to understand that a kustomize binary and any goplugins expected to work with it must be compiled on the same machine"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3305,
+  "output": 1004
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

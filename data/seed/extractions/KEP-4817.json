@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4817",
+ "input_hash": "689e73c21eebfa12",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4817 proposes adding a Devices field to ResourceClaim.Status so DRA drivers can report driver-specific status for each allocated device, with a standardized network-interface data shape (interface name, addresses, MAC). Its status is implementable, stage stable.",
+  "rationale": "Allocated device characteristics set during configuration are invisible to users, which hinders debugging, verification, and integration with network services. The KEP adds per-device status to the claim, with a standard network data type as a first step. Design discussion centered on the API shape (opaque data vs. typed network data, one-of vs. non-exclusive fields) and on using \"Allocated\" in the name, and the KEP was approved by the DRA, PRR, and SIG Network reviewers.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Separate Conditions and DeviceInfo fields with a one-of DeviceInfo type (Option 5)",
+    "why_not": "Reviewers questioned whether the one-of construction helps; johnbelamaric said 'I am not sure the one-of construction actually helps' and suggested keeping the approach already in the KEP."
+   },
+   {
+    "option": "Single Data []DeviceData list with one populated sub-option per item",
+    "why_not": "Proposed by johnbelamaric and refined by thockin as a slice variant. It was discussed but not recorded as the final choice; the API shape was deferred to API review."
+   },
+   {
+    "option": "Reporting status for devices that failed to allocate",
+    "why_not": "pohly argued that if a device cannot be allocated, there is no reason to publish anything about it in the claim, because the same information would have to be copied to every claim that might use it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal enhances the `ResourceClaim.Status` by adding a new field `Devices`. The new field allows drivers to report driver-specific device status data for each allocated device in a resource claim."
+   },
+   {
+    "ref": "rcomment:1793872001",
+    "quote": "I don't hate this. Some questions, but mostly minor. I do worry about the VAP being too rigid for real life."
+   },
+   {
+    "ref": "rcomment:1774914836",
+    "quote": "if a device cannot be allocated for a claim, then there is no reason to publish anything about it in the claim. Otherwise that same information would have to be added to all claims which potentially might have used such a device."
+   },
+   {
+    "ref": "comment:2405591017",
+    "quote": "there were no major concerns or objections stated (though there was a soft suggestion that we might want to explore more options on how we handle the status if we have time)"
+   },
+   {
+    "ref": "comment:2403875823",
+    "quote": "So now @thockin has already approved but left an open question for @danwinship and @aojea so I will approve but leave the LGTM to them."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11862,
+  "output": 1049
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

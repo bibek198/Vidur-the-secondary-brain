@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2290",
+ "input_hash": "6ea062690376b0de",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2290 proposed a new `ok-to-test` label, applied to non-member PRs after a trusted reviewer comments `/ok-to-test`, so the trigger plugin can determine PR trust from a label instead of scanning every comment. The KEP is marked implemented, stage stable.",
+  "rationale": "Identifying untrusted PRs was easy via the `needs-ok-to-test` label, but finding a `/ok-to-test` comment meant scanning every comment, adding code complexity and API token use. The proposal adds an `ok-to-test` label that is required on non-member PRs before the trigger plugin starts tests, and applies it through a single GenericCommentEvent handler. The KEP does not change the process for organization members.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep scanning all PR comments for `/ok-to-test` to determine trust",
+    "why_not": "The readme says this 'is difficult and involves scanning every comment for a `/ok-to-test`, which increases code complexity and API token consumption.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "However the contrary is difficult and involves scanning every comment for a `/ok-to-test`, which increases code complexity and API token consumption."
+   },
+   {
+    "ref": "readme",
+    "quote": "We suggest introducing a new label named `ok-to-test` that would be required on any non-member PR before automatic test jobs can be started by the `trigger` plugin."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP will not change the current process for members of the organization."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1986,
+  "output": 659
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

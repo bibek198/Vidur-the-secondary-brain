@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-598",
+ "input_hash": "194ec3b522c6e871",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-598 proposed adding CRD version conversion via a conversion webhook that the API server calls, with per-version schema, subresources, and printer columns in the CRD spec. The KEP is recorded as implemented at stable stage (status fact: implemented from 2020-12-30).",
+  "rationale": "Version conversion was the most requested CRD improvement, and users needed to evolve APIs without breaking existing clients. The design avoided defaulting per-version fields to top-level fields because that would break backward compatibility, and it instead made a webhook host perform conversion. The sources record the feature's progress through several release cycles, but they do not explain the exact reasoning for the 2020-12-30 implemented status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Defaulting per-version fields to top-level spec fields",
+    "why_not": "Per the design, \"the defaulting either implicit or explicit has the potential to break backward compatibility as we have two sets of fields representing the same feature.\""
+   },
+   {
+    "option": "Field discriminator using Spec.Conversion.Strategy",
+    "why_not": "The design says it \"would work but the proposed solution is keeping the mutual excusivity in a broader sense and is preferred.\""
+   },
+   {
+    "option": "Per-version override (per-version X overrides top-level X)",
+    "why_not": "The design says the overriding behaviour \"need to be kept in CRD v1 and that looks too complicated and not clean to keep for a v1 API.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The API Server is extended to call out to a webhook at appropriate parts of the handler stack for CRDs."
+   },
+   {
+    "ref": "readme",
+    "quote": "Hence the defaulting either implicit or explicit has the potential to break backward compatibility as we have two sets of fields representing the same feature."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10106,
+  "output": 867
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

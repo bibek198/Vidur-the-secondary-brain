@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-4358",
+ "input_hash": "1996384e810484d8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4358 adds a `selectableFields` list to CustomResourceDefinition versions so that custom resources can be filtered with `--field-selector` on an allow-listed set of fields (e.g. spec.color), instead of putting such data into labels. The KEP is at status implementable, stage stable.",
+  "rationale": "Extension authors who need to filter on spec or status fields today must copy that data into labels or write it twice, which the KEP wants to avoid. The design keeps the feature narrow: an allow list of fields, string-equality matching, and no arbitrary or nested field selection, to keep apiserver cost close to label selectors. Built-in declarative support and \"in\"/\"not in\" operators were moved out of scope so the KEP could focus on CRDs.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Support arbitrary field selection on all fields",
+    "why_not": "The KEP lists costs to apiserver of evaluating filters or maintaining indices, and lack of direct etcd filtering support, as reasons this is complicated."
+   },
+   {
+    "option": "Use CEL expressions as the selection mechanism",
+    "why_not": "A reviewer argued that keeping user-specifiable CEL evaluation to the write path is better, since a list evaluating CEL over many items is poorly bounded. CEL was deferred from this KEP."
+   },
+   {
+    "option": "Add in/not-in operators to field selectors in this KEP",
+    "why_not": "wojtek-t suggested separating it into its own KEP because it is independent of CRD field selectors, and the author moved it to future work."
+   },
+   {
+    "option": "Declarative built-in field selector support",
+    "why_not": "The author moved built-in declarative support out of this KEP due to time constraints for 1.30, scoping it to CRD support only."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add an allow list of selectable fields to CustomResourceDefinitions. - Performance and resource consumption characteristics are roughtly equivalent to label selectors."
+   },
+   {
+    "ref": "rcomment:1449501815",
+    "quote": "I'm going to prototype this. In the meantime, I'm moving the declarative built-in support to future work. I'm time constrained on what I can get done in 1.30"
+   },
+   {
+    "ref": "rcomment:1448616416",
+    "quote": "So I would suggest separating these two and tracking in/not-in as a separate KEP."
+   },
+   {
+    "ref": "rcomment:1456846757",
+    "quote": "Keeping user-specifiable cel evaluations to the write path seems like a better idea to me. A single list having to evaluate a cel expression on poorly bounded quantities of list items doesn't seem great"
+   },
+   {
+    "ref": "comment:2585947381",
+    "quote": "Now that this KEP has graduated to `stable`, could we update the KEP status in kep.yaml from `implementable` to `implemented`?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13400,
+  "output": 1079
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

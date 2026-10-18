@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-6012",
+ "input_hash": "0ecbfbf446bc5d37",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6012 proposes a CompositePodGroup API (a Workload-level type for nested groups of PodGroups) for sig-scheduling. Its status is implementable at alpha, from 2026-06-15.",
+  "rationale": "The KEP models a hierarchy of groups (CompositePodGroup over PodGroups) so the scheduler can treat a multi-layer workload as one scheduling unit. Reviewers questioned whether CompositePodGroup should be a distinct type rather than a PodGroup variant, citing different concepts. Discussion also flagged open issues for later phases, such as heterogeneous multi-layer groups, priorities, and UnschedulableAndUnresolvable semantics, which were deferred to Beta or follow-ups. The source comments do not record an explicit final resolution of the type-distinction question beyond the KEP's implementable status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse PodGroup with a policy that determines the object types it can reference (e.g. HomogeneousSchedulingPolicy)",
+    "why_not": "Reviewer dom4ha argued Pods and PodGroups need different definitions and that the type-based policy claim needed more justification; the sources do not record a final rejection of this option."
+   },
+   {
+    "option": "Use a dedicated type for groups of not-yet-existing objects (reservations)",
+    "why_not": "Raised by dom4ha as a possible alternative; the sources do not say it was adopted or rejected."
+   },
+   {
+    "option": "Single CompositePodGroupTemplate instead of a slice in the Workload spec",
+    "why_not": "Raised by mm4tt as a trade-off to document; the sources say the rationale should be documented but do not give the authors' full reasoning."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3202371198",
+    "quote": "The second one (CompositePodGroup) no longer represents a group of pods - it represents a complex structure of potentially nested groups."
+   },
+   {
+    "ref": "rcomment:3247752227",
+    "quote": "In Alpha we can assume that everything within a tree has the same priority. For Beta, we will need to discuss different options"
+   },
+   {
+    "ref": "rcomment:3311701691",
+    "quote": "In alpha, we'll be doing a single pass only."
+   },
+   {
+    "ref": "rcomment:3347548048",
+    "quote": "The assumption that we only keep roots in the queue simplifies the logic and mental model significantly, and I'd prefer to stick with it."
+   },
+   {
+    "ref": "review:4376552742",
+    "quote": "It's very well written KEP that is easy to read. The approach looks good to me including the details."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9208,
+  "output": 991
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

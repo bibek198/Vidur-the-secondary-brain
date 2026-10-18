@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2497",
+ "input_hash": "a70b0477424f5be7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2497 proposes creating a sig-cluster-lifecycle sub-project, Kubernetes Image Builder, that takes an existing bootable disk image and decomposes image creation into well-defined phases to make it Kubernetes-ready. Its status is provisional, with no final decision recorded.",
+  "rationale": "Many tools already build Kubernetes images, each opinionated and end-to-end, so the KEP argues for distilling common requirements into a shared utility. The proposal decomposes image building into phases that different tools can integrate with. The document says it is intentionally high level and defers design choices until the subproject matures.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use existing opinionated end-to-end image tools (e.g., Wardroom, Cluster API providers, amazon-eks-ami, talos, LinuxKit, kube-deploy imagebuilder)",
+    "why_not": "The readme says these tools are opinionated end-to-end, and the KEP aims to distill their common requirements into one shared utility and user experience."
+   },
+   {
+    "option": "Prior Cluster API workstream options document",
+    "why_not": "The readme mentions a prior Cluster API document outlining several options but does not say why it was not chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "there are a plethora of tools that provide an opinionated end-to-end user story around image creation, but we’ve observed it can be decomposed into a series of steps, or phases"
+   },
+   {
+    "ref": "readme",
+    "quote": "The purpose of this proposal is to distill down the common requirements and provide an image building utility that can be leveraged by the Kubernetes ecosystem."
+   },
+   {
+    "ref": "readme",
+    "quote": "It should be noted that this document is intentionally high level and purposefully omits design choices which should be made at a later date"
+   },
+   {
+    "ref": "readme",
+    "quote": "The purpose of this document is to request the creation of a sub-project of sig-cluster-lifecycle to address this space."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2843,
+  "output": 795
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

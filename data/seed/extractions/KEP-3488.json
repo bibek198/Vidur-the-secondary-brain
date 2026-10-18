@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3488",
+ "input_hash": "2371ff67c838d3a1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3488 proposed a new ValidatingAdmissionPolicy kind in admissionregistration.k8s.io that evaluates CEL rules in-process as an alternative to validating admission webhooks. The KEP is implemented and at stable stage.",
+  "rationale": "Admission webhooks add infrastructure, a network hop, and reliability and operational burden, which forces operators to choose between failing open and failing closed. The KEP proposes in-process CEL validation with request matching, access to old objects, and a policy/binding/params split, while not replacing webhooks for cases that need external calls. Its status history shows it moved from provisional (2022-09-28) to implemented (2024-06-04).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep validating admission webhooks for all policy enforcement",
+    "why_not": "The readme lists webhook drawbacks: extra infrastructure, added latency, lower reliability, and operational burden. It states the KEP is meant to be an alternative for the vast majority of validating use cases."
+   },
+   {
+    "option": "Use authz (RBAC-style) checks instead of a custom configuration object for the policy examples",
+    "why_not": "A reviewer noted that authz makes admission execution non-deterministic and prevents performance analysis of validation. The sources do not record a final resolution beyond this discussion."
+   },
+   {
+    "option": "Inline the parameter configuration in the policy or use a PolicyConfiguration kind with a config reference",
+    "why_not": "Discussion favored a separate config reference, but the sources record that inline CRD and the PolicyConfiguration alternatives had major problems, including malformed spec.match and config ordering issues."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Introduce a new `ValidatingAdmissionPolicy` kind to the admissionregistration.k8s.io group."
+   },
+   {
+    "ref": "readme",
+    "quote": "Admission webhooks are extremely flexible, but have a few drawbacks as compared to in-process policy enforcement"
+   },
+   {
+    "ref": "readme",
+    "quote": "It is not intended to replace validating admission webhooks altogether, however, since these can support functionality that may not make sense to provide in-tree."
+   },
+   {
+    "ref": "rcomment:971075587",
+    "quote": "Another disadvantage to using authz is it means the admission execution is no longer deterministic, and we can't take advantage of the performance analysis for validation."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11881,
+  "output": 939
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

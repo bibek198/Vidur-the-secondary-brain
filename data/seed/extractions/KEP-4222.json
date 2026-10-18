@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4222",
+ "input_hash": "4e1acbe8e52e438a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4222 proposes CBOR as an alternative wire format for Kubernetes API clients and servers, and as the storage serialization for custom resources in apiextensions-apiserver, replacing JSON there. Its status is implementable at stage beta.",
+  "rationale": "Custom resources cannot use Protobuf, which needs code generation and compile-time schemas, so high-volume custom resources pay JSON codec costs on every request hop. The readme cites benchmarks of up to roughly 8x faster custom resource encode/decode and 2x faster dynamic client decode, from CBOR as a self-describing binary format. The stated goal is to cut CPU and heap churn where Protobuf cannot be used, while not replacing Protobuf or all JSON/YAML.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep JSON as the only serialization for custom resources",
+    "why_not": "The readme says custom resources are at a serious efficiency disadvantage versus native resources, and benchmarks suggest CBOR reduces that cost. The sources do not record a reason this option was rejected."
+   },
+   {
+    "option": "Use a Kubernetes-specific length-prefixed CBOR framing scheme",
+    "why_not": "A reviewer (benluddy) said it would be preferable to adopt the standardized CBOR Sequences scheme rather than a Kubernetes-specific framing, though length-prefixed framing may perform better. The sources do not show a final framing decision."
+   },
+   {
+    "option": "Two separate feature gates, one for storage and one for serving",
+    "why_not": "Suggested by sftim. jpbetz preferred a single gate that stops storing and serving CBOR but still reads it from storage, so turning it off is safe. The sources do not show a final decision."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It will supersede JSON in apiextensions-apiserver for storage serialization of custom resources."
+   },
+   {
+    "ref": "readme",
+    "quote": "Benchmarks suggest that custom resource and dynamic client encode and decode operations can be made up to approximately 8x and 2x faster"
+   },
+   {
+    "ref": "readme",
+    "quote": "Replace existing usage of Protobuf. - Substantially reduce the size of encoded objects (a modest size reduction is anticipated)."
+   },
+   {
+    "ref": "rcomment:1331684423",
+    "quote": "it would be preferable to adopt that scheme vs. defining a CBOR framing scheme that is Kubernetes-specific."
+   },
+   {
+    "ref": "comment:2405650035",
+    "quote": "I'm onboard with a single feature gate where we stop storing an serving CBOR, but continue to support reading it from storage."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11892,
+  "output": 1025
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

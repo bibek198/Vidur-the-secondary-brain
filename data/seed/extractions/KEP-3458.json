@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3458",
+ "input_hash": "68282f8128fe7860",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3458 proposes that the KCCM service controller stop adding/removing Nodes from load balancer node sets when a Node becomes NotReady/Ready or gets the ToBeDeletedByClusterAutoscaler taint, gated behind a new StableLoadBalancerNodeSet feature gate. The status is implemented, stage stable.",
+  "rationale": "Removing a Node from the load balancer node set during transient readiness or termination instantly kills its connections, preventing connection draining. Frequent load balancer re-syncs also cause excessive cloud API calls that can trigger rate limiting. The KEP stops re-syncing the node set in these cases to enable draining and reduce API calls.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep re-configuring the load balancer node set on Ready/NotReady and taint changes",
+    "why_not": "The readme says this removal terminates connections instantly and causes excessive cloud provider update calls, which the KEP aims to fix."
+   },
+   {
+    "option": "Change health checks to drain connections while a Node is draining",
+    "why_not": "The readme lists enabling connection draining while a Node is draining as a non-goal because it requires health check changes."
+   },
+   {
+    "option": "Also stop re-configuring for fully deleted or newly added nodes, or nodes annotated exclude-from-external-load-balancers",
+    "why_not": "The readme lists these as non-goals; the KEP does not change that behavior."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP proposes that the service controller stops synchronizing the load balancer node set in these cases"
+   },
+   {
+    "ref": "readme",
+    "quote": "a new feature gate `StableLoadBalancerNodeSet` will be introduced, which will be used to enable the more optimal behavior"
+   },
+   {
+    "ref": "readme",
+    "quote": "removing the Node in question from the load balancers' node set will cause all connections on that node to get terminated instantly"
+   },
+   {
+    "ref": "readme",
+    "quote": "re-syncing load balancers like this can lead to rate-limiting by the cloud provider due to an excessive amount of update calls"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2481,
+  "output": 843
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

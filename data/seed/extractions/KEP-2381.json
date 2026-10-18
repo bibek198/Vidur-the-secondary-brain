@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2381",
+ "input_hash": "477163e1c101b4b4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2381 proposed narrowing kubectl cp to basic single file or directory copying between local environments and pods, pushing advanced features (symlinks, permission changes) to kubectl exec with tar or shell commands. The KEP is in provisional status and the discussion records that the issue was closed without changing kubectl cp.",
+  "rationale": "Repeated security CVEs and fixes in kubectl cp made it costly to keep the command both useful and secure, per the readme. The proposal was to keep only basic copy functionality and document kubectl exec | tar alternatives, which avoid path traversal and symlink escapes. The maintainer comment says the issue and KEP only summarized discussions, so no change was planned.",
+  "outcome_reason": "The sources do not give an explicit rejection rationale. The only outcome statement is the maintainer's comment that the KEP was a summary of discussions and that no changes are planned. The STATUS is provisional, which the sources do not reconcile with that closure.",
+  "alternatives": [
+   {
+    "option": "Shell out to tar from within kubectl cp for advanced use cases",
+    "why_not": "The readme lists this as an open decision for the community, and the sources do not record a choice between it and leaving suggestions in error output."
+   },
+   {
+    "option": "Rewrite kubectl cp to not use tar by modifying CRI",
+    "why_not": "The readme places this under Non-Goals and says it requires a separate proposal weighing cost and benefit."
+   },
+   {
+    "option": "Make kubectl cp functional in scratch-based containers via ephemeral containers",
+    "why_not": "The readme lists this under Non-Goals, requiring a separate proposal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It is increasingly difficult to maintain a cp command that is both useful and secure."
+   },
+   {
+    "ref": "readme",
+    "quote": "Using `kubectl exec ...| tar` provides transparency when copying files as well as mitigations for path traversals, symlink directory escapes, tar bombs, and other exploits."
+   },
+   {
+    "ref": "comment:874630031",
+    "quote": "This issue and KEP was only to summarize the discussions about `kubectl cp`, as such we don't plan on changing anything. /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3267,
+  "output": 869
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

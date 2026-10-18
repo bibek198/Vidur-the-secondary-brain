@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-1013",
+ "input_hash": "4946b1ce45ca61f1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1013 proposes adding watch support to the resource, custom, and external metrics APIs (metrics.k8s.io, custom.metrics.k8s.io, external.metrics.k8s.io) so clients can stream new metric data points instead of polling. Its status is provisional, as of 2021-01-21.",
+  "rationale": "Clients such as HPA poll metrics APIs in a loop, which adds latency between when a value is known and when the client reads it. The proposal makes GET requests accept a watch parameter and streams only ADDED events for new data points, since old metric values are never modified. The resourceVersion parameter is ignored and recent data points are returned, so the APIs never return 410 Gone.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep request-response polling only",
+    "why_not": "The readme says polling forces clients interested in up-to-date values to poll in a loop, adding latency; the watch goal addresses this."
+   },
+   {
+    "option": "Support resourceVersion-based retrieval of old values",
+    "why_not": "The readme states metrics carry no resourceVersion, so this is not possible; the parameter is ignored instead."
+   },
+   {
+    "option": "Graduate the metrics APIs to GA as part of this work",
+    "why_not": "The readme lists GA graduation as a non-goal, out of scope for this work."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "All of them support reading the metrics in a request-response manner, forcing the clients (e.g. HPA) interested in up-to-date values to poll in a loop."
+   },
+   {
+    "ref": "readme",
+    "quote": "Since old metric values are never modified, the only supported update type will be `ADDED`, when a new data point appears."
+   },
+   {
+    "ref": "readme",
+    "quote": "this parameter will be ignored and all recent data points will be returned instead. This means metrics APIs will never return `410 Gone` error code."
+   },
+   {
+    "ref": "readme",
+    "quote": "Graduate the APIs to GA. This needs to be done eventually, but is out of scope for this work."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2223,
+  "output": 808
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5027",
+ "input_hash": "a4897e994377be86",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5027 proposes a new cluster-scoped ResourceSlicePatch API so privileged users can override or extend device attributes (and, via an extension in KEP-5055, device taints) without changing driver-published ResourceSlices. The scheduler merges patches into device information as it reads ResourceSlices. The KEP is currently provisional at alpha stage.",
+  "rationale": "DRA drivers publish device information in ResourceSlices, and admins have no persistent way to change how devices appear, for example to take a device offline. The patch object is kept separate so the change survives ResourceSlice removal or update. Reviewers weighed this against patching slices in the background and against using ResourceClaims for reservations; the discussion centered on the cost of the mechanism versus narrower alternatives. The sources do not record a final acceptance decision beyond the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Storing the result of patching in ResourceSlice (a controller applies ResourceSlicePatches to ResourceSlices)",
+    "why_not": "Per the discussion, it would duplicate attributes in slice status, make slices too large, and cause the controller and the CSI driver to fight over the slice spec; a single patch could also force many slice updates at once."
+   },
+   {
+    "option": "Using statically allocated ResourceClaims to define admin taints (reserving devices)",
+    "why_not": "Per the discussion, ResourceClaims cannot select devices by driver/pool/device, cannot express tolerations that match some taints and not others, and are not a convenient API. The reviewer later withdrew the suggestion, saying it was not feasible to agree on within a week."
+   },
+   {
+    "option": "Dropping the attribute-based approach in favour of a dedicated offline/taint API",
+    "why_not": "The discussion says the KEP still fits because the offline proposal relies on ResourceSliceOverride; the reviewer was leaning towards replacing the kubernetes.io/offline attribute with a proper API, not dropping the override mechanism itself."
+   },
+   {
+    "option": "Background patching of objects in informers so consumers see patched objects",
+    "why_not": "Raised as a possible next step, not adopted in this KEP; the reviewer said they definitely did not propose doing it as part of this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "a new cluster-scoped ResourceSlicePatch type gets added. A single ResourceSlicePatch object specifies device attributes that apply to all devices matching a CEL expression"
+   },
+   {
+    "ref": "comment:2633469561",
+    "quote": "If we didn't and directly modified the spec, this patch controller and the CSI driver as the owner of the slice spec would fight against each other."
+   },
+   {
+    "ref": "comment:2644047723",
+    "quote": "I'd consider deferring 5027, but go with 5055 in this cycle and use reservation API. It should be sufficient for achieving all goals."
+   },
+   {
+    "ref": "comment:2645966449",
+    "quote": "a possibility to use ResourceClaims for reservations is unclear and definitely not feasible to agree on it within a week, so withdrawing my suggestion."
+   },
+   {
+    "ref": "comment:2644175948",
+    "quote": "That's because 5027 describes the patching mechanism which is also needed for 5055. The patching of attributes and capacities is done in 20 lines of code"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10231,
+  "output": 1243
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

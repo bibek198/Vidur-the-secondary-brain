@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4006",
+ "input_hash": "2d733466f84a198d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4006 moves kubectl exec, attach, cp and port-forward streaming from SPDY/3.1 to WebSockets, first for the kubectl-to-API-server leg, with the API server translating or tunneling to SPDY upstream. Status is implementable, stage beta.",
+  "rationale": "SPDY is deprecated and many proxies, gateways and load balancers no longer support it, which blocks clients behind those intermediaries. WebSockets is a standardized protocol, and HTTP/2 was rejected because it does not support streaming Upgrade requests. The API server translates WebSocket to SPDY so kubelet and runtimes need no change in the first phase, and the Kubelet leg was moved to Pre-GA after reviewer request.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use HTTP/2.0 for streaming",
+    "why_not": "The KEP says HTTP/2.0 specifically does not support Upgrade requests to create a streamable connection, so it was not adopted."
+   },
+   {
+    "option": "Negotiate the protocol within a single request using X-Stream-Protocol-Version headers",
+    "why_not": "The reviewer (jpbetz) suggested it, but the author said the extra round trip was justified; the server's ability to handle both upgrades was accepted as fine for clients to make two round trips."
+   },
+   {
+    "option": "Ship port-forward in the same release as exec, attach and cp",
+    "why_not": "The author excluded port-forward from the first release to reduce scope; maintainers agreed to incremental delivery, with port-forward added later."
+   },
+   {
+    "option": "Route all WebSocket traffic through the new StreamTranslatorProxy",
+    "why_not": "The author proposed delegating only the v5.channel.k8s.io RemoteCommand requests, so other WebSocket and SPDY users are unaffected."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The SPDY streaming protocol has been deprecated since 2015, and by now many proxies, gateways, and load-balancers do not support SPDY."
+   },
+   {
+    "ref": "readme",
+    "quote": "Finally, WebSockets is preferrable to HTTP/2.0 because the updated HTTP standard does not support streaming well."
+   },
+   {
+    "ref": "readme",
+    "quote": "In this way, the cluster components upstream from the API Server will not initially need to be changed."
+   },
+   {
+    "ref": "rcomment:1222312707",
+    "quote": "I have modified the KEP to schedule extending WebSocket to the Kubelet from `Post-GA` to `Pre-GA`."
+   },
+   {
+    "ref": "rcomment:1198471455",
+    "quote": "we are excluding `port-forward` from this release in order to reduce the scope of our effort and finally make some tangible progress."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 15236,
+  "output": 1037
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

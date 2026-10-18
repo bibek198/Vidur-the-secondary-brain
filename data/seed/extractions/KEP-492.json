@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-492",
+ "input_hash": "643e15fdda87b512",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-492 proposed graduating Kubernetes admission webhooks from beta to GA, adding object selectors, scope, timeout and port configuration, AdmissionReview version selection, and related changes. The KEP's status is recorded as implemented at stable stage.",
+  "rationale": "Admission webhooks had been beta for several releases, and user feature requests and bug reports were taken as evidence the feature was close to stable. The KEP listed the goals needed for GA and explicitly excluded CA bundle referencing via secret/configmap and dynamic authentication to webhooks. The sources show the GA target was 1.15 and that the final PRs were tracked for 1.16, but they do not explain the later status change to implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep webhooks in beta with no GA graduation",
+    "why_not": "Not stated in the sources; the KEP's motivation says the feature was close to stable and the goals were planned to move it toward GA."
+   },
+   {
+    "option": "Exclude CA trust bundle via secret/configmap from GA",
+    "why_not": "The Non-Goals section records this as considered and rejected for GA."
+   },
+   {
+    "option": "Add a Status section to Webhook objects to show whether admission webhooks are enabled",
+    "why_not": "Commenters said this does not work well with multiple servers such as extension API servers, and the suggestion was raised during discussion, not adopted in the goals."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Admission webhooks are currently widely used for extending kubernetes but has been in beta for 3 releases."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals These are the issues considered and rejected for GA: * Can CA trust bundle being referenced via secret/configmap instead of inline?"
+   },
+   {
+    "ref": "comment:482720142",
+    "quote": "Hi, @kacole2. Yes, the plan is GA in 1.15. Do we need to link to already merged PRs?"
+   },
+   {
+    "ref": "comment:525063033",
+    "quote": "I believe there is just two in-progress bug fixes and then everything is ready"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9602,
+  "output": 912
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

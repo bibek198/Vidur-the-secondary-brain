@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1847",
+ "input_hash": "3688607b7ee23434",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1847 adds an opt-in feature that auto-deletes PVCs created by a StatefulSet when the StatefulSet is deleted or scaled down, while keeping them through non-scale-down pod restarts. The KEP reached stable and its status was moved to implemented.",
+  "rationale": "StatefulSet PVCs are not deleted with the StatefulSet, which forces manual cleanup for workloads that do not live indefinitely. The KEP makes PVC deletion opt-in so that rolling updates and node drains keep application state. Reclaim policy of the storage class still governs the underlying PVs.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Users delete the PVCs manually",
+    "why_not": "The KEP states that the friction of manual deletion is the motivation for the feature, so it was not chosen as the solution."
+   },
+   {
+    "option": "Use generic ephemeral inline volumes for per-pod deletion (raised by pohly as a similar mechanism)",
+    "why_not": "The sources record only the concern that it would add a second approach with more complex code; they do not record a final decision to reject it."
+   },
+   {
+    "option": "Hold GA promotion until 1.33 due to owner-reference issues (raised by atiratree and soltysh)",
+    "why_not": "Maintainers discussed this and mattcary argued the risk of GA was low; the sources show the feature went to stable in 1.32 and the status was then updated to implemented."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposal is to add a feature to autodelete the PVCs created by StatefulSet."
+   },
+   {
+    "ref": "readme",
+    "quote": "Because of this, PVC deletion will be opt-in for users."
+   },
+   {
+    "ref": "readme",
+    "quote": "the feature ensures that the pod restarts due to non scale down events such as rolling update or node drain do not delete the PVC."
+   },
+   {
+    "ref": "comment:2587659312",
+    "quote": "Fabulous idea! https://github.com/kubernetes/enhancements/pull/5037"
+   },
+   {
+    "ref": "comment:2394022699",
+    "quote": "The feature's been in development for 4 years, it's been beta for a year. Nothing has changed in the API since it went beta."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12525,
+  "output": 871
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2149",
+ "input_hash": "0220943699706d2a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2149 proposes a standard for storing and managing cluster identification metadata as Kubernetes resources (a ClusterID for ClusterSet identification). It is at stage beta, status implementable.",
+  "rationale": "The MCS API organized clusters into ClusterSets but gave no Kubernetes-native way to uniquely identify a cluster. The KEP defines a baseline standard for cluster ID metadata, scoped to concrete use cases: clusterset membership and identity, disambiguating DNS names for multicluster headless services, and enriching logs, events and metrics. Future MCS API work is to build on this standard, and existing implementations are encouraged to adopt it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Broader cluster identification scheme covering a cluster registry",
+    "why_not": "Non-goals exclude defining characteristics of the system that tracks cluster IDs within a ClusterSet (a cluster registry)."
+   },
+   {
+    "option": "Supporting a cluster joining multiple ClusterSets",
+    "why_not": "Explicitly out of scope per the non-goals."
+   },
+   {
+    "option": "Defining user-specified aliases for cluster IDs",
+    "why_not": "Explicitly out of scope; the KEP does not consider how or whether users should specify aliases."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "but as of now there is no way for a cluster to be uniquely identified in a Kubernetes-native way"
+   },
+   {
+    "ref": "readme",
+    "quote": "This document by SIG-Multicluster proposes a standard for how cluster IDs should be stored and managed"
+   },
+   {
+    "ref": "readme",
+    "quote": "Define the standard to be strict enough to be useful in the following user stories"
+   },
+   {
+    "ref": "readme",
+    "quote": "this KEP explicitly does not consider * a cluster joining multiple ClusterSets"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2414,
+  "output": 761
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

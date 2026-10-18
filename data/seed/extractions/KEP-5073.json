@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5073",
+ "input_hash": "87240c1ce0479d31",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5073 proposes declaring Kubernetes native API validation rules as IDL tags (e.g. +k8s:optional, +k8s:minimum) in types.go files, generated into Go validation code by a new validation-gen tool. Status is implemented, stage stable.",
+  "rationale": "Hand-written API validation is hard for users to access, review, maintain, and test, so the KEP moves validation into a declarative IDL framework to reduce technical debt. Migration is intended to be reversible, and the KEP keeps error field and reason stable for clients. Reviewers asked for a runtime mismatch check (DeclarativeValidationMismatchMetrics) so that differences between hand-written and declarative results are detected in the field before the old code is removed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep validation handwritten in Go",
+    "why_not": "The readme says hand-written rules are hard to access, review, maintain, and test, which is the problem the KEP targets."
+   },
+   {
+    "option": "Run only declarative validation once converted, without a mismatch check",
+    "why_not": "Reviewers wanted the hand-written logic kept running for comparison; deads2k said 'If we stop running the handwritten-we're-trying-to-replace I don't see how we'll detect some classes of declarative validation bugs.'"
+   },
+   {
+    "option": "Add a separate tag for optional non-pointer fields",
+    "why_not": "thockin said 'I don't think we need another tag. Optional + pointer is obvious.' and analysed the non-pointer case using existing tags."
+   },
+   {
+    "option": "Convert the request version instead of the internal hub type before running declarative validation",
+    "why_not": "The consensus was option 2 (convert back to request version before declarative validation), since conversion is cheap and this keeps the changes behind a feature gate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubernetes API validation rules are currently written by hand, which makes them difficult for users to access directly, review, maintain, and test."
+   },
+   {
+    "ref": "readme",
+    "quote": "The declarative validation IDL tags will be used to generate code via a new code generator - `validation-gen`."
+   },
+   {
+    "ref": "rcomment:1947209682",
+    "quote": "The KEP has been updated to include a new feature gate - `DeclarativeValidationMismatchMetrics` which controls enabling a code path for runtime validation checks."
+   },
+   {
+    "ref": "rcomment:1936160961",
+    "quote": "If we stop running the handwritten-we're-trying-to-replace I don't see how we'll detect some classes of declarative validation bugs."
+   },
+   {
+    "ref": "comment:3104193687",
+    "quote": "since the feature is staying in Beta (it reached beta in 1.33)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11935,
+  "output": 1044
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5707",
+ "input_hash": "a836a8fff522d4ff",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5707 proposes deprecating the Service.spec.externalIPs field and removing kube-proxy's implementation in phases, with the DenyServiceExternalIPs admission controller also removed eventually. The KEP is at implementable status, stage deprecated.",
+  "rationale": "The field lets non-privileged users claim arbitrary IP addresses without authorization or validation, enabling man-in-the-middle attacks (CVE-2020-8554). The KEP cites KEP-2200, which already blocked externalIPs via admission, as the prior step and says this KEP takes the next step by formally deprecating the field and removing the implementation. Phased removal gives users time to migrate to LoadBalancer, Ingress, or Gateway API, which the KEP lists as alternatives.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep externalIPs and rely only on the DenyServiceExternalIPs admission controller (KEP-2200)",
+    "why_not": "The KEP says the community already recognized the issues through KEP-2200, but 'This KEP takes the next step by formally deprecating the field and removing the implementation.'"
+   },
+   {
+    "option": "Provide a direct replacement feature within the Service API",
+    "why_not": "This is a stated non-goal: 'Providing a direct replacement feature within the Service API (users should migrate to LoadBalancer services, Ingress, or Gateway API)'."
+   },
+   {
+    "option": "Remove the field and kube-proxy support in a single step",
+    "why_not": "The KEP proposes a phased approach with a feature gate, first warnings (1.36), then disabling kube-proxy support (about 4 releases later), then removal, so users can re-enable it temporarily during the transition."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The externalIPs feature has long been considered a security risk and architectural problem, as it allows non-privileged users to claim arbitrary IP addresses"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP takes the next step by formally deprecating the field and removing the implementation."
+   },
+   {
+    "ref": "readme",
+    "quote": "Clusters administrators can enable the feature gate if needed to restore the externalIPs functionality"
+   },
+   {
+    "ref": "readme",
+    "quote": "Providing a direct replacement feature within the Service API (users should migrate to LoadBalancer services, Ingress, or Gateway API)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3225,
+  "output": 933
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

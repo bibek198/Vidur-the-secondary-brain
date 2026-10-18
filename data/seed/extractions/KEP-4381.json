@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-4381",
+ "input_hash": "0dfedfe39123d514",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4381 defines structured parameters for Dynamic Resource Allocation: DRA drivers publish devices as ResourceSlice objects with named attributes, users express needs in ResourceClaims, and the scheduler allocates devices by comparing attributes. The KEP was reshaped so this base functionality is the core and KEP-3063 becomes an optional extension. Its status is implemented, stage stable.",
+  "rationale": "Accelerators and network-attached devices do not fit the node-local, countable device plugin model, and the scheduler needs to evaluate them without knowing the exact request. Reviewers pushed for a structured, strongly typed API instead of opaque RawExtension parameters, which led to the \"semantic\" then \"structured\" parameters naming and to dropping support for custom schedulers. The design trades driver flexibility for a model the scheduler and autoscaler can interpret.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Opaque parameters as in KEP-3063",
+    "why_not": "The readme says the structured model is the base and KEP-3063 adds an optional extension; the drawback section notes drivers give up some flexibility in exchange for structure."
+   },
+   {
+    "option": "RawExtension for numeric capacity models",
+    "why_not": "Reviewer pohly replaced it with strongly-typed fields: \"The usage of RawExtension gets replaced with strongly-typed fields in the resource.k8s.io API.\""
+   },
+   {
+    "option": "Separate feature-gated models per semantic model (DRANumericParameters, DRACounterNumericModel, DRAModeSwitchModel)",
+    "why_not": "This was a proposal under discussion in the review; the sources do not show it was adopted as the final gating scheme."
+   },
+   {
+    "option": "Custom schedulers with their own semantic model",
+    "why_not": "Pohly stated: \"Custom schedulers are no longer supported, therefore I am closing this conversation.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP originally defined an extension of the \"classic\" DRA #3063 KEP. Now the roles are reversed: this KEP defines the base functionality and #3063 adds an optional extension."
+   },
+   {
+    "ref": "readme",
+    "quote": "With such a claim in place, the scheduler (or Cluster Autoscaler) can evaluate against the `ResourceSlice` of any candidate nodes by comparing attributes, without knowing exactly what is being requested."
+   },
+   {
+    "ref": "comment:1924183207",
+    "quote": "The usage of RawExtension gets replaced with strongly-typed fields in the resource.k8s.io API. This adds better validation, but has the downside that now kubelet is tightly coupled with the control plane."
+   },
+   {
+    "ref": "rcomment:1476262869",
+    "quote": "Custom schedulers are no longer supported, therefore I am closing this conversation."
+   },
+   {
+    "ref": "comment:1934979486",
+    "quote": "that is a better name because we define some structure for parameters and the associated mechanics, but not the actual semantic."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11717,
+  "output": 1143
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-995",
+ "input_hash": "608dca13f8175e66",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-995 proposes adding kubeadm support for joining Windows worker nodes to a cluster, via a PowerShell script that installs kubelet, kubeadm and wins, plus DaemonSets for kube-proxy and Flannel. Its status is implementable, stage alpha.",
+  "rationale": "Joining a Windows node to a cluster currently requires hand-written scripts to download binaries and write config files, which the KEP calls a major pain point for Windows adoption. The KEP aims to give Windows the same single-command join and reset that kubeadm provides on Linux. Scope is limited to Windows worker nodes; container runtime installation, kubeadm init, and control-plane join are excluded.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue using a set of scripts to download Kubernetes binaries and write config files",
+    "why_not": "The readme says this approach 'has proven to be cumbersome and is a huge pain point for Windows adoption.'"
+   },
+   {
+    "option": "Install the container runtime (Docker or containerd) as part of this work",
+    "why_not": "Listed as a non-goal: 'Installing the Container Runtime (e.g. Docker or containerd)'."
+   },
+   {
+    "option": "Implement kubeadm init or kubeadm join --control-plane for Windows",
+    "why_not": "Both are explicit non-goals of this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current solution is to create a set of scripts to download Kubernetes binaries and write their config files, but this has proven to be cumbersome"
+   },
+   {
+    "ref": "readme",
+    "quote": "The motivation for this KEP is to provide a tool to allow users to take a Windows machine and join it to an existing Kubernetes cluster with a single command."
+   },
+   {
+    "ref": "readme",
+    "quote": "It should be noted that at this time, this document only proposes enablement of support for Windows worker nodes using kubeadm."
+   },
+   {
+    "ref": "readme",
+    "quote": "Create and maintain a Powershell script to install kubelet, kubeadm and [wins](https://github.com/rancher/wins/)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1880,
+  "output": 839
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

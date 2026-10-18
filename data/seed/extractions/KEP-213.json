@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-213",
+ "input_hash": "4ff398147306b84e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-213 adds RunAsGroup to the PodSpec and PodSecurityPolicy so users can set the primary group ID for containers in a Pod. Its status is implemented, stage stable.",
+  "rationale": "Enterprise users want containers to run as non-root with a non-zero primary group ID, to limit damage if a container escapes its boundary. The readme also aims to match Docker's features in Kubernetes. The discussion shows the feature was alpha for several releases, was kept alpha in 1.12, and was moved toward beta and GA in later cycles, with the GA work tied to the KEP update and production readiness review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Enforce MustRunAsNonRoot for runAsGroup on the pod spec",
+    "why_not": "Tallclair said there were concerns about the many ways to attach groups to a process and whether non-root group use could be reliably asserted; he did not want the feature without a strong guarantee and said it should not block GA."
+   },
+   {
+    "option": "Keep the feature in alpha for 1.12",
+    "why_not": "Tallclair said on 2018-08-24 that it was still alpha and he did not see it being promoted to beta the next week, so he wanted to keep it alpha for 1.12."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Enterprise Kubernetes users want to run containers as non root. This means running containers with a non zero user id and non zero primary group id."
+   },
+   {
+    "ref": "comment:415829215",
+    "quote": "It's still in alpha, and I don't see us promoting it to beta next week. We can still discuss getting your open PRs in, but I think we should keep it alpha for 1.12."
+   },
+   {
+    "ref": "comment:504503281",
+    "quote": "For MustRunAsNonRoot (on the pod spec), there were a lot of concerns about all the different ways to attach groups to a process, and whether we could reliably assert that it wasn't using the root group."
+   },
+   {
+    "ref": "comment:643525327",
+    "quote": "The bare minimum would be to update the KEP to state the GA criteria, and update the flag to GA."
+   },
+   {
+    "ref": "comment:764874920",
+    "quote": "It looks like RunAsGroup options won't be added if GOOS=Windows so I'm ok with these changes being promoted."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12058,
+  "output": 898
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

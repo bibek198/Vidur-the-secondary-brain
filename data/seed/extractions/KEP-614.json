@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-614",
+ "input_hash": "57628c1fe808648b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-614 adds SCTP as an additional protocol option beside TCP and UDP for Kubernetes Service, NetworkPolicy, and ContainerPort. The KEP reached implemented status and stable stage.",
+  "rationale": "SCTP is widely used in telecommunications, and applications needing it could not use native Kubernetes service discovery or NetworkPolicy. The KEP adds SCTP as a protocol value so these applications can use kube-dns service discovery and native network policy control. Multi-homed SCTP and cloud load balancer support were explicitly excluded from scope.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Support multi-homed SCTP associations",
+    "why_not": "Non-goal: it depends on managing multiple IP addresses for a pod and NAT support for multihomed associations in SCTP-related conntrack modules."
+   },
+   {
+    "option": "Add SCTP support to cloud provider load balancers",
+    "why_not": "Non-goal: the KEP says it does not implement SCTP into cloud-specific load balancer implementations, although Kubernetes will not restrict SCTP for type=LoadBalancer Services."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "enable the usage of the SCTP protocol in Kubernetes [Service], [NetworkPolicy], and [ContainerPort] as an additional protocol value option beside the current TCP and UDP options"
+   },
+   {
+    "ref": "readme",
+    "quote": "Once SCTP support is added as a new protocol option those applications that require SCTP as L4 protocol on their interfaces can be deployed on Kubernetes clusters on a more straightforward way"
+   },
+   {
+    "ref": "readme",
+    "quote": "It is not a goal to support multi-homed SCTP associations. Such a support also depends on the ability to manage multiple IP addresses for a pod"
+   },
+   {
+    "ref": "readme",
+    "quote": "we do not implement the support of SCTP into the cloud specific load balancer implementations"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2241,
+  "output": 802
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,53 @@
+{
+ "kep": "KEP-2924",
+ "input_hash": "ec001febebd42478",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2924 proposed a vendor-specific CSI migration for the in-tree Ceph CephFS volume plugin, inheriting from parent KEP 625 and adding two feature gates. The KEP was withdrawn (last stage alpha) after the in-tree CephFS plugin was slated for deprecation in v1.28 and the migration implementation PR was never merged.</summary>\n<parameter name=\"rationale\">The KEP was a vendor-specific child of the parent CSI Migration KEP and would have added two feature gates. It targeted alpha for 1.24 but was untracked at code freeze, then repeatedly slipped (1.25, 1.26) because the k/k implementation PR (kubernetes/kubernetes#111137) was never merged. In May 2023 the maintainers noted the CephFS in-tree plugin would be deprecated in v1.28 and that the KEP remained unimplemented, so it was withdrawn.</rationale>\n<parameter name=\"outcome_reason\">Sources say the implementation (k/k PR #111137) was not merged, so the KEP was unimplemented; the in-tree CephFS plugin was being deprecated in v1.28 (PR #118143), and the maintainer retitled the PR to \"withdrawn\". The sources do not give a single explicit reason beyond these.",
+  "alternatives": [
+   {
+    "option": "Add provisioning/delete support for CephFS under migration",
+    "why_not": "Jiawei/humblec raised it, but jsafrane argued that existing PVs should migrate silently and new features should not be added to in-tree volumes; provisioning should use the CSI driver directly."
+   },
+   {
+    "option": "Target beta or GA in a later release",
+    "why_not": "Sources state the target was alpha only ('targetted as alpha in 1.24 and not beta'), and the KEP was withdrawn rather than advanced."
+   },
+   {
+    "option": "Keep targeting 1.26 or later releases",
+    "why_not": "Xing Yang confirmed on 2022-11-04 that it was not targeting 1.26 any more; no later release target is recorded."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:1081893928",
+    "quote": "some more time is required for wrapping it completely which includes more validation of different scenarios, e2e testing..etc.. considering we are at last hour of code freeze"
+   },
+   {
+    "ref": "comment:1566083008",
+    "quote": "Becase https://github.com/kubernetes/kubernetes/pull/111137 isn't merged, kep-2924 is unimplemented until now. we should withdraw this KEP."
+   },
+   {
+    "ref": "comment:1675188303",
+    "quote": "deprecate CephFS plugin from available in-tree drivers /retitle withdrawn the CephFS in-tree provisioner to CSI driver migration kep"
+   },
+   {
+    "ref": "comment:1062902883",
+    "quote": "We should not add new features to in-tree volumes, even if they're migrated to CSI."
+   },
+   {
+    "ref": "comment:1303394862",
+    "quote": "Just chatted with @humblec and confirmed that this is not targeting 1.26 any more."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6835,
+  "output": 1134
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

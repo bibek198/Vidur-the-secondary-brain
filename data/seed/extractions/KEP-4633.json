@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4633",
+ "input_hash": "5a4c54f3ec9e6fda",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4633 proposes making the kube-apiserver's --anonymous-auth setting three-state: disabled, enabled for all requests, or enabled only for a configured list of endpoints. Anonymous requests to other endpoints would be rejected. Status is implemented, stage stable.",
+  "rationale": "Anonymous auth is on by default, and admins who want to disable it cannot, because health checks (healthz, livez, readyz) from load balancers and kubelet depend on it. Misconfigured RBAC bindings to system:anonymous have led to cluster takeover. The KEP lets admins allow anonymous access only to a named set of paths, keeping health checks working while blocking other endpoints. Reviewers agreed that defaults do not change and that the path list is exact-match and kept small on purpose.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Sidecar proxy restricting endpoints",
+    "why_not": "The readme says it would push complexity into all consumers who are not running sidecar proxies today, while the in-tree change is minimal."
+   },
+   {
+    "option": "Deny authorizer that rejects anonymous requests",
+    "why_not": "The readme says a deny authorizer is a lot more complex to implement, and that having a later subsystem lock down over-granted requests from the first is not ideal."
+   },
+   {
+    "option": "Restrict creation of problematic role bindings with ValidatingAdmissionPolicy",
+    "why_not": "Raised by sftim as an alternative to explain in the KEP; the sources do not record a decision on it or a reason it was not chosen."
+   },
+   {
+    "option": "Glob path matching like RBAC",
+    "why_not": "liggitt said globbing was not required for the use cases presented, and the feature intends to constrain anonymous auth to a well-known set of endpoints, so exact paths were chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose that kubernetes should allow users to configure which endpoints can be accessed anonymously and disable anonymous auth for all other endpoints."
+   },
+   {
+    "ref": "readme",
+    "quote": "In order to allow these health checks a cluster admin has to enable anonymous requests opening the door for misconfigurations."
+   },
+   {
+    "ref": "rcomment:1613955124",
+    "quote": "This KEP does not propose changing any defaults. kubeadm could choose to configure this to add exactly"
+   },
+   {
+    "ref": "comment:2153064115",
+    "quote": "I want to keep the surface area here as small as possible, globbing wasn't required for the use cases presented so far"
+   },
+   {
+    "ref": "rcomment:2355500087",
+    "quote": "this didn't get marked as implementable, so never got a PRR review"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11946,
+  "output": 1019
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

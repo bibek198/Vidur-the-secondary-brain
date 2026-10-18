@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4009",
+ "input_hash": "5d332abd611446ea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4009 adds an optional CDI device ID field to the Device Plugin API's ContainerAllocateResponse so device plugins can pass fully-qualified CDI device names through the kubelet to CRI runtimes. The KEP status is implemented, stage stable.",
+  "rationale": "Device plugins had no explicit way to request CDI devices, so vendors relied on workarounds such as container annotations. The new field lets the CRI field added in #3731 carry device IDs to runtimes without requiring users to adopt DRA. Reviewers debated whether the field needed its own feature gate; the thread records the team's position that the change is an optional field on a stable API, with a gate added later in alpha at reviewers' request.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Pass CDI devices from the kubelet to the runtime using container annotations",
+    "why_not": "The discussion says the intent is to use the new CRI field so device IDs stay opaque and the kubelet need not know the runtime version or configuration; annotations were raised as an alternative but not adopted. The thread also notes that for containerd, CDI and CDI annotations must be enabled, which the field approach shifts to device plugin vendors."
+   },
+   {
+    "option": "Ship the field with no feature gate, as with the cpu_ids addition to PodResources (KEP-1884)",
+    "why_not": "Reviewers (enj, johnbelamaric) objected that a new field needs a feature gate. The authors then updated the KEP to add an alpha feature gate, though the thread says the field itself cannot be gated in protobuf."
+   },
+   {
+    "option": "Go directly to beta with the feature gate enabled by default",
+    "why_not": "Raised by elezar as an option, referencing a precedent KEP. The thread does not record it being adopted; the KEP was changed to alpha on 2023-06-15."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "adding a field to specify Container Device Interface (CDI) device IDs in the `AllocateResponse`. This supplements the existing fields such as annotations"
+   },
+   {
+    "ref": "rcomment:1221441482",
+    "quote": "This keeps these devices IDs opague and does not require any interaction by the Kubelet. At present the Kubelet (at least in my cursory inspection of the code) doesn't perform any other such processing"
+   },
+   {
+    "ref": "rcomment:1231046214",
+    "quote": "I have updated the KEP to add this as an alpha feature."
+   },
+   {
+    "ref": "comment:1902619882",
+    "quote": "@bart0sh please ensure then that this CRI fields does not depend in an alpha feature https://github.com/kubernetes/enhancements/pull/3731"
+   },
+   {
+    "ref": "comment:2320684412",
+    "quote": "Does it make sense to close this issue now that it has reached GA, or should we wait until the feature gate has been removed?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11809,
+  "output": 1084
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

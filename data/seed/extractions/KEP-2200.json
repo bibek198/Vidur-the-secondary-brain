@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2200",
+ "input_hash": "07a71543efc3db26",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2200 proposed a built-in admission controller, \"DenyServiceExternalIPs\", that rejects CREATE or UPDATE operations adding new values to Service.spec.externalIPs, while tolerating and allowing removal of existing values. The KEP is implemented and at stable stage.",
+  "rationale": "The KEP responds to CVE-2020-8554, where an unprivileged user can hijack an IP address through Service.spec.externalIPs. The design argues that type=LoadBalancer uses Service status, which most users should not be able to write, and that externalIPs has few remaining use cases. A built-in admission controller was chosen over a webhook because most users never use the feature and should not have to run a webhook to be protected.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Force users to use policy controllers as webhooks",
+    "why_not": "The readme rejects this as burdensome: \"making them ALL run a webhook seems terrible.\""
+   },
+   {
+    "option": "Make a breaking API change and disable or rip-out the feature",
+    "why_not": "The readme lists making this the default (a breaking change) as a non-goal, so the feature is kept but blocked by an admission control flag."
+   },
+   {
+    "option": "Add a new flag telling validation logic to disallow this field",
+    "why_not": "Listed under Alternatives in the readme; the source excerpt gives no explicit reason for rejecting it."
+   },
+   {
+    "option": "Make a more complex API to define which namespaces or IPs may use this feature",
+    "why_not": "Listed under Alternatives in the readme; the source excerpt gives no explicit reason for rejecting it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to block the use of ExternalIPs via a built-in admission controller. The justification for this, as opposed to a webhook, is that 99% of users will never use this feature"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to add a built-in admission controller \"DenyServiceExternalIPs\", which rejects any CREATE or UPDATE operation which adds a new value to `Service.spec.externalIPs`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Make it possible to disable an insecure feature for the vast majority of users very quickly."
+   },
+   {
+    "ref": "readme",
+    "quote": "In contrast, `type=LoadBalancer` uses Service status, which most normal users should not be allowed to write."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2174,
+  "output": 939
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

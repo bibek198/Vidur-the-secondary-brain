@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2379",
+ "input_hash": "aca68cfc8fd0abf1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2379 introduced a git-style plugin mechanism for kubectl: any executable on $PATH named kubectl-<name> is invoked as a kubectl subcommand, with no installer or configuration. The KEP is marked implemented, stage stable.",
+  "rationale": "The problem is extending kubectl beyond its core commands without shipping plugins in the core repository. The design relies on filename-based discovery so users only need to drop an executable on PATH, and plugins are distributed and updated by their authors. Its status was later set to implemented as a documentation/tracking correction rather than as a new design decision, per the PR discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "A plugin installer or wizard that downloads and unpacks plugins",
+    "why_not": "Readme non-goals state the mechanism 'will not be a \"plugin installer\" or wizard' and plugin management is out of scope."
+   },
+   {
+    "option": "Plugin discovery that collects data about every plugin in an environment",
+    "why_not": "Readme non-goals say 'Plugin discovery is not a main focus of this mechanism.'"
+   },
+   {
+    "option": "A standard common CLI utilities package consumed by kubectl and plugins",
+    "why_not": "Readme non-goals say this 'should be done as an independent effort of this plugin mechanism.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The mechanism is a git-style system, that looks for executables on a user's `$PATH` whose name begins with `kubectl-`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Avoid any kind of installation process (no additional config, users drop an executable in their `PATH`, for example, and they are then able to use that plugin with `kubectl`)."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "comment:837252407",
+    "quote": "This was needed for KEP migration, but the mechanism is already completed and GA. /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8056,
+  "output": 825
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

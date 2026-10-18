@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2383",
+ "input_hash": "8be4c019f5bc5aa5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2383 proposed extending Kustomize's strategic merge and JSON patches from a single target to multiple targets, via a new `patches` field in kustomization.yaml that selects targets by group/version/kind/name, annotations, and label selectors. Its status is implemented at stage beta.",
+  "rationale": "Users wanted one patch to apply to many resources (e.g., override a field on all objects of one type, add arguments to all containers, inject a sidecar), but the existing patchesStrategicMerge and patchesJson6902 fields only target one resource each. The proposal adds a `patches` field whose target block can match by intersecting label selectors, annotations, and GVKN with regex names. Maintainers later said the work was done and the field works without feature gates, which is why the KEP was marked implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a different type of patch",
+    "why_not": "Listed as a non-goal; the proposal keeps the existing strategic merge and JSON patch types."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Extend current patching mechanism of strategic merge patch and JSON patch from one target to multiple targets."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add field to `kustomization.yaml`: `patches`. It has a block specifying the targets, a relative file path pointing to the patch file"
+   },
+   {
+    "ref": "rcomment:635673334",
+    "quote": "This particular feature is a field in Kustomization. It has been implemented and documented, and works without any feature gates."
+   },
+   {
+    "ref": "rcomment:636533168",
+    "quote": "agree with @KnVerey, the work we intended to do with this KEP is done so I think it can be closed"
+   },
+   {
+    "ref": "rcomment:645700302",
+    "quote": "I believe consensus was reached in the sig to move forward with this, the KEP just wasn't updated."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3942,
+  "output": 760
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

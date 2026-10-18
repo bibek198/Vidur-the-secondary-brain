@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4330",
+ "input_hash": "f6bbd8d227aab906",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4330 introduces `--emulation-version` to make a binary emulate a prior Kubernetes release's capabilities, and `--min-compatibility-version` to control the minimum version a component stays compatible with for storage versions, validation and skew. The KEP reached implementable at alpha stage; the implementation merge was later deferred to the 1.31 merge window.",
+  "rationale": "Upgrades of control-plane components are coarse, so a binary upgrade immediately exposes new features and writes N+1 data. Separating binary version from emulation and minimum compatibility version lets administrators take smaller, diagnosable steps and skip binary versions. The later comment says the core implementation needed to integrate with feature gates in composed sub-components, so merging was deferred to reduce risk to the 1.30 release.",
+  "outcome_reason": "The sources do not say why the status is implementable at alpha beyond the reviewers' agreement. The deferral is stated in the later issue comment: the team decided to defer merging the implementation until the start of the 1.31 merge window, to de-risk the 1.30 release and allow more time for integration with feature gates.",
+  "alternatives": [
+   {
+    "option": "Single compatibility-version flag that both sets features and minimum interop version",
+    "why_not": "Reviewers (johnbelamaric, liggitt) argued there are two distinct concepts: the features enabled and the minimum version to interoperate with safely, so the KEP uses two flags."
+   },
+   {
+    "option": "Allow emulation-version together with alpha features",
+    "why_not": "jpbetz: alpha features are not designed to be upgradable and supporting them would require keeping alpha code around for the n-3 range before deletion, so the KEP makes them a non-goal."
+   },
+   {
+    "option": "Require a runtime GODEBUG setting matching the emulated Go version",
+    "why_not": "jpbetz said compatibility-version controls only system behavior and does not require GODEBUG values from a different version; Go version changes apply to binary versions only."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We will introduce a `--emulation-version` flag to emulate the capabiliites (APIs, features, ...) of a prior Kubernetes release version."
+   },
+   {
+    "ref": "readme",
+    "quote": "Alpha feature are not designed to be upgradable, so we will not allow alpha features to be enabled when `--emulation-version` is set."
+   },
+   {
+    "ref": "comment:1979264197",
+    "quote": "We've decided to defer merging the implementation until the start of the 1.31 merge window. This both de-risks the 1.30 release and gives us time to more fully get this ready."
+   },
+   {
+    "ref": "rcomment:1483194288",
+    "quote": "I think there's two distinct concepts, so yes?: 1. the features you want enabled 2. the min version you want to interoperate with safely"
+   },
+   {
+    "ref": "comment:1935022105",
+    "quote": "Handing it over to you for final consideration."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11802,
+  "output": 1104
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

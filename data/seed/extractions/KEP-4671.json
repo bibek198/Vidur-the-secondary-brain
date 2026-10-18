@@ -1,0 +1,68 @@
+{
+ "kep": "KEP-4671",
+ "input_hash": "fc28e510420950bc",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4671 proposes gang scheduling in kube-scheduler built on new Workload (policy template) and PodGroup (standalone runtime scheduling unit) APIs in scheduling.k8s.io, with pods referencing their PodGroup via spec.schedulingGroup. Status is implementable, stage beta. kep.yaml records that it replaces KEP-583 Coscheduling and KEP-5832 Decouple PodGroup API.",
+  "rationale": "Gang-scheduled workloads (AI training, MPI-style jobs) need all pods to start together, and gang scheduling was implemented outside kube-scheduler at least four times. The design decouples the long-lived Workload policy from runtime PodGroup objects to separate concerns, avoid etcd size limits, and avoid read-modify-write contention on a central object. Reviewers accepted the pod-by-pod-with-WaitOnPermit approach for the current release, with a workload-level placement phase and gang-aware preemption deferred to Beta and later work.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Embedding PodGroups within the Workload spec (original design)",
+    "why_not": "The readme says it creates architectural challenges: lifecycle coupling, a 1.5MB etcd object size limit for large Workloads, and contention on status updates. The KEP moved to standalone PodGroups for these reasons."
+   },
+   {
+    "option": "Keeping pods in WaitOnPermit with a SchedulingTimeoutSeconds field exposed in the API",
+    "why_not": "Reviewers argued it was unclear how users should set the value and that it may be a scheduler setting. The timeout was removed from the API struct and left only in alternatives, with a possible follow-up. The readme does not state the final alternative's rationale in full."
+   },
+   {
+    "option": "Gang-aware preemption inferred from member pod priority",
+    "why_not": "A reviewer warned that inferring gang priority from pods would be a breaking change. The KEP instead proposes a new additive preemptionPolicy later, as a Beta graduation criterion, not in this release."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "kube-scheduler identifies pods that are in a group and waits until all pods reach the same stage of the scheduling/binding cycle before allowing any pods from the group to advance past that point"
+   },
+   {
+    "ref": "readme",
+    "quote": "Extending the Workload object to track runtime status for all PodGroups leads to significant scalability issues: - *Size Limit*: Large Workloads (i.e., large number of PodGroups) may easily hit the 1.5MB etcd object limit."
+   },
+   {
+    "ref": "readme",
+    "quote": "`Workload` becomes a scheduling policy object that defines scheduling constraints and requirements. - `PodGroupTemplate` provides the blueprint for runtime `PodGroup` creation."
+   },
+   {
+    "ref": "rcomment:2401431580",
+    "quote": "given the overall consensus (@sanposhiho @andreyvelich @macsko myself) about this version, I just went ahead I made this the leading option and moved the original option down to alternatives."
+   },
+   {
+    "ref": "rcomment:2390144160",
+    "quote": "For that part, I added the first Beta graduation criteria - having a high-level design for gang-preemption to ensure that we won't break compatibility with it."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-583",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-4671 replaces KEP-583 Coscheduling"
+   },
+   {
+    "kep": "KEP-5832",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-4671 replaces KEP-5832 Decouple PodGroup API"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12413,
+  "output": 1379
+ },
+ "extracted_at": "2026-10-15T22:45:45Z"
+}

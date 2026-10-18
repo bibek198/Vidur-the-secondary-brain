@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1710",
+ "input_hash": "efebc45e04b9a7eb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1710 proposes skipping recursive SELinux relabeling of volumes by mounting them with `-o context=XYZ`, rolled out in three phases (RWOP volumes first, then an opt-out field `SELinuxChangePolicy`, then all volumes by default). The KEP's status is implemented, stage stable.",
+  "rationale": "Recursive relabeling by the container runtime is slow for volumes with many files and can fail on nearly full volumes. Mounting with `-o context` sets the label on the whole volume without a walk. The phased rollout exists because mixing privileged and unprivileged pods on one volume could break existing workloads.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Combine SELinux and fsGroup policies into a single VolumeChangePolicy field",
+    "why_not": "Discussion concluded that combining them reduces flexibility; a user may want full fsGroup change but skip SELinux, so the fields stayed separate."
+   },
+   {
+    "option": "Follow the fsGroup / OnRootMismatch approach and relabel on first use",
+    "why_not": "The KEP notes the main drawback is that kubelet must relabel the volume on first use, which is slow. A maintainer said the penalty of first-mount relabeling was acceptable, but the KEP did not adopt this as its main path."
+   },
+   {
+    "option": "Put the opt-out field on the PVC or PV",
+    "why_not": "The KEP says platform-specific fields are not allowed in PVCs, and users cannot edit a PV."
+   },
+   {
+    "option": "Use kube-state-metrics for the warning metrics",
+    "why_not": "Listed under Alternatives; the author moved it there and added a SELinuxController to kube-controller-manager instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to use mount option `-o context=XYZ` to set SELinux context of all files on a volume, without recursive walk through the volume."
+   },
+   {
+    "ref": "readme",
+    "quote": "**Phase 3**: all volumes are mounted, under `SELinuxMount` feature gate. It can break existing applications that need to mix privileged and unprivileged Pods using the same volume in parallel."
+   },
+   {
+    "ref": "readme",
+    "quote": "Provide _explicit opt-out_ for workloads that mix privileged + unprivileged pods or pods with different SELinux labels."
+   },
+   {
+    "ref": "rcomment:426696068",
+    "quote": "I admit it may be a minor artificial use case, still, I don't want to paint us in the corner by combining the fields together."
+   },
+   {
+    "ref": "comment:2397054334",
+    "quote": "Added a new SELinuxController to kube-controller-manager to provide metrics and events."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13586,
+  "output": 1030
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

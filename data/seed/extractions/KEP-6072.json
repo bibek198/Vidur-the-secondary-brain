@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-6072",
+ "input_hash": "916615a1cb010e90",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6072 standardizes a `numaNode` device attribute for DRA, with a list form (via KEP-5491) and a scalar fallback, plus deviceattribute library helpers. It is implementable at stage stable with no feature gate; drivers choose list or scalar form through their own configuration.",
+  "rationale": "Same-NUMA equality is a single dimension of locality, and drivers need a common attribute name for cross-driver matchAttribute. The list form and intersection matching depend on DRAListTypeAttributes (KEP-5491), so the KEP has no gate of its own. Reviewers agreed drivers decide what they publish and Kubernetes stays unaware, so the KEP went directly to stable with no feature gate.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a DRAStandardNUMANode feature gate with alpha/beta graduation",
+    "why_not": "Reviewer pohly preferred option 1: \"DRA drivers decide what they publish, Kubernetes remains unaware.\" and noted that without a gate nothing would use it, so the gate was dropped."
+   },
+   {
+    "option": "Runtime dry-run probe to detect whether DRAListTypeAttributes is enabled",
+    "why_not": "pohly said dynamic feature discovery is \"too fragile\", and the agreed approach is an operator-set listEnabled config with a fatal error on mismatch."
+   },
+   {
+    "option": "Ship as alpha, with the PRR filled out for alpha",
+    "why_not": "kannon92 argued that without a gate alpha/beta/stable mean nothing; the outcome from Slack was to go directly to stable. johnahull's earlier alpha proposal was superseded."
+   },
+   {
+    "option": "Use a dedicated maturity-tagged attribute name or a staging registry for experimental attributes",
+    "why_not": "Raised by swatisehgal as a question; the sources do not record a decision adopting it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:4683243043",
+    "quote": "I prefer option 1: DRA drivers decide what they publish, Kubernetes remains unaware. But that then means that we *don't* define a `DRAStandardNUMANode` feature gate because nothing uses it."
+   },
+   {
+    "ref": "comment:4693754220",
+    "quote": "KEP is going directly to stable. - PRR is not really relevant here. Feel free to mark NA for areas that you don't think are relevant."
+   },
+   {
+    "ref": "comment:4694508555",
+    "quote": "`kep.yaml` is now `stage: stable` with `milestone: stable: v1.37`, and the PRR approval file moved to the stable stage."
+   },
+   {
+    "ref": "comment:4681449882",
+    "quote": "the numaNode helper would take a `listEnabled` input that the operator sets on the driver to match what the cluster has enabled"
+   },
+   {
+    "ref": "comment:4692162147",
+    "quote": "No `DRAStandardNUMANode` feature gate. Drivers decide what they publish and Kubernetes stays unaware (option 1)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9820,
+  "output": 1142
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

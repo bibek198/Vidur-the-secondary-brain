@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1539",
+ "input_hash": "5d5768bd45304d53",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1539 (HugePages) lets pods request pre-allocated huge pages, with the scheduler placing pods on nodes that can satisfy the request and the kubelet advertising allocatable huge pages. Its status is implemented, stage stable. The KEP was reopened in 2021 to add a second feature, HugePageStorageMediumSize, which is not yet graduated.",
+  "rationale": "Huge pages improve TLB hit rates for memory-heavy workloads, but applications need pre-allocated pages that the scheduler can account for. The design covers pre-allocated huge pages configured by an administrator and does not cover NUMA or dynamic allocation by the kubelet. Sources show the KEP was revisited in 2020 for process and release-tracking gaps, then reused in 2021 for HugePageStorageMediumSize, which the maintainers said should have been a separate KEP.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Transparent Huge Pages (THP)",
+    "why_not": "The motivation says THP is limited to 2Mi page sizes and can degrade performance on nodes with high memory use or fragmentation, so some applications prefer pre-allocated huge pages."
+   },
+   {
+    "option": "Dynamic huge page allocation by the cluster or kubelet to fit pending pods",
+    "why_not": "The non-goals say the proposal does not discuss dynamic allocation to fit pending pods, and it does not anticipate the kubelet doing the allocation."
+   },
+   {
+    "option": "Separate KEP for HugePageStorageMediumSize",
+    "why_not": "The maintainers said in comments that the two features should have had two separate enhancement proposals, but the KEP was reopened instead; the sources do not say a separate KEP was created."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal only includes pre-allocated huge pages configured on the node by the administrator at boot time or by manual dynamic allocation."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `kubelet` advertises an allocatable number of huge pages to support scheduling decisions."
+   },
+   {
+    "ref": "comment:834721871",
+    "quote": "Realistically, these two features should have had two separate enhancement proposals; we should not have reopened this one which was already completed to add the details for `HugePageStorageMediumSize`."
+   },
+   {
+    "ref": "comment:832141852",
+    "quote": "The `HugePages` feature was alpha in 1.8, beta in ??? and graduated in 1.14."
+   },
+   {
+    "ref": "comment:901392946",
+    "quote": "With the KEP now marked as `implemented`, I'm going to close out this issue."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7727,
+  "output": 1010
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

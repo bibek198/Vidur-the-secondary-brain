@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4578",
+ "input_hash": "862c2e48be0dfa1f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4578 proposes introducing Kubernetes-style feature gates into etcd so that new features are gated behind a lifecycle-tracked mechanism, letting users turn features on or off and query feature enablement, replacing the ad hoc --experimental flag approach. Status is provisional.",
+  "rationale": "The current --experimental flag mechanism is hard to track, has no clear graduation path because removing the prefix is a breaking CLI change, and gives clients no way to query feature enablement. Each experimental flag must also be piped through code separately, so some changes can slip past it. The KEP proposes a single feature gate framework to address these issues.",
+  "outcome_reason": "Status is provisional, so the sources do not record a final outcome or reason beyond the proposal itself.",
+  "alternatives": [
+   {
+    "option": "Keep adding features as --experimental flags and graduate by adding a new stable flag",
+    "why_not": "The readme says this is a breaking change at graduation and leads to features getting stuck or forgotten in the experimental phase."
+   },
+   {
+    "option": "Handle feature gate enablement at the cluster level in this KEP",
+    "why_not": "The readme lists cluster-level enablement as a non-goal that requires a separate KEP."
+   },
+   {
+    "option": "Use feature gates to fix bugs",
+    "why_not": "The readme lists using feature gates as a bug-fix mechanism as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We are introducing the Kubernetes style feature gate framework into etcd to gate future feature enhancement behind a sequence of feature lifecyles."
+   },
+   {
+    "ref": "readme",
+    "quote": "a new stable feature flag identical to the experimental feature flag but without the --experimental prefix is added to replace the old feature flag, which is a breaking change."
+   },
+   {
+    "ref": "readme",
+    "quote": "no method for clients to query and make decisions based on feature enablement in a cluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "Handle the feature gate enablement on the cluster level. They require more careful consideration and thus warrants a separate KEP."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2232,
+  "output": 831
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

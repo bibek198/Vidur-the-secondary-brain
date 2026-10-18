@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5080",
+ "input_hash": "14cb12d1ea1eaf89",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5080 introduces an opinionated namespace deletion order behind the OrderedNamespaceDeletion feature gate: delete all Pods first, wait for them to be stopped or deleted, then delete all other resources. The KEP is implemented and stable.",
+  "rationale": "The random deletion order can leave Pods running after their NetworkPolicies are gone, creating a security gap. Reviewers debated strict versus soft ordering, cycle risk, and generic bands; the discussion converged on special-casing Pods only, with a wait for Pods to be stopped or deleted. The stated goal is to avoid unresolvable deadlocks while making workloads safe before their policies are removed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generic priority bands for many resource types (e.g. Pods, default, policies)",
+    "why_not": "Reviewers were concerned about complexity and no concrete use cases beyond Pods vs NetworkPolicies. A comment says: \"I am worried that we are solving JUST ONE specific problem, but Dan's right that we don't actuyally know if the more complex solution would solve anything else\"."
+   },
+   {
+    "option": "Strict, inviolable ordering with no timeouts",
+    "why_not": "Reviewers warned it could introduce dependency cycles needing human action. One comment notes the risk of \"it worked fine in 1.32 and broke in 1.33\"."
+   },
+   {
+    "option": "Add ValidatingAdmissionPolicy and ValidatingAdmissionPolicyBinding deletion last",
+    "why_not": "The KEP author replied that it would not address parameter-resource issues, VAPs are cluster scoped, and webhooks have the same concern."
+   },
+   {
+    "option": "Let users configure the deletion order per resource",
+    "why_not": "Reviewers agreed that no one wanted it user-configurable, to avoid added complexity and confusion. One comment says \"Not allowing configuration is intended to prevent expanding complexity for this feature\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the Pods will be deleted before other resources with respects logical and security dependencies"
+   },
+   {
+    "ref": "readme",
+    "quote": "Delete all pods in the namespace (in an undefined order). - Wait for all the pods to be stopped or deleted. - Delete all the other resources in the namespace (in an undefined order)."
+   },
+   {
+    "ref": "rcomment:1940385596",
+    "quote": "We don't need a fully-generic solution just to solve the Pods-vs-NetworkPolicies problem"
+   },
+   {
+    "ref": "rcomment:1938505011",
+    "quote": "If you put a finalizer on a pod, it prevents it from being fully deleted, but (by design) does not prevent its containers from being stopped, so there will not be any deadlock."
+   },
+   {
+    "ref": "comment:2637937730",
+    "quote": "In this case, we would like to have the deletion process described in 1 being strict enforced with a feature gate guarded."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10950,
+  "output": 1120
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

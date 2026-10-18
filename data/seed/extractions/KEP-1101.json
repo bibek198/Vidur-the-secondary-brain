@@ -1,0 +1,41 @@
+{
+ "kep": "KEP-1101",
+ "input_hash": "37b8c2496db31c31",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1101 proposes a declarative `// +immutable` marker for CRD fields, published as the OpenAPI vendor extensions `x-kubernetes-immutable` and `x-kubernetes-immutable-keys`, with strict deep-equal checks during update validation. The KEP is in provisional status.",
+  "rationale": "Many API fields cannot change after creation, but there is no declarative way to say so; CRD authors must write a validating webhook. The proposal adds boolean OpenAPI extensions that the request pipeline enforces on update and patch, comparing marked fields strictly except that set-typed lists ignore order and immutable-keys fields compare only keys. The discussion shows the KEP was repeatedly targeted at releases 1.16 through 1.20 and was not promoted, with the maintainer citing a need to revisit it after null semantics changed.",
+  "outcome_reason": "The sources do not give a formal reason for the provisional status. The discussion shows the target release slipped repeatedly: the maintainer said \"we've decided to take our time and do it well\" and later \"we're not planning on promoting this feature this cycle\". The last maintainer comment says a new discussion is needed because \"we changed the `null` semantics\".</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Continue relying on validating webhooks for CRD immutability\", \"why_not\": \"The readme says that today this is only possible with 'the unreasonable development overhead of a webhook', which the KEP aims to remove.\"}, {\"option\": \"Strict deep-equal on all immutable fields with no exceptions\", \"why_not\": \"The proposal adds exceptions: set-typed lists ignore order, and immutable-keys fields compare only keys, so that keys can be added or deleted.\"}, {\"option\": \"Defining custom normalization for CRs in this KEP\", \"why_not\": \"The readme says normalization is deferred: 'We create another KEP to define custom normalization steps for CRs done during deserialization from etcd and when receiving a request'.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose 1. adding boolean vendor extensions to CRD OpenAPI schemas named `x-kubernetes-immutable` and `x-kubernetes-immutable-keys` with `true` as the only valid value."
+   },
+   {
+    "ref": "readme",
+    "quote": "do **strict deep-equal** comparison of those fields marked as immutable during update validation in the request pipeline"
+   },
+   {
+    "ref": "comment:516866083",
+    "quote": "Thanks Kendrick, we've decided to take our time and do it well! We're planning to do it for the next release"
+   },
+   {
+    "ref": "comment:620974225",
+    "quote": "Hi there, we're not planning on promoting this feature this cycle, thank you!"
+   },
+   {
+    "ref": "comment:744165491",
+    "quote": "I believe we can have a new discussion around this since we changed the `null` semantics."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5721,
+  "output": 1085
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

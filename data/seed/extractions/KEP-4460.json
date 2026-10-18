@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4460",
+ "input_hash": "e867966ed73d4bcc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4460 proposes replacing the kube-apiserver's timeout filter with per-request read/write deadlines via the Go ResponseController, behind the alpha feature gate PerHandlerReadWriteTimeout, so the whole handler runs on one goroutine. Status is implementable at alpha.",
+  "rationale": "The timeout filter has caused many hard-to-debug data races, and it runs the inner handler in a separate goroutine that cannot be killed externally. Removing it and setting request-scoped read/write deadlines equal to the request context deadline keeps timeout behavior close to today for short, non-long-running requests. The reviewers raised concerns about client behavior changes (HTTP/1 connection close, HTTP/2 stream resets) and about how the handler goroutine would be stopped, and the design treats these as open questions to address during alpha.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use net/http.TimeoutHandler",
+    "why_not": "The author states 'we are not going to use net/http.TimeoutHandler', and enj notes it is strictly worse than the existing handler."
+   },
+   {
+    "option": "Set a short server-wide timeout and extend it for long-running requests",
+    "why_not": "tkashem replied that long-running requests are outside the scope of this proposal, since no deadline is set on their request context today."
+   },
+   {
+    "option": "Spin up a monitoring goroutine only for requests that time out, or track all in-flight requests globally",
+    "why_not": "Wojtek suggested avoiding global tracking of inflight requests; tkashem said the goroutine-only approach needs a way to be notified when the context expires, and proposed global tracking as an alpha option with a beta criterion to replace it. The sources do not say which was finally chosen."
+   },
+   {
+    "option": "Panic from the ResponseWriter Write method or from context Value after timeout",
+    "why_not": "The thread notes the context package can call Value from other goroutines, so a panic there could kill the process; the approach is still under investigation, and panic-on-write is described as an option, not a settled decision."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "the `timeout` filter in the kube-apiserver will become redundant, and thus be removed from the server handler chain."
+   },
+   {
+    "ref": "readme",
+    "quote": "A new feature flag `PerHandlerReadWriteTimeout` will be introduced, when enabled:"
+   },
+   {
+    "ref": "rcomment:1595428040",
+    "quote": "The scope of this proposal is the same, short (non long-running) requests only."
+   },
+   {
+    "ref": "comment:2145771525",
+    "quote": "With a featuregate, I think we can try removing our special cased timeout handler."
+   },
+   {
+    "ref": "comment:2154470774",
+    "quote": "it merged before my PRR review, but this looks fine for Alpha."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12223,
+  "output": 1066
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

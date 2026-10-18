@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3104",
+ "input_hash": "01be56b83e2c7733",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3104 introduces an optional, versioned `kuberc` file for client-side user preferences (command aliases and default options), separate from cluster credentials in kubeconfig, and deprecates the kubeconfig `Preferences` field. The KEP is in implementable status at stage beta.",
+  "rationale": "kubectl has strong backwards-compatibility guarantees, so users need an opt-in place for new behaviors that could break existing scripts. The existing kubeconfig `preferences` field is underused because new clusters usually produce new kubeconfig files holding credentials, so a separate file keeps server config and user preferences apart and applies regardless of which `--kubeconfig` or `$KUBECONFIG` is used. Reviewers pushed to start simple with command aliases only and to keep builtin commands from being shadowed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use XDG base directory locations for the new file",
+    "why_not": "Maintainers opted out because it would cause an awful partition across tooling that didn't upgrade client-go; a reviewer noted it is worth considering for a net-new file, and the KEP was asked to explicitly address and reject it."
+   },
+   {
+    "option": "Keep using the existing kubeconfig `Preferences` field",
+    "why_not": "Creating a new cluster generally yields a new kubeconfig with credentials and host information, so the design wants a clear separation between server configuration and user preferences."
+   },
+   {
+    "option": "Allow aliases for subcommands and flag or namespace aliasing from the start",
+    "why_not": "Reviewers (soltysh) advised starting simple with just command aliases, and noted that aliases must not shadow builtin commands; git does not support such aliasing either."
+   },
+   {
+    "option": "Opt out of deprecations for the kubeconfig field",
+    "why_not": "Per the later decision on PR #6350, the maintainers decided it is not wise to opt out of deprecations, so that functionality will not be supported."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal introduces an optional `kuberc` file that is used to separate cluster credentials and server configuration from user preferences."
+   },
+   {
+    "ref": "readme",
+    "quote": "users can split kubeconfig files into various locations, while maintaining a single preference file that will apply no matter which `--kubeconfig` flag or `$KUBECONFIG` env var is pointing to."
+   },
+   {
+    "ref": "rcomment:896693172",
+    "quote": "we need to ensure that builtin commands stay builtin commands, otherwise we'll introduce a new set of problems where users will start reporting problems"
+   },
+   {
+    "ref": "rcomment:902821674",
+    "quote": "I don't want to go that far, I'd start simple with just command aliases."
+   },
+   {
+    "ref": "rcomment:3990363236",
+    "quote": "We've decided it's not wise to opt-out of deprecations, so we're not going to support that functionality."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11827,
+  "output": 1097
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

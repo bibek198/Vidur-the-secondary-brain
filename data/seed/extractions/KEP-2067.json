@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2067",
+ "input_hash": "383ecf45d8a25e16",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2067 proposes renaming the kubeadm node-role label and taint key from node-role.kubernetes.io/master to node-role.kubernetes.io/control-plane, applied with a deprecation policy rather than a hard rename. Status is implementable, stage alpha.",
+  "rationale": "The Kubernetes project is moving away from the word \"master\" and a naming proposal recommends \"control plane\" instead. The KEP therefore changes the key kubeadm sets on control plane Nodes, both as a label and as a taint. Its goals include applying deprecation policies and notifying users, and it explicitly avoids a hard rename within a single release.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Hard rename of the master label and taint keys to control-plane within a single release",
+    "why_not": "Listed as a non-goal; the KEP instead aims to apply proper deprecation policies to minimize friction with users."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently this label key is `node-role.kubernetes.io/master` and it should be renamed to `node-role.kubernetes.io/control-plane`."
+   },
+   {
+    "ref": "readme",
+    "quote": "The Kubernetes project is moving away from wording that is considered offensive."
+   },
+   {
+    "ref": "readme",
+    "quote": "Apply proper deprecation policies to minimize friction with users facing the change."
+   },
+   {
+    "ref": "readme",
+    "quote": "Hard rename the kubeadm \"master\" label and taint keys to \"control-plane\" within a single release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1920,
+  "output": 650
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5018",
+ "input_hash": "dbd257792b27c727",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5018 adds an AdminAccess flag to DRA device requests so cluster administrators can access devices already allocated to other users, restricted to namespaces carrying the DRA admin label. The KEP is recorded as implemented and stable.",
+  "rationale": "Administrators need privileged access to in-use devices for monitoring and diagnostics, but regular users must not gain that access. The design gates the adminAccess field on namespace labeling and the feature gate, and the scheduler skips allocation checks for admin-access requests. Reviewers debated whether this check belongs in the REST layer or in admission, and the REST-layer approach was chosen so cluster admins cannot disable the check.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Validating Admission Policy",
+    "why_not": "Kubernetes has no mechanism to apply a system VAP to all new clusters automatically, so it is not sufficient for conformance."
+   },
+   {
+    "option": "Builtin admission controller",
+    "why_not": "It allows removal of a check, which is not what the KEP wants; the REST storage approach keeps the check running regardless of admin configuration."
+   },
+   {
+    "option": "RBAC++",
+    "why_not": "It is not available yet, especially for the DRA timeframe."
+   },
+   {
+    "option": "Read-only mode",
+    "why_not": "Read-mode is too restrictive; AdminAccess is more like root access and needs checks to prevent normal users from bypassing."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Access to this mode is restricted to users authorized to create ResourceClaim or ResourceClaimTemplate objects in namespaces marked with the DRA admin label"
+   },
+   {
+    "ref": "readme",
+    "quote": "Validating Admission Policy (VAP): An example was added in 1.31. However this approach cannot be used to control access for an in-tree type"
+   },
+   {
+    "ref": "rcomment:1929062179",
+    "quote": "It was my recommendation to use the REST storage layer and not admission, because this isn't something that I think a cluster admin should be able to disable."
+   },
+   {
+    "ref": "rcomment:1944568189",
+    "quote": "I think read-mode is too restrictive. This is more like \"root\" access: - It may grant additional permissions."
+   },
+   {
+    "ref": "comment:4030059363",
+    "quote": "This enhancement is now marked as `Tracked for code freeze`!"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11343,
+  "output": 921
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

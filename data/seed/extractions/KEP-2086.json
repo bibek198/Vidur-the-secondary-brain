@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2086",
+ "input_hash": "ba7f8365caf64a1a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2086 adds a new field spec.internalTrafficPolicy to Service so internal traffic can be routed node-locally (Local) or cluster-wide (Cluster, the default). The KEP is implemented and at stable stage.",
+  "rationale": "Internal Service traffic was always randomly distributed across all endpoints, with no way to keep it node-local or topology-aware. The KEP adds an opt-in API field with a default of Cluster so existing behavior does not change, and gates it behind the ServiceInternalTrafficPolicy feature gate during alpha. Zone and region topology routing is explicitly out of scope and left to the Topology Aware Hints KEP.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Zone/region topology-aware routing in this KEP",
+    "why_not": "The non-goals state that this KEP only covers node-local routing and points to the Topology Aware Hints KEP for zone/region topologies."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The field will have 2 codified values: 1. Cluster (default): route to all cluster-wide endpoints (or use topology aware subsetting if enabled)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Internal traffic routed to a Service has always been randomly distributed to all endpoints."
+   },
+   {
+    "ref": "readme",
+    "quote": "Default behavior for internal Service traffic should not change."
+   },
+   {
+    "ref": "readme",
+    "quote": "Topology aware routing for zone/region topologies -- while this field enables this feature, this KEP only covers node-local routing."
+   },
+   {
+    "ref": "readme",
+    "quote": "Added complexity in the Service API and in kube-proxy to address node-local routing."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1982,
+  "output": 707
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

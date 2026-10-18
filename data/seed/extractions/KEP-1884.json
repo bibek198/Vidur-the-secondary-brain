@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1884",
+ "input_hash": "f03772e28ef15185",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1884 proposes a kubelet endpoint (pod resources API) that lets third-party consumers inspect the mapping between devices, CPUs and pods, so external device monitoring agents can attach pod and container metadata to metrics. Its status is implementable, stage stable, from 2020-10-06.",
+  "rationale": "External device monitoring is expected to live outside the Kubernetes tree, but metrics such as GPU utilization only matter to administrators and pod owners if they can be matched to a specific pod and container. The kubelet endpoint exposes the concrete device-to-pod assignment for that purpose. Reviewers accepted the change as additive to the existing interface, with the main design debates being the representation of NUMA topology and CPU sets.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use a cpuset-format string for CPU and NUMA information",
+    "why_not": "kad argued a string format loses validation at the gRPC/protobuf level and forces clients to implement a parser; the thread moved toward concrete repeated integer lists."
+   },
+   {
+    "option": "Reuse the device plugin TopologyInfo type directly",
+    "why_not": "dashpole said each API should stay self-contained and that the types should not be used directly, though modeling after the device plugin API was acceptable."
+   },
+   {
+    "option": "Keep the changes in the existing KEP document",
+    "why_not": "derekwaynecarr asked for a distinct KEP per tracking issue, citing the process as new; the thread does not record the outcome of that request."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document presents the kubelet endpoint which allows third party consumers to inspect the mapping between devices and pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "the external monitoring agents need to be able to determine the set of devices in-use by containers and attach pod and container metadata to the metrics."
+   },
+   {
+    "ref": "rcomment:458714159",
+    "quote": "Using `cpuset` as a format (and especially in the string form) is really not the best idea in terms of engineering of APIs."
+   },
+   {
+    "ref": "comment:704514536",
+    "quote": "The changes are additive to the existing interface, so I do not see any major backward compatible issues."
+   },
+   {
+    "ref": "review:498619231",
+    "quote": "making the concrete binding visible to external agents is fine."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10358,
+  "output": 906
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

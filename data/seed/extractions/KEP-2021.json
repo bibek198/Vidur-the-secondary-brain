@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2021",
+ "input_hash": "b4bb60f22a013918",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2021 proposes letting the HPA scale workloads from and to zero replicas for object and external metrics, using minReplicas: 0 and an HPA status condition. Current status is implementable, stage beta.",
+  "rationale": "Idle queue consumers and less latency-sensitive workloads, especially GPU-backed ones, keep at least one replica running only to satisfy HPA's minimum of one. The design allows scaling to zero for object and external metrics, since CPU and memory can only be measured on running pods. The HPA must also scale back up once work arrives.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Third-party solutions such as KEDA",
+    "why_not": "The readme says these solutions 'often introduce additional paradigms and complexity', while native HPA support is described as 'a valuable and low-complexity enhancement'."
+   },
+   {
+    "option": "Scaling to/from zero for resource metrics (CPU/memory)",
+    "why_not": "This is listed as a non-goal; the readme states 'Since CPU and memory utilization can only be measured on running pods, scaling to zero will be limited to object and external metrics.'"
+   },
+   {
+    "option": "Request buffering at the Kubernetes Service level",
+    "why_not": "This is listed as a non-goal in the readme, with no reason given in the excerpt."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Since CPU and memory utilization can only be measured on running pods, scaling to zero will be limited to object and external metrics."
+   },
+   {
+    "ref": "readme",
+    "quote": "Allow the HPA to scale from and to zero using `minReplicas: 0` and a HPA status condition."
+   },
+   {
+    "ref": "readme",
+    "quote": "In cases of a frequently idle queue or a less latency-sensitive workload, there is no need to keep one replica running at all times."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, these solutions often introduce additional paradigms and complexity."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2266,
+  "output": 783
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

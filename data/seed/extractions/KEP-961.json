@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-961",
+ "input_hash": "c67d30fd109622fc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-961 proposes adding a `maxUnavailable` field to the StatefulSet `.spec.updateStrategy.rollingUpdate` settings so that RollingUpdate can replace multiple Pods at a time instead of one. It accepts an absolute positive number or a percentage of desired pods, defaulting to 1. The KEP is currently at status implementable, stage beta.",
+  "rationale": "StatefulSet RollingUpdate replaces Pods one at a time, which makes rollouts slow for applications with slow startup or many tolerant followers. The proposal lets users opt in to bringing down up to maxUnavailable Pods concurrently. The default of 1 keeps the previous behavior for everyone else, and the drawback of higher unavailability is accepted as a user choice.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep StatefulSets rolling one Pod at a time and use Deployments for faster rollouts",
+    "why_not": "The readme says users who need faster rollouts with stable identity would otherwise have to give up StatefulSets, or accept Deployment workarounds for the metrics and revision-tracking scenarios."
+   },
+   {
+    "option": "Use OnDelete update strategy and write a custom controller to delete multiple Pods in a chosen order",
+    "why_not": "The readme lists this as an alternative that gives ultimate flexibility but requires more work from the user."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This new field can be an absolute, positive number (eg. `5`) or a percentage of desired pods (ex: `10%`)."
+   },
+   {
+    "ref": "readme",
+    "quote": "When the field is not specified, it will default to 1 to maintain previous behavior of rolling one pod at a time."
+   },
+   {
+    "ref": "readme",
+    "quote": "If StatefulSet supported maxUnavailable with value greater than 1, it would allow for a faster rollout since a total of maxUnavailable number of pods could be loading up the cache at the same time."
+   },
+   {
+    "ref": "readme",
+    "quote": "It can lead to increased application unavailability/outage during rollouts when this feature is enabled and used (maxUnavailable set to values greater than 1)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2904,
+  "output": 865
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

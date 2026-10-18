@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4540",
+ "input_hash": "c54813e079a3835d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4540 adds a `strict-cpu-reservation` policy option to the static CPUManager policy so that reservedSystemCPUs are excluded from the default cpuset used by burstable and best-effort containers, reserving them for system daemons and interrupt processing. The KEP is implemented and at stage stable.",
+  "rationale": "Under the existing static policy, reservedSystemCPUs isolation applies only to guaranteed pods with integer CPU requests. Burstable and best-effort pods can use the reserved capacity because admission compares only CPU requests against allocatable CPUs, which can starve host OS services. The option removes reserved cores from the shared pool so these pods are kept off them, and it is opt-in so existing static-policy behavior is unchanged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a minSharedCPUs setting so a minimum shared pool is kept and exposed to the scheduler",
+    "why_not": "The discussion says the option was abandoned: \"The minSharedCPUs option is abandoned and left in the KEP for the record.\""
+   },
+   {
+    "option": "Add admission checks in kubelet and scheduler forcing a minimal CPU request for best-effort pods",
+    "why_not": "The author argued it works against the scheduler's decision and creates an inconsistent view: \"I see the new option (option 2) is an attempt to work against the scheduler's decision (creating new inconsistent view as you correctly pointed out).\" The group deferred this and agreed to start with metrics: \"we agreed to start with the metrics to assess the actual impact in real deployment\"."
+   },
+   {
+    "option": "Extend the eviction manager to remediate starved best-effort pods",
+    "why_not": "Raised as an option but not adopted; the reviewer noted it could create runaway pod creation loops: \"this approach would have the potential to create runaway pod creation loops\"."
+   },
+   {
+    "option": "Introduce a new schedulable resource for shared CPUs (Shared added to Allocatable)",
+    "why_not": "Raised as a concern about changing the node API: \"Not sure I understand what you are suggesting here because Allocatable (Total - reserved) is static during kubelet's lifecycle\"; no decision to adopt it is recorded."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "a new `CPUManager` policy option `strict-cpu-reservation` is introduced which ensures that `reservedSystemCPUs` are strictly reserved for system daemons or interrupt processing"
+   },
+   {
+    "ref": "readme",
+    "quote": "Admission is only comparing the cpu requests against the allocatable cpus. Since the cpu limit are higher than the request, it allows burstable and best-effort pods"
+   },
+   {
+    "ref": "rcomment:1782013464",
+    "quote": "The minSharedCPUs option is abandoned and left in the KEP for the record. I will update the KEP to make this very clear."
+   },
+   {
+    "ref": "rcomment:1787691397",
+    "quote": "we agreed to start with the metrics to assess the actual impact in real deployment of the concern before to revisit if we need risk mitigation."
+   },
+   {
+    "ref": "comment:2374656782",
+    "quote": "I'm fine deferring the BE protection or not as beta requirement, also considering it seems we reached consensus about adding metrics in alpha."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9654,
+  "output": 1238
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

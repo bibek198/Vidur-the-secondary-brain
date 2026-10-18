@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-5366",
+ "input_hash": "2472fcf4ce53df3a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5366 proposes letting leader-elected components (kube-scheduler, kube-controller-manager, cloud-controller-manager) release the leader lock and return to follower without a process restart, behind a feature gate. Its status is implementable at stage beta, but the owner later said beta is not planned for this release.",
+  "rationale": "Today client-go leader election forces an immediate exit (klog.FlushAndExit in OnStoppedLeading), so components rely on kubelet restarts, which adds overhead and prevents graceful cleanup. The KEP commits to Phase 1 (safe controller shutdown) and Phase 2 (actively releasing the lease on shutdown), and defers Phase 3 (no restarts at all). Reviewers raised leak, wedged-controller and dual-leader risks, and the sources do not record a final resolution of them.</rationale>\n<parameter name=\"outcome_reason\">The status is implementable, stage beta. The sources say the owner later commented that beta is \"not planned for beta this release\" (comment:5040921279), but they do not give a reason for that deferral.",
+  "alternatives": [
+   {
+    "option": "Off-by-default alpha for the migration from exit-on-yield to continuing to run",
+    "why_not": "Suggested by jpbetz as a way to introduce the feature safely (rcomment:2127732497); the sources do not say whether this path was adopted."
+   },
+   {
+    "option": "Dynamic selection of which controllers run in a process",
+    "why_not": "deads2k suggested removing it: 'don't dynamically change which controllers and running and simply get graceful release and potentially (if you really like it) avoiding process restart' (review:2933145474). Separating controllers was also called out of scope (rcomment:2150631803)."
+   },
+   {
+    "option": "Keep os.Exit but release the lease first",
+    "why_not": "deads2k described this as a standard refactor that does not need a KEP and is a prerequisite for the riskier change (comment:2949159997). It is part of the phased plan, not an alternative to it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Phase 1 ensures controllers can safely shut down, and Phase 2 builds on that to enable faster failovers by actively releasing the lease on shutdown."
+   },
+   {
+    "ref": "readme",
+    "quote": "When the leadership is lost, the component shuts down and waits for the kubelet to detect that the component is unhealthy and restart it."
+   },
+   {
+    "ref": "comment:2949159997",
+    "quote": "Changes to avoid the os.Exit are notably riskier, do require a KEP, do require featuregating, and do require testing that demonstrates that we can catch and stop all go func"
+   },
+   {
+    "ref": "comment:5040921279",
+    "quote": "Hi, this is not planned for beta this release. Feel free to drop the milestone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11147,
+  "output": 1051
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

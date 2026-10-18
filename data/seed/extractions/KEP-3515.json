@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3515",
+ "input_hash": "3773f8b6fb0aa971",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3515 proposed switching kubectl explain's data source from OpenAPI v2 to OpenAPI v3 and replacing the hand-written printer with a go/template implementation, with a fallback to the v2 implementation. The KEP is now implemented at stage beta.",
+  "rationale": "The goal was richer type information from OpenAPI v3 and a more maintainable text/template printer, with fallback to the old implementation when a cluster lacks v3 data. Reviewers pushed back on custom user templates and on output flag naming, so custom templates were cut from scope and the output flag design was debated. Fallback and default-on behavior were discussed for beta, with the fallback kept until OpenAPI v3 is GA for all versions in skew.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Support user-provided custom templates",
+    "why_not": "The author removed it from scope because there was no concrete use case; the author said it could be proposed in a future KEP."
+   },
+   {
+    "option": "Expose raw OpenAPI v3 output via --output=openapiv3 and leave display to tools",
+    "why_not": "Discussed as an alternative by a reviewer who preferred it for explicit deprecation; the sources do not say it was adopted as the sole approach. The author and reviewers converged on built-in formats plus a flag scheme."
+   },
+   {
+    "option": "Remove the fallback to OpenAPI v2 at beta",
+    "why_not": "The author said that while some versions in skew only support beta OpenAPI, an automatic fallback to v2 must exist for defaulted flags."
+   },
+   {
+    "option": "Make the --experimental-openapiv3 flag an error when v3 is unavailable",
+    "why_not": "The author said that treating 'OpenAPI V3 Not Available' as an error is not allowed until GA, except when the user explicitly requests openapiv3 output."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Switch data source from OpenAPI v2 to OpenAPI v3 2. Replace the hand-written `kubectl explain` printer with a go/template implementation."
+   },
+   {
+    "ref": "rcomment:982842607",
+    "quote": "I've removed the proposal to allow custom user templates. Once we have settled on best practices/good library functions in our proposed internal"
+   },
+   {
+    "ref": "rcomment:1090943927",
+    "quote": "While there are versions of k8s within skew that only support beta OpenAPI, we must have an automatic fallback to v2 for the defaulted flags."
+   },
+   {
+    "ref": "rcomment:1090949505",
+    "quote": "we should not remove fallback until OpenAPIV3 is GA for all versions in skew."
+   },
+   {
+    "ref": "comment:2656445769",
+    "quote": "Reopening, since this is definitely one that we'd need to either drop or decide to push to stable."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10930,
+  "output": 1064
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

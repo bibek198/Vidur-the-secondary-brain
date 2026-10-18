@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3715",
+ "input_hash": "1b1114be6c54d300",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3715 allows spec.completions of an Indexed Job to be mutated, but only when the new value equals spec.parallelism and both fields change together. The KEP reached implemented status and stable stage.",
+  "rationale": "Indexed Jobs need a stable index range for workloads like MPI, Ray, and PyTorch that autoscale, but spec.completions was immutable. The KEP treats completions and parallelism as one scalable unit for these workloads, so completions can change only in tandem with parallelism. Failure counting is kept for scaled-down jobs, and the Job API is preferred over StatefulSet for its batch features.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Model the workload as a StatefulSet",
+    "why_not": "The KEP says the Job API is a better fit because it offers batch-specific features such as running indexes to completion and pod and container failure handling."
+   },
+   {
+    "option": "Make spec.completions mutable for NonIndexed jobs as well",
+    "why_not": "NonIndexed mode behavior is an explicit non-goal and is not changed by this KEP."
+   },
+   {
+    "option": "Allow spec.completions to change independently of spec.parallelism",
+    "why_not": "The goal is to allow mutation only when the updated value equals spec.parallelism, so the two fields move together."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to allow mutating `spec.completions` for `Indexed` job iff `spec.completions` equals to `spec.parallelism` before and after the update"
+   },
+   {
+    "ref": "readme",
+    "quote": "there is no distinction between the concept of \"how many completed indexes do I need\" (i.e., `spec.completions`) and the concept of \"how many pods do I want running at a time\""
+   },
+   {
+    "ref": "readme",
+    "quote": "While such workloads could be modeled as a StatefulSet, the Job API is a better fit because it offers batch-specific features"
+   },
+   {
+    "ref": "readme",
+    "quote": "Failures will always count. If `spec.completions` was scaled down, then previous pod failures outside the new range will still count against the job's backoffLimit."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2343,
+  "output": 843
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2501",
+ "input_hash": "41fb05c583aa0deb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2501 defines the roadmap for graduating `kubeadm alpha phase` commands to beta, exposing kubeadm phases as a user interface. The KEP status is implemented at stage beta.",
+  "rationale": "Phases were introduced under `kubeadm alpha phase` to let users run individual steps of `kubeadm init`, but keeping phases in sync with init required continuous effort, with flag proliferation, code duplication, and occasional inconsistencies. The KEP aims to cut that maintenance effort, support phases in other workflows, and allow reuse of phases such as the cert phase across init and join. The graduation approach is chosen over simply moving the commands to top level because it gives more room to reduce maintenance work.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate phases by simply moving the corresponding command to first level",
+    "why_not": "The readme says this approach \"provide less opportunities for reducing the effort for maintaining phases up to date with the changes of kubeadm.\""
+   },
+   {
+    "option": "Expose phases that are not part of kubeadm workflows as beta",
+    "why_not": "The drawbacks section says such phases would not be exposed; \"extra\" phases should stay on a dedicated kubeadm alpha command and follow the normal graduation process."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We are defining the road map for graduating `kubeadm alpha phase` commands to beta, addressing concerns/lessons learned so far about the additional effort for maintenance of this feature."
+   },
+   {
+    "ref": "readme",
+    "quote": "the existing separation of `kubeadm init` and `kubeadm phase` in the code base required a continuous effort to keep the two things in sync, with a proliferation of flags, duplication of code"
+   },
+   {
+    "ref": "readme",
+    "quote": "It is possible to graduate phases by simply moving corresponding command to first level, but this approach provide less opportunities for reducing the effort for maintaining phases up to date"
+   },
+   {
+    "ref": "readme",
+    "quote": "It would not be possible to expose to the users phases which are not part of kubeadm workflows"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2235,
+  "output": 843
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-5793",
+ "input_hash": "de65a06fd180089d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5793 proposes file-based manifests loaded by kube-apiserver at startup (via AdmissionConfiguration) to configure admission webhooks and policies outside the Kubernetes API, watched for runtime changes. Current status: implementable, stage beta. It is recorded as replacing KEP-1872 (Manifest based registration of Admission webhooks).",
+  "rationale": "Admission controls created as API objects have a bootstrap gap, cannot protect themselves from modification through the API, and depend on etcd availability. The KEP addresses these by loading manifests at startup, keeping them isolated from the REST API, and reserving a `.static.k8s.io` name suffix to separate them from REST-based objects. Maintainers modeled the design on static pods. The sources do not explain in detail why KEP-1872 was superseded beyond the kep.yaml record.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Surfacing manifest objects in the Kubernetes API (mirror-pod style)",
+    "why_not": "Source says exposing them similar to mirror pods \"has proven error-prone in practice\", so the KEP keeps them out of the API."
+   },
+   {
+    "option": "Auto-prefixing manifest object names instead of requiring a suffix",
+    "why_not": "Bentheelder does not favor it: \"I think it may be less surprising to enforce a prefix at validation time ... than to auto-prefix\"."
+   },
+   {
+    "option": "Relaxing name validation for file-based objects",
+    "why_not": "Liggitt and deadS2k synced offline and concluded relaxing validation is hard to reason about, so they chose a reserved suffix instead."
+   },
+   {
+    "option": "Enabling interception of API-based admission config via REST API",
+    "why_not": "Source says it was not considered reasonable because \"you could easily create an unrecoverable state requiring etcd surgery\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This is achieved by augmenting the `AdmissionConfiguration` schema to include paths to manifest files containing webhook and policy configurations that are loaded at API server startup and watched for changes at runtime."
+   },
+   {
+    "ref": "rcomment:2789186209",
+    "quote": "reserve a suffix (like `.static.k8s.io`) on config and binding object names for these manifest-defined objects"
+   },
+   {
+    "ref": "rcomment:2789186209",
+    "quote": "The need to adapt even colon-prefixed names back into dns-subdomain names for things like audit annotation prefixes"
+   },
+   {
+    "ref": "comment:3757538131",
+    "quote": "It's essentially static pods for admission policy / webhookconfiguration."
+   },
+   {
+    "ref": "readme",
+    "quote": "Guarantee enforcement from startup: File-configured admission policies and webhooks MUST be active before the API server begins processing requests."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-1872",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-5793 replaces KEP-1872 Manifest based registration of Admission webhooks"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12789,
+  "output": 1150
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

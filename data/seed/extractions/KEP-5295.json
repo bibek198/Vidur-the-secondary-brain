@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5295",
+ "input_hash": "2418ff800cbe8526",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5295 proposes KYAML, a strict subset (\"dialect\") of YAML, as a new kubectl output format (`-o=kyaml`) and as the preferred format for project documentation and examples. The KEP status is implemented, stage stable.",
+  "rationale": "Conventional block-style YAML is whitespace-sensitive and has type-coercion traps (e.g. \"NO\" parsed as bool, \"11:00\" as a sexagesimal number), which make hand-editing and templating (e.g. Helm) error-prone, while JSON lacks comments. KYAML uses flow style with always-double-quoted values, unquoted safe keys, and {} and [] delimiters so it is not whitespace-sensitive and remains valid YAML. The KEP states it is not required of users and that existing YAML output is retained.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use JSON (or JSON with comments stripped before submission)",
+    "why_not": "The KEP says JSON lacks comments and is particular about trailing commas and quoted keys, and that most configuration tooling is built around YAML."
+   },
+   {
+    "option": "Adopt an existing JSON-like format such as HJSON, JSONC, or JSON5",
+    "why_not": "The KEP says these would require choosing between them, taking new dependencies, and learning new grammars, while KYAML has none of those drawbacks."
+   },
+   {
+    "option": "Add styling hints to go-yaml instead of implementing the encoder",
+    "why_not": "The KEP says this would require work in go-yaml, which is EOL, so it defers this path until the revival fork is available."
+   },
+   {
+    "option": "Implement the formatting rules for kubectl without naming the format",
+    "why_not": "A rcomment from lmktfy says they discount this option; the discussion notes that people would call it KYAML regardless and a name helps clarify the pretty-printing."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This format is a strict subset (aka \"dialect\") of standard YAML, and so should be parseable by the existing ecosystem."
+   },
+   {
+    "ref": "readme",
+    "quote": "KYAML is primarily a specification of output. Since KYAML is a subset of YAML, it should always be accepted as input"
+   },
+   {
+    "ref": "comment:2945983992",
+    "quote": "it's alpha; we can get feedback (including before the release) and revise what we do"
+   },
+   {
+    "ref": "rcomment:2121805393",
+    "quote": "nobody is **forced** to use this, the KEP retains support for the existing yaml output and of course decoding remains untouched"
+   },
+   {
+    "ref": "readme",
+    "quote": "Specify a YAML dialect which is 100% compatible with existing parsers and tooling."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12564,
+  "output": 1029
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

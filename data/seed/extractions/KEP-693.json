@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-693",
+ "input_hash": "308f400ec856eaea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-693 Node Topology Manager coordinates NUMA/socket-level resource alignment in the kubelet between topology-aware components (CPU Manager, Device Manager). Its status is implemented, stage stable.",
+  "rationale": "Multiple kubelet components (CPU manager, device manager, CNI) make topology-related assignments independently, which can misalign CPUs and devices across NUMA nodes and add interconnect hops. The KEP adds a mechanism to arbitrate preferred NUMA affinity from CPU and Device Manager hints, plus an internal interface for future topology-aware kubelet components. Discussion shows the work was later extended toward GA, with graduation to stable tracked for 1.27.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "AutoNUMA kernel feature",
+    "why_not": "The readme states it affects memory allocation and thread scheduling but does not address device locality."
+   },
+   {
+    "option": "Pod-level flag to enable alignment",
+    "why_not": "Discussed in comments as an option to avoid startup delay for pods that do not need alignment; the sources say the community did not push back on a generic enhancement, so the flag was not pursued in the sources."
+   },
+   {
+    "option": "Extending TopologyHints with point-to-point device links directly",
+    "why_not": "Raised by NVIDIA engineers; the discussion settled on extending the device plugin API so devicemanager reports socket affinity, keeping SocketMask as the primary structure."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal provides a mechanism to coordinate fine-grained hardware resource assignments for different components in Kubernetes."
+   },
+   {
+    "ref": "readme",
+    "quote": "Arbitrate preferred NUMA Node affinity for containers based on input from CPU Manager and Device Manager."
+   },
+   {
+    "ref": "comment:481609063",
+    "quote": "so long as the API extensions to the device plugin are designed to give us information similar to what I outlined in my example above and the devicemanager is extended to store this information"
+   },
+   {
+    "ref": "comment:1401799352",
+    "quote": "Graduate Topology Manager to GA - Kubernetes Enhancement Proposal"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11316,
+  "output": 869
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2033",
+ "input_hash": "dc35f9b145351825",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2033 proposes running all Kubernetes node components (kubelet, CRI, OCI, CNI, kube-*) as a non-root user inside a user namespace, with small kubelet and kube-proxy changes to ignore sysctl and rlimit errors. Its status is implementable, stage beta, from 2021-05-24.",
+  "rationale": "The main motivation is protecting the host from container-breakout vulnerabilities, and letting shared-machine users (HPC) and kind-style setups run Kubernetes without root. The authors argue admission hooks cannot mitigate vulnerabilities in kubelet, CRI, and OCI themselves, and that Node-level UserNS does not cover them. Reviewers accepted the approach but required a feature gate and documented caveats, and raised conformance-profile questions before beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Node-level user namespaces (KEP-127), running only containers in a user namespace",
+    "why_not": "The readme says it \"can't mitigate vulnerabilities of kubelet, CRI, OCI, and their relevant components\" and that it is \"out of scope for this KEP\"; the two can be stacked."
+   },
+   {
+    "option": "Kubelet externalized admission hooks to block pods requesting host privileges",
+    "why_not": "The author argues \"Admission hooks are not efficient to mitigate vulnerabilities of the node components themselves (kubelet, CRI, OCI...)\"."
+   },
+   {
+    "option": "Defer rootless until cgroup v2 and user namespace support (KEP-127) are finished",
+    "why_not": "Reviewer ehashman put a hold on the PR citing this dependency, but the author disagreed: \"#127 is for running pods in UserNS, while this KEP is for running all the node components in UserNS.\" The sources do not show a final resolution of this hold beyond the later approval."
+   },
+   {
+    "option": "Run rootless only outside the main repository as a proof of concept",
+    "why_not": "Raised by derekwaynecarr as a concern about long-term support; the author replied the work was already happening in the usernetes repo, but the KEP was still proposed for upstream merge."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP allows running the entire Kubernetes components (`kubelet`, CRI, OCI, CNI, and all `kube-*`) as a non-root user on the host, by running them in a user namespace."
+   },
+   {
+    "ref": "readme",
+    "quote": "The primary drawback of this KEP is its complexity. It also heavily relies on third-party, out-of-tree components."
+   },
+   {
+    "ref": "comment:842818441",
+    "quote": "There is an experiment to remove slirp overhead by using `SECCOMP_IOCTL_NOTIF_ADDFD` (Kernel 5.9)"
+   },
+   {
+    "ref": "rcomment:632036833",
+    "quote": "to move to beta, we need clarity if we intend to define two separate types of conformance suites"
+   },
+   {
+    "ref": "comment:846818284",
+    "quote": "SIG-release approved this in v1.22 milestone, with the merge deadline May 25."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12626,
+  "output": 1176
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

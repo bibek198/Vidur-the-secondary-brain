@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2214",
+ "input_hash": "24cfbb06c8f09d62",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2214 proposes adding completion indexes to the Pods of a Job running in fixed completion count mode (an \"Indexed Job\"), plus stable index-based hostnames so Pods can be addressed via DNS with a headless Service. The KEP is implemented and at stable stage.",
+  "rationale": "Embarrassingly parallel workloads that need a unique, ordered index per Pod were hard to express with existing Job patterns (external queues or one-Job-per-item templates). Third-party operators worked around this with per-index Services or StatefulSets, which had scalability and serial-creation limits. The KEP adds native indexing to Jobs so each Pod gets an index and a stable hostname derived from it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave Indexed Job to third-party implementations",
+    "why_not": "The KEP says this splits the ecosystem and leaves Pod management to each implementation, making higher-level Job orchestration harder to support across them."
+   },
+   {
+    "option": "Put the completion index in the Pod name (stable Pod names)",
+    "why_not": "The KEP says it would require removing failed Pods before replacement, which is a breaking change and interacts with the tombstone-based backoff tracking; it is deferred as a possible future value for completionMode."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose the addition of completion indexes into the Pods of a *Job [with fixed completion count]* to support running embarrassingly parallel programs"
+   },
+   {
+    "ref": "readme",
+    "quote": "The lack of support for this pattern in k8s forces users to implement their own APIs and controllers or adopt third party implementations."
+   },
+   {
+    "ref": "readme",
+    "quote": "Each implementation splits the ecosystem, making it harder for higher level systems for Job queueing or workflows to support all of them."
+   },
+   {
+    "ref": "readme",
+    "quote": "Stable pod names require the Job controller to remove failed Pods before creating a new one with the same index."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, stable Pod names can be offered later as a new value for `.spec.completionMode` for Jobs."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3235,
+  "output": 844
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

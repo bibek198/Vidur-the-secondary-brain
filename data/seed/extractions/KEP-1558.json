@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1558",
+ "input_hash": "fefb3775e46b07e8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1558 proposed deprecating the Kubelet's --redirect-container-streaming flag and the StreamingProxyRedirects feature, leaving only the Kubelet-proxied local redirect path for exec/attach/port-forward streaming. The KEP's status is implemented, stage stable.",
+  "rationale": "Redirect-based streaming kept the apiserver handling SSRF-prone redirects and required complicated certificate setup between apiserver and runtime. The Kubelet-proxy approach is more secure and removes the need for StreamingProxyRedirects and ValidateProxyRedirects, at the cost of adding the Kubelet back into the long-running request chain. The rollout plan staged deprecation over several releases before removal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate StreamingProxyRedirects and ValidateProxyRedirects instead of removing them",
+    "why_not": "The readme says the redirect features 'are currently in Beta, and should either be graduated or removed', and the proposal chose removal because the Kubelet-proxy approach is more secure and removes the need for them."
+   },
+   {
+    "option": "Keep the redirect approach and the apiserver-side redirect handling",
+    "why_not": "The redirect handling 'significantly complicates the apiserver stream handling, and opens it up to potential SSRF attacks'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This setup is more secure, removes the need for `StreamingProxyRedirects` and `ValidateProxyRedirects`, but adds the Kubelet back into the long-running request chain."
+   },
+   {
+    "ref": "readme",
+    "quote": "After the [transition period](#rollout-plan), the only way to configure container streaming will be using the local redirect with Kubelet proxy approach."
+   },
+   {
+    "ref": "comment:625399789",
+    "quote": "release **1.24** _(was: 1.22)_ 1. Remove the `--redirect-container-streaming` flag. 2. Remove the `StreamingProxyRedirects` feature."
+   },
+   {
+    "ref": "comment:902250121",
+    "quote": "There's a final implementation step of cleaning up the feature gates, flags, and a bunch of code, slated for v1.24."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 6172,
+  "output": 879
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

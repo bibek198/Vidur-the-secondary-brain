@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1769",
+ "input_hash": "3ba2c5b948b6bb0d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1769 proposes the Memory Manager, a kubelet component and Topology Manager hint provider that provides guaranteed memory and hugepages allocation for Guaranteed QoS pods, with single-NUMA and multi-NUMA strategies. Its status is implemented, stage stable.",
+  "rationale": "Pods in Guaranteed QoS need guaranteed memory, and a single NUMA node may not have enough capacity for a pod. The Memory Manager supplies NUMA affinity hints to the Topology Manager and pins memory to a minimal set of NUMA nodes. Reviewers debated whether the hint provider should force single-NUMA allocation or leave that restriction to the Topology Manager, and the discussion moved toward a design where the hint provider supports cross-NUMA affinity.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Memory Manager forces single-NUMA allocation itself",
+    "why_not": "The discussion concluded the Topology Manager's single-numa-node policy already achieves this, so the restriction should not be duplicated in the Memory Manager. The sources record reviewers' view that the hint provider should just provide all possible hints and support cross-NUMA affinity."
+   },
+   {
+    "option": "Memory Manager as part of a combined native resource manager",
+    "why_not": "Reviewers raised concerns about conflicts with the CPU manager and whether the CPU manager could be deprecated. The sources record this as an open discussion point, not a reason the proposal was rejected."
+   },
+   {
+    "option": "Dynamic, pessimistic memory pinning with NUMA distances",
+    "why_not": "The sources describe NUMA distance support as an incremental change to consider later, requiring proof of concept first. It was not adopted in the KEP itself."
+   },
+   {
+    "option": "Kubelet flag --numa-groups for NUMA node grouping",
+    "why_not": "The flag was removed in favor of a future NUMA distances feature, per the discussion, and the dynamic grouping section was left as TBD."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Technically, the *single-NUMA* strategy is a special case of the *multi-NUMA* strategy, and thus, no separate implementation was developed for them."
+   },
+   {
+    "ref": "comment:595975481",
+    "quote": "The MemoryManager should not try to force allocation to a single NUMA node. If we understand the details correctly, the TopologyManager, already has a mode of operation"
+   },
+   {
+    "ref": "comment:603751433",
+    "quote": "Hint provider (Memory manager in this case) should just provide all possible topology hints and specify preferences. And it should support cross-NUMA affinity."
+   },
+   {
+    "ref": "rcomment:472141832",
+    "quote": "The flag should be removed in favor of NUMA distances feature (a further incremental change)."
+   },
+   {
+    "ref": "rcomment:496722969",
+    "quote": "Setting of the Preferred field in this way is not based on the set of currently available resources. It is based on the ability to physically allocate the number of requested resources on some minimal set of NUMA nodes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10595,
+  "output": 1156
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

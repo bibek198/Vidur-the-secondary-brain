@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5419",
+ "input_hash": "2437ef03c6cd749d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5419 extends In-Place Pod Resize (IPPR) to pod-level CPU and Memory resources, building on KEP-2837, and adds a Resources field to PodStatus to report pod-level requests/limits. Its status is implementable at stage beta.",
+  "rationale": "Pod-level resource specs (KEP-2837) would otherwise force pod recreation to change the aggregate footprint, so the KEP proposes in-place resizing of pod-level resources. Reviewers asked for clarity on defaulting and the PodStatus Resources field, and the apiserver defaulting and kubelet ownership of PodStatus.Resources were settled in review comments. Huge pages were explicitly kept out of scope by tallclair.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Default PodStatus.Resources from the scheduler or apiserver so admission and controllers can use it before the pod starts",
+    "why_not": "tallclair said the scheduler should not touch the field after binding and the Kubelet owns it; leaving it unset for now was agreed, though defaulting it on create was the motivation for setting it in apiserver defaulting."
+   },
+   {
+    "option": "Add a separate kubelet_pod_requested_resizes_total metric instead of extending existing container metrics",
+    "why_not": "Raised as a question by toversus; ndixita agreed to add metrics for Beta, and natasha41575 later proposed separate container_resize and pod_level_resize labels as an alternative to a mixed label, with no final decision in the sources."
+   },
+   {
+    "option": "Include huge pages support in this KEP",
+    "why_not": "tallclair asked to keep huge pages out because container-level support does not exist yet and it needs a separate KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes extending the existing \"In-Place Pod Resize\" (IPPR) functionality to support resources specified at the Pod level, building upon the foundations laid by KEP-2837"
+   },
+   {
+    "ref": "rcomment:2159608027",
+    "quote": "Leaving `PodStatus.Resources` unset for now sounds good. The Kubelet owns this field, so I don't think the scheduler should touch it"
+   },
+   {
+    "ref": "rcomment:2159450153",
+    "quote": "Let's keep huge pages out of this. We don't support it at the container level yet, and I think that needs a totally separate KEP."
+   },
+   {
+    "ref": "rcomment:2159478693",
+    "quote": "Allocation of pod-level resources will work the same as container-level resources. The allocated resources checkpoint will be extended to include pod-level resources"
+   },
+   {
+    "ref": "rcomment:2159477013",
+    "quote": "Note that new fields need to go through an alpha stage, so if we decide we _do_ need this for beta, it will mean another alpha release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12703,
+  "output": 1074
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

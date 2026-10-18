@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5100",
+ "input_hash": "42f81cf935c84469",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5100 retroactively documents DSR (Direct Server Return) and Overlay networking support in Windows kube-proxy, which were added in K8s v1.14 without a KEP, and proposes promoting both to GA. Status is implemented, stage stable.",
+  "rationale": "The features were already added to Windows kube-proxy without a KEP, so this KEP records them after the fact and provides a path to GA. The proposal states the implementations are already tested in Windows CI and used by cloud providers. The KEP also notes that overlay support is needed for CNIs such as Calico with network policy.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Not promoting the features to GA, leaving them as-is in kube-proxy",
+    "why_not": "The KEP says the drawback of not progressing is that the functionality 'may get removed from kube-proxy in the future', which the proposal aims to avoid."
+   },
+   {
+    "option": "Other alternatives to the existing implementation",
+    "why_not": "The KEP states: \"This functionality has already merged into k/k so other alternatives have not been considered.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal is to promote the existing implementations to GA."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support for both of these features was added in K8s v1.14 without a KEP."
+   },
+   {
+    "ref": "readme",
+    "quote": "Both DSR and overlay networking support have been used in the Windows CI pipelines running release-informing jobs since K8s v1.20."
+   },
+   {
+    "ref": "readme",
+    "quote": "This functionality has already merged into k/k so other alternatives have not been considered."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2160,
+  "output": 684
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

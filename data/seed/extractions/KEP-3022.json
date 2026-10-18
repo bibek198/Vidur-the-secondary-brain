@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3022",
+ "input_hash": "2434d535f49b56d3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3022 added a `minDomains` field to PodSpec TopologySpreadConstraint so users can require spreading over a minimum number of topology domains, limited to whenUnsatisfiable=DoNotSchedule. The KEP reached implemented status and stable stage.",
+  "rationale": "Pod Topology Spread's maxSkew controls unevenness but gives no way to control how many domains pods spread across, so users cannot force spreading over a minimum number of domains to trigger cluster-autoscaler provisioning. The design treats the global minimum as 0 when the number of domains is below minDomains. Reviewers narrowed scope to DoNotSchedule after scoring changes were judged to have little user-visible effect.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the scheduler waiting to bind pods until enough pods exist (e.g., 5 pods for minDomains=5)",
+    "why_not": "Raised as an alternative on PR #3030 in the discussion; the sources do not record a detailed rejection reason beyond the chosen minDomains approach."
+   },
+   {
+    "option": "Modify scoring so ScheduleAnyway also reflects minDomains",
+    "why_not": "Reviewers judged the score difference too subtle to matter and the original formula already gives similar semantics; the goal was restricted to DoNotSchedule only (huang-wei: \"restrict it to DoNotSchedule adheres to our initial motivation\")."
+   },
+   {
+    "option": "Add a field to limit the maximum number of topology domains",
+    "why_not": "Listed as a non-goal in the readme; best-effort behavior is available via ScheduleAnyway instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In some cases, users want to force spreading Pods over a minimum number of domains and, if there aren't enough already present, make the cluster-autoscaler provision them."
+   },
+   {
+    "ref": "readme",
+    "quote": "`minDomains` can be used only when `whenUnsatisfiable=DoNotSchedule`."
+   },
+   {
+    "ref": "rcomment:746119049",
+    "quote": "if the number of domains < `minDomains`, \"global minimum\" is treated as 0"
+   },
+   {
+    "ref": "rcomment:781787356",
+    "quote": "Yes, restrict it to `DoNotSchedule` adheres to our initial motivation; while investing efforts on tuning subtle scroring difference doesn't make a lot of sense."
+   },
+   {
+    "ref": "comment:2069321884",
+    "quote": "It's ok to close this one. Maybe leave an issue in k/k to remove the gate."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12143,
+  "output": 1000
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

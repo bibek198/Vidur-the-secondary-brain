@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-4368",
+ "input_hash": "d2ab78042da9b373",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4368 adds a \"managedBy\" field to the Job spec so an external controller (for example Kueue in MultiKueue) can take over Job synchronization instead of the built-in Job controller. The KEP is implemented and stable.",
+  "rationale": "MultiKueue runs a mirror Job in a worker cluster while the user's Job lives in the management cluster, so the status must be synchronized by Kueue rather than the main Job controller. The design therefore needs a way to disable the main Job controller for a given Job and delegate sync to an external controller. The \"managedBy\" field is the lightweight mechanism chosen for this.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Passing custom parameters to the external controller",
+    "why_not": "Listed as a non-goal in the readme, so it was explicitly excluded from the design."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We support the \"managedBy\" field as a lightweight mechanism to delegate the Job synchronization to an external controller."
+   },
+   {
+    "ref": "readme",
+    "quote": "In order to support this workflow we need a mechanism to disable the main Job controller, and delegate the status synchronization to the Kueue controller."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposal is to support the \"managedBy\" field in the Job spec to indicate the only controller responsible for the Job object synchronization."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1926,
+  "output": 602
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1645",
+ "input_hash": "777f5f8f045a9988",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1645 proposes a new multi-cluster Services API that extends the Service concept across a clusterset, using a ServiceExport CRD to mark which Services are visible to other clusters. Its current status is implementable, stage beta.",
+  "rationale": "The cluster is a hard boundary and services are opaque to remote consumers, so users must build bespoke solutions to consume services across clusters. The KEP defines a minimal API for cross-cluster service discovery and consumption while leaving room for multiple implementations. Creating a ServiceExport in each cluster signals that the same-named Service should be visible to other clusters.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep bespoke per-user multi-cluster solutions",
+    "why_not": "The motivation states that today this 'requires non-trivial bespoke solutions', which the API aims to fix."
+   },
+   {
+    "option": "Change behavior of single-cluster services to support multi-cluster use",
+    "why_not": "Non-goals state the KEP should 'Change behavior of single cluster services in any way' is excluded."
+   },
+   {
+    "option": "Define NetworkPolicy semantics for multi-cluster services",
+    "why_not": "Listed as a non-goal; the KEP does not define what NetworkPolicy means for multi-cluster services."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Today the cluster is a hard boundary, and a service is opaque to a remote K8s consumer that would otherwise be able to make use of metadata"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a new API to extend the service concept across multiple clusters. It aims for minimal additional configuration"
+   },
+   {
+    "ref": "readme",
+    "quote": "Creation of a `ServiceExport` in a cluster will signify that the `Service` with the same name and namespace as the export should be visible to other clusters"
+   },
+   {
+    "ref": "readme",
+    "quote": "Change behavior of single cluster services in any way. - Define what NetworkPolicy means for multi-cluster services."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2930,
+  "output": 811
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

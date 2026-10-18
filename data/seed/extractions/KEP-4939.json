@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4939",
+ "input_hash": "47957f6de118a1ea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4939 adds an optional flat `mode` field (TLS / Plaintext) to the gRPC probe's GRPCAction so kubelet can connect to gRPC health servers over TLS without verifying certificates. Status is implementable, stage alpha.",
+  "rationale": "The gRPC probe only supported plaintext, so servers that require TLS could not be probed natively and users stayed on exec probes. The chosen design is a flat `mode` enum rather than a boolean or nested tls struct, because reviewers wanted room for future verification options without a breaking API change. The probe does not validate certificates, so the KEP treats certificate verification as a non-goal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Nested `tls` struct with `mode` field (NoVerify) on GRPCAction",
+    "why_not": "Rejected by reviewers because the probe never validates certificates, so a nested struct adds unnecessary complexity. The readme notes a flat mode field is simpler and sufficient."
+   },
+   {
+    "option": "Boolean `tls: true/false` flag",
+    "why_not": "Rejected in favor of a string enum so connection types can be named explicitly and future values can be added without a breaking change. Thockin argued boolean flags are generally a bad idea."
+   },
+   {
+    "option": "Auto-detect TLS versus plaintext instead of explicit config",
+    "why_not": "bowei questioned whether auto-detection is needed, noting that always auto-detecting may leave errors in server logs from probes sending unexpected requests. The thread later says bowei resolved the question in favor of explicit config."
+   },
+   {
+    "option": "No KEP; just ignore certificate errors (sergeykanzhelev's suggestion)",
+    "why_not": "kkoch986 and the thread concluded that a TLS-on/off option is needed, because a TLS server rejects a plaintext client and vice versa. The source does not record a formal rejection of the no-KEP idea."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Add a new optional `mode` field alongside `port` and `service` in the [Probe GRPCAction]"
+   },
+   {
+    "ref": "readme",
+    "quote": "This was rejected in favor of a string enum (`mode`) to allow explicit naming of the connection type"
+   },
+   {
+    "ref": "rcomment:2482554134",
+    "quote": "Always having auto-detect may leave errors in the log files of the server because you sending it things it doesn't understand"
+   },
+   {
+    "ref": "comment:4547160770",
+    "quote": "The only open question was around the API design (explicit TLS config vs auto-detection), which @bowei resolved in favor of explicit config."
+   },
+   {
+    "ref": "comment:4579967277",
+    "quote": "this one was merged: https://github.com/kubernetes/enhancements/pull/6099 We do not need this PR any longer /close"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12642,
+  "output": 1074
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

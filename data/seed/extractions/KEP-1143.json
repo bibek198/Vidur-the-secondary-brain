@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-1143",
+ "input_hash": "0533fe849a5a3449",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1143 clarifies that the node-role.kubernetes.io/* label namespace is for end users and external consumers and must not vary Kubernetes behavior, and defines a migration for internal consumers. Status is implemented, stage stable.",
+  "rationale": "Components inside Kubernetes (e.g., node-role.kubernetes.io/master) had begun depending on node-role labels to change behavior, contrary to the label's original approval, and this made self-hosting harder. The KEP restricts the label namespace to end-user and external use and sets a migration path. Per the discussion, the final remaining step was kubernetes/kubernetes#100776, which landed by August 2021, after which the issue was closed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep node-role labels as internal behavior switches",
+    "why_not": "The readme says this was unintentional and conflicts with the label's approved guidance, and that it limited conformant distributions from self-hosting."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Clarify that the `node-role.kubernetes.io/*` label is for use only by users and external projects and may not be used to vary Kubernetes behavior."
+   },
+   {
+    "ref": "readme",
+    "quote": "Over time, several changes to Kubernetes core and related projects were introduced that depended on the `node-role.kubernetes.io/master` label to vary their behavior in contravention to the guidance the label was approved under."
+   },
+   {
+    "ref": "comment:839961653",
+    "quote": "https://github.com/kubernetes/kubernetes/pull/100776 is the only remaining action, according to the KEP."
+   },
+   {
+    "ref": "comment:896393522",
+    "quote": "kubernetes/kubernetes#100776 landed, shall we close then?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9496,
+  "output": 724
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4191",
+ "input_hash": "4ebee1e44aa030dc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4191 enhances kubelet to be aware that a container runtime may split the image filesystem from the container writable layer, so that image/container garbage collection and disk usage reporting keep working. The KEP is at implementable status for stage beta.",
+  "rationale": "Separating image layers (read-only) from the container writable layer onto different disks would break kubelet garbage collection and statistics, which assume one image filesystem. The KEP adds kubelet support so these operations work when the runtime splits the filesystems. Reviewers focused on the scope of the first iteration and on runtime support, and the beta promotion was tied to passing e2e tests.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add separate ContainerFsStats and ContainerFsDevice fields instead of a shared containerfs field",
+    "why_not": "Raised as a suggestion by ruiwen-zhao, considering future support for containerFs, imageFs and nodeFs on separate disks. The sources do not record a final decision to adopt it; the KEP instead added a containerfs field in NodeStats."
+   },
+   {
+    "option": "Have kubelet error and exit when the runtime does not return ImageFsInfo or container filesystem data",
+    "why_not": "kannon92 said ImageFsInfo is implemented in both CRI-O and containerd, and that failing would break many regression tests. The chosen approach was to assume ImageFs=ContainerFs when the runtime does not report a separate container filesystem."
+   },
+   {
+    "option": "Move the stats from ImageService to RuntimeService",
+    "why_not": "kannon92 replied that stats are already pulled from the image service in the stats providers, and the sources do not record a move."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP is about enhancing kubelet to be aware if a container runtime splits the image filesystem."
+   },
+   {
+    "ref": "rcomment:1333278465",
+    "quote": "I will guard against that case. I'll mention that if the container runtime does not support this, then we will assume ImageFs=ContainerFs."
+   },
+   {
+    "ref": "rcomment:1340541083",
+    "quote": "from our convo at WG meeting, isn't this in scope for alpha now?"
+   },
+   {
+    "ref": "comment:2144897971",
+    "quote": "my main concern with beta promotion is that e2e tests are not merged. I think promoting to beta should be contingent on these working."
+   },
+   {
+    "ref": "rcomment:1343248877",
+    "quote": "we are adding a containerfs field in NodeStats"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12582,
+  "output": 966
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

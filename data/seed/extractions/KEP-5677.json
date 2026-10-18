@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5677",
+ "input_hash": "fc9a417cdc708ba0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5677 adds a ResourcePoolStatusRequest API, modeled on the CertificateSigningRequest pattern, so users can see available DRA device capacity per pool. A controller in kube-controller-manager computes the result once per request and writes it to status; users recreate the request to refresh. The KEP is at implementable, stage alpha.",
+  "rationale": "Users cannot easily see available versus allocated DRA capacity, and cross-namespace claims are hidden from less-privileged users. Earlier designs (per-pool status objects kept up to date by a controller, client-side kubectl tooling, and an out-of-tree extended API server) were rejected or reworked because of continuous etcd writes, RBAC exposure of claims, and connectivity issues. The request-object pattern computes on demand and keeps access under standard RBAC on the request.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Controller-maintained ResourcePool objects auto-created for every pool",
+    "why_not": "Reviewers said the watches and writes needed to keep status for every pool are very high for something used only occasionally: \"Imagine if we have multiple resource pools per node, and 10,000 nodes.\""
+   },
+   {
+    "option": "Client-side utility only in kubectl, no control-plane object",
+    "why_not": "Users without cross-namespace ResourceClaim access cannot see usage, and reviewers noted that clients with old validation logic would misvalidate newer pools. Reviewer liggitt also disliked \"synthetic\" resources."
+   },
+   {
+    "option": "Out-of-tree extended API server plus kubectl plugin",
+    "why_not": "The reviewers wanted in-tree, out-of-the-box support. The KCM debug endpoint option failed because kubectl has no existing way to reach KCM endpoints."
+   },
+   {
+    "option": "Dedicated apiserver endpoint built into the API server",
+    "why_not": "pohly was not convinced it was acceptable: it adds overhead to a central component even when unused, and risks crashes there."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This in-tree approach was chosen based on API review feedback to: - Provide an always-available, in-sync solution with Kubernetes releases"
+   },
+   {
+    "ref": "comment:3807998636",
+    "quote": "the number of watches and writes needed to maintain the status objects for every resource pool is likely very high, for something used only occasionally"
+   },
+   {
+    "ref": "comment:3878355695",
+    "quote": "It is a one-time operation with a timestamp. To recalculate, the user has to delete and recreate the object."
+   },
+   {
+    "ref": "comment:3856125749",
+    "quote": "It gives us the ability to controller permissions on the object, too."
+   },
+   {
+    "ref": "comment:4690267524",
+    "quote": "I don't think there are any blocker, except #6068 KEP update PR."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11274,
+  "output": 1076
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

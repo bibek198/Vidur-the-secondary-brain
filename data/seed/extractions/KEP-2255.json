@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2255",
+ "input_hash": "1099aff009593cc3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2255 proposes a known annotation, controller.kubernetes.io/pod-deletion-cost, that applications set to hint to the ReplicaSet controller which pods to delete first on scale down. The KEP is implementable and at beta stage.",
+  "rationale": "ReplicaSet scale-down prioritizes deleting recently created or ready pods, which is not ideal for applications where deletion cost does not track pod age. The chosen approach is a hint annotation rather than a guarantee, since ordering guarantees are a stated non-goal. The design also leaves open promoting the annotation to a status field if adoption grows.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add an explicit API field instead of an annotation",
+    "why_not": "The readme names an explicit API field as the alternative and does not select it; it says that if the feature gets enough traction, the annotation may be promoted to a Status field."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Define a known annotation, namely `controller.kubernetes.io/pod-deletion-cost` that applications can set to offer a hint on the cost of deleting a pod"
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently ReplicaSets are scaled down based on a criteria that on the limit prioritizes deleting pods with a more recent creation/readiness timestamp."
+   },
+   {
+    "ref": "readme",
+    "quote": "If the feature gets enough traction, we may consider promoting the annotation to a Status field."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals\n- Guarantees on pod deletion order"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1788,
+  "output": 674
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

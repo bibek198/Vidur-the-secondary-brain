@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-4331",
+ "input_hash": "fe6e5066a077474d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4331 proposes two separate etcd probes: a liveness probe that checks the local node is up and running, and a readiness probe that checks the cluster is ready to serve traffic. The existing /health probe stays unchanged except for bug fixes. The KEP remains in provisional status.",
+  "rationale": "The single /health probe is used for both liveness and readiness, so it cannot tell whether etcd needs a restart or should stop receiving traffic. The KEP adds separate livez/readyz probes to address this. The sources show the status stayed provisional because the PRR (production readiness review) was not filled in and reviewed when the PR was pushed back.",
+  "outcome_reason": "The KEP was pushed back to provisional because the PRR was not filled in and reviewed, per the reviewer's comments on PR #4338. The sources do not record any later decision.",
+  "alternatives": [
+   {
+    "option": "Keep using the single /health probe for both liveness and readiness",
+    "why_not": "The readme says it is not Kubernetes API compliant and 'does not differentiate whether etcd needs to restart or stop taking traffic.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current etcd implementation has a single `/health` probe that is used to determine both the liveness and readiness of a node."
+   },
+   {
+    "ref": "readme",
+    "quote": "It does not differentiate whether etcd needs to restart or stop taking traffic."
+   },
+   {
+    "ref": "readme",
+    "quote": "Add two separate probes 1. Liveness: the liveness probe would check that the local individual node is up and running, or else restart the node."
+   },
+   {
+    "ref": "rcomment:1397412602",
+    "quote": "pushing back to provisional as PRR was not filled in and reviewed [to pass improved validation]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2083,
+  "output": 722
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

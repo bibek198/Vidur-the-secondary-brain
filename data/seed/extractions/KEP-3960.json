@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-3960",
+ "input_hash": "b7631320a3a86ccf",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3960 adds a built-in sleep action to the PreStop lifecycle hook, letting a container pause for a set duration before termination. The KEP reached stage stable and is marked implemented.",
+  "rationale": "Exec-based sleep requires a sleep binary in the image, and the KEP argues sleep should be a first-class feature. A preStop delay gives load balancers and kube-proxy time to stop routing to a terminating pod before the container receives SIGTERM. The status history shows implementable from 2023-06-16 and implemented from 2025-09-19.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Run sleep via exec in the preStop hook (e.g. command: [\"/bin/sh\",\"-c\",\"sleep 20\"])",
+    "why_not": "The readme says this \"requires a sleep binary in the image. We should offer sleep as a first-class thing.\""
+   },
+   {
+    "option": "Rely on the Terminating endpoint state alone, without a sleep",
+    "why_not": "A commenter notes that load balancers have their own sync loops and may still route to a pod that has received SIGTERM, so sleep remains used. The sources do not record a formal rejection of this option."
+   },
+   {
+    "option": "Mark the container NOT READY while the sleep runs",
+    "why_not": "thockin argued this could harm reliability for low-N services because kube-proxy-terminating-endpoints only considers ready pods, giving the example of a pod with externalTrafficPolicy Local."
+   },
+   {
+    "option": "Allow a zero-second sleep value",
+    "why_not": "Raised in comment 2209320166 as a possible extension requiring a feature gate and a short KEP. The sources do not show it was adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose adding a new sleep action for the PreStop hook, which will pause the container for a specified duration before termination."
+   },
+   {
+    "ref": "readme",
+    "quote": "Another way to run `sleep` in a container is to use `exec` command in `preStop hook` like `command: [\"/bin/sh\",\"-c\",\"sleep 20\"]`. However, this requires a sleep binary in the image."
+   },
+   {
+    "ref": "rcomment:1219996490",
+    "quote": "Adding a sleep is the de facto solution. This moves 4a (\"nginx receives SIGTERM\") out in time past the LB data-plane programming."
+   },
+   {
+    "ref": "comment:3303461025",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`, and then close this issue?"
+   },
+   {
+    "ref": "comment:2461150153",
+    "quote": "Looks like the code was reverted as part of https://github.com/kubernetes/kubernetes/pull/128627 due to test flakes and the KEP is no longer targeting stable for v1.32 release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12640,
+  "output": 1096
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

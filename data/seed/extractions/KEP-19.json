@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-19",
+ "input_hash": "66b93a56e74bffd4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-19 proposes promoting the CronJob API from beta to stable, including a new controller that uses informers, new metrics, and an added status field lastSuccessfulTime. The KEP status is implemented, stage stable.",
+  "rationale": "CronJob was in beta since v1.8 and, if it did not progress before v1.22, would be marked deprecated with removal targeted for v1.25. The design states that the .spec has been stable for several releases and that the API with additional .status information is ready for long-term community support. The source gives no further reasoning for the chosen timer algorithm beyond the comparison table.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Unordered timer list (periodic sweep from cache)",
+    "why_not": "Listed as slower and similar to the existing implementation; the source does not say why it was rejected beyond this comparison."
+   },
+   {
+    "option": "Ordered timer list or heap-based timer",
+    "why_not": "Source describes insertion costs (O(n) reinsertion for ordered list; O(log n) for heap) but does not state the final selection rationale."
+   },
+   {
+    "option": "Simple timing wheel",
+    "why_not": "Source says it works for small bounded MaxTimeOut, which is not the CronJob case."
+   },
+   {
+    "option": "Hashed or hierarchical timing wheel",
+    "why_not": "Source lists trade-offs (hashed worst-case insertion O(n); hierarchical adds complexity) but does not state the chosen option."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "It is in beta status since v1.8, and currently if it does not progress before v1.22, it will be marked deprecated with target release for removal being v1.25."
+   },
+   {
+    "ref": "readme",
+    "quote": "Its `.spec` has been stable for the last few releases. We feel the API with additional `.status` information is ready to be promoted to Stable"
+   },
+   {
+    "ref": "readme",
+    "quote": "Write a new controller which will - Use informers instead of polling - Address some open issues with the current controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "Simple Timing wheels| circular buffer of MaxTimeOut slots. List of expiring timers at each slot. | Works for small bounded MaxTimeOut which is not our case."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2331,
+  "output": 879
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

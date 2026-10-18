@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1669",
+ "input_hash": "3490fbcff81a1500",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1669 proposes that kube-proxy send traffic to terminating endpoints that are still Ready when all endpoints for a Service (scoped to its traffic policy) are terminating. The KEP is implemented and at stable stage.",
+  "rationale": "kube-proxy forwarded traffic only to Ready, non-terminating pods, so rolling updates with externalTrafficPolicy=Local could blackhole traffic while load balancer health checks still routed to the node. Building on KEP-1672's Serving and Terminating EndpointSlice conditions, the KEP falls back to terminating-but-Ready pods only when no other endpoints are available. The source does not say more about why this design was chosen over the listed workarounds beyond noting that kube-proxy handling would remove the need for them.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use scheduling/deployment features so a node never has only terminating endpoints",
+    "why_not": "The readme lists this as a workaround users can apply today, not as a Kubernetes-side fix; it constrains deployments rather than handling the complexity in Kubernetes."
+   },
+   {
+    "option": "Reduce the load balancer health check interval",
+    "why_not": "The readme says this may not always be possible depending on the load balancer implementation."
+   },
+   {
+    "option": "Use a preStop hook to delay SIGTERM",
+    "why_not": "The readme says this may work in some scenarios, but better handling from kube-proxy would alleviate the need for this workaround altogether."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes that if all endpoints for a given Service scoped to its traffic policy are terminating (i.e. pod.DeletionTimestamp != nil), then all traffic should be sent to terminating Pods that are still Ready."
+   },
+   {
+    "ref": "readme",
+    "quote": "Upon performing a rolling update of a Deployment, there can be a small window of time where old pods on a node are terminating (hence not \"Ready\") but the load balancer has not probed kube-proxy's healthCheckNodePort yet."
+   },
+   {
+    "ref": "readme",
+    "quote": "Even though the EndpointSlice API now includes terminating endpoints, kube-proxy strictly forwards traffic to only \"Ready\" pods that are not terminating."
+   },
+   {
+    "ref": "readme",
+    "quote": "Reduce potential traffic loss from kube-proxy that occurs on rolling updates because traffic is sent to Pods that are terminating."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2888,
+  "output": 960
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

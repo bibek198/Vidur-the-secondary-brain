@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1985",
+ "input_hash": "fadc8e3f283be560",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1985 proposes removing dockershim from the kubelet so that Kubernetes talks only CRI to container runtimes, with users directed to a migration guide before upgrading. Its status is implementable at alpha stage (implementable since 2020-10-06).",
+  "rationale": "The sources show the design's intent: the kubelet would drop the built-in dockershim, which reviewers agreed would simplify the codebase and maintenance. Commenters raised concerns about the deprecation policy, CRI maturity (liggitt asked that CRI graduate to GA first), and CNI HostPorts differences, and asked for a migration guide. The sources do not record a final resolution of every concern beyond the KEP reaching implementable status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep dockershim in the kubelet indefinitely",
+    "why_not": "The sources do not state why this was rejected; the KEP's premise is that removing it reduces maintenance burden, as odinuge and dchen1107 suggested."
+   },
+   {
+    "option": "Require CRI to reach GA before removing dockershim",
+    "why_not": "Suggested by liggitt as stronger language ('should graduate to GA before removing dockershim'); the sources do not show it was adopted as a hard precondition."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:488288943",
+    "quote": "Users should follow the migration guide before upgrading to a version of the kubelet that no longer includes dockershim."
+   },
+   {
+    "ref": "rcomment:488762596",
+    "quote": "at first glance, this doesn't match the spirit of the deprecation policy, which is intended to avoid requiring consumers to change the way they consume/run kubernetes"
+   },
+   {
+    "ref": "rcomment:488700856",
+    "quote": "CRI is still technically in alpha, and should graduate to GA before removing dockershim from kubelet."
+   },
+   {
+    "ref": "rcomment:488740183",
+    "quote": "The only CNI-related CRI-vs-dockershim difference that I know of is that CRI handles pod HostPorts itself"
+   },
+   {
+    "ref": "rcomment:500449813",
+    "quote": "Due to convenience inheriting from this builtin shim for the container runtime, there is less incentive to move to new container runtime."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2798,
+  "output": 883
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

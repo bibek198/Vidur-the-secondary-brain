@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1981",
+ "input_hash": "fddd8e8ce328b5b7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1981 proposed extending the Windows container model to support privileged containers and host network mode for privileged pods, using containerd and CRI, so Windows workloads such as kube-proxy and networking daemons no longer need proxies or host services. The KEP reached status implemented, stage stable.",
+  "rationale": "Windows lacked privileged container support, so kube-proxy, storage, and networking workloads needed proxies or host-level services, which increased attack surface and complicated updates. The KEP targets privileged access to host resources and host network mode, limited to containerd. Discussion centered on the API shape: reusing the Linux privileged field versus new Windows-specific fields (the thread converged on a HostJob / hostProcess style name).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse Container.SecurityContext.Privileged for Windows",
+    "why_not": "marosset said reuse would give users false impressions because privileged containers on Windows work very differently than on Linux, and validation could not reliably tell whether a pod targets Windows."
+   },
+   {
+    "option": "Use containerd RuntimeClasses and K8s RuntimeClasses",
+    "why_not": "The KEP lists this as an alternative. It was a prototype, and adding the ability to the CRI gives kubelet more control over the security context and checks such as runasnonroot."
+   },
+   {
+    "option": "Pass the privileged flag as CRI annotations to containerd",
+    "why_not": "The KEP says adding the field to the CRI spec keeps existing CRI calls working and avoids relying on magic strings."
+   },
+   {
+    "option": "Model the feature as a separate isolation mode alongside Hyper-V",
+    "why_not": "random-liu argued it is closer to privileged on Linux (shared host kernel with more privileges) and is better as a pod/container config option than a separate runtime class; the thread did not settle this."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Support for these scenarios in Windows currently requires workarounds via proxies or other implementations. This proposal aims to extend the Windows container model to support privileged containers."
+   },
+   {
+    "ref": "readme",
+    "quote": "Adding the field to the CRI spec allows for the existing CRI calls to work as is. The resulting code is cleaner and doesn’t rely on magic strings."
+   },
+   {
+    "ref": "rcomment:566496970",
+    "quote": "My biggest concern here is that privileged containers on Windows will work very differently than on Linux and re-using the privileged field will give users false impressions about their capabilities."
+   },
+   {
+    "ref": "rcomment:567189947",
+    "quote": "I spoke with some other folks in MSFT and right now we are considering calling this WindowsOptions.HostJob in the kubernets API and WindowsContainerSecurityContext.HostJobIsolation in the CRI layer"
+   },
+   {
+    "ref": "comment:1250369373",
+    "quote": "Looks like this enhancement is targeting for stage `stable` for 1.26 (correct me, if otherwise)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11084,
+  "output": 1128
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

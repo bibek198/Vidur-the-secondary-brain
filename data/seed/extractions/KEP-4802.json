@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4802",
+ "input_hash": "3b0cdd604d8daa8e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4802 adds Windows graceful node shutdown: kubelet, running as a Windows service, detects a machine shutdown or restart via the service control handler and terminates pods gracefully. The KEP is marked implementable at stage beta, with status history showing implementable from 2024-10-10.",
+  "rationale": "Pods are not terminated gracefully when a Windows node shuts down, which can break some workloads. The KEP makes kubelet aware of the Windows shutdown event so it can run pod lifecycle termination (including pre-stop hooks) before the machine stops. Reviewers required clarifying that the feature only works when kubelet runs as a native Windows service, not under nssm.exe, and debated whether kubelet should fail to start in that case.",
+  "outcome_reason": "Per the sources, the 1.36 enhancements team on 2026-02-11 moved the KEP to Deferred, but the stated reason is only that the owner asked for it to be deferred (\"Don't worry. I will move this to `Deferred`\"). The sources do not give a fuller reason. The status given to me is implementable, stage beta, so I report that and note the later deferral from the issue thread.",
+  "alternatives": [
+   {
+    "option": "Run kubelet as a general Windows console application",
+    "why_not": "The KEP says a general Windows application has little control over the shutdown timeout and is not reliable at receiving the shutdown event."
+   },
+   {
+    "option": "Use the WaitToKillServiceTimeout registry key to set the shutdown timeout",
+    "why_not": "The KEP says Windows does not prefer this key for this purpose because it has a global effect on all services on the host."
+   },
+   {
+    "option": "Keep kubelet running under nssm.exe and rely on it to forward control signals",
+    "why_not": "Reviewers said nssm.exe does not reliably pass the control signals to apps it runs, so the shutdown event would not reach kubelet."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Focus on handling shutdown on machines where kubelet itself runs as a Windows service, on machines where kubelet is loaded through other loaders such as nssm.exe"
+   },
+   {
+    "ref": "readme",
+    "quote": "General Windows application does not have much control on seting of the shutdown timeout value, and does not seem reliable to receive the shutdown event."
+   },
+   {
+    "ref": "rcomment:1786699101",
+    "quote": "I don't believe nssm.exe passes the control signals to apps it runs - which is an advantage of sc.exe and needed for this scenario."
+   },
+   {
+    "ref": "comment:3885081954",
+    "quote": "Don't worry. I will move this to `Deferred`. /remove-label tracked/yes /label tracked/no /milestone clear"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13149,
+  "output": 1033
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

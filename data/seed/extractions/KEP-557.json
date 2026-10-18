@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-557",
+ "input_hash": "fb06ad5fbcbf666b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-557 (CSI Volume Topology), owned by sig-storage, was implemented and graduated to stable in Kubernetes 1.17; the KEP was then marked status \"implemented\" with stage \"stable\".",
+  "rationale": "The feature was first targeted at 1.11 and then 1.12 but was repeatedly punted, and the design doc was later converted into a KEP for beta in 1.14. The sig-storage lead stated the feature was going to GA in 1.17 and that \"All the work to make the feature GA in 1.17 is done.\" The KEP was then marked implemented, which the sources say happened after the fact, via a later PR.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the KEP at implementable/beta after the 1.14 beta plan",
+    "why_not": "The sources show the feature moved on to GA in 1.17, so the beta-only state was superseded by the 1.17 work."
+   },
+   {
+    "option": "Delay implemented status until PRR files were added",
+    "why_not": "The sources note that the implemented transition landed without PRR files because it was out of tree; the sources do not say this option was considered."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:537707962",
+    "quote": "we intend to graduate this feature to GA in 1.17. I will be starting on the KEP update shortly."
+   },
+   {
+    "ref": "comment:562781772",
+    "quote": "All the work to make the feature GA in 1.17 is done. /close"
+   },
+   {
+    "ref": "comment:614942324",
+    "quote": "since this enhancement graduated in 1.17, can you please mark the [KEP](https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/20190124-csi-topology.md) as `implemented`?"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   },
+   {
+    "ref": "rcomment:729118026",
+    "quote": "I think this is out of tree so maybe not explicitly covered by PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8762,
+  "output": 833
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

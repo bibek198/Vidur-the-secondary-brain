@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1601",
+ "input_hash": "a45d591eea75eae5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1601 proposed adding context.Context as the first argument to all client-go clientset interface methods, so callers can propagate context (timeouts, cancellation, tracing) with API requests. The status is implemented, stage stable.",
+  "rationale": "Context could not be propagated through client-go clientsets, which blocked request timeout/cancellation and distributed tracing work. The chosen approach passes the context with each action on a resource, which the excerpt calls idiomatic and explicit. The main alternative, a stored WithContext method, was rejected because a context is meant to live only as long as its originating request and storing it is error-prone.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a WithContext(ctx) method to resource interfaces (e.g. PodInterface) that stores the context on the client",
+    "why_not": "The idea behind using a context with a request is it is only meant to live as long as the initial request that created it. It is not meant to be stored. ... This API allows broken code to compile, but will fail at runtime if multiple requests were made with the same client whose context have expired."
+   },
+   {
+    "option": "Add a WithContext method to the public interface",
+    "why_not": "Adding a method to a public interface is still a breaking change."
+   },
+   {
+    "option": "Plumb context into core Kubernetes client-go callsites as part of this KEP",
+    "why_not": "Non-goal: Plumb context to client-go callsites in core Kubernetes. We believe that by making this feature available, this type of refactoring will happen over time."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The recommended approach is to pass the context with each action on a resource. We will modify the signatures of all client interfaces to accept a `context.Context` as the first argument."
+   },
+   {
+    "ref": "readme",
+    "quote": "The idea behind using a context with a request is it is only meant to live as long as the initial request that created it. It is not meant to be stored."
+   },
+   {
+    "ref": "readme",
+    "quote": "Support for request timeout and cancellation that frees the calling thread."
+   },
+   {
+    "ref": "comment:614934664",
+    "quote": "since the enhancement graduated to Stable in 1.18, can you please mark the KEP as `implemented`?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3050,
+  "output": 856
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1432",
+ "input_hash": "13eac3407786ef89",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1432 proposes a mechanism for CSI drivers to report volume health problems at the controller and node levels, with Kubelet logging abnormal volume conditions as Pod events and exposing health as VolumeStats metrics behind a new VolumeHealth feature gate. Current status is implementable, stage alpha.",
+  "rationale": "Persistent Volumes cannot be monitored after provisioning, so root causes at the storage layer are hard to find and fix. The proposal has the external controller sidecar call the controller RPC to check volume health, and Kubelet check volume condition from NodeGetVolumeStats. Maintainers kept the feature at alpha because the node-side monitoring moved from an external agent into Kubelet, and the design was updated in 1.23.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Store health conditions in the PVC status field, updated by the external monitoring sidecar",
+    "why_not": "It requires giving all nodes a credential that can modify all PVCs, which lets a malicious node mark a PVC unhealthy."
+   },
+   {
+    "option": "Introduce a VolumeHealth CRD per PVC referenced from the PVC status",
+    "why_not": "The readme says it does not address the concerns from option 1, since the agent would still need permission to modify any volume health CR."
+   },
+   {
+    "option": "Reuse PV taints with a PVUnhealthMessage key",
+    "why_not": "The readme says it was not put in the main proposal because it depends on something not yet approved, and there were lots of concerns about it."
+   },
+   {
+    "option": "External node agent watching pods and volumes on each node",
+    "why_not": "A reviewer questioned whether every node agent watching every pod would be too expensive. The readme says the node-side check was later combined with the existing Kubelet volume stats check, which led to moving the logic into Kubelet."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Provide a mechanism for CSI drivers to report volume health problems at the controller and node levels."
+   },
+   {
+    "ref": "readme",
+    "quote": "Kubelet already collects volume stats from CSI node plugin by calling CSI function NodeGetVolumeStats."
+   },
+   {
+    "ref": "comment:775988473",
+    "quote": "We are staying at Alpha in 1.21 because the monitoring logic on node is moved from an external agent to Kubelet."
+   },
+   {
+    "ref": "comment:1041054442",
+    "quote": "We initially wanted to target Beta, but decided to stay in Alpha because the design was updated in 1.23."
+   },
+   {
+    "ref": "readme",
+    "quote": "Alternative option 1 is not in the main proposal because it requires giving all nodes access to a credential that has the ability to modify all PVCs."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 15665,
+  "output": 1033
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

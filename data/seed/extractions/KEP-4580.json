@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4580",
+ "input_hash": "9b6b83ba33f14d9e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4580 proposed deprecating kubelet RunOnce mode, marking the KubeletConfiguration RunOnce field and --runonce flag as deprecated, and later removing the flag and mode. The KEP stayed provisional at alpha; the author closed the tracking issue in July 2024 and later said the KEP no longer needs updating.",
+  "rationale": "RunOnce mode does not work in systemd mode, lacks support for newer pod features such as init containers and volumes, and has no e2e or integration tests. Reviewers asked for a deprecation path that is gradual and feature-gated, and for PRR and risk sections, while the v1.31 code PR missed code freeze due to a merge conflict. The sources do not give a final reason for dropping the KEP beyond the missed freeze and the author's later comment.",
+  "outcome_reason": "The provisional status is the recorded fact. The issue was closed by the author on 2024-07-24 after the enhancement was removed from v1.31 at code freeze, and the author later said \"We don't need to update this KEP anymore.\" The sources do not explicitly say why the author chose not to continue.",
+  "alternatives": [
+   {
+    "option": "Fix RunOnce mode and add e2e and integration tests",
+    "why_not": "Listed as an alternative in the KEP; the KEP does not say why it was not selected."
+   },
+   {
+    "option": "Make RunOnce mode work in systemd mode and support volumes",
+    "why_not": "Listed as an alternative in the KEP; reviewer sftim noted documenting an alternative is not the same as selecting it. No selection rationale is recorded."
+   },
+   {
+    "option": "Introduce a Legacy-named feature gate (e.g., LegacyNodeRunOnceMode) instead of a deprecated gate",
+    "why_not": "soltysh said the Legacy name suggests the opposite of the intent; sftim proposed inverting the gate sense instead. No final decision is recorded."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Deprecate and remove kubelet support for RunOnce mode, and mark the `RunOnce` field in `KubeletConfiguration` and the `--runonce` flag of kubelet as deprecated"
+   },
+   {
+    "ref": "rcomment:1685236964",
+    "quote": "It seems to have completely stopped working in https://github.com/kubernetes/kubernetes/pull/90377, because the cpuManager is not initialized in runonce"
+   },
+   {
+    "ref": "comment:2246741553",
+    "quote": "the implementation (code related) PR(s) associated with this enhancement is not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.31 milestone."
+   },
+   {
+    "ref": "comment:2247881658",
+    "quote": "we will close this issue and will not move forward with it."
+   },
+   {
+    "ref": "comment:2888819970",
+    "quote": "We don't need to update this KEP anymore. :)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10295,
+  "output": 1099
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

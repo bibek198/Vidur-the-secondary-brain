@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4827",
+ "input_hash": "ce84657231d79cf7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4827 proposes a /statusz endpoint on all core Kubernetes components that returns standardized, low-overhead data about the component's basic information, health, versioning, build information and compatibility. Current status is implementable, stage beta.",
+  "rationale": "Operators currently must dig through logs or configuration to learn a component's build and version details, and version mismatches are hard to spot. The KEP adds a z-page-style endpoint served by the component itself, scoped to the primary serving process only. It deliberately excludes sub-components and external dependencies to avoid the complexity that made the legacy ComponentStatus API hard to maintain.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Report status of internal sub-components and external dependencies (e.g., controller loops, etcd for kube-apiserver)",
+    "why_not": "The KEP lists this as a non-goal because it is significantly more complex; it says a separate KEP would be required to address aggregated or detailed dependency status."
+   },
+   {
+    "option": "Rely on the legacy core/v1 ComponentStatus API",
+    "why_not": "The proposal states that the scope is limited to avoid the complexities that made the legacy core/v1 ComponentStatus API difficult to maintain and reason about."
+   },
+   {
+    "option": "Provide a general-purpose extension mechanism so other components (container runtime, CNI, device plugins) can expose their own z-page information",
+    "why_not": "This is listed as a non-goal of the KEP."
+   },
+   {
+    "option": "Rely on external monitoring solutions, logs, or configuration files",
+    "why_not": "The motivation argues z-pages offer insight from within the server itself, avoiding manual log inspection, config files, or external scripts subject to network latency."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The scope of this endpoint is intentionally limited to the status of the primary serving process."
+   },
+   {
+    "ref": "readme",
+    "quote": "This focused approach avoids the complexities that made the legacy `core/v1 ComponentStatus` API difficult to maintain and reason about."
+   },
+   {
+    "ref": "readme",
+    "quote": "Surfacing the status of dependencies is a distinct problem that may be addressed in a future enhancement."
+   },
+   {
+    "ref": "readme",
+    "quote": "Z-pages offer a distinct advantage over external monitoring solutions by providing insights from within the server itself."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2488,
+  "output": 921
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

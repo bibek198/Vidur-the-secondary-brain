@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-576",
+ "input_hash": "89472b3b392164a9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-576 (Dry-run, sig-api-machinery) is recorded as implemented at stage stable, with status history implemented from 2020-12-30. The discussion shows the KEP was moved to implemented retroactively, after the feature had been declared beta, and that the status change skipped PRR review.",
+  "rationale": "The feature was tracked through release milestones from 1.12 onward, with docs placeholder PRs and a stated plan to \"go GA for 1.17\". The status was later changed to implemented via PR #2598 and retroactively re-declared at beta by PR #2867, which skipped PRR. Maintainers in PR #3007 debated whether implemented should map to stage stable and added a validation rule for it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the KEP at implementable with alpha or beta stage",
+    "why_not": "Sources do not discuss this option; the KEP was instead moved to implemented, per the comments on PR #3007 and PR #2598."
+   },
+   {
+    "option": "Leave the KEP in perma-beta",
+    "why_not": "A maintainer argued that perma-beta should be avoided: \"we really shouldn't be leaving stuff in a perma-beta state.\" This was said about a different KEP, not KEP-576."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:725203976",
+    "quote": "is the PR that moved this KEP to implemented. It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable)"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "Given that this KEP is related to prow, and not to anything that is contained in a kubernetes release, I think this is pretty uncontroversial"
+   },
+   {
+    "ref": "comment:942669259",
+    "quote": "adds an extra validation check for `status:implemented == stage:stable`, it turns out nothing else violates this so I'd rather keep it as a rule"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7246,
+  "output": 867
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5491",
+ "input_hash": "3143faf401f4104d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5491 adds list-typed (int, string, boolean, version) DRA device attributes and redefines ResourceClaim constraints matchAttribute as non-empty intersection and distinctAttribute as pairwise disjointness, with scalars treated as single-element lists. Status is implementable, stage alpha.",
+  "rationale": "Scalar attributes cannot express relationships such as a CPU adjacent to multiple PCIe roots. The KEP keeps constraints monotonic so the Allocator's search remains bounded, and keeps scalar-only behavior backward compatible. Reviewers chose the simpler design with no *Semantics fields, and a type-agnostic CEL helper (`include`) was agreed for CEL expressions.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add *Semantics fields to constraints so users choose match/distinct behavior per claim",
+    "why_not": "Reviewer johnbelamaric asked to leave them out and redefine semantics always, since no use cases needed options; the KEP was simplified accordingly."
+   },
+   {
+    "option": "Non-monotonic constraints or complex boolean logic in constraints",
+    "why_not": "Non-monotonic predicates risk increasing search complexity and would need a large Allocator rewrite; listed as a Non-Goal, with generic constraint logic deferred to KEP-5254."
+   },
+   {
+    "option": "Make CEL comparisons coerce list and scalar types via == overloading",
+    "why_not": "jpbetz advised against overloading == as non-idiomatic CEL; the agreed path is a helper function such as include instead."
+   },
+   {
+    "option": "Force all drivers to adopt list attributes immediately",
+    "why_not": "Listed as a Non-Goal; drivers adopt list types optionally."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "For `MatchAttribute`: - Previously: it matches when the attribute values among candidate devices are identical"
+   },
+   {
+    "ref": "readme",
+    "quote": "Keep _monotonicity_ in constraint. - Currently `Allocator`'s algorithm assumes [_monotonic_ constraints]"
+   },
+   {
+    "ref": "rcomment:2789067801",
+    "quote": "I would leave out the `*Semantics` fields. I would just redefine the semantics of `matchAttribute` and `distinctAttribute` *always*."
+   },
+   {
+    "ref": "rcomment:2795660231",
+    "quote": "let's add a helper function that can do the type-agnostic comparison in CEL."
+   },
+   {
+    "ref": "comment:4799183554",
+    "quote": "DRA team will publish an aggregated feature update blog"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13554,
+  "output": 1010
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

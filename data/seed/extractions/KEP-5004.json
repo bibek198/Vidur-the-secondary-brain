@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5004",
+ "input_hash": "63b7c6604ef378c7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5004 lets cluster admins advertise DRA devices as extended resources via a DeviceClass field (extendedResourceName), so existing pods requesting extended resources can be dynamically allocated DRA devices. The KEP reached status implemented, stage stable.",
+  "rationale": "The problem is that transitioning from device plugins to DRA requires changing every workload spec, and admins want to convert nodes gradually. The design has kube-scheduler pick either device-plugin extended resources or DRA devices, and record DRA allocations in a special per-pod ResourceClaim that the kubelet and DRA drivers consume unchanged. The discussion centers on whether the scheduler or a controller should create that claim; the scheduler-created approach was the one the thread moved toward, with the lifecycle question deferred to before beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Mutating webhook that rewrites extended resource requests into DRA resource claims",
+    "why_not": "Requires cluster admins to deploy and maintain a mutation webhook with rewrite rules; the KEP rejects it for configuration and maintenance overhead."
+   },
+   {
+    "option": "Client CLI tool that rewrites extended resource requests in pod YAML into resource claims",
+    "why_not": "Adds extra overhead to the application deployment flow for developers and operators."
+   },
+   {
+    "option": "ResourceClaim created in advance by the ResourceClaim controller for pods using extended resources",
+    "why_not": "Reviewers (pohly) argued it locks the pod to DRA nodes and forces the controller to predict scheduling, which breaks gradual node-by-node migration; this was a discussed alternative, not the chosen design."
+   },
+   {
+    "option": "Singleton ResourceClaim per namespace tracking all pods' extended resource allocations",
+    "why_not": "Reviewers (mortent, johnbelamaric) noted drivers need to map allocations to specific container requests, so a per-pod claim was proposed instead."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP provides a solution to enable cluster administrators to advertise the dynamic resources (in `ResourceSlice`) as extended resource via `DeviceClass`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Enable cluster administrators to transition to DRA gradually at their own pace, possibly one node a time"
+   },
+   {
+    "ref": "rcomment:1946466862",
+    "quote": "Why don't we make the scheduler responsible for creating a per-pod ResourceClaim for the extended resource requests in a pod if and only if needed?"
+   },
+   {
+    "ref": "comment:2911214286",
+    "quote": "If the \"ResourceClaim for extended resources\" gets created in advance, the pod is locked to being scheduled to nodes which use DRA."
+   },
+   {
+    "ref": "comment:2937751058",
+    "quote": "Deferring the discussion before beta whether scheduler should create resource claim sounds good to me."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11888,
+  "output": 1118
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-5808",
+ "input_hash": "8b8e325433d0d6dc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5808 proposes adding Prometheus Native Histogram support to Kubernetes component metrics in component-base/metrics, gated by a new NativeHistograms feature gate, exposing both classic and native histogram formats together. The KEP is in implementable status at stage beta.",
+  "rationale": "Classic Prometheus histograms create one time series per bucket and use fixed bucket boundaries, which costs storage and loses accuracy at scale. Native histograms use exponential buckets and reduce series count, so the KEP adds them to Kubernetes components. Dual exposition keeps existing dashboards and alerts working while users migrate at their own pace.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep classic histograms only",
+    "why_not": "The readme says classic histograms have storage overhead and fixed bucket boundaries that limit accuracy, which the KEP aims to address."
+   },
+   {
+    "option": "Replace classic histograms with native histograms",
+    "why_not": "Non-goals state the KEP does not remove the classic histogram exposition format or existing histogram metrics, and it keeps backward compatibility."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Native histograms use exponential bucket boundaries instead of fixed boundaries, providing significant storage efficiency"
+   },
+   {
+    "ref": "readme",
+    "quote": "When enabled, Kubernetes components will expose histogram metrics in both classic and native formats simultaneously"
+   },
+   {
+    "ref": "readme",
+    "quote": "1. Remove classic histogram exposition format 2. Remove existing histogram metrics"
+   },
+   {
+    "ref": "readme",
+    "quote": "The control model is intentionally simple: - K8s-side: Feature gate controls whether native histograms are exposed"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2724,
+  "output": 727
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

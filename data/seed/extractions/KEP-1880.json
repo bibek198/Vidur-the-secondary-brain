@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1880",
+ "input_hash": "a649b42759a32be5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1880 proposed a new Service IP allocator built on two new API objects, ServiceCIDR and IPAddress, so users can dynamically expand the Service IP range by creating new ServiceCIDRs. The KEP is implemented and at stable stage.",
+  "rationale": "The existing Service IP allocator could not be resized, was per-apiserver and racy, and was limited in CIDR size, especially for IPv6. The design adds ServiceCIDR and IPAddress objects with constraints such as immutable ServiceCIDRs and a finalizer-protected deletion, keeping the change backwards compatible. The alternatives in the document were rejected for etcd dependence, incompatible behavior, unrecoverable inconsistency, or update difficulty.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Lock list maintained by each apiserver with expiring lock entries in etcd (Alternative 1)",
+    "why_not": "Strong dependency on etcd."
+   },
+   {
+    "option": "Make IP allocations real API resources synchronously bound like PVC/PV (Alternative 2)",
+    "why_not": "Incompatible change in behavior, since Service IPs have always been synchronous to CREATE and users would observe the difference."
+   },
+   {
+    "option": "Store only a hash of the in-memory bitmap in etcd and compare on each allocation (Alternative 3)",
+    "why_not": "If an inconsistent state is recorded in etcd, the cluster is permanently stuck and can't create Services, and fixing it requires etcd-level access."
+   },
+   {
+    "option": "IPRange object holding a set of addresses in its spec (Alternative 4)",
+    "why_not": "Updates to the set within the object are problematic and difficult to handle."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Allow to dynamically expand the number of IPs available for Services."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposal is to implement a new allocator logic that uses 2 new API Objects: ServiceCIDR and IPAddress, and allow users to dynamically increase the number of Services IPs available by creating new ServiceCIDRs."
+   },
+   {
+    "ref": "readme",
+    "quote": "a ServiceCIDR will be immutable after creation. - a ServiceCIDR can only be deleted if there are no Service IP associated to it (enforced by finalizer)."
+   },
+   {
+    "ref": "readme",
+    "quote": "Problem: Incompatible change in behavior."
+   },
+   {
+    "ref": "readme",
+    "quote": "If somehow an inconsistent state gets recorded in etcd, then you're permanently stuck here."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4655,
+  "output": 1001
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

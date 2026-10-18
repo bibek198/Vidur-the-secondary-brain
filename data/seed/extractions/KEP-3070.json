@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3070",
+ "input_hash": "759cb1994ece0919",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3070 splits the Service IP range so that dynamically allocated ClusterIPs come from one part and statically assigned ClusterIPs from another, letting users pick well-known IPs with less risk of conflict. The KEP is implemented and at stable stage.",
+  "rationale": "Users need predictable IPs such as the kubernetes.default service and the DNS service, but a dynamically allocated Service can take that IP first. The design logically subdivides the Service IP range so static and dynamic allocation do not collide. The excerpt says the change adds no new configuration options and does not alter the allocator implementation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Replace the bitmap-based allocation implementation (KEP proposal 1881)",
+    "why_not": "The bitmap allocator guarantees consistency using etcd, and the IP allocator has no strategy to acquire random IPs; the design also notes this is out of scope as a non-goal to change allocators."
+   },
+   {
+    "option": "Modify the allocation logic in the IP allocator instead of the bitmap allocator",
+    "why_not": "The IP allocator uses the bitmap allocator as backend. Implementing it there would be racy and hurt performance, since finding a dynamic IP in the desired range would require discarding and retrying random IPs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The Service IP range can be logically subdivided to avoid the risk of conflict between Services that use static and dynamic IP allocation."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals - changing the allocators implementation (bitmaps, ...). - add new configuration options or flags."
+   },
+   {
+    "ref": "readme",
+    "quote": "Implementing the logic in the IP allocator will not only be racy, it will also have an impact on performance"
+   },
+   {
+    "ref": "readme",
+    "quote": "until the DNS Service has been created, this IP can be taken by chance by any Service created with a dynamically allocated IP."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2270,
+  "output": 792
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2144",
+ "input_hash": "c45e0d188b86430b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2144 proposes a client-go Apply capability for server-side apply, providing typed apply configurations for Kubernetes objects. The KEP was merged as \"provisional\" with open design questions tracked as UNRESOLVED items rather than being promoted to implementable.",
+  "rationale": "Developers using generated Go structs with server-side apply hit problems: non-pointer fields such as booleans and ints are serialized even when unset, so an apply can unintentionally overwrite fields like ContainerStatus.Ready. The maintainers agreed the design was not settled, so they merged it as provisional and deferred the open questions (builders vs. pointer structs, how to set fieldManager, and how to organize parameters) to later review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Generated structs where all fields are pointers (struct with pointers, kubernetes/kubernetes#95988)",
+    "why_not": "Not chosen as the sole direction; the sources say it was still under evaluation alongside builders, and many engineers preferred it, so the choice was left open as UNRESOLVED. The sources do not state a final rejection."
+   },
+   {
+    "option": "Builder-style fluent API (alternative 2, prototype in jpbetz/kubernetes apply-client-go-builders)",
+    "why_not": "Not chosen as the final design. The author moved to being 'on the fence' after feedback that engineers strongly favored go structs, and the sources say the decision was deferred to feedback from controller-runtime/kubebuilder and a sig-apimachinery discussion."
+   },
+   {
+    "option": "Making fieldManager a default value rather than required",
+    "why_not": "A default was judged potentially unsafe, since controllers with multiple independent code paths could break under a single field manager; this was left as an UNRESOLVED item."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:740218639",
+    "quote": "The goal is to merge as \"provisional\" with all issues preventing it from being promoted to \"implemented\" tracked with `<<[UNRESOLVED` tags."
+   },
+   {
+    "ref": "rcomment:548060357",
+    "quote": "Let's merge as provisional, gather the feedback from the controller-runtime/kubebuilder community and then discuss in a sig-apimachinery bi-weekly."
+   },
+   {
+    "ref": "rcomment:543629763",
+    "quote": "I don't understand what this has to do with forcing people to specify a name (the first point is sufficient to carry the argument)."
+   },
+   {
+    "ref": "comment:756465518",
+    "quote": "/lgtm Looks like feedback has been addressed, let's latch in some progress."
+   },
+   {
+    "ref": "rcomment:542624242",
+    "quote": "until they got burned when a required boolean field got flipped to false during an apply that they had not intended to modify."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 7781,
+  "output": 1053
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

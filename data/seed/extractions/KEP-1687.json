@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1687",
+ "input_hash": "37cac5e95058174a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1687 proposed moving the Hierarchical Namespace Controller (HNC) from the multi-tenancy repository into a permanent kubernetes-sigs repository governed as a sig-auth subproject. Its recorded status is implemented, stage stable.",
+  "rationale": "The Working Group that hosted HNC was not meant to own code, and HNC was nearing MVP, so a permanent home was needed before release to avoid client library migrations later. The KEP was provisional from 2020-05-18 and implementable from 2021-01-11. The repository was created and the issue closed on 2021-02-24, before the implemented date of 2021-05-05. The implemented/stable label was set by a later PR, and reviewers disputed whether it fit the rules.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use the -incubator process first, as suggested by mikedanese",
+    "why_not": "The source says the incubator process is deprecated: \"IMPORTANT - The Kubernetes Incubator process is now deprecated and has been superseded by Kubernetes subprojects\" (rcomment:413178226)."
+   },
+   {
+    "option": "Name the repository hierarchical-namespace-controller-prototype",
+    "why_not": "adrianludwin objected that \"prototype\" would force link changes if the project graduates, and proposed github.com/kubernetes-sigs/hierarchical-namespaces instead (rcomment:420100758, rcomment:420101509)."
+   },
+   {
+    "option": "Keep the KEP at implementable rather than implemented",
+    "why_not": "The sources show this was debated. johnbelamaric said that marking it implemented would imply no more work remains, but the KEP was ultimately recorded as implemented (rcomment:733216051, rcomment:725294189). The sources do not settle this cleanly."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "a permant home is required. Additionally, having a permanent home for Hierarchical Namespace Controller prior to officially releasing will prevent cumbersome migrations"
+   },
+   {
+    "ref": "comment:785139384",
+    "quote": "HNC has been accepted as a subproject and the repo was created. Closing. /close"
+   },
+   {
+    "ref": "rcomment:725294189",
+    "quote": "So I believe this one is implemented as it was a KEP to create a subproject that was created: https://github.com/kubernetes/enhancements/issues/1687"
+   },
+   {
+    "ref": "rcomment:733216051",
+    "quote": "If we mark this as `implemented` then it implies there is no more work to do, which isn't true. So I agree that this should be `implementable`."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "Given that this KEP is related to prow, and not to anything that is contained in a kubernetes release, I think this is pretty uncontroversial"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8306,
+  "output": 1069
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

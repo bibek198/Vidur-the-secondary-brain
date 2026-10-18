@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-617",
+ "input_hash": "44bae47bdf70aedb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-617 proposes a set of small, incremental process, documentation, visibility, and automation changes to make Kubernetes KEPs easier to find, navigate, and consume. Its status is provisional.",
+  "rationale": "KEP artifacts were hard to navigate, and it was hard to tell which KEPs were in which states and what remained undecided. A sig-arch KEP reading group found it difficult to track KEP activity. The proposal therefore bundles several small improvements rather than one large change.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave unresolved text out or HTML-commented",
+    "why_not": "The authors feel it is more useful to actually show that text and emphasize its non-resolvedness."
+   },
+   {
+    "option": "Rename KEPs without making subdirectories",
+    "why_not": "Renaming without subdirectories incurs most of the same pain with less gain."
+   },
+   {
+    "option": "Use a 'surrogate' KEP number mechanism",
+    "why_not": "It was already tried and gave way to the current date mechanism."
+   },
+   {
+    "option": "Do not fix tooling",
+    "why_not": "Not fixing tooling would incur more of the same pain the project suffers today."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Drive KEP adoption through improved process, documentation, visibility, and automation."
+   },
+   {
+    "ref": "readme",
+    "quote": "It's hard to find which KEPs are in which states and to know what is considered undecided."
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal aims to define several small, incremental steps that can be taken to make these problems a bit better."
+   },
+   {
+    "ref": "readme",
+    "quote": "Leaving unresolved text out completely or HTML-commented could work, but we feel it is more useful to actually show that text and emphasize its non-resolvedness."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2014,
+  "output": 736
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

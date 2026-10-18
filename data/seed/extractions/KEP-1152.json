@@ -1,0 +1,38 @@
+{
+ "kep": "KEP-1152",
+ "input_hash": "b2666109a1727260",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1152 proposed reducing kube-apiserver work by caching serializations of the same object, so that multiple watchers or GET/LIST readers do not each serialize it independently. It adds an Identifier() method to runtime.Encoder and a CacheableObject interface, implemented by the cacher package. Status is implemented, stage stable.",
+  "rationale": "Large numbers of watches on the same object (e.g. a large Endpoints object watched by kube-proxy on every node) cause kube-apiserver to serialize and deep-copy the object once per watcher. The proposal avoids repeated serialization by caching encodings keyed by encoder identifier. The design states it has no user-visible changes, and the maintainers judged it an implementation detail that goes directly to GA with no docs needed.",
+  "outcome_reason": "Not applicable: the status is implemented, not withdrawn, rejected, replaced or deferred. The sources do not say why the KEP's status was recorded as implemented in the 2021 metadata discussion beyond the process debate about the stage and PRR requirements.",
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The main reason for that is that for every watcher (Endpoints are being watched by kube-proxy running on every one) kube-apiserver independently serializes"
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal does not introduce any user-visible changes - the proposed changes are purely implementation details of kube-apiserver."
+   },
+   {
+    "ref": "comment:537158566",
+    "quote": "Given it's not a feature per-se (this is implementation detail, the change is invisible to use), this will go directly to GA. Changing the stage."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 6323,
+  "output": 758
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

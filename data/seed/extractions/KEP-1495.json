@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1495",
+ "input_hash": "dfb9f3c94f3feab8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1495 proposes adding a new PVC field, DataSourceRef, that accepts volume populator data sources without silently dropping input, deprecating (never removing) the DataSource field, and adding a VolumePopulator CRD plus a volume-data-source-validator controller to report feedback for unregistered sources. The KEP is marked implementable and stage stable.",
+  "rationale": "The existing DataSource validation uses a whitelist of object types and silently ignores unsupported objects, which cannot scale to out-of-tree populators and cannot be fixed compatibly. The design therefore introduces DataSourceRef, which never ignores input, and moves validation for non-core kinds to an async controller that registers kinds via VolumePopulator CRs. Reviewers questioned the async-versus-sync tradeoff, and the design was revised to keep the in-tree part minimal.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Keep extending the DataSource whitelist with a feature gate per object type",
+    "why_not": "The readme says this approach 'won't scale to generic populators, which will by their nature be too numerous and varied.'"
+   },
+   {
+    "option": "Change DataSource validation to reject unsupported objects in place",
+    "why_not": "The readme says 'It's not possible to update this behavior in a backwards-compatible way, which forces us to use a different mechanism for populators.'"
+   },
+   {
+    "option": "Synchronous enforcement via a validating webhook instead of an async controller",
+    "why_not": "Discussion shows the author chose the controller model; a reviewer asked why it changed from webhook to controller and the author said the populator guts live out of tree and the detail was deferred. The sources do not give a full rationale for rejecting the webhook."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal recommends that we replace the `DataSource` field with a new `DataSourceRef` field with expanded semantics."
+   },
+   {
+    "ref": "readme",
+    "quote": "The new `DataSourceRef` field will allow objects other than existing data sources (PVC and VolumeSnapshots), and crucially will never ignore inputs."
+   },
+   {
+    "ref": "readme",
+    "quote": "We will introduce a new CRD to register valid datasource kinds, and individual volume populators will create a CR for each kind of data source that it understands."
+   },
+   {
+    "ref": "rcomment:632186951",
+    "quote": "The deprecation won't happen until the new field reaches beta or GA. In any case, it will NEVER be removed"
+   },
+   {
+    "ref": "comment:2887675588",
+    "quote": "Given that this KEP has graduated to `stable`, once all the work is completed (including removing feature gates), could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13263,
+  "output": 1027
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

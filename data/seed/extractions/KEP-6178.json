@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-6178",
+ "input_hash": "c8f718e05a37c5da",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6178 (Concurrent Watch Object Decode, sig-api-machinery) is at status implementable, stage beta. It proposes decoding watch objects concurrently; the implementation PR kubernetes/kubernetes#139679 was merged before code freeze, which let the KEP be tracked for code freeze in v1.37.",
+  "rationale": "The KEP was at risk for enhancements freeze until its readme/PRR PR (kubernetes/enhancements#6179) was resolved, and it was then tracked for enhancements freeze. At code freeze the enhancement was first removed from the v1.37 milestone because implementation PRs were not merge-ready, then re-added after PR #139679 merged with an updated description. The stated benefit is from a Kueue user: the previous behavior caused a boot incident, and benchmarks show about 3.4x more workloads processed.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave the KEP out of v1.37 after code freeze",
+    "why_not": "The sources show it was re-added to the v1.37 milestone after PR kubernetes/kubernetes#139679 merged with an updated description, so it was not left out."
+   },
+   {
+    "option": "Track total active decode goroutines as the observability metric",
+    "why_not": "Jefftree preferred a gauge, stating 'I added a gauge for apiserver_watch_decode_inflight' instead of describing goroutines."
+   },
+   {
+    "option": "Use queue depth or delay as the observability signal for decode",
+    "why_not": "Jefftree said queue delay already exists via logs: 'when decoder is falling behind and crosses a threshold' a block logger records it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:5061220288",
+    "quote": "Pertaining to the concerned PR https://github.com/kubernetes/kubernetes/pull/139679 being merged and with an updated description, this KEP is now marked as `Tracked for code freeze`."
+   },
+   {
+    "ref": "comment:5058198994",
+    "quote": "the implementation (code-related) PRs associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.37 milestone."
+   },
+   {
+    "ref": "rcomment:3399253412",
+    "quote": "I added a gauge for `apiserver_watch_decode_inflight`. (b) exists already via logs."
+   },
+   {
+    "ref": "comment:5220700738",
+    "quote": "the previous behavior caused us an incident as reported here: https://github.com/kubernetes/kubernetes/issues/136950 where Kueue could not boot up."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7067,
+  "output": 995
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

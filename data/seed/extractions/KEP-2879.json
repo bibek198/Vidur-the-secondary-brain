@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2879",
+ "input_hash": "d9ee7f9288506145",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2879 adds a `ready` field to Job status that counts Job Pods with the `Ready` condition, alongside the existing `active` count. The KEP reached implemented status and stable stage.",
+  "rationale": "The `active` count includes Pending Pods, which can give a false sense of progress when Pods wait a long time for resources or image pulls. Adding `ready` lets users and controllers see Pods that can actually serve, without watching Pod updates themselves. The count is best effort and not strictly accurate, which the KEP lists as a non-goal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add `Job.status.running` counting Pods in the `Running` phase",
+    "why_not": "The readme says the `Running` phase does not account for preparation work before a worker accepts connections. The `Ready` condition is configurable through a readiness probe, and without a probe it equals the `Running` phase, so `ready` gives the same behavior with more flexibility."
+   },
+   {
+    "option": "Use different batch periods for regular Pod updates versus finished Pod updates",
+    "why_not": "The readme says no bugs or requests came up around the batch period choice, and the batch period was considered an important element of the Job controller. It is no longer behind the feature gate since PR#118615, released in 1.28."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we add a field `ready` that counts the number of Job Pods that have a `Ready` condition, with the same best effort guarantees as the existing `active` field."
+   },
+   {
+    "ref": "readme",
+    "quote": "Since the `Job.status.active` field includes `Pending` Pods, this can give a false impression of progress to end users or other controllers."
+   },
+   {
+    "ref": "readme",
+    "quote": "In other words, `Job.status.ready` provides as the same behavior as `Job.status.running` with the advantage of it being configurable."
+   },
+   {
+    "ref": "readme",
+    "quote": "Note that other workload APIs (such as ReplicaSet and StatefulSet) have a similar field: `.status.readyReplicas`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2289,
+  "output": 815
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

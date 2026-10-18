@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-692",
+ "input_hash": "6720d7cb873e236f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-692 proposes using the CRD OpenAPI v3 validation schema to create and publish OpenAPI documentation for custom resources, so clients like kubectl can do client-side validation, explain, and client generation. The recorded status is implemented, stage stable.",
+  "rationale": "CRs had server-side validation from the CRD OpenAPI v3 schema but no published OpenAPI docs, leaving a gap with native APIs that already publish OpenAPI. The KEP extends publishing to Paths and Definitions for every served CRD. Discussion shows the work was tracked across 1.14 through 1.16 with feature-freeze exceptions and beta and stable promotion plans. The sources do not explain the specific reasons for the 1.16 stable graduation beyond the stated plan.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Copy the full CRD validation design document into the KEP",
+    "why_not": "The sig-api-machinery lead said copy-pasta was not expected and linking out was acceptable: \"My desire is not to expect copy-pasta from that doc into a KEP, I am OK with linking out where it makes sense.\""
+   },
+   {
+    "option": "Aggregate and publish CRD OpenAPI from kube-aggregator in this KEP",
+    "why_not": "This is a stated non-goal: \"Finalize design on how to aggregate and publish CRD OpenAPI from kube-aggregator\"."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes using the OpenAPI v3 schema to create and publish OpenAPI documentation for CRs."
+   },
+   {
+    "ref": "readme",
+    "quote": "For every CRD that we serve, publish Paths (operations that we support on resource and subresources) and Definitions"
+   },
+   {
+    "ref": "comment:461552902",
+    "quote": "My desire is not to expect copy-pasta from that doc into a KEP, I am OK with linking out where it makes sense."
+   },
+   {
+    "ref": "comment:496627277",
+    "quote": "In 1.15 we did kubernetes/kubernetes#77825 and it's merged."
+   },
+   {
+    "ref": "comment:509439560",
+    "quote": "The plan is to go stable in 1.16. I will keep the issue updated when the coding begins"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4596,
+  "output": 890
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

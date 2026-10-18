@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2450",
+ "input_hash": "e4675d1cbae0badc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2450 proposed removing kube-proxy's dependence on the pod cluster CIDR in iptables and ipvs rules, replacing it with node-local pod traffic signals (node podCIDR, pod interface prefix, or physdev matching). The KEP is recorded as implemented, stage stable.",
+  "rationale": "Kube-proxy's iptables and ipvs rules referenced the cluster CIDR for pods in several places, which tied pod IP allocation to service routing. The proposal argues that tracking node-local pod traffic is enough to identify cluster-originated traffic, so allocators can change without touching service rules. The main drawback noted is a relaxed accept rule for ESTABLISHED,RELATED packets, which holds only if pod traffic is routed at the node boundary on every node.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep referencing the pod cluster CIDR in iptables and ipvs rules",
+    "why_not": "The sources say this coupling prevents decoupling pod IP management and allocation strategies from service management and routing, which is the stated goal."
+   },
+   {
+    "option": "Use -s node.podCIDR to identify cluster-originated traffic",
+    "why_not": "Listed as one of several equivalent alternatives in the proposal; the sources do not say why it was chosen over the others."
+   },
+   {
+    "option": "Use --in-interface prefix+ to match pod interfaces",
+    "why_not": "Listed as an equivalent alternative; the sources do not record a specific reason it was not selected."
+   },
+   {
+    "option": "Use -m physdev --physdev-is-in for kubenet",
+    "why_not": "Offered for kubenet when node podCIDR is not wanted; the sources do not say it was rejected."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This enhancement proposes ways to achieve similar goals without tracking the pod cluster CIDR to do so."
+   },
+   {
+    "ref": "readme",
+    "quote": "Not having to depend on the cluster pod CIDR for routing service traffic would effectively de-couple pod IP management and allocation strategies from service management and routing."
+   },
+   {
+    "ref": "readme",
+    "quote": "The main caveat in this KEP is the relaxation of the accept rule for \"ESTABLISHED,RELATED\" packets."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5812,
+  "output": 1051
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-121",
+ "input_hash": "3ecc5fc7f8a63e67",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-121 defines a design for persistent local storage in Kubernetes, letting pods mount local block or filesystem volumes with node affinity so they are scheduled to the node holding the volume. The KEP replaces the original design proposal and reflects the implementation. Its status is implemented, stage stable.",
+  "rationale": "Remote storage was the only persistent option, while local disks offer better performance and lower cost, so the project wanted persistent local volumes. The readme says the KEP \"replaces the original design proposal and has been updated to reflect the current implementation.\" The discussion shows the feature went alpha, then beta, and was moved to GA in 1.14 (the maintainer wrote \"Plan for 1.14 is to move to GA\"). The \"implemented\" label was applied later, through a retroactive PR, and the discussion says this was a process cleanup rather than a new release event.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Dynamic provisioning of local volumes",
+    "why_not": "Listed as a non-goal in the readme: \"Dynamic provisioning of local volumes.\" It was tracked separately in issue #562, per the discussion."
+   },
+   {
+    "option": "Automatic data migration between nodes",
+    "why_not": "Excluded by the maintainers: \"We are not including auto data migration. We will rely on applications to handle that.\""
+   },
+   {
+    "option": "Use HostPath and Local PVs on the same volume",
+    "why_not": "Listed as a non-goal in the readme: \"Support the use of HostPath volumes and Local PVs on the same volume.\""
+   },
+   {
+    "option": "Keep the original design proposal as the reference",
+    "why_not": "The readme says this KEP \"replaces the original design proposal\" and was updated to match the current implementation."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP replaces the original [design proposal](https://github.com/kubernetes/design-proposals-archive/blob/master/storage/local-storage-pv.md) and has been updated to reflect the current implementation."
+   },
+   {
+    "ref": "comment:457396290",
+    "quote": "KEP is here: https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/20190124-local-persistent-volumes.md For 1.14 work, the following needs to be done"
+   },
+   {
+    "ref": "comment:482709694",
+    "quote": "1.14 was GA and any additional enhancements should be tracked as new features. /close"
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12793,
+  "output": 1007
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

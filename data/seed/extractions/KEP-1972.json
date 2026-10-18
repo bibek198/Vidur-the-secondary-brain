@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1972",
+ "input_hash": "189d6d0c6a608b04",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1972 makes kubelet respect exec probe timeouts, treating a timed-out exec probe as a probe failure. A feature gate (ExecProbeTimeout) lets nodes keep the old behavior. The KEP is currently marked implementable, stage stable.",
+  "rationale": "Kubelet ignored the exec probe timeout even though the Container Probe API supports it, which the KEP treats as a bug. Because existing workloads may depend on timeouts never being enforced, a feature gate was added so nodes can preserve the current behavior. The KEP was pushed toward GA quickly, which reviewers later noted was a choice they wanted to avoid for future KEPs.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Increasing the default timeout for exec probes",
+    "why_not": "Listed as an alternative considered in the KEP; the sources do not say why it was rejected."
+   },
+   {
+    "option": "Continuing to ignore the exec probe timeout",
+    "why_not": "Listed as an alternative considered in the KEP; the sources do not say why it was rejected, but the Motivation calls ignoring the timeout a bug to be fixed."
+   },
+   {
+    "option": "Expanding scope to also respect timeout in preStop exec hook (RespectExecTimeout flag)",
+    "why_not": "Maintainer andrewsykim said grace termination and probe timeouts are separate concerns and did not want overlap with sidecar efforts; sergeykanzhelev later agreed no flag was needed and the KEP should go ahead as scoped."
+   },
+   {
+    "option": "Adding CRI timeout error codes within this KEP",
+    "why_not": "Treated as out of scope; andrewsykim said CRI errors would be addressed in a separate KEP (#1654)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubelet today does not respect exec probe timeouts. This is considered a bug we should fix since the timeout value is supported in the Container Probe API."
+   },
+   {
+    "ref": "readme",
+    "quote": "Existing workloads may depend on the fact that exec probe timeouts were never respected. Introducing the timeout now may result in unexpected behavior for some workloads."
+   },
+   {
+    "ref": "comment:692779586",
+    "quote": "I agree that we should fix this, but I think grace termination period and probe timeouts are separate concerns here."
+   },
+   {
+    "ref": "comment:693224426",
+    "quote": "So this KEP should be gtg"
+   },
+   {
+    "ref": "comment:2408616053",
+    "quote": "Yes, we are trying to avoid straight to GA KEPs. Bug fixes with the feature gate have a much less impact."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6022,
+  "output": 1010
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

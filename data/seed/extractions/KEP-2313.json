@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2313",
+ "input_hash": "35e816f79adf550a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2313 proposes aws-k8s-tester, a plugin to kubetest that AWS uses for its e2e tests. It runs Kubernetes testing operations such as creating temporary EKS clusters and implements the kubetest deployer interface. The KEP is in provisional status, as of 2021-01-25.",
+  "rationale": "AWS tests are largely run by community projects such as kops, which do not test EKS, leaving coverage gaps. The design targets full test coverage of EKS through automated testing of upstream Kubernetes against EKS. The stated goals are EKS cluster creation and teardown, testing open-source distributions, and creating AWS resources for AWS sub-projects. The readme does not describe any decision made beyond this provisional proposal.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Rely on community projects such as kops for AWS test coverage",
+    "why_not": "The readme says kops does not test EKS, so coverage of EKS-specific behavior would stay incomplete."
+   },
+   {
+    "option": "Replace kops or kubeadm with this project",
+    "why_not": "The readme's non-goals state the project does not replace kops or kubeadm and is only meant for testing."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Many AWS tests are run by community projects such as kops, which does not test EKS."
+   },
+   {
+    "ref": "readme",
+    "quote": "All e2e tests maintained by AWS uses `aws-k8s-tester` as a plugin to kubetest."
+   },
+   {
+    "ref": "readme",
+    "quote": "* The project does not replace kops or kubeadm. * This project is only meant for testing."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2402,
+  "output": 685
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

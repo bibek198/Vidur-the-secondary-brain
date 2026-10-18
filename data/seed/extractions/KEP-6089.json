@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-6089",
+ "input_hash": "26597f9c3a91d1df",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6089 defines the shared Workload/PodGroup scheduling building-block API types (policy, constraints, disruption, resource claims) under the scheduling API group, with a versioned workloadbuilder helper library that translates them into Workload objects. Status: implementable, alpha.",
+  "rationale": "Higher-level controllers (Job, JobSet, etc.) need to express scheduling intent for Workload objects without duplicating the types. The discussion settled on granular, purpose-oriented building-block types that APIs embed, with a helper library doing a pass-through translation, so that new fields flow through when libraries are upgraded. Reviewers agreed TopologyConstraint should be shared with PodGroup rather than duplicated, and that validation lives in the library. Naming and default-handling were still being debated in the review thread.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reuse the full PodSpec-like or PodGroup structures directly in every controller API",
+    "why_not": "The discussion noted that reusing existing structures and embedding them elsewhere hit the problems the authors wanted to avoid; a separate sibling structure was chosen for this purpose. The reviewer also said embedding PodSpec everywhere is less appealing than granular building blocks."
+   },
+   {
+    "option": "Duplicate TopologyConstraint as WorkloadTopologyConstraint",
+    "why_not": "Reviewer wojtek-t argued the topology concept reflects the real world and cannot diverge from PodGroup, so it should be shared; the authors agreed and TopologyConstraint is now shared."
+   },
+   {
+    "option": "Per-node defaulting via a single DefaultGangMinCount field or a list of callbacks",
+    "why_not": "Discussion considered these but reviewers found them awkward: a Basic and Gang policy at once is semantically odd, and a field proliferation or callback list was debated. No final resolution is recorded in the sources."
+   },
+   {
+    "option": "Owner-reference-only mechanism for lifecycle delegation",
+    "why_not": "wojtek-t said owner references alone cannot express the three ownership states, so annotations are needed in addition to owner references."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3281190585",
+    "quote": "the `TopologyConstraint` should actually be shared (we shouldn't introduce WorkloadTopologyConstraint here) - because that's a concept that reflects the topology"
+   },
+   {
+    "ref": "rcomment:3318988279",
+    "quote": "We introduce entirely new API group with all the share-able APIs, and then the library will be responsible for translating that into the core scheduling primitives."
+   },
+   {
+    "ref": "rcomment:3421446775",
+    "quote": "they are intended to map in a ~pass-through way to creation of Workload objects"
+   },
+   {
+    "ref": "rcomment:3403519657",
+    "quote": "So the mechanism isn't OwnerReference-based. It should be based on the annotations that are described below"
+   },
+   {
+    "ref": "comment:4699509060",
+    "quote": "The status of this enhancement is marked as `At risk for enhancements freeze`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11225,
+  "output": 1157
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

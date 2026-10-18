@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2337",
+ "input_hash": "936b274c6176ed37",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2337 proposed an api-approved.kubernetes.io annotation on CustomResourceDefinitions so the kube-apiserver can set a KubeAPIApproved condition for CRDs in k8s.io/kubernetes.io API groups, requiring a link to the approving PR. The KEP's status is recorded as implemented (stage stable), from 2021-02-09.</summary>\n<parameter name=\"rationale\">The problem is that unapproved APIs could be added to community-owned *.k8s.io and *.kubernetes.io groups by accident. The readme proposes the annotation as a guard: a URL to the approving PR sets the condition true, while a missing or \"unapproved\" value sets it false. The sources do not explain the reasoning behind the implemented status beyond the discussion of KEP status rules in PR #3007, which concerned process and PRR files rather than this feature's design.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Prevent malicious users from claiming reserved names",
+    "why_not": "Listed as a non-goal; the annotation only guards against accidental claims, not deliberate ones."
+   },
+   {
+    "option": "Treat an unapproved CRD in a kube group as a hard rejection in v1",
+    "why_not": "The readme says only that in v1 the annotation 'will be required' to create such a CRD; the sources do not describe a separate rejected alternative."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes adding an `api-approved.kubernetes.io` annotation to CustomResourceDefinition. This is only needed if the CRD group is `k8s.io`, `kubernetes.io`, or ends with `.k8s.io`, `.kubernetes.io`."
+   },
+   {
+    "ref": "readme",
+    "quote": "If a new server sees a CRD for a resource in a kube group and does not see the annotation, it will set the `KubeAPIApproved` condition to false."
+   },
+   {
+    "ref": "readme",
+    "quote": "Prevent accidentally including an unapproved API in community owned API groups"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta, so it skipped PRR this cycle."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "It landed after https://github.com/kubernetes/enhancements/pull/2672 (which made PRR required for implementable), but since it landed as implemented, it skipped PRR"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5270,
+  "output": 971
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

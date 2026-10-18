@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-383",
+ "input_hash": "50fa533c48f045d9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-383 graduates the new Event API (events.k8s.io/v1) to GA. The API was promoted from v1beta1 to v1 in 1.19, with only kube-scheduler migrated to use it at the time of the excerpt.",
+  "rationale": "Existing Events are spammy, have unclear semantics, and can overload the API server. The new API makes semantic fields first-class for better deduplication and querying, adds series detection that sends only start and finish events, and uses a more aggressive backoff. Reviewers settled that the API itself has no feature gate, and that the client-library fallback to the old API is kept while the library is used across many clients.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Gate the client-library use behind a feature gate",
+    "why_not": "Reviewer wojtek-t said a feature gate for the library was intended but never added, and that the fallback pattern should continue since the gate would be locked to true at GA."
+   },
+   {
+    "option": "Drop the fallback to the old core Event API once GA",
+    "why_not": "liggitt said the event recorder is used by many out-of-tree clients with different skew support, so fallback makes sense, and yastij said to keep fallback for safety after GA."
+   },
+   {
+    "option": "Promise an SLO for Events",
+    "why_not": "wojtek-t wrote that Events have always been best-effort and the new API keeps that, so no SLO will be introduced."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The new Event API has been promoted from v1beta1 to v1 in 1.19 and currently only scheduler was migrated to use it."
+   },
+   {
+    "ref": "rcomment:425288696",
+    "quote": "We've never used feature-gates for the API itself. Though, you can enable/disabled specific APIs at kube-apiserver level using --runtime-config flag."
+   },
+   {
+    "ref": "rcomment:425323465",
+    "quote": "once we move move to GA I think we should still fallback for safety. might be worth considering for other APIs"
+   },
+   {
+    "ref": "rcomment:425301736",
+    "quote": "Events have always been \"best-effort\". We're sticking to that with the new API too. So no SLO will be introduced."
+   },
+   {
+    "ref": "readme",
+    "quote": "In addition, we will improve 'Event series' detection and send only 'series start' and 'series finish' Events, and add more aggressive backoff policy for Events."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6418,
+  "output": 918
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

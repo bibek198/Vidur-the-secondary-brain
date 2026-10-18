@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3766",
+ "input_hash": "17dca3e6b5b6490b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3766 proposes moving ReferenceGrant from the gateway.networking.k8s.io API group into a new authorization.k8s.io API group owned by sig-auth, starting at v1alpha1. The KEP is in provisional status at alpha stage, with open questions tracked in the KEP rather than resolved.",
+  "rationale": "Projects needing cross-namespace references had to either depend on Gateway API's CRD or build a redundant API, and sig-storage was already using ReferenceGrant for cross-namespace data sources. Moving it to a neutral home under sig-auth makes it the canonical API for cross-namespace references. The PR was merged as provisional because many review threads (kind vs resource, revocation, status/usage tracking, selectors, read vs write verbs) were unresolved and were moved into an open-questions section for later iteration.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep ReferenceGrant as a CRD in the Gateway API group",
+    "why_not": "Source says it 'would probably be fine' but there is no good place for it to live, and it could complicate installation of Gateway API and other APIs that depend on it."
+   },
+   {
+    "option": "Each API that needs cross-namespace references maintains its own ReferenceGrant-like type",
+    "why_not": "The KEP calls this 'a confusing mess' and says it should be avoided at all costs."
+   },
+   {
+    "option": "Use kind instead of resource in the From field",
+    "why_not": "Source records that kind was chosen for specificity and ease of copying from metadata, but liggitt noted kind requires a REST mapping lookup that could fail during authorization checks; the KEP instead moved toward resource-based scoping (group+resource is 'unambiguous')."
+   },
+   {
+    "option": "Track ReferenceGrant usage via status or a separate ReferenceGrantUse resource",
+    "why_not": "Not decided. Thockin and robscott discussed tradeoffs (optimistic concurrency, cardinality, RBAC, cleanup) and the threads were moved to open questions."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes moving ReferenceGrant from its current `gateway.networking.k8s.io` API group into the `authorization.k8s.io` API group."
+   },
+   {
+    "ref": "readme",
+    "quote": "Move the existing ReferenceGrant resource into a new `authorization.k8s.io` API group, defined within the Kubernetes code base as part of the 1.27 release."
+   },
+   {
+    "ref": "comment:1404390977",
+    "quote": "One approach could be to flip this to provisional, hoist in open questions into the KEP content as UNRESOLVED blocks with links to original threads, then merge and work through the different questions in updates that resolve them."
+   },
+   {
+    "ref": "comment:1407114372",
+    "quote": "Proposal is for alpha, still marked as provisional, and clearly marks the open questions and links to discussion threads. /lgtm /approve"
+   },
+   {
+    "ref": "rcomment:1084499616",
+    "quote": "Using `kind` instead of `resource` means that any authorization verification that the user creating/modifying the ReferenceGrant actually has permission to access the object"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10033,
+  "output": 1188
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

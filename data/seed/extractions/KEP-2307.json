@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2307",
+ "input_hash": "02bba9c52d1b862c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2307 changes the Job controller to track Job completion and failure without relying on finished Pods remaining in the API. Pods are created with a finalizer, and the controller removes it only after counting the finished Pod.",
+  "rationale": "The old design depended on completed Pods not being removed, which breaks for Jobs with many completions or clusters running many Jobs, and the Pod garbage collector deletes finished Pods once a threshold is reached. The proposal uses a finalizer on each Pod so the garbage collector cannot delete a finished Pod until the Job controller has accounted for it. The design accepts extra API calls and a larger Job status as the cost of scaling.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a list of created Pod UIDs in the Job status, clearing them once accounted for.",
+    "why_not": "Fewer status updates, but the size of the updates is unbounded, per the readme's alternatives section."
+   },
+   {
+    "option": "Keep relying on finished Pods lingering and rely on the garbage collector's large threshold.",
+    "why_not": "The readme says this is problematic for Jobs with many completions or clusters with many Jobs, and it is the dependency the KEP aims to remove."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The Job controller creates Pods with a finalizer to prevent finished Pods from being removed by the garbage collector."
+   },
+   {
+    "ref": "readme",
+    "quote": "The Job controller removes the finalizer from the finished Pods once it has accounted for them."
+   },
+   {
+    "ref": "readme",
+    "quote": "The current approach of relying on the Pods existence is problematic for Jobs that require a big number of completions"
+   },
+   {
+    "ref": "readme",
+    "quote": "Extra API calls and temporarily bigger Job status. However, without them it's impossible to ever scale the Job controller"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1945,
+  "output": 751
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

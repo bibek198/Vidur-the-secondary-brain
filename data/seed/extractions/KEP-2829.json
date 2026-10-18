@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2829",
+ "input_hash": "676e1df4810a9962",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2829 proposes moving Gateway API from the experimental x-k8s.io API group to the official k8s.io group as part of the v1alpha2 release, with the APIs still delivered as CRDs and subject to standard Kubernetes API review. The status is implementable at stage alpha.",
+  "rationale": "Gateway API started as an experimental API, and the team was preparing a v1alpha2 release it believed would be a significant step toward stability. The KEP argues that an official Kubernetes API will help quality and stability as the number of implementations grows. Most KEP sections are marked not applicable because the code lives out-of-tree and the KEP mainly tracks the API review.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep Gateway API as an experimental API indefinitely",
+    "why_not": "The readme says this 'would be very confusing for users', so the KEP does not choose it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP aims to transition [Gateway API](https://gateway-api.sigs.k8s.io) from an experimental API (x-k8s.io) to an official one (k8s.io) as part of the v1alpha2 release."
+   },
+   {
+    "ref": "readme",
+    "quote": "we believe that transitioning to an official Kubernetes API will help provide greater quality and stability going forward."
+   },
+   {
+    "ref": "readme",
+    "quote": "This API could stay as an experimental API indefinitely, but that would be very confusing for users."
+   },
+   {
+    "ref": "rcomment:1397412602",
+    "quote": "FYI pushing back to provisional as PRR was not filled in and reviewed [to pass improved validation]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2321,
+  "output": 689
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

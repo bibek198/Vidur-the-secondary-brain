@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2091",
+ "input_hash": "6957c502a94cd84d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2091 proposes new cluster-scoped AdminNetworkPolicy and BaselineAdminNetworkPolicy resources in the policy.networking.k8s.io group so administrators can set rules that developer NetworkPolicies cannot override (ANP) and default rules that developers can override (BANP). The KEP is in implementable status at alpha stage.",
+  "rationale": "NetworkPolicy uses implicit isolation and has no explicit deny, and it is namespace-scoped, so it cannot express cluster-wide admin guardrails. The readme says NetworkPolicy \"was not intended to be used for cluster scoped administrative traffic control\". The KEP adds deny rules, hierarchical enforcement, and cluster-scoped policies that can select namespaces not yet created. Its scope is east-west in-cluster traffic only.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use existing namespace-scoped NetworkPolicy only",
+    "why_not": "The readme states NetworkPolicy has implicit isolation, no explicit deny, and commutative semantics that make admin filtering intents difficult to express."
+   },
+   {
+    "option": "Cluster-scoped controls for north-south traffic in this KEP",
+    "why_not": "The readme says north-south control is a non-goal: \"the AdminNetworkPolicy resource introduced by this KEP will never affect north-south traffic\", and may be addressed in future KEPs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "it was not intended to be used for cluster scoped administrative traffic control, which is reflected by its design"
+   },
+   {
+    "ref": "readme",
+    "quote": "It has no concept of explicit \"deny\" rules, because the application deployer can simply refrain from allowing the things they want to deny."
+   },
+   {
+    "ref": "readme",
+    "quote": "Set strict security rules for the cluster, i.e. a developer CANNOT override these rules by creating NetworkPolicies that applies to the same workloads as the AdminNetworkPolicy does."
+   },
+   {
+    "ref": "readme",
+    "quote": "For the time being, the AdminNetworkPolicy resource introduced by this KEP will never affect north-south traffic"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2997,
+  "output": 871
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

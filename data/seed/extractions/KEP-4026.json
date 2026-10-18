@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4026",
+ "input_hash": "2640d5340f6b9020",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4026 adds a batch.kubernetes.io/cronjob-scheduled-timestamp annotation to Jobs created by a CronJob, recording the original expected scheduled time. The KEP reached implemented status and stable stage.",
+  "rationale": "There was no supported way to get the original or expected scheduled timestamp for a Job created from a CronJob. The CronJob controller sets this value as a Job annotation. The design chose this approach so that adding the annotation would not disrupt existing workloads.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a label instead of an annotation",
+    "why_not": "Labels are unnecessary because the data is not used with search or to satisfy conditions."
+   },
+   {
+    "option": "Add a status field",
+    "why_not": "The object's CreationTimestamp would be overridden with the time the CronJob starts, so the original scheduled time would be lost; the new annotation is meant to carry that original/expected value."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently, there is no supported way to get the original/expected initial scheduled timestamp for the job created from a cronjob."
+   },
+   {
+    "ref": "readme",
+    "quote": "Adding the annotation should not be disruptive to existing workloads."
+   },
+   {
+    "ref": "readme",
+    "quote": "Labels are unnecessary as we need to pass data that won't be used with search or satisfy certain conditions."
+   },
+   {
+    "ref": "readme",
+    "quote": "The object already has the `CreationTimestamp` field, but it will get overridden with the time the CronJob will start."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1782,
+  "output": 655
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

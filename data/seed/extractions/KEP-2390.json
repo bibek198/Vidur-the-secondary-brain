@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2390",
+ "input_hash": "d9545efd03574280",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2390 proposes that every Kubernetes cloud provider periodically upload E2E conformance test results to Testgrid, at minimum for every patch version of Kubernetes. Its status is implementable, stage alpha.",
+  "rationale": "The primary motivation is to inform sig-release of critical bugs, and collecting results from several cloud providers increases coverage and warns other providers of bugs that may affect them. The KEP sets goals of awareness among cloud-provider SIG owners and a clear upload process. It leaves test coverage, CI/CD tooling, and cluster provisioning out of scope.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Require conformance runs against master and pre-release versions",
+    "why_not": "The proposal says running against master and pre-release versions is highly encouraged but will not be a requirement."
+   },
+   {
+    "option": "Increase test coverage as part of this KEP",
+    "why_not": "Test coverage is explicitly a non-goal of the KEP."
+   },
+   {
+    "option": "Prescribe a specific CI/CD tool for running E2E tests and uploading results",
+    "why_not": "The non-goals state that the choice of CI/CD tool is up to each cloud provider."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The primary motivation behind collecting conformance test results from various cloud providers on a regular basis is to inform sig-release of any critical bugs."
+   },
+   {
+    "ref": "readme",
+    "quote": "We would like to propose that every Kubernetes cloud provider reports conformance test results for every patch version of Kubernetes at the minimum."
+   },
+   {
+    "ref": "readme",
+    "quote": "Running conformance tests against master and on pre-release versions are highly encouraged but will not be a requirement."
+   },
+   {
+    "ref": "readme",
+    "quote": "CI/CD - what CI/CD tool is used to run E2E tests and upload results is outside the scope of this KEP."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1915,
+  "output": 769
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

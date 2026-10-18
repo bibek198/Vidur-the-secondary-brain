@@ -1,0 +1,68 @@
+{
+ "kep": "KEP-5832",
+ "input_hash": "91c7d0556b511cd5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5832 decouples the PodGroup API from the Workload API by introducing PodGroup (scheduling.k8s.io/v1alpha2) as a standalone runtime object created from a podGroupTemplate in the referenced Workload, so Workload becomes a static policy template and PodGroup holds per-group policy and status. Status is implementable at alpha.",
+  "rationale": "Embedding PodGroups in the Workload spec mixes long-lived configuration with transient runtime units, and the single Workload object hits the 1.5MB etcd limit and suffers read-modify-write contention on status updates. The readme says the Workload embedding \"creates challenges around immutability, scaling, and lifecycle management.\" A standalone PodGroup gives each scheduling unit its own lifecycle and status, and lets resources such as ResourceClaims be owned by it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Embedded PodGroups (status quo in KEP-4671)",
+    "why_not": "The readme lists cons: \"Lifecycle management is getting complex.\" and \"Scalability is limited by `Workload` object size (1.5MB etcd limit)\"."
+   },
+   {
+    "option": "Support both embedded and standalone PodGroups",
+    "why_not": "The readme lists cons: \"Two top-level object types without clear responsibility split\" and \"Most complex to reason about and maintain\"."
+   },
+   {
+    "option": "Keep a separate PodGroup template object referenced by PodGroup",
+    "why_not": "Reviewers asked to inline the PodGroupTemplate in the PodGroup instead of referencing it (\"we rather want to inline the PodGroupTemplate in the PodGroup\"); PodGroupTemplate is a structure within Workload, not an object."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "`Workload` becomes a static template defining scheduling hierarchy and scheduling policy definition that specifies what workload behavior should be applied"
+   },
+   {
+    "ref": "readme",
+    "quote": "Scalability is limited by `Workload` object size (1.5MB etcd limit)"
+   },
+   {
+    "ref": "readme",
+    "quote": "Updating the status of a single `PodGroup` would require read-modify-write on the central massive Workload object"
+   },
+   {
+    "ref": "rcomment:2764126960",
+    "quote": "we rather want to inline the PodGroupTemplate in the PodGroup instead of referencing it"
+   },
+   {
+    "ref": "readme",
+    "quote": "Two top-level object types without clear responsibility split"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-583",
+    "relation": "replaces",
+    "ref": "Recorded in kep.yaml: KEP-5832 replaces KEP-583 Coscheduling",
+    "quote": "KEP-5832 replaces KEP-583 Coscheduling"
+   },
+   {
+    "kep": "KEP-4671",
+    "relation": "replaced_by",
+    "ref": "Recorded in kep.yaml: KEP-5832 is replaced by KEP-4671 Gang Scheduling",
+    "quote": "KEP-5832 is replaced by KEP-4671 Gang Scheduling"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12699,
+  "output": 1176
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1635",
+ "input_hash": "1d1a9d41fd69e9a6",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1635 requires k8s.io REST APIs to leave beta within nine months (three releases): either reach GA, or introduce a new beta and deprecate the previous one. Otherwise the beta API is deprecated with an announced intent to remove it. The KEP is implemented and at stable stage.",
+  "rationale": "Beta REST APIs are on by default, so users and vendors build on them, and there is little incentive to stabilize them, leaving some \"perma-beta\" APIs (CSRs, Ingresses) in beta for years. The policy sets a fixed deadline so each beta either graduates, gets a new beta version, or is deprecated. The implementation was reported as done in 1.19 and unchanged since, with the automatic removal making enforcement easier.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Shorter six-month window",
+    "why_not": "Reviewers argued it was too aggressive; timothysc said \"6 months seems a bit aggressive\" and tallclair and others favored 9-12 months, so the window was extended to nine months."
+   },
+   {
+    "option": "Limit the number of beta APIs a SIG can have at once",
+    "why_not": "Proposed by johngmyers as an alternative; liggitt replied it is \"complementary to this proposal rather than an alternative to it\", so it was not adopted as a replacement."
+   },
+   {
+    "option": "Also cover alpha features and new fields in GA APIs",
+    "why_not": "Deferred. liggitt said \"lifecycle policies around alpha and field-level changes can be follow-ups\", and derekwaynecarr said alpha \"can be evaluated separate from this enhancement\"."
+   },
+   {
+    "option": "Enforce via tooling before adopting the policy",
+    "why_not": "deads2k said \"We're agreeing to a policy here and will build enforcement as a post-step.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This must happen within nine months (three releases). If it does not, the REST API will be deprecated with an announced intent to remove the API"
+   },
+   {
+    "ref": "rcomment:330619222",
+    "quote": "6 months seems a bit aggressive. Folks come and go on the project and priorities change, 9-12 seems fair."
+   },
+   {
+    "ref": "comment:762979801",
+    "quote": "This was implemented back in 1.19 and has not changed since. The automatic removal made it slightly easier to enforce, the policy is the same."
+   },
+   {
+    "ref": "comment:604583855",
+    "quote": "We're agreeing to a policy here and will build enforcement as a post-step."
+   },
+   {
+    "ref": "comment:605089768",
+    "quote": "I agree lifecycle policies around alpha and field-level changes can be follow-ups."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11890,
+  "output": 1027
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

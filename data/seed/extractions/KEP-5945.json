@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5945",
+ "input_hash": "f22843c92ebcd3a2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5945 adds an optional flag on ResourceSlice (originally two fields, SkipNodePrepare and SkipNodeUnprepare, later reduced to a single boolean, SkipNodeOperations) so that DRA devices needing no node-side prepare/unprepare can skip those kubelet gRPC calls. Status is implementable, stage alpha.",
+  "rationale": "Kubelet currently calls NodePrepareResources and NodeUnprepareResources for every claim, and a driver that is gone can leave pods stuck in Terminating during unprepare. Reviewers wanted the skip set on ResourceSlice rather than DeviceClass, since the driver author knows whether a device needs preparation. The split into two fields was dropped because prepare without unprepare was judged to add complexity without a real need, and a single flag was chosen instead. Reviewers also flagged risks (driver mislabeling, slice updates after allocation copying the flag) that the sources do not show as fully resolved.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Set the skip fields on DeviceClass",
+    "why_not": "johnbelamaric said DeviceClass is for the cluster administrator, who could easily make a mistake with this being at that level; the driver author should decide, so the field moved to the slice level."
+   },
+   {
+    "option": "Two separate fields SkipNodePrepare and SkipNodeUnprepare",
+    "why_not": "Reviewers found the true/false combination fragile (driver missing at teardown); johnbelamaric and pohly preferred one flag because prepare-without-unprepare only makes sense with extra cleanup and adds complexity. The KEP was updated to a single boolean."
+   },
+   {
+    "option": "Put the fields on each Device instead of the ResourceSlice",
+    "why_not": "troychiu said placing them on Device seems repetitive and might inflate the ResourceSlice size; mortent noted devices needing and not needing preparation can be split across multiple slices in the same pool."
+   },
+   {
+    "option": "Copy device attributes into ResourceClaim status so kubelet can write CDI metadata directly",
+    "why_not": "johnbelamaric said this was discussed for KEP-5304 and rejected: copying all attributes to status would be a huge size increase on the object."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3327328158",
+    "quote": "I updated the KEP to introduce fields in `ResourceSlice`. Placing them on `Device` seems repetitive and might inflate the size of `ResourceSlice` instance."
+   },
+   {
+    "ref": "rcomment:3326179573",
+    "quote": "`DeviceClass` is for the cluster administrator, who could easily make a mistake with this being at that level."
+   },
+   {
+    "ref": "rcomment:3416217910",
+    "quote": "Ok. @troychiu how about we go back to just a single boolean then? Maybe `SkipNodeOperations`?"
+   },
+   {
+    "ref": "rcomment:3416112300",
+    "quote": "I prefer to not add functionality and complexity, no matter how small, when there is no real need for it."
+   },
+   {
+    "ref": "comment:4711120067",
+    "quote": "Before lgtm it, I need these review comments to be addressed"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10165,
+  "output": 1196
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

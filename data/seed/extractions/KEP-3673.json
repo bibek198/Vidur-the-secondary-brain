@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3673",
+ "input_hash": "079175ebb14155bb",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3673 adds a node-level kubelet limit, maxParallelImagePulls, capping the number of image pulls in flight at once, with defaulting and validation rules tied to the existing serialize-image-pulls setting. Status is implemented, stage stable.",
+  "rationale": "Kubelet pulled images serially by default, and there was no node-level cap when parallel pulls were enabled. The KEP adds maxParallelImagePulls so operators can allow parallel pulls while bounding node disk and network load. Reviewers noted the limit counts images, not layers, and that runtimes such as containerd and CRI-O limit layers per image separately. Later comments reduced the proposed default from 5 to 2 for parallel pulls, which the sources show as a planned change rather than confirmed final behavior.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Leave parallel image pull limits to the container runtime (e.g., per-registry limits or containerd MaxConcurrentDownloads)",
+    "why_not": "Reviewers raised this (tzneal) but the KEP author replied that limiting on kubelet 'can address the problem without runtime support', and containerd's MaxConcurrentDownloads limits layers per image, not overall pulls."
+   },
+   {
+    "option": "Default parallel pulls to unbounded (no limit) when serialize-image-pulls=false",
+    "why_not": "wojtek-t said 'unbounded' is bad and that switching to MaxImagePulls=2 when unset seemed helpful, though the sources say that change would need a second beta."
+   },
+   {
+    "option": "Change the default from serialized to parallel pulls at GA",
+    "why_not": "wojtek-t argued changing the default behavior affects administrators unaware of image pulls, and said the mitigation is for admins to configure parallel pulls themselves."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "A new integer field `maxParallelImagePulls` will be added to Kubelet Configuration. `maxParallelImagePulls` is the maximum number of inflight image pulls."
+   },
+   {
+    "ref": "rcomment:1090998981",
+    "quote": "Paco is right. This limit will only limit the number of images, not layers. This is because kubelet does not have any visibility over layers."
+   },
+   {
+    "ref": "rcomment:1091014186",
+    "quote": "Limiting the image pulls on kubelet can address the problem without runtime support."
+   },
+   {
+    "ref": "rcomment:2428147736",
+    "quote": "I agree that \"unbounded\" is bad and switching to MaxImagePulls=2 in such case (if someone didn't set it explicitly) seems helpful."
+   },
+   {
+    "ref": "comment:3384679431",
+    "quote": "So disabling serial pulls and making defaul parallel pulls to 2 sounds good."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12145,
+  "output": 1063
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

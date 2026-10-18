@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4205",
+ "input_hash": "97e4f0200ee07e79",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4205 proposes having the kubelet read cgroupv2 Pressure Stall Information (CPU, memory, IO) exposed via cAdvisor and runc, and expose pod-level PSI in the Summary API. The KEP is recorded as implemented and stable.",
+  "rationale": "Node pressure conditions today are capacity-based (memory and disk) and there is no CPU or IO pressure condition, so PSI is proposed as an earlier signal of resource contention. The design says it \"makes it possible to read PSI metric without installing additional dependencies\". Discussion centered on phased rollout, per-slice reporting, and whether PSI should be gated separately; the maintainers settled on default-on without a separate feature gate for the stats reporting. The runc dependency was resolved by runc 1.2.0, which the source says is no longer a concern.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Two feature gates, one for reporting PSI in status and one for turning it into node conditions",
+    "why_not": "Suggested by tzneal; dropped because ndixita argued stats reporting wouldn't impact anything, and tzneal agreed: \"That works for me as well and eliminates the need for a separate feature gate.\""
+   },
+   {
+    "option": "Add a kubelet config knob to disable PSI metrics to reduce metric cost",
+    "why_not": "Reviewers said the cost can be handled by Prometheus metric filtering and future CRI stats granularity; haircommander said \"if they don't want the metrics, don't enable PSI.\""
+   },
+   {
+    "option": "Ship the feature in an earlier release before the runc dependency landed",
+    "why_not": "Deferred in June 2024 because \"the runc dependency is not in yet\"; the KEP was later pushed to a later release."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This enhancement now makes it possible to read PSI metric without installing additional dependencies"
+   },
+   {
+    "ref": "rcomment:1340674909",
+    "quote": "Ah, I didn't realize you were planning on having them on by default without a feature gate. That works for me as well and eliminates the need for a separate feature gate."
+   },
+   {
+    "ref": "comment:2161166632",
+    "quote": "Yes, since the runc dependency is not in yet. Please defer this KEP to next release."
+   },
+   {
+    "ref": "review:3775078133",
+    "quote": "If customers want to enable PSI, they get these metrics. if they don't want the metrics, don't enable PSI."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12159,
+  "output": 961
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

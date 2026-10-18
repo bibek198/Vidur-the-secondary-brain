@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-962",
+ "input_hash": "4e1e2042e0f08670",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-962 proposed ExecutionHook, a namespaced API plus an ExecutionHookController, to trigger user commands in pods/containers on demand (e.g., quiesce/unquiesce around volume snapshots). Its status is implementable, stage alpha.",
+  "rationale": "Volume snapshots do not guarantee application consistency, so users must quiesce applications manually before and after a snapshot. The existing container lifecycle hooks run only at container start or termination, so the KEP proposes hooks triggered on demand, with a HookAction object to share command definitions. The controller runs the hook and updates its status, and garbage-collects hook objects per a policy.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use annotations to define the execution hook when it is not in the container struct",
+    "why_not": "Listed only as an alternative in the readme; the sources do not give a further reason it was not chosen."
+   },
+   {
+    "option": "Alternative designs discussed in design meetings and spec reviews",
+    "why_not": "Comments say the project needed a redesign after review comments, and that the team planned a different approach in issue 1977, but the sources do not detail the alternatives' tradeoffs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The lifecycle hook is called immediately after a container is created or immediately before a container is terminated."
+   },
+   {
+    "ref": "readme",
+    "quote": "The proposed execution hook is not tied to the start or termination time of the container. It can be triggered on demand by callers (users or controllers)"
+   },
+   {
+    "ref": "comment:691732143",
+    "quote": "The plan is to go with a different approach as described here: https://github.com/kubernetes/enhancements/issues/1977. If that goes through, we won't need this one any more."
+   },
+   {
+    "ref": "comment:620932711",
+    "quote": "We actually need to do some re-design on this. So we won't track this for 1.19 yet."
+   },
+   {
+    "ref": "comment:574536578",
+    "quote": "The KEP is merged (https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/20190120-execution-hook-design.md) but implementation is WIP."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8441,
+  "output": 850
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

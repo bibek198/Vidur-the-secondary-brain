@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-3805",
+ "input_hash": "c8fd7c6aafa25223",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3805 proposes making server-side apply the default for kubectl apply by adding an `auto` value to `--server-side` that picks SSA or CSA per object. The status is implementable at alpha stage, with the auto value gated behind an environment variable and the default flip deferred to later releases.",
+  "rationale": "Server-Side Apply is GA in the API but kubectl still client-side applies by default, so users miss its benefits and maintainers carry SMP/client-side code. Flipping the default would change behavior for existing scripts and workflows, so the team chose an opt-in alpha `auto` mode first. Reviewers (johnbelamaric, PRR) required the `auto` value to be gated by an env var so users must acknowledge it is immature.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Status quo: keep client-side apply as default and offer --server-side=true opt-in",
+    "why_not": "The KEP says this is still confusing and leaves users missing out on server-side apply features."
+   },
+   {
+    "option": "Make --server-side=auto keep client-side by default but server-side previously SSA'd objects",
+    "why_not": "The KEP states this baby step does not get the project close to having server-side apply enabled by default."
+   },
+   {
+    "option": "Make --server-side=auto the default immediately",
+    "why_not": "The KEP says this does not get closer to the goal and does not test the migration; reviewers also raised that changing default behavior conflicts with alpha."
+   },
+   {
+    "option": "Ungated auto flag with no env var",
+    "why_not": "johnbelamaric said he could not approve without the env var gate, since people would use it without realizing its immaturity; lavalamp argued against this gating, but the gate was kept per the PRR discussion."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The feature, in its alpha phase, consists of adding a new `auto` value to the `--server-side` flag for `kubectl apply`"
+   },
+   {
+    "ref": "readme",
+    "quote": "For the alpha phase, the auto value will only be visible and usable if the `KUBECTL_AUTO_SERVER_SIDE` is set."
+   },
+   {
+    "ref": "comment:1423430386",
+    "quote": "we tentatively want to keep one small piece in the proposal for 1.27: the `--server-side=auto` feature, as an alpha behind an env var."
+   },
+   {
+    "ref": "comment:1424838855",
+    "quote": "I can't approve this without the `auto` value being gated by an ENV var. Otherwise people will use it without realizing its immaturity."
+   },
+   {
+    "ref": "comment:1469051669",
+    "quote": "the implementation PRs associated with this enhancement have not merged by code-freeze so this enhancement is getting removed from the release."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10010,
+  "output": 1028
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

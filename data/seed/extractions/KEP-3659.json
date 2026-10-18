@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-3659",
+ "input_hash": "0766c134a86eb7a1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3659 proposes a second, independent alpha of kubectl apply --prune based on a low-level \"ApplySet\" grouping specification (labels and annotations on a parent object), replacing the existing alpha prune implementation. Its status is implementable at stage alpha, from 2023-02-09.",
+  "rationale": "The current --prune flag has design flaws: it cannot reliably identify previously applied objects and is slow and surprising. The KEP stores the set membership metadata on a parent object so pruning can be driven by a stable set rather than by re-deriving it from the manifests. Reviewers pushed back on scope and on storing deletion state in cluster objects, but the KEP's stated primary goal is a correct and efficient prune, with ecosystem interoperability as secondary.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Minimal fix to kubectl apply --prune, without a plumbing layer",
+    "why_not": "Reviewer seans3 argued for minimizing scope to the minimum a user needs; the KEP instead kept the plumbing/porcelain specification, and the discussion records justinsb saying ecosystem goals are secondary to correct prune."
+   },
+   {
+    "option": "Local prune-list kept outside the cluster",
+    "why_not": "Raised by liggitt; justinsb replied that users have not shown interest in that model and would need extra tooling to track the list, so cluster-stored state was kept."
+   },
+   {
+    "option": "Full GKNN listing with UID (no retrieval of previously applied objects)",
+    "why_not": "seans3 noted this would perform better than the KEP approach, but the sources do not say it was adopted or rejected."
+   },
+   {
+    "option": "Server-side resource for the ApplySet",
+    "why_not": "johnbelamaric suggested making it not client-side only; soltysh indicated the SIG was preparing to create a server-side resource, but the sources do not record a decision to implement one in this KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The new implementation is based on a low-level concept called \"ApplySet\" that other, higher-level ecosystem tooling can build on top of"
+   },
+   {
+    "ref": "readme",
+    "quote": "MUST use a pruning set identification algorithm that remains accurate regardless of what has changed between the previous and current sets"
+   },
+   {
+    "ref": "rcomment:1089646398",
+    "quote": "Agreed, that is the focus. The ecosystem goals are important to the ecosystem, based on the kubecon feedback, but they are indeed secondary to a correct and efficient prune."
+   },
+   {
+    "ref": "rcomment:1090892440",
+    "quote": "The applyset object is not expected to be stored in the manifests. For kubectl, it is specified via a flag"
+   },
+   {
+    "ref": "review:1288021924",
+    "quote": "I think a lot of the complexity comes in because we're trying to avoid creating a new server side resource."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12073,
+  "output": 1090
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

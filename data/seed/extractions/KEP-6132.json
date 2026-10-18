@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-6132",
+ "input_hash": "e5e592a162d5319d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6132 proposes a PreQueueingHint extension point in the kube-scheduler: a plugin can pre-filter which unschedulable pods a cluster event could make schedulable, so the scheduler does not run QueueingHints for every unschedulable pod. The KEP is currently implementable at stage alpha.",
+  "rationale": "The motivating problem is a thundering herd of pods (e.g., thousands of DRA pods created with ResourceClaimTemplates at once) that all get re-evaluated on each claim event. A reviewer's scheduler_perf run showed throughput rising from about 297 to about 711 pods/s with the feature on, which the reviewer called worthwhile. Review raised open concerns: a second pod referencing a generated claim, PodGroup membership lookup, and whether the async ResourceClaim queue should be separate.",
+  "outcome_reason": "The sources give the status as implementable, stage alpha, but also show the KEP was later marked tracked/no and had a release exception filed on 2026-07-23 with the release team evaluating it. The sources do not state the final outcome of that exception request.",
+  "alternatives": [
+   {
+    "option": "Periodic sweep of the unschedulable queue to rescue missed pods",
+    "why_not": "Reviewer noted it causes an unpredictable, potentially long delay for pods such as a second pod sharing a claim, and questioned whether the sweep is meant to go away."
+   },
+   {
+    "option": "Maintain a pod informer index mapping ResourceClaims to referencing pods",
+    "why_not": "Described as more expensive, but the author adopted an informer-based approach in the KEP update on 2026-06-09 after the reviewer's patch showed it working."
+   },
+   {
+    "option": "Ship the asynchronous ResourceClaim event queue together with PreQueueingHint",
+    "why_not": "Benchmarking showed no throughput benefit and about 18% less CPU for scheduling; the author said they were open to dropping it, and reviewers asked for it to have a separate feature gate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3378672152",
+    "quote": "So definitely a worthwhile enhancement."
+   },
+   {
+    "ref": "rcomment:3408664449",
+    "quote": "No throughput benefit from the async queue. Profiling shows ~18% reduction in CPU available for scheduling due to worker goroutine overhead."
+   },
+   {
+    "ref": "rcomment:3401266279",
+    "quote": "I think both should have separate feature gates. Then one can be turned off without affecting the other. A single KEP seems sufficient."
+   },
+   {
+    "ref": "comment:5058187712",
+    "quote": "This KEP has filed an exception, the release team is evaluating and will be added back to the milestone after a consensus."
+   },
+   {
+    "ref": "rcomment:3339228970",
+    "quote": "We can't break such a usage and cause the second pod to not get scheduled."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13016,
+  "output": 1086
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

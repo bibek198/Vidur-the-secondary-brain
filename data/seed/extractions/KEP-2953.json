@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-2953",
+ "input_hash": "add43e6781d11363",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2953 proposes converging Kustomize's alpha extension mechanisms into a single KRM Functions-driven plugin model with a Catalog trust model and Composition, deprecating legacy plugin styles. Its status is provisional at alpha, recorded as replacing KEP-993.",
+  "rationale": "Kustomize had two alpha plugin categories, which the readme says \"cause confusion and frustration\" and add maintenance complexity. The proposal deprecates legacy plugins in favour of KRM Functions style, citing consistency with Kustomize's philosophy and the kpt-shared open standard, and makes Catalog and Composition prerequisites for plugin GA. The sources do not record a final acceptance decision; the status is provisional and alpha.",
+  "outcome_reason": "Status is provisional at alpha, so no final outcome is recorded. The sources do not say why it remains provisional beyond the later discussion about timelines and the 2025 comment that graduation is being discussed in another KEP.",
+  "alternatives": [
+   {
+    "option": "Graduate the legacy (Go/exec-style) plugins instead of the KRM Function style",
+    "why_not": "Readme: \"TL;DR gaps remain that would require a lot of investment to fill, and that investment would be in a direction that is misaligned with other community efforts in the configuration plugin space.\""
+   },
+   {
+    "option": "Graduate all existing plugin alphas as-is",
+    "why_not": "Readme: \"It is too complicated to use, maintain and document so many different approaches to plugins.\""
+   },
+   {
+    "option": "Graduate KRM Function plugins without Catalog or Composition",
+    "why_not": "Readme describes this as \"a less usable and useful plugin system than the one proposed, but better than nothing\"; the proposal instead implements Catalog and Composition as prerequisites for GA."
+   },
+   {
+    "option": "Allow ad-hoc uncatalogued local plugins via separate flags",
+    "why_not": "Discussion: the proposal \"uses Catalog as the sole trust model\" and the author felt \"one consistent workflow\" was simpler for users."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "These inconsistent enduring alphas cause [confusion and frustration](https://github.com/kubernetes-sigs/kustomize/issues/2721) for users and are a source of complexity for maintainers."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes to deprecate the legacy style plugins in favour of the KRM Functions style, with some refinements."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes implementing both the [Composition KEP] and the [Catalog KEP] as a prerequisite for plugin GA in Kustomize."
+   },
+   {
+    "ref": "rcomment:713350190",
+    "quote": "The reason for not allowing that is that this proposal uses Catalog as the sole trust model."
+   },
+   {
+    "ref": "comment:1232021931",
+    "quote": "We do know that we will remove them eventually, but there's no specific target yet."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-993",
+    "relation": "replaces",
+    "ref": "kep.yaml (recorded metadata)",
+    "quote": "KEP-2953 replaces KEP-993 Kustomize Generators and Transformers"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12307,
+  "output": 1218
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

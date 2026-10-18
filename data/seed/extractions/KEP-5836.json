@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5836",
+ "input_hash": "19b8c97ae16780c5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5836 proposes letting the scheduler preempt lower-priority pods so a running pod's in-place resize can be actuated when the node lacks room. The KEP is at status implementable, stage alpha, owned by sig-scheduling.",
+  "rationale": "A resize that cannot fit on its node is left in a Deferred state, and the scheduler needs a way to make room for it. The discussion reuses the existing scheduling machinery: a deferred resize is treated as a FitError, flagged ResizeUnschedulable, and moved to the unschedulable queue until victims are removed. Reviewers settled on counting the resizing pod via node allocated resources, and on keeping max(desired, allocated, actual) for newly scheduled pods to avoid a kubelet race.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add the pod snapshot to the scheduling queue directly",
+    "why_not": "The discussion moved to storing a pointer to the pod in the cache so the pod is not in two places, with a snapshot taken only before binding or preemption."
+   },
+   {
+    "option": "Persist the nominated node name (NNN) in the API for deferred pods",
+    "why_not": "Reviewers noted NNN is not used for existing pods and would change its meaning; the author said they were open to an API field if API review recommends it, and API review was still planned."
+   },
+   {
+    "option": "Use a dedicated ResizePreemptionDisabled condition",
+    "why_not": "sanposhiho suggested reusing ResizeUnschedulable with a different reason so VPA or autoscalers can key off one condition; the thread does not record a final choice."
+   },
+   {
+    "option": "Take the max of existing and new resources when computing preemption freed amounts",
+    "why_not": "tallclair warned that using max could free too little when a victim has a deferred resize; natasha41575 later argued the extra check is redundant but kept it defensively."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3382572451",
+    "quote": "I updated the KEP to clarify that the NodeResourcesFit plugin should reject it and mark it as `UnschedulableAndUnresolvable` with an appropriate message."
+   },
+   {
+    "ref": "rcomment:3382572451",
+    "quote": "There is no need to reevaluate the pod periodically. If kubelet is able to actuate the resize, the pod will lose its `Deferred` condition"
+   },
+   {
+    "ref": "rcomment:3382162797",
+    "quote": "For newly scheduled pods, we need to continue using max(desired, allocated, actual). It is by design (not a bug)."
+   },
+   {
+    "ref": "rcomment:3269654047",
+    "quote": "If node allocated resources is over 100% (which will always be the case for Deferred resizes), then we proceed with preemption. I've updated the kep accordingly."
+   },
+   {
+    "ref": "rcomment:3126775686",
+    "quote": "it sets the ResizeUnschedulable condition - it gets moved to the Unschedulable queue - when the preemption victim is removed, all unschedulable pods get moved back to the active (or backoff) queue."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8668,
+  "output": 1146
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

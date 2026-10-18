@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-3962",
+ "input_hash": "116d0ca6738cfe5f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3962 proposes mutating admission policies declared in CEL, as an alternative to mutating admission webhooks, building on the validating admission policy work in KEP-3488. The KEP is recorded as implemented and at stable stage, with implementable status from 2024-02-08 and implemented status from 2026-05-21.",
+  "rationale": "Simple mutations such as setting a label, setting a field, or adding a sidecar container can be expressed in a few lines of CEL, avoiding the complexity of a webhook. CEL mutations let the apiserver introspect which fields are read and written, and in-process mutation is fast enough to re-run policies. The design combines CEL object instantiation with JSON Patch and Server Side Apply merge algorithms.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Typed object initializer similar to Go (e.g. core.v1.pod) in CEL",
+    "why_not": "The KEP notes this will not work for multiple resources matched."
+   },
+   {
+    "option": "Use a plain map directly in CEL",
+    "why_not": "The KEP notes this makes type checking hard."
+   },
+   {
+    "option": "Plain YAML-style patch syntax without type declarations",
+    "why_not": "Commenters judged it would be equivalent to a new language in itself if conditionals and similar features were added; the KEP does not adopt it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This enhancement adds mutating admission policies, declared using CEL expressions, as an alternative to mutating admission webhooks."
+   },
+   {
+    "ref": "readme",
+    "quote": "A large proportion of mutating admission needs are for relatively simple operations such as setting a label, setting a field, or adding a sidecar container to a pod."
+   },
+   {
+    "ref": "comment:1934678511",
+    "quote": "With updates for different mutation type options as alpha, protection for atomic lists, and re-using the selection and binding strategy from validating admission policy, I'm comfortable with proceeding on this KEP."
+   },
+   {
+    "ref": "comment:1882318967",
+    "quote": "A replacement KEP for this is in the works by @cici37. Closing this one."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11592,
+  "output": 841
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

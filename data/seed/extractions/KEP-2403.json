@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2403",
+ "input_hash": "99512a5ceb7c6af7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2403 extends the kubelet pod resources API so that third-party node monitoring agents can learn the allocatable compute resources on a node. It reached implementable status and was graduated to stable (GA) in Kubernetes 1.28.",
+  "rationale": "Node monitoring agents need allocatable compute resources to correctly compute node utilization, and the pod resources endpoint alone did not expose this. The design adds the capability to the existing endpoint rather than a new endpoint (the Non-Goals rule out a new endpoint like kubelet /pods). Reviewers required a new feature gate because the existing pod resources gate was already GA, and the gate's behavior when disabled and per-endpoint error metrics were requested before alpha. The final status line says the feature went GA in 1.28.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a new endpoint (like kubelet /pods)",
+    "why_not": "Excluded by the design's Non-Goals: \"Add new endpoint (like kubelet `/pods`)\"."
+   },
+   {
+    "option": "Reuse the existing pod resources feature gate, which is already GA",
+    "why_not": "Reviewers said the gate was already GA and recommended a new gate: \"I would think this should get a new feature gate.\" The gate was later noted as one that can be reused only if features go through stages together."
+   },
+   {
+    "option": "Use a map<string, Quantity> field in the gRPC API",
+    "why_not": "Raised as a concern about kube API conventions; one reviewer noted resources should use maps to match the core API, and the question was left to API review. The sources do not record a final decision beyond that."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document presents an addition to the kubelet pod resources endpoint (pod resources API) which allows third party consumers to learn about the compute device allocation"
+   },
+   {
+    "ref": "readme",
+    "quote": "Enable node monitoring agents to know the allocatable compute resources on a node, thus properly calculate the node compute resource utilization."
+   },
+   {
+    "ref": "comment:1695083628",
+    "quote": "all changes merged, GA in 1.28.0. The release 1.28.1 is out, so we can close this issue"
+   },
+   {
+    "ref": "rcomment:569693122",
+    "quote": "I know you put this on the sig-arch agenda, but the next meeting is post enhancements freeze. So, based on our slack discussion I would think this should get a new feature gate."
+   },
+   {
+    "ref": "rcomment:571275482",
+    "quote": "clarify the new APIs will error if feature gate is not enabled."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13495,
+  "output": 986
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

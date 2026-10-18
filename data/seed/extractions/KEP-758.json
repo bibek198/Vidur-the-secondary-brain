@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-758",
+ "input_hash": "2cbef13e1fa4e106",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-758 proposed moving the Ingress resource from extensions.v1beta1 to networking.v1beta1 and graduating the Ingress API, with bug fixes, to GA. The KEP's status is implemented at stable stage.",
+  "rationale": "The extensions API group is deprecated and Ingress was the last non-deprecated type in it, and a group migration takes about three minor version cycles. Ingress had been beta for a long time and had de facto GA status through wide adoption, so the design copies the API into a permanent group and declares it a V1 rather than deleting it or waiting for a replacement API.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Delete the current resource from extensions.v1beta1 in anticipation of an improved API",
+    "why_not": "The readme says this option does not seem realistic in a short-term time frame, since a new API would need design and alpha/beta/ga phases, and there are enough users that the existing API cannot be deleted outright."
+   },
+   {
+    "option": "Abandon Ingress without a full replacement",
+    "why_not": "The readme says abandoning it without a full replacement is not a viable approach, and that it is clearly a useful API capturing a non-trivial set of use cases."
+   },
+   {
+    "option": "Keep the API as-is, or with minor changes, in beta under extensions.v1beta1",
+    "why_not": "The readme says the migration should be started sooner rather than later so the extensions group can be cleaned up, and that the change prepares the API for GA; the readme's proposed path is to copy the API into networking.v1beta1 with conversion of existing data."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The `extensions` API group is considered deprecated. Ingress is the last non-deprecated API in that group."
+   },
+   {
+    "ref": "readme",
+    "quote": "Such an API group migration takes three minor version cycles (~9 months) to ensure compatibility."
+   },
+   {
+    "ref": "readme",
+    "quote": "Option 1 does not seem realistic in a short-term time frame (a new API will need to be taken through design, alpha/beta/ga phases)."
+   },
+   {
+    "ref": "readme",
+    "quote": "At this point, it seems more prudent to declare the current API as something the community will support as a V1, codifying its status"
+   },
+   {
+    "ref": "readme",
+    "quote": "Move Ingress to a permanent API group. (status: implemented)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2591,
+  "output": 914
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

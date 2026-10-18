@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-606",
+ "input_hash": "bc53bff2b49bf2a2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-606 added a kubelet endpoint (the pod resources API) that lets third-party device monitoring agents inspect the mapping between devices and pods. Its status is implementable, stage stable, and the sources show the GA work was completed in the 1.27-1.28 cycles.",
+  "rationale": "External device monitoring agents need to know which devices containers use so metrics can be tied to pods, and the design moves device-specific knowledge out of the kubelet. The KEP's goals are to deprecate device-specific kubelet code and to enable external monitoring agents. The GA work slipped from 1.27 to 1.28 after implementation PRs missed code freeze, and the final issue closure says all work is done.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Expose device-to-pod mapping through cluster-wide components or the API server",
+    "why_not": "The design says it is node-local only: \"Enable cluster components to consume the API. The API is node-local only.\" listed as a non-goal."
+   },
+   {
+    "option": "Keep device-specific accelerator metrics in the kubelet",
+    "why_not": "The goals say to \"Deprecate and remove current device-specific knowledge from the kubelet, such as accelerator metrics\"."
+   },
+   {
+    "option": "Re-use TopologyInfo from device plugin APIs for NUMA data (raised in review)",
+    "why_not": "This was a suggestion on the follow-up PR #1884 and was not a decision in KEP-606. The sources do not say it was adopted; the commenter said they were fine with either approach."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document presents the kubelet endpoint which allows third party consumers to inspect the mapping between devices and pods."
+   },
+   {
+    "ref": "readme",
+    "quote": "Enable cluster components to consume the API. The API is node-local only."
+   },
+   {
+    "ref": "rcomment:1213899915",
+    "quote": "The work is GA in 1.28 . We already merged the change because all the actual work happened in the 1.27 cycle."
+   },
+   {
+    "ref": "comment:1469391252",
+    "quote": "Unfortunately the implementation PRs associated with this enhancement have not merged by code-freeze so this enhancement is getting removed from the release."
+   },
+   {
+    "ref": "comment:1695085074",
+    "quote": "mirroring the status reported in https://github.com/kubernetes/enhancements/issues/3743, all work here is done, so I think we can close this issue."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12018,
+  "output": 946
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

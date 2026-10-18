@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1487",
+ "input_hash": "5b12a0c7b07c6d13",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1487 is the vendor-specific (AWS) KEP for in-tree storage plugin to CSI migration. It inherits its content from parent KEP-625 (CSI Migration) and adds two feature gates. Its status is implemented, stage stable.",
+  "rationale": "The AWS EBS in-tree plugin needed migration to CSI, and the parent CSI Migration KEP defines the approach. This KEP only adds two vendor-specific feature gates and points to the parent for everything else. The discussion shows the feature went through beta and was later moved toward GA, with the GA plan changing from 1.24 to 1.25. The sources do not explain the AWS-specific reasons for the final stable state beyond that timeline.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep GA in 1.24 as originally planned",
+    "why_not": "The sources say the owner changed the target: \"Intend now to go GA in 1.25 instead of 1.24\"."
+   },
+   {
+    "option": "Skip GA and remain beta, as in 1.19 and 1.20",
+    "why_not": "The sources record that the feature later reached stable; the GA plan was reset and not dropped, and the 1.23 change moved the default to on."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This inherits all the contents from its parent KEP. It will introduce two new feature gates to be used as as described in its parent KEP."
+   },
+   {
+    "ref": "comment:1030267877",
+    "quote": "Intend now to go GA in 1.25 instead of 1.24: https://github.com/kubernetes/enhancements/pull/3213. THX"
+   },
+   {
+    "ref": "comment:969261635",
+    "quote": "This enhancement does not graduate phases for 1.23, it remains in beta. The default behavior changes from off to on in 1.23"
+   },
+   {
+    "ref": "comment:1434904339",
+    "quote": "This is just about `CSIMigrationAWS` and not about the whole cloud provider code removal? OK, that's already done."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6823,
+  "output": 804
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

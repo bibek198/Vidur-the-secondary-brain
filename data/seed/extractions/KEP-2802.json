@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-2802",
+ "input_hash": "90485c0984167d86",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2802 proposed a new optional pod spec field, spec.os.name (linux or windows), so API server admission plugins such as PodSecurity can identify a pod's target OS authoritatively. The KEP reached implemented status and stable stage.",
+  "rationale": "Admission plugins could not reliably tell which OS a pod targets, so they could apply unnecessary security constraints or none at all. Reviewers debated using the kubernetes.io/os nodeSelector and runtimeclasses instead, but they were judged side-effects of scheduling and not a definitive source of truth. After a meeting, the group decided to add a dedicated pod spec field so API validation and defaulting can use it.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use the kubernetes.io/os nodeSelector as the OS signal",
+    "why_not": "The review noted that the nodeSelector \"can be viewed as side-effect of scheduling\", so the group decided not to use it."
+   },
+   {
+    "option": "Use runtimeclasses to identify Windows pods",
+    "why_not": "Runtimeclasses translate to nodeSelectors and tolerations, and the reviewers said they wanted to avoid tying end-user OS identification to runtime class (for example, a runtime class may not exist on older clusters)."
+   },
+   {
+    "option": "Dedicated requiredOS field named differently or a separate Linux/Windows section",
+    "why_not": "The review favored a dedicated field in the pod spec with a struct for future expansion, so this shape was chosen rather than these alternatives; no source gives a stronger reason against the others."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to add a new field to the pod spec called os to identify the OS of the containers specified in the pod."
+   },
+   {
+    "ref": "review:736205070",
+    "quote": "We've decided not to go with nodeSelector because even though it expresses the same via `kubernetes.io/os` label, it can be viewed as side-effect of scheduling."
+   },
+   {
+    "ref": "readme",
+    "quote": "As of now, PodSecurityAdmission plugin is the only admission plugin can leverage this field on the pod spec."
+   },
+   {
+    "ref": "comment:900631605",
+    "quote": "a dedicated field would presumably indicate the OS of the containers in the pod."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10267,
+  "output": 896
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

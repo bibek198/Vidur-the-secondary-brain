@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5598",
+ "input_hash": "4a0fee6c8cefab78",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5598 proposes opportunistic batching in the kube-scheduler: a pod scheduling signature plus a batching mechanism that reuses one pod's scheduling output (a cached sorted node list) as node hints for subsequent pods with matching signatures. Status is implementable, stage beta.",
+  "rationale": "Scheduling many compatible pods is O(pods x nodes), which is slow for large jobs on large clusters. The KEP reuses filter and score results across pods that share a signature, and is limited to workloads where pods are one-pod-per-node. Review discussion moved away from a cross-cycle cache toward batch processing within a single cycle, with the signature kept as the way to identify batchable pods.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep a cross-cycle cache of the sorted node list (the original proposal)",
+    "why_not": "Reviewers objected to the cache as an object and noted gang scheduling would deprecate it; bwsalmon: \"we will remove the 'cache' and instead just process a set of pods in the same 'cycle' using the results from a single pod.\""
+   },
+   {
+    "option": "Apply batching to all workloads, not only 1-pod-per-node",
+    "why_not": "Rescoring a single node is hard because normalization is node-set based; bwsalmon: \"This is critical because there does not appear to be an easy way to rescore a specific node.\" Restriction kept for the initial version."
+   },
+   {
+    "option": "Rely only on the future Workload API / gang scheduling for batching",
+    "why_not": "Discussion treated this as orthogonal; dom4ha argued the signature and reuse mechanisms remain useful as a foundation for gang scheduling, and the KEP is a performance improvement without dependency on the Workload API."
+   },
+   {
+    "option": "Include priority/DefaultPreemption in the signature",
+    "why_not": "bwsalmon: the cache is taken before PostFilter, so \"regardless of the priority, we would (correctly) get the same results from the cache.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Opportunistic batching: Transparent inclusion of the batching mechanism in the scheduler to improve the performance of targeted workloads that could benefit from it."
+   },
+   {
+    "ref": "rcomment:2428364524",
+    "quote": "(1) We will remove the \"cache\" and instead just process a set of pods in the same \"cycle\" using the results from a single pod."
+   },
+   {
+    "ref": "rcomment:2428364524",
+    "quote": "(2) We will restrict the initial use of batching for workloads that we can confirm are 1-pod-per-node."
+   },
+   {
+    "ref": "rcomment:2434568343",
+    "quote": "If the node remains feasible after adding the pod, for this KEP we will throw away the batch information and \"start fresh\" for the next pod."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals * Applying this optimization to all pods. Batching is transparent but limited to signable workloads in this KEP."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9618,
+  "output": 1115
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5234",
+ "input_hash": "9861cc8b46c3f769",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5234 adds a Mixins field to ResourceSliceSpec so DRA drivers can define reusable attributes, capacities, counters, and counter consumption patterns once and reference them from devices and counter sets via Includes. Status is implementable, stage alpha.",
+  "rationale": "Devices in a ResourceSlice often share much metadata, and large per-device metadata limits how many devices fit under the object size limit; DRA also does not allow counters to be shared across slices, which caps partitionable devices. Mixins split shared metadata out of individual devices and counter sets to reduce duplication and object size. The discussion raised concerns about flattening cost, scheduler memory, CEL cost limits, and the need to set limits on total attributes and counters across the slice.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Flat list of counters with a prefix for grouping instead of counter sets",
+    "why_not": "Discussion noted that nesting counters in sets was chosen because it enables referencing a mixin with counters from different counter sets; the flat alternative was not chosen for that reason."
+   },
+   {
+    "option": "Make Includes a list of plain strings instead of MixinRef types",
+    "why_not": "Raised by mortent as a more compact option, but no outcome is recorded in the sources; it was an open suggestion."
+   },
+   {
+    "option": "Name the concept templates instead of mixins",
+    "why_not": "Raised by dom4ha as a clearer naming option; the sources do not record a decision on it."
+   },
+   {
+    "option": "Drop devices with mixin references when the feature is disabled in the scheduler, rather than converting them",
+    "why_not": "Not a rejected option; pohly preferred this approach, and mortent agreed it was the better of the two, so it is a preferred direction rather than a rejected one."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "DRA drivers can define metadata in mixins separately from specific devices and include them in a device by reference. This reduces the duplication in ResourceSlices"
+   },
+   {
+    "ref": "readme",
+    "quote": "The mixins are applied in the order listed, meaning that later mixins will overwrite earlier ones in case of conflicts."
+   },
+   {
+    "ref": "rcomment:2053520221",
+    "quote": "Nesting counters inside sets was chosen because it enables referencing a mixin (link to other KEP here) with a list of counters in different counter sets."
+   },
+   {
+    "ref": "comment:2828706170",
+    "quote": "We should set the limits based on the total number of attributes, capacity, and counters across the ResourceSlice, rather than based on whether they are defined in a Device or a Mixin."
+   },
+   {
+    "ref": "rcomment:2062716034",
+    "quote": "resolving the mixins and validate the number of attributes and capacities during validation seems reasonable. We are already doing most of the work to accommodate this anyway."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10896,
+  "output": 1076
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

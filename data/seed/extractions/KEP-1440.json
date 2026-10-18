@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1440",
+ "input_hash": "33251a86a75cc68e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1440 proposes a new independent `kubectl events` sub-command, separate from `kubectl get events`, to add features such as extended --watch, default sorting, and filtering. The KEP is marked implementable at stable stage.",
+  "rationale": "The current `kubectl get events` cannot be extended without affecting `kubectl get` (e.g., --watch), since events depend on `get`. The KEP therefore proposes an independent command, with the stated non-goal that it not depend on `kubectl get`. Discussion shows the command was built alpha-first and deliberately kept without explicit docs; the project later moved toward stable and tracked it for v1.28.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Extend `kubectl get events` with the new features directly",
+    "why_not": "The readme says that any modification to --watch for events would also change --watch for kubectl get, because events depend on kubectl get; the KEP avoids this coupling."
+   },
+   {
+    "option": "Use `kubectl describe` for event information",
+    "why_not": "The readme lists `kubectl describe` as an existing alternative with limitations (described in 'Limitations of the Existing Design'), but does not say why it was rejected beyond those limitations."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This new `kubectl events` command will be independent of `kubectl get`. This can be extended to address the user requirements that cannot be achieved if the command is dependent of `get`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Any modification to `--watch` functionality for `events` will also change the `--watch` for `kubectl get` since the `events` is dependent of `kubectl get`"
+   },
+   {
+    "ref": "comment:954139565",
+    "quote": "Let's keep it as is, without changing at least until we move to beta. We can promote and we'll definitely do so, but until it's alpha a lot can break/not fully work and most importantly change"
+   },
+   {
+    "ref": "comment:1641283658",
+    "quote": "this enhancement is now marked as `tracked` for the Code-Freeze for v1.28!"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12698,
+  "output": 822
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-600",
+ "input_hash": "8064f03145379395",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-600 proposed letting the advanced audit configuration be changed dynamically through an API and objects after cluster provisioning, without restarting kube-apiserver. The KEP was withdrawn on 2021-05-05 after being marked implementable from 2020-12-22.",
+  "rationale": "The motivation was that advanced audit configuration is hard to get right and needs an apiserver restart on each change, which blocks audit add-on tools. The sources do not explain the 2021-05-05 withdrawal itself. The discussion shows the feature stalled over review bandwidth, a policy redesign, and an unclear roadmap, and that sig-auth was still weighing two paths in April 2020.",
+  "outcome_reason": "The sources do not state why the KEP was withdrawn on 2021-05-05. The latest discussion (2020-04-29) says sig-auth was still discussing the feature's future with no changes planned for v1.19. The withdrawal rationale is not recorded in the provided material.",
+  "alternatives": [
+   {
+    "option": "Dynamic audit proxy webhook design",
+    "why_not": "Listed by sig-auth on 2020-04-27 as one of two paths to discuss; the sources do not say which path was chosen or why it was not pursued."
+   },
+   {
+    "option": "Dynamic webhook sinks with static policy",
+    "why_not": "Listed by sig-auth on 2020-04-27 as the second path to discuss; the sources do not record a decision on it."
+   },
+   {
+    "option": "Original approach: take static audit definitions and expose them through the API",
+    "why_not": "Per pbarker on 2018-12-16, the API review led to rethinking policy handling in favor of a more composable approach (kubernetes/kubernetes PR 71230), so the original approach was revisited."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We want to allow the advanced auditing features to be dynamically configured. Following in the same vein as Dynamic Admission Control"
+   },
+   {
+    "ref": "comment:447648302",
+    "quote": "In the API review https://github.com/kubernetes/kubernetes/pull/67547, we decided it would be a good time to rethink how policy was handled."
+   },
+   {
+    "ref": "comment:562340826",
+    "quote": "I agree this feature needs a roadmap. I would say that at the moment, it's future is unknown."
+   },
+   {
+    "ref": "comment:621327537",
+    "quote": "We're currently discussing the future of this feature in sig-auth, but no changes are planned for v1.19."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 10279,
+  "output": 955
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5229",
+ "input_hash": "9166b021f8c23240",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5229 proposes making all API calls made during kube-scheduler's scheduling cycle asynchronous through a scheduler-wide mechanism (an APIQueue or cache-as-middleware), with merging of superseded calls and an OnFinish channel for callers that need to wait. Current status is implementable, stage beta.",
+  "rationale": "The scheduling cycle contains blocking API calls, which limits scheduling performance; the KEP proposes one universal approach to handle them so calls are consistent and goroutine count is controlled. P0 goals are a scheduling cycle free of blocking API calls and an extensible design; P1 is skipping updates made irrelevant by later ones. Open design questions (ordering, merging conflicting updates, NominatedNodeName interaction) were raised in review, and the proposal options were narrowed to one in discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Handle API calls through the scheduling queue (AddUnschedulableAsync)",
+    "why_not": "The KEP lists cons: handling of failures would be inconsistent, it cannot cover the nominatedNodeName scenario, and it may increase inFlightEvents size and pod queuing latency."
+   },
+   {
+    "option": "Make unschedulable status update calls within handleSchedulingFailure",
+    "why_not": "Would require additional effort to prevent races, and PreEnqueue status updates would need more refactoring; it also cannot cover the nominatedNodeName scenario."
+   },
+   {
+    "option": "Use the scheduler cache as the middleware for all API calls (proposal B)",
+    "why_not": "Reviewers noted the scheduler's state is not uniform across queue, cache and nominator, and merging cached objects with received updates is complex; the KEP chose proposal C, which lets the cache act as middleware while keeping a separate APIQueue component."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Making one universal approach for handling API calls in the kube-scheduler could allow these calls to be consistent and better control the number of dispatched goroutines."
+   },
+   {
+    "ref": "readme",
+    "quote": "P0: Make the scheduling cycle free of blocking API calls, i.e., make all API calls asynchronous."
+   },
+   {
+    "ref": "readme",
+    "quote": "This proposal combines the strengths of proposals A and B by making a cache a middleware between scheduling/binding cycles, plugins, and event handlers."
+   },
+   {
+    "ref": "rcomment:2115326439",
+    "quote": "Scheduler's cache is not uniform. Pending pods are stored in scheduling queue, bound pods are stored in cache, nominations in nominator"
+   },
+   {
+    "ref": "comment:3300012855",
+    "quote": "I am closing the v1.34 milestone now. If you'd like to work on this enhancement in v1.35, please have the SIG lead opt-in"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14393,
+  "output": 1083
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

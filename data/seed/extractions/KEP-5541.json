@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5541",
+ "input_hash": "d4671316b7f046d9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5541 proposes an UnusedSince timestamp field on PersistentVolumeClaimStatus, set by the PVC protection controller when the last Pod using the PVC is deleted or terminal, so cluster admins can find unused PVCs. The KEP is currently implementable at stage beta.",
+  "rationale": "Kubernetes has no record of when a PVC was last mounted by a Pod, which leaves unused PVCs and their storage costs hard to find. Only the control plane sees Pod-to-PVC usage, so the PVC protection controller is the proposed place to record it. The field is informational and does not delete anything, and the timestamp is an approximation because the controller may observe the change late or after a restart.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use deletion of VolumeAttachment objects as the trigger for updating the status field",
+    "why_not": "Not all volume types create a VolumeAttachment object, which restricts the scope of the KEP."
+   },
+   {
+    "option": "Use an unusedTimestamp field name instead",
+    "why_not": "Reviewers found it ambiguous (unused since or unused as of), and the team settled on unusedSince."
+   },
+   {
+    "option": "Expose the usage data only through metrics in kube-state-metrics",
+    "why_not": "Discussed as a complement rather than a replacement; the thread says the metric should not be tied to this KEP's completion criteria, and the team did not adopt it as a replacement for the field."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This field will be updated by the PVC protection controller (in kube-controller-manager) when the PVC transitions from being in use to not being in use."
+   },
+   {
+    "ref": "readme",
+    "quote": "One alternative was the use the deletion of `VolumeAttachment` objects as triggers for updating the status field."
+   },
+   {
+    "ref": "rcomment:2734993208",
+    "quote": "i like `unusedSince` better too"
+   },
+   {
+    "ref": "comment:3846004704",
+    "quote": "Mark it as `implementable` in kep.yaml. * Add PRR review YAML, as described"
+   },
+   {
+    "ref": "rcomment:2755215184",
+    "quote": "We should clearly document that it's just a point in time when a volume was observed as not referenced by any pod"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12211,
+  "output": 884
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

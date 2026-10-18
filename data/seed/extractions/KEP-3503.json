@@ -1,0 +1,36 @@
+{
+ "kep": "KEP-3503",
+ "input_hash": "fbdb0e73db6ffdcc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3503 proposed enabling hostNetwork=true for non-HostProcess Windows containers by having the Kubelet populate CRI-API fields so containerd uses the node's network namespace. The KEP was withdrawn at alpha stage in v1.33 after the containerd changes did not work out and the requesting users found other solutions.",
+  "rationale": "Windows pods with hostNetwork=true had no effect, causing confusion and contributing to port exhaustion on nodes with many services. The proposal was to bring parity with Linux by wiring the CRI fields from the Kubelet, with containerd changes required. The maintainer later said the containerd changes never worked as intended and the users asking for this had found alternatives, so the KEP was deprecated.</rationale>\n<parameter name=\"outcome_reason\">The maintainer stated that the containerd changes never ended up working out as intended and that the users who asked for the feature had found alternative solutions. The decision was to withdraw the KEP and remove the code, as suggested by a sig-network reviewer.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Wait for all supported containerd versions to support the feature before enabling it\", \"why_not\": \"Raised as a question by a reviewer. SIG-Windows said it had not waited for EOL of older containerd versions for other enhancements and would rely on documentation and messaging instead; no final decision on this is recorded.\"}, {\"option\": \"Graduate the feature to stable\", \"why_not\": \"Commenter sftim asked for either removal or graduation. The maintainers chose deprecation because the containerd work never worked out and the target users had moved on.\"}, {\"option\": \"Remove the code within the current cycle while the KEP is alpha\", \"why_not\": \"Suggested by a sig-network reviewer as the simpler route: update the KEP and remove the code, since it is already alpha. The maintainer said they would probably take this route, so it is the path that was taken.\"}]",
+  "evidence": [
+   {
+    "ref": "comment:2620097994",
+    "quote": "We're going to deprecate this enhancement. The containerd changes never ended up working out how we wanted them too and also the users that were asking for this have all found alternative solutions."
+   },
+   {
+    "ref": "comment:2621357654",
+    "quote": "Just FYI you just can update the KEP and remove the code altogether in this cycle, since is already alpha"
+   },
+   {
+    "ref": "comment:2625454185",
+    "quote": "Thanks! We'll probably go this route. @aojea - Can I add you as a reviewer from sig-network once I make the KEP updates?"
+   },
+   {
+    "ref": "comment:3746062331",
+    "quote": "host network was never supported on Windows. This enhancement was to enable it but it never got completed."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9769,
+  "output": 1007
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

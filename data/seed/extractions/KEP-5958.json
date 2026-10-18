@@ -1,0 +1,40 @@
+{
+ "kep": "KEP-5958",
+ "input_hash": "c52e7d9ed3a583c9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5958 proposes letting clients opt out of receiving metadata.managedFields in API responses via an Accept parameter (drop=metadata.managedFields), implemented as a serializer mode with a distinct identifier. Status is implementable, stage alpha, but the sources show it was dropped from the v1.37 release and deferred toward v1.38.",
+  "rationale": "Clients such as kube-controller-manager and kube-scheduler already strip managedFields client-side, yet the API server still serializes them, costing CPU, bandwidth, and client GC. The KEP moves the stripping to encode time via an Accept parameter. Reviewers questioned the performance benefit, the per-client versus per-request configuration, and server-side safety; the maintainers then agreed to drop it from v1.37 due to negative performance implications of the current implementation.</rationale>\n<parameter name=\"outcome_reason\">The sources say the feature will not be completed in v1.37 because of negative performance implications of the current implementation proposal. The maintainers agreed to drop it from the v1.37 release and have a rough idea for v1.38. The KEP status field still reads implementable, stage alpha, and the sources do not say whether it was later re-milestoned.</outcome_reason>\n<parameter name=\"alternatives\">[{\"option\": \"Per-client configuration via rest.Config\", \"why_not\": \"Reviewers argued it is the wrong place: it cannot express per-object or per-informer choices, and a single binary watching multiple resources may need different behavior. The KEP later dropped the hard rest.Config commitment and said the client-go surface would be decided at implementation.\"}, {\"option\": \"ListOptions flag such as excludeManagedFields=true\", \"why_not\": \"The KEP's Alternatives section rejected it because Accept parameters are the standard Kubernetes way to control object representation. A reviewer later suggested ListOptions as an alternative for per-informer control.\"}, {\"option\": \"General-purpose field selection\", \"why_not\": \"The KEP lists it as a non-goal: it is a much larger undertaking discussed for years, and the targeted solution leaves room for future generalization.\"}, {\"option\": \"Client-side stripping only (status quo)\", \"why_not\": \"The KEP says relying on client-side transforms still incurs API server CPU, network, and client GC costs, which is the problem it aims to remove.\"}]",
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes using an `Accept` header parameter (`drop=metadata.managedFields`) to allow clients to opt-out of receiving `metadata.managedFields` in API responses."
+   },
+   {
+    "ref": "comment:5007276498",
+    "quote": "This won't be completed in v1.37 due negative performance implications of the current implementation proposal."
+   },
+   {
+    "ref": "comment:5007276498",
+    "quote": "I've spoken with @yongruilin and we've agreed this should be dropped from the v1.37 release."
+   },
+   {
+    "ref": "comment:5038904263",
+    "quote": "Confirming that KEP #5958 will be dropped from the v1.37 release. Updating the status to `Removed from Milestone` and clearing the milestone."
+   },
+   {
+    "ref": "rcomment:3336217604",
+    "quote": "The server-side gate controls exposure of a new client-controlled capability that has never been run in the kube-apiserver."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10771,
+  "output": 1213
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

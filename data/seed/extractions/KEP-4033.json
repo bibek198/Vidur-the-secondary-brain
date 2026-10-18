@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4033",
+ "input_hash": "d109180b24d55f67",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4033 lets the container runtime tell the kubelet which cgroup driver (cgroupfs or systemd) to use over CRI, so the kubelet no longer needs its own cgroupDriver setting. The status is implemented, stage stable.",
+  "rationale": "Kubelet and the container runtime each had a cgroup driver setting, and mismatches caused hard-to-diagnose container creation failures and inconsistent resource allocation. SIG Node chose to make the CRI implementation the source of truth for this low-level choice. Discussion settled on a feature gate (KubeletCgroupDriverFromCRI), with kubelet falling back to its own setting when the runtime does not support the feature, and deprecating the kubelet setting later.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make kubelet the configuration point and have the CRI implementation guess the driver from the CgroupParent path in RunPodSandboxRequest",
+    "why_not": "SIG Node decided the CRI implementation should be the source of truth for low-level choices like this, so this approach was not chosen."
+   },
+   {
+    "option": "Ship the change straight to beta with the feature gate enabled by default",
+    "why_not": "John Belamaric would not approve going straight to beta and asked for an alpha phase, so the KEP was retargeted to alpha. The source does not describe the later stage transitions beyond the status."
+   },
+   {
+    "option": "Add a manual opt-out so the kubelet setting can override the runtime",
+    "why_not": "Maintainers argued that the settings must match, so any override is misconfiguration. Haircommander said we should not provide an opt-out."
+   },
+   {
+    "option": "Remove the kubelet cgroup driver flag right away",
+    "why_not": "Removing it would break users on older runtimes that do not support the new field, so the flag is kept as a fallback and marked deprecated."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This removes the need for specifying cgroup driver in the kubelet configuration and eliminates the possibility of misaligned cgroup driver configuration between the kubelet and the runtime."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, SIG Node has decided that the CRI implementation should begin to be the source of truth for low-level choices like this, and thus this approach was chosen."
+   },
+   {
+    "ref": "comment:1593808066",
+    "quote": "I've updated the enhancement to target to alpha. Thanks for your feedback, PTAL"
+   },
+   {
+    "ref": "comment:2963813851",
+    "quote": "Changed to proposal to retain fallback behavior in GA, but, mark the the `--cgroup-driver` flag and the CgroupDriver config option as deprecated and eventually drop the according to the Kubernetes deprecation policy."
+   },
+   {
+    "ref": "rcomment:1228560845",
+    "quote": "I don't think the kubelet should update the cgroup driver if the cri changes without a kubelet restart."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10883,
+  "output": 1107
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

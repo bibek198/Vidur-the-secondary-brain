@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-4974",
+ "input_hash": "ad8585fcef6ec149",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4974 proposes officially deprecating v1.Endpoints and its associated controllers, mainly through documentation, warnings, communications, and test/conformance changes, while keeping the API and the controllers' code in place. The KEP is in status implementable, stage deprecated.",
+  "rationale": "Endpoints has been effectively deprecated since EndpointSlices went GA in 1.21, but kube-controller-manager still runs the Endpoints controller for all Services, and conformance requires the Endpoints and EndpointSlice mirroring controllers. The KEP argues that many clusters never read the Endpoints output, so the goal is to move users toward running with these controllers disabled. The proposal states that disabling them via --controllers is already possible and expected to have no ill effects in a vanilla cluster.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing",
+    "why_not": "The KEP states the goal is to move toward a world where most users run with the Endpoints and EndpointSlice Mirroring controllers disabled, which doing nothing would not do."
+   },
+   {
+    "option": "Remove or default-disable the Endpoints and EndpointSlice mirroring controllers",
+    "why_not": "The KEP says this presents additional issues, is not clearly a non-break, and would best be handled in a followup KEP; removing the controllers is a Non-Goal."
+   },
+   {
+    "option": "Delete or modify the v1.Endpoints API",
+    "why_not": "Deleting or modifying the API is listed as a Non-Goal; the KEP notes Kubernetes API guarantees make full removal essentially impossible."
+   },
+   {
+    "option": "Make the controllers disabled-by-default in this KEP",
+    "why_not": "The KEP says there is no consensus on whether this is an API break, and that it would need separate planning and messaging as a separate KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we should at least move toward a world where most users run Kubernetes with the Endpoints and EndpointSlice Mirroring controllers disabled"
+   },
+   {
+    "ref": "readme",
+    "quote": "Overall, this KEP is mostly just about documentation and tests; it is already possible to disable the Endpoints and EndpointSlice Mirroring controllers"
+   },
+   {
+    "ref": "readme",
+    "quote": "There is some interest in making one or both of them disabled-by-default, but there is not yet consensus about whether this would constitute an API break."
+   },
+   {
+    "ref": "readme",
+    "quote": "Officially declare v1.Endpoints to be deprecated. Update documentation and put out appropriate communications (blog posts, etc)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3001,
+  "output": 1001
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

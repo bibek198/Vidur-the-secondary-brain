@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2699",
+ "input_hash": "b52b3e68c36c44fe",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2699 proposes a framework in the Cloud Controller Manager (CCM) for hosting cloud-provider-specific admission webhooks, starting with a PersistentVolumeLabel (PVL) mutating webhook sample. Its status is implementable at stage alpha.",
+  "rationale": "The PVL admission controller runs in-line in the API server request path and is deprecated, and cloud providers want to move that logic out of tree. The KEP therefore adds extension hooks to register webhooks in the CCM binary, with controller and webhook enable flags. The framework's default listener reuses Kubernetes secure serving, authn and authz. The KEP is scoped to hosting cloud-provider webhooks, not a general admission webhook solution.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Use controllers to solve all the problems",
+    "why_not": "The readme says this has an issue for things that must be done in-line: \"This has an issue for things which need to be done in-line.\""
+   },
+   {
+    "option": "Use Initializers to fill state between creation and usage",
+    "why_not": "The readme says this solution \"has been deprecated.\""
+   },
+   {
+    "option": "Build a general admission webhook solution (e.g., kubebuilder-style)",
+    "why_not": "This is a non-goal: \"We are not intending to create a general admission webhook solution.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "There are also occasions when it makes sense for a Cloud Provider to want these customizations to be applied synchronously, during API server request handling"
+   },
+   {
+    "ref": "readme",
+    "quote": "We will start by adding extension hooks which can be registered in the cmd/cloud-controller-manager/main.go."
+   },
+   {
+    "ref": "readme",
+    "quote": "The webhook flag will default to the webhooks being disabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "The frameworks default listener for the webhook should use existing Kubernetes mechanism (secure serving, authz, authn) to secure itself and validate the client."
+   },
+   {
+    "ref": "readme",
+    "quote": "We are not intending to create a general admission webhook solution."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2895,
+  "output": 841
+ },
+ "extracted_at": "2026-10-15T22:45:48Z"
+}

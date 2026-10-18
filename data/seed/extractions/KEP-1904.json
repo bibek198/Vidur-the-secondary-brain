@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-1904",
+ "input_hash": "02021b6780d4ff2a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1904 proposes using etcd's progress-notify feature so that kube-apiserver watch cache, during initialization and steady state, learns the latest etcd resource version via Bookmark-style updates, letting watches resume after an apiserver restart instead of forcing relists. Status is implemented, stage stable.",
+  "rationale": "After a kube-apiserver restart the watch cache starts with an empty history window and is synced to the global etcd RV, so clients resuming watches get \"too old resource version\" and must relist. The KEP addresses this by making etcd progress notifications (with a configurable, shorter period) update the watch cache RV via the reflector's Bookmark handling, so the next apiserver in a rolling upgrade gets a fresh enough RV. The design doc also notes that the problem leaves apiservers stuck at different RVs for extended periods.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Have apiserver read etcd's change history at startup instead of only the current state",
+    "why_not": "Reviewers raised it; the author rejected it because of non-negligible overhead and that it was not as simple, and the doc says it should be considered a complementary option rather than a replacement."
+   },
+   {
+    "option": "Binary-search backwards in time with a series of watch requests at startup to find the oldest usable RV",
+    "why_not": "Proposed by lavalamp in review; the author noted it still needs progress-notify on those extra watches, so most of the proposed changes would be needed anyway."
+   },
+   {
+    "option": "Pre-load more items into the cache to shrink the race window",
+    "why_not": "Lavalamp suggested it as a way to make races rare, but the KEP text does not record it being adopted; it was discussed as a time-dependent mitigation the reviewer was uncomfortable with."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose to utilize the 'progress notify' feature from etcd to solve the problem. Since version 3.0, etcd watch can be configured with `WithProgressNotify` enabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "We will modify the kubernetes, so that it can understand progress notify events and use them to update the so-far resource version."
+   },
+   {
+    "ref": "rcomment:461468702",
+    "quote": "I'm not opposed to changing how we initialize watchcache, but based on all the arguments above (mostly need for watch progress notify to implement it"
+   },
+   {
+    "ref": "rcomment:461679245",
+    "quote": "I'm uncomfortable with the solution being strongly time dependent. I currently still think I'd like apiserver to pre-load enough items into the cache"
+   },
+   {
+    "ref": "comment:1121141470",
+    "quote": "This feature has been **fully implemented** and is now **GA** in K8s version 1.24."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12760,
+  "output": 1046
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-689",
+ "input_hash": "0ebc3af081dfd02f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-689 adds support for Group Managed Service Accounts (GMSA) to Windows Server containers on Kubernetes, so pods can run with an existing AD identity without extra files or registry keys on each node. The KEP's status is implemented at stage stable, starting 2020-12-23.",
+  "rationale": "Windows applications can only use Active Directory identities through GMSA, and customers were asking for orchestrator support. The design aims to pass all required data through Kubernetes and Kubelet APIs and to keep pods from being scheduled with service accounts that lack GMSA access. The feature went alpha in 1.14, beta in 1.16 (with GMSA enabled by default), and stable in 1.18 per the discussion.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature in alpha/feature-gated state for 1.15",
+    "why_not": "The maintainer said the 1.15 API changes required one more alpha release, so the plan moved to beta in 1.16 instead. This was a schedule change, not a rejection of the feature."
+   },
+   {
+    "option": "Restrict GMSA use to users with restricted RBAC rights within a namespace",
+    "why_not": "The KEP lists as a non-goal that it does not replace Kubernetes authorization controls; namespaces remain the ACL boundary."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This will allow an operator to choose a GMSA at deployment time, and run containers using it to connect to existing applications"
+   },
+   {
+    "ref": "comment:487665583",
+    "quote": "due to the API changes we are bringing in 1.15 for GMSA, we will need to keep the feature in feature-gated/alpha state for one more release"
+   },
+   {
+    "ref": "comment:602796731",
+    "quote": "since this enhancement graduated to Stable this release :rocket:, the status can now be set to be `Implemented`"
+   },
+   {
+    "ref": "comment:526340860",
+    "quote": "is the PR to move the feature to Beta and have GMSA support enabled by default."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9032,
+  "output": 808
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

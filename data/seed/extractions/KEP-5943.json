@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5943",
+ "input_hash": "3297be59b34ca688",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5943 proposes topology constraints for volume snapshots: a snapshot-controller/csi-snapshotter change records the driver-reported accessible topology as NodeAffinity on VolumeSnapshotContent, a new scheduler plugin uses it, and the external-provisioner checks intersection for restores. The KEP status is implementable at alpha, with the feature gate controlling behavior.",
+  "rationale": "Snapshots may be accessible only from certain topologies, so restores to PVCs may need the same placement constraints that PVs have. Reviewers asked whether the scheduler plugin and provisioner should enforce this under Immediate binding, and the author chose to check intersection at the provisioner and fail early when there is no overlap. For alpha, the author said the field stays empty and the feature gate disables all consumers, with API-level enforcement deferred to beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Enforce topology only for WaitForFirstConsumer binding, ignoring snapshot topology under Immediate",
+    "why_not": "Rejected by the author after msau42 asked whether the dataSource topology could still be used under Immediate; the author then agreed to check intersection at the provisioner for Immediate binding."
+   },
+   {
+    "option": "Send restore calls to the storage provider even when there is no topology intersection",
+    "why_not": "Author changed position: 'it makes sense to fail at the provisioner level and not send any calls to the SP that are likely to fail.'"
+   },
+   {
+    "option": "Enforce the new field with a mutating webhook in external-snapshotter",
+    "why_not": "msau42 noted 'We just removed the mutating webhook in external-snapshotter so I don't think we want to bring it back.' Author proposes MutatingAdmissionPolicy for beta instead."
+   },
+   {
+    "option": "Make the field immutable at the API level",
+    "why_not": "xing-yang asked whether it should be mutable, citing a related PV NodeAffinity change; the sources do not record a final decision on mutability."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3313445272",
+    "quote": "I've renamed the field from `AccessibleTopology` to `NodeAffinity`. The type remains `[]v1.TopologySelectorTerm` (matching StorageClass.AllowedTopologies)"
+   },
+   {
+    "ref": "rcomment:3313444564",
+    "quote": "I think it makes sense to fail at the provisioner level and not send any calls to the SP that are likely to fail."
+   },
+   {
+    "ref": "rcomment:3416287364",
+    "quote": "For alpha, we can have it such that the feature gate controls controller behavior only when disabled, the sidecar does not patch NodeAffinity, the scheduler plugin does not enforce it, and the external-provisioner does not read it."
+   },
+   {
+    "ref": "rcomment:3406665349",
+    "quote": "We just removed the mutating webhook in external-snapshotter so I don't think we want to bring it back."
+   },
+   {
+    "ref": "comment:5058275231",
+    "quote": "the implementation (code-related) PRs associated with this enhancement are not in the merge-ready state by code-freeze and hence this enhancement is now removed from the v1.37 milestone."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11551,
+  "output": 1182
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

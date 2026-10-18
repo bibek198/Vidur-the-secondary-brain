@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2053",
+ "input_hash": "87a51b049dfa7f4d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2053 exposes hugepage requests and limits (all page sizes) through the downward API, gated by the DownwardAPIHugePages feature gate on the apiserver side, with the kubelet supporting it regardless of the gate. Status is implementable, stage stable.",
+  "rationale": "Pods could not read their hugepage request or limits via the downward API, unlike cpu, memory, and ephemeral-storage. The change loosens API validation, so all kubelets must support it before the apiserver accepts its use, which is why a KEP was written. Reviewers agreed that new standard resource types should have downward API coverage as part of alpha/beta criteria.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Stop apiserver validation of downward API field selectors and let the kubelet handle invalid ones",
+    "why_not": "Raised by danwinship; liggitt objected that deferring failure of stringly typed expressions to pod runtime gives a poor user experience."
+   },
+   {
+    "option": "Use multiple feature gates to enable the kubelet and apiserver paths independently",
+    "why_not": "Raised by liggitt as an option for the two-release kubelet-before-apiserver ordering; the KEP instead gates only the apiserver and leaves the kubelet path ungated."
+   },
+   {
+    "option": "Require the requested page size to be present in requests/limits for validation",
+    "why_not": "Derek Carr said validation will not require it, because pod templates use the downward API form to learn whether a request was made, and the value reads as 0 when none was made."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Define a new feature gate: `DownwardAPIHugePages`. If enabled, the `kube-apiserver` will allow pod specifications to make use of hugepages in downward API when the feature gate is enabled."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `kubelet` will add support for hugepages in the downward API independent of the feature gate."
+   },
+   {
+    "ref": "comment:702750769",
+    "quote": "I think this needs a KEP as it loosens validation, and as a result, the feature requires that all kubelets have the support enabled before the API server accepts its usage."
+   },
+   {
+    "ref": "rcomment:499004348",
+    "quote": "value projected in pod will always match value presented in the cgroup (which absent an explicit request is 0) because hugepages are not subject to overcommit like memory."
+   },
+   {
+    "ref": "comment:704394795",
+    "quote": "i would say in the future, any new standard resource types should have downward API covered as part of the alpha/beta criteria."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8900,
+  "output": 981
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

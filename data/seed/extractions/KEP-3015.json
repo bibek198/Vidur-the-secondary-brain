@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3015",
+ "input_hash": "8742850415a39391",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3015 deprecates TrafficDistribution's PreferClose value, replacing it with PreferSameZone as a new name for the same behavior, and adds PreferSameNode to route traffic to endpoints on the client's node when possible. The KEP is implemented and at stable stage.",
+  "rationale": "Discussion about adding \"prefer same node\" to PreferClose (#4931) concluded that changing PreferClose's semantics would give either too many false positives or too many false negatives. The KEP therefore deprecates PreferClose (without removing it from the API) and introduces PreferSameZone and PreferSameNode as separate, less ambiguous values. The design also notes that the updated topology understanding from KEP-4444 (TrafficDistribution) made node-level topology acceptable.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Change PreferClose semantics to also prefer same node",
+    "why_not": "Would inevitably have either too many false positives or too many false negatives, per the discussion in #4931."
+   },
+   {
+    "option": "internalTrafficPolicy: PreferLocal (KEP #3016)",
+    "why_not": "The team decided traffic policy was for semantically-significant changes, whereas node-level routing is only a hint, like topology."
+   },
+   {
+    "option": "Node-level topology hint (KEP #3293)",
+    "why_not": "Never got as far as defining a specific API and fizzled out due to opinions at the time about how topology should work in Kubernetes."
+   },
+   {
+    "option": "Keep PreferClose and remove it from the API",
+    "why_not": "Non-goal: the KEP explicitly does not remove PreferClose from the API."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "this KEP deprecates `PreferClose` and replaces it with `PreferSameZone` as a new name for the old behavior"
+   },
+   {
+    "ref": "readme",
+    "quote": "And it adds a new value, `PreferSameNode`, indicating traffic for a service should preferentially be routed to endpoints on the same node as the client."
+   },
+   {
+    "ref": "readme",
+    "quote": "we decided that traffic policy was for semantically-significant changes to how traffic was distributed, whereas this is just a hint, like topology."
+   },
+   {
+    "ref": "readme",
+    "quote": "- Actually removing `PreferClose` from the API."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2132,
+  "output": 904
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

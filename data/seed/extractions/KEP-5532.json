@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-5532",
+ "input_hash": "e9cefd6c6162bd9e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5532 proposes a RestartAllContainers action on the KEP-5307 ContainerRestartRule API, so that a container exit matching a rule triggers an in-place restart of all pod containers (init, sidecar, regular) while preserving the sandbox, UID, IP, network namespace, and volumes. The KEP is currently implementable at stage beta.",
+  "rationale": "Restarting a whole pod today means deleting and recreating it, which is costly for workloads like AI/ML training and short-lived games; the KEP also covers sidecar failures that leave the main container with stale state. Reviewers pushed for a simple kill rather than graceful shutdown, and deferred volume cleanup/remount, leaving init containers required to be re-runnable. The status is implementable, beta, with SIG Node approval given on 2025-10-14.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Graceful termination of all containers before restart",
+    "why_not": "Reviewers noted that a sidecar which de-registers the pod on graceful shutdown would break back-compat, so the KEP chose the 0 grace termination instead."
+   },
+   {
+    "option": "Liveness probe on each container pointing at a sidecar, so a shutdown causes the pod to be killed",
+    "why_not": "Listed as an alternative in the discussion; the sources do not say why it was not adopted."
+   },
+   {
+    "option": "Naming the action RestartAll or RestartContainers",
+    "why_not": "Reviewer asked whether these names were considered to avoid implying volumes are restarted; the KEP settled on RestartAllContainers, but the sources do not give a fuller rationale."
+   },
+   {
+    "option": "Wiping and remounting volumes during the restart",
+    "why_not": "Deferred: SIG Node recommended deferring volume cleanup/re-mount and documenting the container contract clearly in beta."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This \"in-place\" pod restart will terminate and then restart all of the pod's containers (including init and sidecar containers) while preserving the pod's sandbox, UID, network namespace, attached devices, and IP address."
+   },
+   {
+    "ref": "rcomment:2408942392",
+    "quote": "this is resolved. We are going with the `0` grace termination. Please remove the unresolved thing"
+   },
+   {
+    "ref": "comment:3403111334",
+    "quote": "I strongly recommend deferring volume cleanup/re-mount and clearly documenting the new container contract. Keeping volumes as-is saves significant restart time"
+   },
+   {
+    "ref": "rcomment:2430068499",
+    "quote": "init containers have to be reentrant because kubelet never guarantees that it will not rerun them."
+   },
+   {
+    "ref": "comment:3757057883",
+    "quote": "I am closing the v1.35 milestone now."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13800,
+  "output": 1045
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

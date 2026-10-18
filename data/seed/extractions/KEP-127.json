@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-127",
+ "input_hash": "fd686a17e10bdab0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-127 adds a hostUsers field to pod spec so pods can run in their own Linux user namespace, mapping container root to unprivileged host IDs. Its status is implemented, stage stable.",
+  "rationale": "Running container processes as root inside the container is a major risk because container breakouts (e.g., CVE-2019-5736) then get root on the host. The KEP states the goal is to run processes in pods with different user and group IDs than the host, so a breakout lands as an unprivileged host user. The design went through several revisions (ClusterMode, hostUserNamespace, fsGroup, then idmap mounts), and the excerpt shows alpha was approved in June 2022 with the implementation history later marked as GA in 1.36.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Static shared ID mapping for all pods (ClusterMode)",
+    "why_not": "The excerpt says the main purpose of ClusterMode was volumes and user namespaces until an ID shift mechanism landed in the kernel, and the team later avoided it by using a boolean hostUserNamespace field instead."
+   },
+   {
+    "option": "Per-namespace or per-service-account allocated ID ranges chosen by the kubelet",
+    "why_not": "The excerpt records that the team proposed this only as a later phase; the static mode was to be implemented first, with other modes deferred for further discussion."
+   },
+   {
+    "option": "Enum or structured userNamespaceSpec field in the pod spec",
+    "why_not": "Reviewer frasertweedale suggested a structured schema to allow future enhancements, but the excerpt does not show it being adopted; the merged design uses a hostUsers field."
+   },
+   {
+    "option": "Reading runAsUser or the image USER to derive the host mapping",
+    "why_not": "Thockin argued that changing the in-container UID would break ownership of volumes, and that it adds heuristic breakage risk."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP adds a new `hostUsers` field to `pod.Spec` to allow to enable/disable using user namespaces."
+   },
+   {
+    "ref": "readme",
+    "quote": "The goal of supporting user namespaces in Kubernetes is to be able to run processes in pods with a different user and group IDs than in the host."
+   },
+   {
+    "ref": "rcomment:536361982",
+    "quote": "Our new idea is to replace Host/Pod modes by a boolean `hostUserNamespace` field, this value controls whether the Pod gets a new user namespace"
+   },
+   {
+    "ref": "comment:1150716840",
+    "quote": "ok, I think it's good enough for Alpha (as I mentioned we will have more discussions for Beta, especially around monitoring and toubleshooting"
+   },
+   {
+    "ref": "comment:4097763828",
+    "quote": "The implementation history is already up to date (1.36 marked as the release it went GA)"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11100,
+  "output": 1081
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

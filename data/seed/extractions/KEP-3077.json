@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3077",
+ "input_hash": "4cfd4cbc611067a4",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3077 proposes contextual logging: replacing the global klog logger by passing a logr.Logger into functions either via context.Context or an explicit parameter. Status is implementable, stage beta.",
+  "rationale": "The global logger prevents callers from attaching key/value pairs, names, or verbosity changes to a callee's logging, and forces third-party components to use klog. The proposal extends the ongoing structured-logging conversion by removing the dependency on the global klog logger, passing a logger via context where a context already exists and via an explicit parameter otherwise. A feature gate controls whether contextual logging or the global logger is used.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Passing both a context and an explicit logger parameter",
+    "why_not": "The proposal says the risk is that a caller passes an updated logger which it didn't add to the context, so logging in downstream functions silently produces unexpected results; the design avoids this by choosing one mechanism per function."
+   },
+   {
+    "option": "Keep the global klog logger and no API changes",
+    "why_not": "The readme states the goals are to remove direct klog calls and the hard dependency on the klog implementation, and to let callers control logging inside functions, which a global logger does not allow."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Contextual logging replaces the global logger by passing a `logr.Logger` instance into functions via a `context.Context` or an explicit parameter"
+   },
+   {
+    "ref": "readme",
+    "quote": "When a function already accepts a context parameter, then that will be used instead of adding a separate parameter."
+   },
+   {
+    "ref": "readme",
+    "quote": "The rationale for not using both context and an explicit logger parameter is the risk that the caller passes an updated logger which it didn't add to the context."
+   },
+   {
+    "ref": "readme",
+    "quote": "A feature gate controls whether contextual logging is used or a global logger is accessed directly."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2748,
+  "output": 767
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

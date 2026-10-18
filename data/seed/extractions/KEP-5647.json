@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-5647",
+ "input_hash": "f1f6e36600f83b74",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5647 proposes letting Kubernetes controllers (initially in kube-controller-manager) detect whether their informer cache has caught up to their own recent writes, and skip or requeue reconciling an object until it has. The KEP is in status implementable, stage beta.",
+  "rationale": "Controllers act on watch caches that are eventually consistent with no bound on lag, so they can reconcile on outdated state and cause spurious or conflicting writes. The proposal adds informer plumbing to expose resource versions and has controllers wait for their own prior writes to appear in cache before reconciling. Reviewers pushed to drop the metrics part, narrow the scope to read-after-write for KCM pod-related controllers, and remove consistency wording.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Only add metrics to measure controller staleness",
+    "why_not": "Reviewers agreed metrics were a first step only and the KEP should also act on staleness; the metrics part was later removed from scope and tracked separately."
+   },
+   {
+    "option": "Query the cache directly to determine the current resource version",
+    "why_not": "The KEP states this 'can lead to much more racy side effects than implementing a function in the informer'."
+   },
+   {
+    "option": "Require consistent views of the world for all controllers per reconcile",
+    "why_not": "The KEP lists this as a non-goal; changes are opt-in per controller and only where stale reads were observed."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose the ability for controllers to be able to view whether their own writes have made it into the apiserver. This will allow for the controller to skip reconciling an object until it knows"
+   },
+   {
+    "ref": "readme",
+    "quote": "The changes described here will be \"opt-in\" for every controller and will require some degree of changes to the controller logic."
+   },
+   {
+    "ref": "rcomment:2430230075",
+    "quote": "I just want \"Read your writes guarantee\" so I can assume I can observe actions from previous reconcillation.."
+   },
+   {
+    "ref": "comment:3412482944",
+    "quote": "I think this is plenty sufficient for an alpha. /lgtm"
+   },
+   {
+    "ref": "rcomment:2432581271",
+    "quote": "IIUC we agreed to remove the metrics part from the KEP. So please remove it from the goals too."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12044,
+  "output": 896
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2506",
+ "input_hash": "a4bb8dbd03a40d3d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2506 proposes removing the ClusterStatus entry from the kubeadm-config ConfigMap by tracking control-plane API endpoints through inspection of the current Pods instead of a separately maintained list. The KEP is marked implemented, stage stable.",
+  "rationale": "The stored ClusterStatus list of API endpoints goes stale when a control-plane node dies or is deleted without running kubeadm reset, forcing manual cleanup before later kubeadm operations. Deriving endpoints from the current Pods means no separate list is maintained and the list always reflects the cluster's real state. The non-goals keep user-facing behavior unchanged, but warn that external tools may depend on the entry, so removal follows an Action Required release note and the Beta API deprecation policy (9 months / 3 releases).",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep maintaining ClusterStatus and require manual cleanup of stale entries",
+    "why_not": "The readme identifies this as the known problem: the list gets stale and users must clean it up manually to avoid kubeadm errors."
+   },
+   {
+    "option": "Remove ClusterStatus without a deprecation period",
+    "why_not": "The non-goals say higher-level tools may rely on the entry, so an Action Required release note and the Beta API deprecation policy are to be respected before deletion."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This approach does not require the maintenance of a separated list, and implicitly always reflect the current status of the cluster."
+   },
+   {
+    "ref": "readme",
+    "quote": "when a control-plane node dies or is deleted without invoking `kubeadm reset`, the list gets stale and the user is required to manually cleanup the list"
+   },
+   {
+    "ref": "readme",
+    "quote": "we are going issue and \"Action Required\" warning in the release note an respect the Beta API deprecation policy before actual deletion (9 months/3 release)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2115,
+  "output": 779
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

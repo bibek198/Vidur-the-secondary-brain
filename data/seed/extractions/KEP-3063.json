@@ -1,0 +1,62 @@
+{
+ "kep": "KEP-3063",
+ "input_hash": "fde0b00039aef352",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3063 (dynamic resource allocation, the PodSchedulingContext-based design) was withdrawn in Kubernetes 1.32 and its code removed; the structured-parameters design in KEP-4381 continues as the base DRA functionality, with KEP-3063 as an optional extension before withdrawal.",
+  "rationale": "The withdrawn design let third-party drivers and the scheduler negotiate allocation through the apiserver via PodSchedulingContext, which the readme says cannot be simulated by the Cluster Autoscaler. The readme lists the main objections as lack of cluster autoscaling support and complex back-and-forth communication through the apiserver. Kubernetes 1.32 withdrew this KEP and its code while #4381 continues.",
+  "outcome_reason": "The readme states the KEP was withdrawn in Kubernetes 1.32 because of objections on autoscaling support and API-server round trips. Maintainers in the PR #4904 discussion accepted removal of an alpha feature without a formal deprecation, saying alpha is alpha.",
+  "alternatives": [
+   {
+    "option": "Keep the PodSchedulingContext design and continue to beta",
+    "why_not": "The readme names the objections that led to withdrawal: 'Lack of support for cluster autoscaling' and 'Complex back-and-forth through the apiserver while scheduler and DRA drivers negotiate how to allocate a ResourceClaim.'"
+   },
+   {
+    "option": "Deprecate the feature for a release before removal",
+    "why_not": "Asked about in the PR #4904 discussion, the maintainer said 'No' to a deprecated option and that alpha should not be kept around longer, so the feature was removed without that step."
+   },
+   {
+    "option": "Keep the feature and move the autoscaling support into this KEP",
+    "why_not": "The readme says the Non-Goals include 'Supporting cluster autoscaling', and that 'Structured parameters from #4381 should be used when cluster autoscaling is needed.'"
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In Kubernetes 1.32, this KEP has been **withdrawn** and all code related to it gets removed. #4381 continues."
+   },
+   {
+    "ref": "readme",
+    "quote": "Beware that this approach poses a problem for the [Cluster Autoscaler](https://github.com/kubernetes/autoscaler) (CA) or for any higher level controller"
+   },
+   {
+    "ref": "readme",
+    "quote": "Structured parameters from #4381 should be used when cluster autoscaling is needed."
+   },
+   {
+    "ref": "rcomment:1787850150",
+    "quote": "I don't think we should go out of our way and keep it around longer because of that. I'm not the one asking for the removal"
+   },
+   {
+    "ref": "rcomment:1787850150",
+    "quote": "> Is there a deprecated option? No."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-4381",
+    "relation": "replaced_by",
+    "ref": "readme",
+    "quote": "Now the roles are reversed: #4381 defines the base functionality and this KEP is an optional extension."
+   }
+  ],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 9559,
+  "output": 1149
+ },
+ "extracted_at": "2026-10-15T22:45:09Z"
+}

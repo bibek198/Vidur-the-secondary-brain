@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1122",
+ "input_hash": "95498716c974fda7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1122 adds CSI Node Plugin support on Windows nodes by introducing csi-proxy.exe, a host-side privileged proxy exposing a GRPC API over a named pipe so CSI node plugins running in containers can perform privileged storage operations. The KEP is in implementable state at stable stage; the GA work was carried out out-of-tree in kubernetes-csi/csi-proxy rather than in kubernetes/kubernetes.",
+  "rationale": "Windows containers cannot perform privileged operations (disk scan, partitioning, formatting, staging) that CSI node plugins need, so the KEP proposes a host OS proxy. Discussion shows the remaining work to reach GA was moved out of k/k: ddebroy stated that \"all the remaining changes to reach GA/stable will be out of tree in https://github.com/kubernetes-csi/csi-proxy\". The feature was declared complete on 2021-08-09.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Make the CSI node plugin changes in kubernetes/kubernetes (in-tree k/k PRs)",
+    "why_not": "Discussion says no k/k PRs were anticipated: \"We do not anticipate any k/k PRs for 1.19.\" and later \"all changes target https://github.com/kubernetes-csi/csi-proxy\"."
+   },
+   {
+    "option": "Use a privileged container model for Windows CSI node plugins",
+    "why_not": "The sources say this is still evolving and is not the chosen path for this KEP: \"As privileged container support for Windows evolves (https://github.com/kubernetes/enhancements/pull/2037), there may be changes necessary in k/k\". The KEP's Non-Goals defer broader privileged operations to a separate KEP."
+   },
+   {
+    "option": "Extend support to CSI controller plugins from Windows nodes",
+    "why_not": "Listed as a non-goal: \"Support CSI Controller Plugin operations from Windows nodes: This may be considered in the future but not an immediate priority.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP describes a host OS proxy to execute privileged operations on the Windows host OS on behalf of a container."
+   },
+   {
+    "ref": "comment:841502722",
+    "quote": "All the remaining changes to reach GA/stable will be out of tree in https://github.com/kubernetes-csi/csi-proxy ."
+   },
+   {
+    "ref": "comment:640777187",
+    "quote": "We do not anticipate any k/k PRs for 1.19."
+   },
+   {
+    "ref": "comment:704407276",
+    "quote": "The decision is to stay Beta for 1.20 to get a better idea of what changes will be necessary around privileged containers for Windows."
+   },
+   {
+    "ref": "comment:891000000",
+    "quote": "This issue is now complete! https://kubernetes.io/blog/2021/08/09/csi-windows-support-with-csi-proxy-reaches-ga/ Many thanks to all those who contributed!!"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12445,
+  "output": 1124
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

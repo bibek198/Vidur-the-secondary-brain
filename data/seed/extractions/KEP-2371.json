@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2371",
+ "input_hash": "6ee29846a3e4235c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2371 moves container and pod level stats for the Summary API and /metrics/cadvisor from cAdvisor to the CRI implementation, so the kubelet gets them from CRI and cAdvisor no longer collects duplicated stats. The KEP is at implementable status, stage beta.",
+  "rationale": "cAdvisor and the CRI runtime both collect the same container and pod stats, which causes unclear metric origins, duplicated work, and performance cost. CRI also cannot yet provide enough metrics to fill all Summary API fields. The KEP extends the CRI API and has runtimes implement the stats, so the kubelet no longer depends on cAdvisor for these fields and the runtime is more pluggable. Later comments changed the approach: the kubelet translates CRI data into /metrics/cadvisor instead of CRI broadcasting it directly.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Have cAdvisor skip only the expensive disk stats that CRI also reports",
+    "why_not": "The readme says this does not address the anti-pattern of several parties being responsible for a wide array of metrics."
+   },
+   {
+    "option": "Have cAdvisor implement the Summary API as a daemonset drop-in replacement",
+    "why_not": "Listed as an alternative in the readme and discussion; the sources do not record it being chosen."
+   },
+   {
+    "option": "Deprecate or replace the Summary API with a Prometheus-style format",
+    "why_not": "The discussion says the Summary API and /metrics/cadvisor are too widely relied on to drop now; the KEP keeps both endpoints."
+   },
+   {
+    "option": "Keep /metrics/cadvisor served from cAdvisor while CRI also serves the same metrics",
+    "why_not": "Random-Liu and haircommander argued this keeps two scrape paths and confuses metric sources, which the KEP aims to remove."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The CRI API currently does not provide enough metrics to fully supply all the fields for either endpoint, however is used to fill some fields of the summary API."
+   },
+   {
+    "ref": "readme",
+    "quote": "Duplicate stats are collected by both cAdvisor and the CRI runtime, which can lead to: * Different information from different sources"
+   },
+   {
+    "ref": "rcomment:592550082",
+    "quote": "My understanding is `/stats/summary` and also `/metrics/cadvisor` are here to stay *for now*."
+   },
+   {
+    "ref": "comment:3402814499",
+    "quote": "Sometime in the alpha, we changed the approach of `/metrics/cadvisor`, now having kubelet translate CRI information to that endpoint."
+   },
+   {
+    "ref": "comment:3403059550",
+    "quote": "We decided to announce deprecation in beta, and move forward with it in GA when we decide to drop support for containerd < 2.2."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12335,
+  "output": 1084
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3327",
+ "input_hash": "f8330ba9dca655a1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3327 adds a new CPUManager static-policy option, `align-by-socket`, so that CPUs on a socket are treated as aligned and the CPUManager sends socket-aligned preferred hints to the TopologyManager. Status is implementable, stage alpha.",
+  "rationale": "On CPUs with several NUMA nodes per socket, the CPUs per NUMA node shrink, so perfect NUMA alignment with devices is hard to reach. The default CPUManager prefers the minimum NUMA-node count, which can span sockets and degrade performance. Widening the alignment scope to the socket boundary gives the TopologyManager more socket-aligned hints to choose from.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Introduce align-by-socket as a TopologyManager policy",
+    "why_not": "The TopologyManager's function is to act as arbitrator for hint providers and should decide based on the hints provided, not influence BestHint with its own policy."
+   },
+   {
+    "option": "Support systems with multiple sockets per NUMA node by allowing alignment across sockets",
+    "why_not": "Reviewers asked for this to be handled; the author leaned toward erroring out when there is more than one socket per NUMA node, since such machines are rare. The sources do not record a final resolution beyond this lean."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "With this policy option CPUs will be considered aligned at socket boundary instead of NUMA boundary during allocation."
+   },
+   {
+    "ref": "readme",
+    "quote": "However, if the NUMA nodes selected for allocation are spread across sockets, it results in degraded performance."
+   },
+   {
+    "ref": "rcomment:893072906",
+    "quote": "Updated the KEP, i am leaning towards erring out in case there are more than one socket per NUMA"
+   },
+   {
+    "ref": "comment:1162167097",
+    "quote": "Agreed with @klueska above at: https://github.com/kubernetes/enhancements/pull/3334#issuecomment-1161476253 Added some comments as the non blocker for alpha too."
+   },
+   {
+    "ref": "comment:1271688324",
+    "quote": "This will remain in alpha for 1.26, and you'll need to opt in again when the 1.27 cycle starts to graduate the enhancements to beta."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12362,
+  "output": 898
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

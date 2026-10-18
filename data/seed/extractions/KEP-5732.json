@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5732",
+ "input_hash": "120f6d9553c7d641",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5732 adds topology-aware and DRA-aware workload scheduling to kube-scheduler, evaluating candidate \"Placements\" (node/DRA subsets) for whole PodGroups. Its current status is implementable, stage beta; during review the DRA-aware implementation was moved to beta, while topology constraints are the alpha-scope focus.",
+  "rationale": "The problem is that the default pod-centric scheduler cannot resolve group-level topology constraints (e.g., co-locating a PodGroup in one rack), and external tools like Kueue or Volcano decouple that decision from the scheduler. The KEP proposes embedding Placement evaluation into the scheduler, reusing existing pod-level filter and score plugins. Reviewers narrowed the scope: the author moved DRA-aware implementation to beta to wait for KEP-5729 to define PodGroup-level ResourceClaims. The status was advanced from provisional to implementable on 2026-02-10 after a sig-scheduling maintainer asked for the change.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep DRA constraints (DRAConstraints) in the alpha scope of this KEP",
+    "why_not": "Wojtek Szczesniak proposed removing DRAConstraints from scope and coupling it to the PodGroup/ResourceClaim lifecycle discussion in KEP-5729, and the author then moved DRA-aware implementation to beta."
+   },
+   {
+    "option": "Use an external admission controller such as Kueue or an alternative scheduler such as Volcano",
+    "why_not": "The KEP argues that relying on external admission controllers decouples the topology decision from the scheduler's core logic, and alternative schedulers add operational complexity."
+   },
+   {
+    "option": "Add a replicas field to PodGroup now and handle per-replica constraints",
+    "why_not": "Wojtek Szczesniak suggested not adding the replicas field yet and splitting all-replica from per-replica constraints, focusing alpha on the former; the sources do not record a final decision on this."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Topology-aware scheduling is not a new concept and is currently addressed by external admission control systems like Kueue or alternative schedulers like Volcano."
+   },
+   {
+    "ref": "rcomment:2625089691",
+    "quote": "I have decided to move the DRA-aware scheduling implementation to the beta of this feature and wait for the KEP-5729: DRA: ResourceClaim Support for Workloads to define required API"
+   },
+   {
+    "ref": "rcomment:2613865072",
+    "quote": "remove the \"DRAConstraints\" from the scope (and couple it the lifecycle of PodGroup/RC discussion we'll have in https://github.com/kubernetes/enhancements/issues/5729"
+   },
+   {
+    "ref": "rcomment:2787779502",
+    "quote": "We have `provisional` in the kep.yaml, so we need to make it `implementable`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11889,
+  "output": 1126
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

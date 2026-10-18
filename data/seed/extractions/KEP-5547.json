@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5547",
+ "input_hash": "6c6712600444bb04",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5547 integrates the Job controller with the Workload and PodGroup gang scheduling APIs. The Job controller automatically creates a Workload and PodGroup before pod creation for Indexed Jobs with parallelism > 1 and parallelism = completions, using a gang policy with minCount equal to parallelism. The KEP is at stage alpha with status implementable.",
+  "rationale": "Parallel workloads such as AI/ML training and MPI need all pods scheduled together, and the Job controller currently creates pods independently. The KEP integrates the new Workload and PodGroup APIs into the Job lifecycle so that gang scheduling applies by default to qualifying Jobs. Maintainers chose not to add Workload-related fields to the Job API during alpha, so the gang behavior is set by hard restrictions and defaults instead.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Opt-in gang scheduling through new fields in the Job API",
+    "why_not": "The discussion says the goal was to experiment and NOT introduce API fields in the Job resource, because the Job-side settings were not agreed and the Workload and PodGroup APIs are under heavy development. The beta graduation criteria say knobs for opt-in or opt-out will be exposed later."
+   },
+   {
+    "option": "Earlier opt-out of the feature for 1.35",
+    "why_not": "The earlier PR #5548 was closed on 2025-10-13 and the feature was opted out of 1.35 entirely, with a plan to revisit it later. The sources do not say why this KEP was then revived for 1.36 beyond the revisit plan."
+   },
+   {
+    "option": "Making minCount mutable so parallelism can change at runtime",
+    "why_not": "The KEP states that support for scaling up or down gang Jobs is a non-goal in alpha and that elastic Jobs are not supported when gang scheduling is active. Maintainers said minCount must become mutable in 1.37 for beta, so it was deferred rather than done in alpha."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The Job controller will automatically create `Workload` and `PodGroup` objects before creating pods for parallel Jobs, enabling native gang scheduling support in Kubernetes."
+   },
+   {
+    "ref": "comment:3907555245",
+    "quote": "The goal was to experiment and NOT introduce API fields in the Job resource. We haven't reached an agreement what the settings should be on the Job side for that functionality"
+   },
+   {
+    "ref": "rcomment:2773261235",
+    "quote": "We're intentionally not introducing any \"Workload related\" API on the Job side and instead relying on hard restrictions and defaults (i.e. gang if parallelism > 1, parallelism cannot change if gang enabled)"
+   },
+   {
+    "ref": "comment:3919765313",
+    "quote": "It is intentional now, but it will become the default behavior when both of these feature gates graduate."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12093,
+  "output": 1105
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

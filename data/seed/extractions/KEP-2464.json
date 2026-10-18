@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2464",
+ "input_hash": "37ef1f4d9315e0e9",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2464 proposes migrating kubernetes/kubernetes release-blocking and merge-blocking CI jobs from the deprecated Kubetest and scenarios tooling to kubetest2, starting with shadow canary jobs on the main branch only. Current status is implementable, stage beta.",
+  "rationale": "Kubetest and scenarios are deprecated and lack proper owners, and kubetest has a poor separation of concerns, so changes have a large blast radius. The KEP consolidates on one community-supported e2e launcher and migrates the critical-path jobs in stages (canary, non-blocking, then blocking). Release branches and their CI are left unchanged.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue using kubetest, scenarios, and push-build.sh as-is",
+    "why_not": "The readme says kubetest lacks proper owners and active contribution, and scenarios are described as legacy hacky scripts that would be more maintainable in a proper framework."
+   },
+   {
+    "option": "Improve kubetest, scenarios, and push-build.sh in place",
+    "why_not": "The readme says kubetest lacks good separation of concerns, that most scenarios are obsolete, and that push-build.sh is bash with no value beyond the Go equivalent KREL push."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubetest and scenarios have both been deprecated, for a while, with a recommendation to move jobs to kubetest2"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a plan for migration/deprecation of CI jobs that are in the critical path of a release."
+   },
+   {
+    "ref": "readme",
+    "quote": "For the development (main/master) branch only, **NOT** the existing release branches: - Create shadow canary jobs for each"
+   },
+   {
+    "ref": "readme",
+    "quote": "Kubetest lacks a good separation of concerns which leads to changes having a large blast radius."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3036,
+  "output": 784
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

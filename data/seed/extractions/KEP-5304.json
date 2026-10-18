@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5304",
+ "input_hash": "f41145a20062c117",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5304 proposes exposing DRA device attributes and other metadata to containers by having the DRA kubelet plugin framework write per-request metadata JSON files and bind-mount them into containers via CDI, so workloads like KubeVirt can read device details (e.g. PCIe address, mdev UUID) without custom controllers. Status is implementable, stage beta.",
+  "rationale": "Consumers today must chase claim status, then ResourceSlice, to find device attributes, which pushes projects like KubeVirt into fragile custom controllers. The framework-assisted design keeps the scheduler and kubelet unchanged, and drivers opt in through a plugin-level flag or option. Metadata is written per request so containers only see the requests they reference. Discussion moved the design from a shared driver-names directory to driver-owned per-driver directories, and from mutable metadata to a prepare-time model for network drivers.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Downward API environment variables populated by kubelet",
+    "why_not": "The readme says the downward API only surfaces one attribute at a time and that the approach would have been more ergonomic, but it was not chosen because drivers would have to populate env vars and the design needed multi-level lookup. Its reasons are only partly stated in the sources; the readme's Drawbacks section compares it directly."
+   },
+   {
+    "option": "Shared /var/run/dra-device-attributes directory keyed by claim and request, with driver-name files",
+    "why_not": "A reviewer (pohly) argued the shared directory is not portable to Windows or across host OSes and complicates cleanup. The design was revised to keep metadata under each driver's own plugin directory, and a driverNames file was dropped because drivers would race writing it."
+   },
+   {
+    "option": "Allowlist of attributes exposed to pods",
+    "why_not": "Reviewers (johnbelamaric) said no allowlist is needed because the feature does not expand data beyond what users with read access to ResourceSlice can already obtain; the KEP was to be swept to remove it."
+   },
+   {
+    "option": "Feature gate for the feature",
+    "why_not": "johnbelamaric stated there is no feature gate because the only upstream changes are to a library used by downstream components, which may do their own feature gating."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Containers only see metadata for the requests they reference (via `resources.claims[].request`), providing proper isolation when a claim has multiple requests used by different containers."
+   },
+   {
+    "ref": "readme",
+    "quote": "When the flag is set, the framework enables the metadata code path; when unset, the feature is fully disabled — no CDI specs or metadata files are generated."
+   },
+   {
+    "ref": "rcomment:2786297367",
+    "quote": "I don't see a need to use the same directory for all drivers. These `metadata.json` files are driver-owned files which are accessed through the CDI files."
+   },
+   {
+    "ref": "rcomment:2794739759",
+    "quote": "There's no feature gate because the only upstream changes are to a library used by downstream components, which may or may not have their own way to do feature gating."
+   },
+   {
+    "ref": "comment:3715661707",
+    "quote": "The driverNames file proposed to be filled by different drivers will cause issues as each driver will start to write to it and race."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11643,
+  "output": 1215
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

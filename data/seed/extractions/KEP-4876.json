@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4876",
+ "input_hash": "69541ba99cda319b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4876 proposes making CSINode.Spec.Drivers[*].Allocatable.Count mutable and updating it either on a driver-configured periodic interval (NodeAllocatableUpdatePeriodSeconds in CSIDriver) or when a volume attachment fails due to insufficient capacity. The KEP is recorded as implemented, stage stable.",
+  "rationale": "Once a CSI driver reports an allocatable count at startup, out-of-band attachments, multi-driver contention, or other devices taking slots make it stale, so kube-scheduler places stateful pods on nodes without capacity and they stick in ContainerCreating. The KEP addresses this by making the count mutable and refreshing it periodically (opt-in) and on attach failure. The sources record the design decisions that were reached during review, such as the 10s minimum interval and opt-in default, but the sources do not give a rationale for the final implemented status beyond the graduation notes.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Custom scheduler",
+    "why_not": "Rejected: \"It would significantly degrade the customer experience, as users would need to deploy and manage an additional component.\" The KEP also says it is \"arguably workaround solution that does not address the root cause\"."
+   },
+   {
+    "option": "Reject pods at kubelet admission time",
+    "why_not": "The reviewer @torredil argued \"There is no meaningful synchronous check we can perform at pod admission time here, the volume attachment operation is async.\" Investigation was deferred to before beta."
+   },
+   {
+    "option": "Reuse the device plugin framework to advertise slots",
+    "why_not": "@torredil discarded it: \"we already have a good mechanism in place for this (Kubelet directly calls a CSI driver's NodeGetInfo RPC when the plugin is registered to learn about the limit).\""
+   },
+   {
+    "option": "Exponential backoff for periodic updates",
+    "why_not": "@torredil: \"I'm not sure that it would make sense to update this value using an exponential backoff strategy, but open to the idea.\" The design uses a fixed interval only."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes changes to make the `CSINode.Spec.Drivers[*].Allocatable.Count` field mutable and introduces a mechanism to update it dynamically"
+   },
+   {
+    "ref": "rcomment:1794160734",
+    "quote": "Lower limit: Spoke with David offline and landed on `10s` as an acceptable latency for periodic updates to this value."
+   },
+   {
+    "ref": "rcomment:1794160734",
+    "quote": "Default behavior: the periodic sync will not occur unless a cluster admin explicitly configures the `AllocatableUpdateInterval` field in the `CSIDriver` object."
+   },
+   {
+    "ref": "rcomment:1794173091",
+    "quote": "Kubelet will only update the `CSINode.Spec.Drivers[*].Allocatable.Count` field when a pod fails to enter the running state because a volume in the pod spec failed to attach due to no capacity on the node."
+   },
+   {
+    "ref": "comment:2405482080",
+    "quote": "PRR looks good and the scalability section is valuable. We'll have to build it out a little more as we gain experience in alpha. /approve"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12792,
+  "output": 1226
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

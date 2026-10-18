@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-115",
+ "input_hash": "bbbe105a55ec7281",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-115 proposes creating staging repos k8s.io/{component} that host the external ComponentConfig API types in a top-level config/ package, with shared config types moved into k8s.io/{apimachinery,apiserver,controller-manager}/pkg/apis/config. Internal types stay in kubernetes/kubernetes for now. The KEP is in implementable status, stage alpha.",
+  "rationale": "ComponentConfig API types live in the core repo, which makes them inaccessible to third-party tools and complicates vendoring. Moving them to staging repos makes them consumable externally and unblocks moving kubeadm out of the core repo. The design requires the external API packages to depend only on k8s.io/apimachinery so they can be published.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Publish internal types to the new k8s.io/{component} repo",
+    "why_not": "Listed as a non-goal for this KEP; internal types eventually go to k8s.io/{component}/pkg/apis/config but are deferred."
+   },
+   {
+    "option": "Expose defaulting functions for external types publicly in k8s.io/{component}/config",
+    "why_not": "Non-goal: defaulting stays local to the component and is registered in the default scheme; only RecommendedDefaultFoo functions for shared types are exposed, and not registered by default."
+   },
+   {
+    "option": "Have the cloud-controller-manager use ComponentConfig from the staging repo",
+    "why_not": "Non-goal: cloud-controller-manager references parts it needs from the main repo and lives privately in cmd/cloud-controller-manager."
+   },
+   {
+    "option": "Place external types under k8s.io/{component}/pkg/apis/config/types.go",
+    "why_not": "Proposal says not having external types there is intentional, since pkg/ carries no code compatibility guarantees while config/ is a code API; the pkg/ location is only an option if dependencies allow it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP is about creating new staging repos, `k8s.io/{component}`, which will host the external types of the core components’ ComponentConfig in a top-level `config/` package."
+   },
+   {
+    "ref": "readme",
+    "quote": "Make ComponentConfig API types consumable from *projects outside of kube* and from different parts of kube itself"
+   },
+   {
+    "ref": "readme",
+    "quote": "The only dependency of the ComponentConfig API types should be `k8s.io/apimachinery`"
+   },
+   {
+    "ref": "readme",
+    "quote": "Not having the external types there is intentional because the `pkg/` package tree is considered as \"on-your-own-risks / no code compatibility guarantees\", while `config/` is considered as a code API."
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead, there will be `RecommendedDefaultFoo` methods exposed, which the consumer of the shared types may or may not manually run in `SetDefaults_Bar` functions"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4096,
+  "output": 1089
+ },
+ "extracted_at": "2026-10-15T22:53:05Z"
+}

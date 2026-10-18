@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3751",
+ "input_hash": "636614d56557fa86",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3751 proposes a VolumeAttributesClass API so users can change volume performance attributes (IOPS, throughput) on existing volumes online via a PVC reference, without using cloud provider APIs directly. Its status is implementable, stage stable.",
+  "rationale": "Kubernetes had no API to change volume IO attributes after provisioning; only capacity could be expanded, and StorageClass parameters are immutable. The KEP adds a VolumeAttributesClass object whose name can be changed on a PVC, letting parameters be updated after creation. The discussion shows many open design questions (quota during modification, driver capability reporting, default VAC behavior) that were raised during review, and the sources do not record how each was finally resolved.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep using StorageClass parameters and provider APIs directly",
+    "why_not": "Kubernetes does not handle updates of volume attributes other than capacity, so users must call the cloud provider API directly; the readme calls this a friction the KEP aims to remove."
+   },
+   {
+    "option": "Make StorageClass parameters mutable",
+    "why_not": "A commenter notes it is difficult to make the StorageClass parameters field mutable and impossible to make the PVC storageClassName mutable, so a new object was introduced."
+   },
+   {
+    "option": "Add a catch-all map[string]string attributes field only",
+    "why_not": "Raised in review by ameade as a question of the value of first-class fields; the sources do not record a final decision beyond the KEP adding first-class fields for throughput and iops and an optional attributes field discussed in comments."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Kubernetes has no API which allows changing them. Only capacity can be changed through the volume expansion API."
+   },
+   {
+    "ref": "rcomment:1230290747",
+    "quote": "The reason why we cannot use StorageClass.parameters is because StorageClass is immutable today. The design is to introduce a VolumeAttributesClass with parameters."
+   },
+   {
+    "ref": "comment:1628661183",
+    "quote": "It's difficult to make the parameters field of the `StorageClass` mutable. And it's impossible to make the `storageClassName` field of the `PersistentVolumeClaim` mutable."
+   },
+   {
+    "ref": "comment:3273218435",
+    "quote": "We may not be able to close this issue. Because the feature gate is not locked, and the storage api version is not switched to v1 from v1beta1."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11999,
+  "output": 955
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

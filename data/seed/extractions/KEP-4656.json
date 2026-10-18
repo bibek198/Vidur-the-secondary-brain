@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-4656",
+ "input_hash": "106d0df717a91d05",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4656 proposes that kubeadm stop setting the CRI socket annotation (kubeadm.alpha.kubernetes.io/cri-socket) on Node objects and stop writing --container-runtime-endpoint to kubeadm-flags.env. Instead, kubeadm writes a per-node /var/lib/kubelet/instance-config.yaml containing ContainerRuntimeEndpoint, which is merged into the kubelet config during init/join/upgrade. The KEP is at status implementable, stage alpha.",
+  "rationale": "The CRI socket annotation on the Node object persists even when the kubelet or the container runtime changes, so it can go stale. Moving the endpoint into a per-node instance config lets kubeadm set ContainerRuntimeEndpoint in the kubelet config directly, which removes the need to store it on each Node. The readme frames this as a way to use the migrated container runtime endpoint flag in instance configuration.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Do nothing and keep using /var/lib/kubelet/kubeadm-flags.env",
+    "why_not": "The readme notes that kubelet has deprecated the --container-runtime-endpoint args, so continuing to use the flags file is not viable long term."
+   },
+   {
+    "option": "Avoid a feature gate and ship compatibility across multiple versions",
+    "why_not": "The readme says it prefers adding a feature gate to improve user awareness, so this option was not chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Instead of relying on the annotation, this KEP proses creating an instance config per node and overriding the `ContainerRuntimeEndpoint` in the kubelet config when calling kubeadm commands"
+   },
+   {
+    "ref": "readme",
+    "quote": "This annotation is persistent on the Node object, even if the kubelet is updated or the CRI is changed."
+   },
+   {
+    "ref": "readme",
+    "quote": "This file will be merged with `/var/lib/kubelet/config.yaml` in the process of kubeadm init/join by using the `kubeletconfiguration` patch target."
+   },
+   {
+    "ref": "readme",
+    "quote": "Do nothing, continue to use the`/var/lib/kubelet/kubeadm-flags.env` file, but kubelet has deprecated the `--container-runtime-endpoint` args."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2826,
+  "output": 923
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

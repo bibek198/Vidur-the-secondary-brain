@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2393",
+ "input_hash": "6f0b438932206926",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2393 defines documentation requirements for in-tree and out-of-tree cloud providers, requiring validated example manifests and per-resource lists of cloud-provider-specific labels and annotations, so that provider docs are consistent and SIG Docs can link to them. The KEP is implementable and at alpha stage.",
+  "rationale": "Cloud provider documentation is limited in scope, consistency, and quality, which burdens SIG Docs and users. The proposal sets a single format for docs in k8s.io/cloud-provider-* repositories. Requirement 1 asks for example manifests, and Requirement 2 asks for grouped lists of labels and annotations kept up to date. The alternative of having SIG Docs write everything was rejected because it would need context that cloud provider developers already have.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "SIG Docs solely responsible for writing cloud provider integration documentation",
+    "why_not": "The readme says this \"would not be efficient because it would require SIG Docs to understand the context/scope of any cloud provider work that happens upstream.\" Developers working on integrations are best placed to write these docs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Currently documentation for cloud providers for both in-tree and out-of-tree managers is limited in both scope, consistency, and quality."
+   },
+   {
+    "ref": "readme",
+    "quote": "Ensure all Kubernetes cloud providers adhere to this doc format to provide a consistent experience for all users."
+   },
+   {
+    "ref": "readme",
+    "quote": "Developers who work with cloud provider integrations are most fit to write the cloud provider integration docs."
+   },
+   {
+    "ref": "readme",
+    "quote": "Provide validated manifests for every component required for both in-tree and out-of-tree versions of your cloud provider."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2953,
+  "output": 742
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

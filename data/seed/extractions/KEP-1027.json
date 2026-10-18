@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1027",
+ "input_hash": "da22174e83d3031b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1027 proposes standardized union (oneOf) semantics for Kubernetes API types, using a discriminator field plus union member markers, so the API server can validate that only one member is set and normalize client intent. Its status is implementable at stage alpha, implementable from 2020-12-30.",
+  "rationale": "Union semantics are implicit in core types (e.g. VolumeSource, DeploymentStrategy), so clients cannot reliably understand them and the server cannot normalize objects written by version-skewed clients. The KEP relies on server-side apply (#555) and does not aim to migrate all existing unions. Later comments show the work was repeatedly deferred across releases, and a 2025 comment says the normalization and validation code paths were still not implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Non-discriminated unions (no discriminator field)",
+    "why_not": "The KEP says a discriminator lets the server understand the intent of clients that do not know all union fields after version skew, which a non-discriminated union cannot."
+   },
+   {
+    "option": "Pointer-to-string discriminator with nil as the none value",
+    "why_not": "The KEP says this needs more complicated validation (nil check, then value check) and makes client intent harder to determine on patches."
+   },
+   {
+    "option": "Require every union to be defined in its own separate struct",
+    "why_not": "The KEP says it was rejected because many existing unions mix non-member fields into the same struct, and the authors hope to migrate some of them."
+   },
+   {
+    "option": "Always use an empty string as the none discriminator value",
+    "why_not": "The KEP says this makes it impossible to support the empty union members case, since the enum values would not be defined per discriminator."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Modern data model definitions like OpenAPI v3 and protobuf (versions 2 and 3) have a keyword to implement “oneof” or \"union\"."
+   },
+   {
+    "ref": "readme",
+    "quote": "Non-Goals\nMigrating all existing unions away from their bespoke validation logic (e.g validation functions), is an explicit non-goal"
+   },
+   {
+    "ref": "comment:496603004",
+    "quote": "This feature depends on server-side apply (#555) which is slipping, you can mark this for 1.16 and stop tracking :-/"
+   },
+   {
+    "ref": "comment:1195789189",
+    "quote": "I think you can drop it for this release, we have no time to get it implemented, thanks."
+   },
+   {
+    "ref": "comment:3234530111",
+    "quote": "Not implemented: convert OpenAPI schemas into SMD schemas, in the Kubernetes code I believe"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12097,
+  "output": 1004
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

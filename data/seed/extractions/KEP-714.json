@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-714",
+ "input_hash": "812e1aac909e2785",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-714 proposes replacing the monolithic kubernetes-test.tar.gz release artifact with several platform-specific test tarballs, one per platform in KUBE_TEST_PLATFORMS, matching the existing client/node/server tarball pattern. Status is implemented, stage stable.",
+  "rationale": "The single \"mondo\" test tarball kept growing as platforms were added (about 1.2GB at v1.13.2, 1.3-1.5GB in earlier releases). Users who only need one platform must download everything, and Bazel cross-compilation of multiple targets in one call is poorly supported, which made producing identical Bazel and non-Bazel artifacts harder. Splitting the tarball by platform addresses both problems.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the single monolithic kubernetes-test.tar.gz",
+    "why_not": "The tarball had grown to roughly 1.2GB to 1.5GB as platforms increased, which is the problem the KEP sets out to solve."
+   },
+   {
+    "option": "Change the underlying build system (make/shell or Bazel)",
+    "why_not": "The non-goals state that the build system is not changed; both build systems are affected but users keep their existing workflow."
+   },
+   {
+    "option": "Prune unused binaries and portable sources from the test tarballs",
+    "why_not": "Removing cruft is an explicit non-goal; the sources say pruning will not happen with this effort."
+   },
+   {
+    "option": "Make test binaries directly downloadable from GCS",
+    "why_not": "Changing what is released independent of the test tarball is an explicit non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes replacing the monolith test tarball with platform-specific tarballs, matching the existing pattern used for the client, node, and server tarballs."
+   },
+   {
+    "ref": "readme",
+    "quote": "As of Kubernetes v1.13.2, the official `kubernetes-test.tar.gz` is approximately 1.2GB; previous releases ranged from 1.3 - 1.5GB."
+   },
+   {
+    "ref": "readme",
+    "quote": "combining multiple target platforms in one Bazel call is currently not well-supported. Separating this tarball would make it easier"
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead of building and distributing a single `kubernetes-test.tar.gz` with all portable sources and compiled binaries for all platforms, produce several platform-specific tarballs"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2490,
+  "output": 955
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

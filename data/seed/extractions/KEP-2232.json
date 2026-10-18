@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2232",
+ "input_hash": "970d1b404e251dd7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2232 proposed letting users suspend and resume Jobs, which deletes active Pods and stops the Job controller from creating new ones until resumed, and allows creating Jobs in a suspended state. The KEP is implemented and at stable stage.",
+  "rationale": "Users needed to pause a Job mid-execution, but the only workaround was deleting and re-creating the Job, which loses metadata such as the list of successful/failed Pods and logs. The design adds a suspend flag so Pod creation can be delayed indefinitely and resumed later. The KEP chose a native Kubernetes feature over an external controller using an orchestratorName field, which the document judged to add unnecessary complexity and make Job ownership hard to track.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Delete and re-create the Job to pause it",
+    "why_not": "Deletes Job metadata such as the list of successful/failed Pods and logs, as the motivation section states."
+   },
+   {
+    "option": "External controller using an orchestratorName field so the default Job controller ignores the Job",
+    "why_not": "The document says it adds unnecessary complexity and the need for additional control plane components, and makes ownership of the Job hard to track."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Suspending a Job will delete all active Pods owned by that Job and also instruct the controller manager to not create new Pods until the Job is resumed."
+   },
+   {
+    "ref": "readme",
+    "quote": "as a workaround, users can delete and re-create the Job, but this will also delete Job metadata such as the list of successful/failed Pods and logs."
+   },
+   {
+    "ref": "readme",
+    "quote": "While this approach is similar to the `schedulerName` field used in kube-scheduler, it adds unnecessary complexity and the need for additional control plane components to handle Jobs."
+   },
+   {
+    "ref": "readme",
+    "quote": "In addition, this approach makes ownership of the Job hard to track."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2577,
+  "output": 782
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

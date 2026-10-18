@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-3085",
+ "input_hash": "4f37f1c7481ef678",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3085 proposed a new pod condition reporting that the pod sandbox was created and networking is up, so the kubelet can start containers. The KEP's status is implementable (stage stable). The name was changed during review from SandboxReady to PodHasNetwork.",
+  "rationale": "The existing Initialized condition does not reliably track sandbox creation, since for pods without init containers it is set before sandbox creation starts. Cluster operators and controllers need a condition that shows when sandbox creation (CSI, CRI, CNI) completed or failed. Reviewers asked for a name that does not expose the internal \"sandbox\" concept, and the discussion settled on PodHasNetwork.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the name SandboxReady",
+    "why_not": "sig-node feedback said the term tends to surface the internal Sandbox concept to users, which is not desirable; the KEP was then renamed to PodHasNetwork."
+   },
+   {
+    "option": "Use PrereqsInitialized or PrereqsReady as the name",
+    "why_not": "Suggested as an alternative name during sig-node discussion, but the KEP moved to PodHasNetwork instead."
+   },
+   {
+    "option": "Use extended conditions or a CRI proxy instead of a native pod condition",
+    "why_not": "Listed as an alternative by sftim; the sources record it being added to the alternatives list, but do not state why it was rejected."
+   },
+   {
+    "option": "Move Initialized after the network condition so ordering is consistent across pods with and without init containers",
+    "why_not": "dchen1107 proposed this; sig-node on July 5th agreed to carry on with the PodHasNetwork condition as described, since transition ordering should not matter, and to address Initialized in a separate KEP."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a `PodReadyToStartContainers` condition in pod status to indicate a pod has reached a state where it's containers are ready to be started."
+   },
+   {
+    "ref": "comment:1118928255",
+    "quote": "Feedback from sig-node meeting on May 3rd around this KEP: the term `SandboxReady` tends to surface the internal \"Sandbox\" concept to users which is not desirable."
+   },
+   {
+    "ref": "comment:1158685655",
+    "quote": "I have updated the KEP with the suggested `PodHasNetwork` condition. PTAL when you get a chance."
+   },
+   {
+    "ref": "rcomment:914023903",
+    "quote": "The suggestion was to carry on with the `PodHasNetwork` condition as described in this KEP as the ordering of transition of pod conditions should not be important."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12868,
+  "output": 1014
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2238",
+ "input_hash": "2288d7674dd12df8",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2238 adds an optional probe.terminationGracePeriodSeconds field so liveness and startup probe failures can use a grace period separate from the pod-level terminationGracePeriodSeconds, while readiness probes ignore it. The KEP is marked implementable at stable stage.",
+  "rationale": "Liveness probe failures currently wait for the full pod terminationGracePeriodSeconds, so a wedged container with a long grace period is not restarted promptly. The proposal decouples the two by adding an optional per-probe field that defaults to current behaviour. Reviewers required a feature gate and off-by-default rollout because of API server and kubelet version skew, and raised concerns about breaking apps that rely on the grace period for crash safety.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Infer the grace period from failure threshold times probe period",
+    "why_not": "Discussion listed cons: the default becomes implicit and arbitrary, and it complicates a later explicit API field. Users who want liveness to take longer would see behaviour change."
+   },
+   {
+    "option": "Introduce a toleration similar to the node not-ready execute toleration",
+    "why_not": "Listed as a hack to avoid an API change; tolerations for execution were judged not to fit conditional probe behaviour."
+   },
+   {
+    "option": "Terminate the pod immediately, or after a default grace period, on liveness failure",
+    "why_not": "Listed cons: may break applications that rely on the grace period for crash safety, thresholds are not user-configurable, and a feature flag would eventually become required behaviour."
+   },
+   {
+    "option": "Add a pod-level field next to terminationGracePeriodSeconds",
+    "why_not": "Listed con: liveness probes act per container, so different containers may need different thresholds. Reviewers also raised this, and the KEP kept the field on the probe."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "I propose adding a new field to probes, `probe.terminationGracePeriodSeconds`. When set, it will override the `terminationGracePeriodSeconds` for liveness or startup termination"
+   },
+   {
+    "ref": "readme",
+    "quote": "If the field is not specified, we will default to the current behaviour, which uses the `terminationGracePeriodSeconds`."
+   },
+   {
+    "ref": "rcomment:556746462",
+    "quote": "I think this requires a feature gate, and should not be treated different than any other change."
+   },
+   {
+    "ref": "rcomment:556746462",
+    "quote": "it needs to be off-by default for at least 2 releases until all kubelets are up to same level as API server."
+   },
+   {
+    "ref": "rcomment:565729887",
+    "quote": "liveness probes don't act at the pod level, they act exclusively at the container level."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12807,
+  "output": 1035
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

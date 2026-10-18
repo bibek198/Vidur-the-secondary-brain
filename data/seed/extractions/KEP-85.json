@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-85",
+ "input_hash": "354a305908743f7a",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-85 (Pod Disruption Budget) plan to promote the PDB API from beta to stable (v1). The status is implemented, stage stable; the work landed in 1.21 for PDB v1 and the Eviction resource was moved to 1.22.",
+  "rationale": "PDB had been in beta since Kubernetes 1.5 and the project wanted to support it long term, so the readme proposes promotion to stable and addressing some open issues. Graduation slipped across several releases (1.16, 1.17, 1.18, 1.20) while open issues such as maxUnavailable=0 were resolved. In 1.21 the PDB v1 work was on track, but the Eviction resource was deferred to 1.22 because of subresource versioning challenges.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Graduate PDB to stable in 1.16 with the open PR 81571",
+    "why_not": "The PR did not merge before code freeze and the feature was bumped from v1.16; the maintainer said there was no good solution to the maxUnavailable=0 situation and that it should not hold up GA."
+   },
+   {
+    "option": "Promote the Eviction resource to stable together with PDB in 1.21",
+    "why_not": "The maintainer said the /pods/eviction endpoint is a subresource of a v1 API and posed challenges, so Eviction would be brought to GA in 1.22 to avoid a second beta."
+   },
+   {
+    "option": "Keep PDB in beta indefinitely",
+    "why_not": "The readme states the PDB API has been stable and the team plans to support it long term, so promotion was pursued."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "PDB API has been stable and is an important feature that allows users to improve reliability of their critical workloads."
+   },
+   {
+    "ref": "comment:524706306",
+    "quote": "There was agreement that since we don't have a good solution to the situation described, we should not let it hold up GA for PDBs."
+   },
+   {
+    "ref": "comment:791591925",
+    "quote": "we have decided that the Eviction resource will not be promoted in 1.21. The reason is that since the `/pods/eviction` endpoint is a subresource of a v1 API"
+   },
+   {
+    "ref": "comment:829343707",
+    "quote": "1.22 work is complete: * KEP: https://github.com/kubernetes/enhancements/pull/2591 * PR: https://github.com/kubernetes/kubernetes/pull/100724"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9765,
+  "output": 944
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

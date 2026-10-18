@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2394",
+ "input_hash": "f108ff8b4f171688",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2394 proposes building support for the out-of-tree AWS cloud provider, centered on a well-tested cloud-controller-manager with feature parity to kube-controller-manager. The KEP is currently in provisional status.",
+  "rationale": "Clusters on AWS run the in-tree cloud provider, and the KEP aims to move that to an out-of-tree cloud-controller-manager. The motivation is deferred to the Cloud Controller Manager KEP, and this KEP tracks AWS-specific progress. Removing in-tree AWS code is explicitly out of scope and falls under the removing-in-tree-providers KEP. The sources give no reasoning for the provisional status.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Removing the in-tree AWS cloud provider code within this KEP",
+    "why_not": "The readme lists it as a non-goal, stating it 'falls under the KEP for removing in-tree providers'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Build support for the out-of-tree AWS cloud provider. This involves a well-tested version of the cloud-controller-manager"
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP is specifically tracking progress for the AWS cloud provider."
+   },
+   {
+    "ref": "readme",
+    "quote": "Removing in-tree AWS cloud provider code, this effort falls under the [KEP for removing in-tree providers]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1744,
+  "output": 619
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

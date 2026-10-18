@@ -1,0 +1,41 @@
+{
+  "frozen_at": "2026-10-15T20:30:15Z",
+  "live_feed_cutoff": "2026-09-15T00:00:00Z",
+  "repos": {
+    "enhancements": {
+      "head": "6ebe0a94771723b3f27cb4a757f0cc22f29e38a2",
+      "head_date": "2026-10-14T16:14:09Z"
+    },
+    "community": {
+      "head": "53c338ecba4a2a9240f6654cca1d6a9dac25c785",
+      "head_date": "2026-10-14T05:42:55Z"
+    }
+  },
+  "folders": {
+    "api/issues": {
+      "files": 51,
+      "bytes": 40692474,
+      "sha256": "a8e2cf2ef7bbe6464d504a8d57099442489bf0213adeb7225cd9e43e93c9fdb0"
+    },
+    "api/comments": {
+      "files": 7525,
+      "bytes": 125890211,
+      "sha256": "a54afcea7f7bb0cd20d0517f32b53ecb383b55813ba0bb0d44c50c9294a6eae0"
+    },
+    "api/reviews": {
+      "files": 5702,
+      "bytes": 82547755,
+      "sha256": "92ba8f81c63488bf3991c868fa911f991f22f56a2e701ea115fd74787c2e9266"
+    },
+    "api/review_comments": {
+      "files": 5823,
+      "bytes": 1042369282,
+      "sha256": "247925551894e62cadea523c4fdc464d4b8a90c14e81351a6aa0aab3b6f1aa0f"
+    },
+    "owners": {
+      "files": 609,
+      "bytes": 214959,
+      "sha256": "14633f23f23613adf0c9f5d83af4b50a8ab9a3b42ed16346bd6927b8e882f371"
+    }
+  }
+}

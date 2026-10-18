@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-4412",
+ "input_hash": "fa906b510e4c21a5",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4412 lets the kubelet send a projected service account token (PSAT), bound to the pod and its service account with a configured audience, to kubelet credential provider plugins via stdin, so image pulls can be tied to workload identity without long-lived secrets. The KEP is marked implementable at stage beta.",
+  "rationale": "Today image pulls rely on long-lived image pull secrets stored in the API or on node-wide kubelet credential providers that any pod on the node can use. The proposal adds an optional tokenAttributes field so a provider can receive a per-pod token and selected service account annotations. Reviewers raised concerns about cache keying, annotation exposure, and downgrade safety, which led to a separate apiserver feature gate that must be beta and enabled one release before this KEP reaches beta.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Always pass the service account token through to the registry and rely on registry proxies to perform STS exchange",
+    "why_not": "The readme lists this only under Alternatives with no stated reason for rejection, so the sources do not say why it was not chosen."
+   },
+   {
+    "option": "Pass arbitrary pod annotations to the credential provider",
+    "why_not": "Reviewer liggitt said this 'makes an effectively unlimited surface area', and the design moved to service account annotations listed explicitly in serviceAccountAnnotationKeys."
+   },
+   {
+    "option": "Let the credential provider look up service account info directly from the Kubernetes API",
+    "why_not": "Raised by liggitt as an alternative in review; the sources do not record a final rejection rationale."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "When it is set, the Kubelet will provision a token with the given audience bound to the current pod and its service account."
+   },
+   {
+    "ref": "rcomment:1780602865",
+    "quote": "Removed pod annotations and added a new service account annotations field in the credential provider config to define the annotations that'll be plumbed to the plugin"
+   },
+   {
+    "ref": "rcomment:1792551115",
+    "quote": "Added a new feature gate and updated the beta criteria to include what @enj mentioned."
+   },
+   {
+    "ref": "rcomment:1794138171",
+    "quote": "This feature needs to be beta/enabled by default at least one release before this KEP goes to beta. This is critical to support downgrade use cases."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12047,
+  "output": 911
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

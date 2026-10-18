@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1451",
+ "input_hash": "e6ca804a2f11b171",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1451 proposes letting a single kube-scheduler run multiple framework plugin configurations (\"profiles\"), each associated with a scheduler name, so pods select a profile via .spec.schedulerName. Current status is implementable, stage beta.",
+  "rationale": "A single cluster runs heterogeneous workloads (services and batch jobs, fixed and autoscaling nodes) that need different scoring, but one scheduler configuration fits all poorly. Running multiple scheduler binaries causes race conditions and extra management effort because each has its own cache and view of resources. Hosting multiple profiles in one kube-scheduler gives the same benefits without those races.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Run multiple schedulers with different configurations",
+    "why_not": "The readme says this creates multiple caches and scheduler decisions that might be incompatible with other schedulers, and it risks race conditions."
+   },
+   {
+    "option": "Keep a single kube-scheduler configuration for all workloads",
+    "why_not": "The readme says a single configuration weighs scores in a way that does not adjust to all workload types, for example the default seeks high availability of services."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "We propose making the scheduler run different framework plugin configurations, which we will call profiles and will be associated to a scheduler name."
+   },
+   {
+    "ref": "readme",
+    "quote": "Instead, having a single kube-scheduler run multiple profiles will have the same benefits of running multiple schedulers without running into race conditions."
+   },
+   {
+    "ref": "readme",
+    "quote": "The problem with this approach is the existence of multiple caches and a scheduler taking decisions that might be incompatible with other schedulers."
+   },
+   {
+    "ref": "comment:691733045",
+    "quote": "I see that this is planned to graduate in 1.21? Can you confirm that this is still correct and that you aren't graduating in 1.20?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6572,
+  "output": 775
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

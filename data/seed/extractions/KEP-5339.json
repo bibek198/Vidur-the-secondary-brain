@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-5339",
+ "input_hash": "71665433b3d8b10d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5339 proposed a standardized, pluggable way for controllers to obtain credentials for clusters represented by ClusterProfile CRs, by exec'ing external credential plugins that reuse the Kubeconfig exec protocol. The KEP is now in status \"replaced\" at alpha stage.",
+  "rationale": "ClusterProfile inventories lacked a standard way to get credentials for the clusters they describe, and previous attempts had failed. The proposal uses exec'd plugins, so cluster managers can supply credential methods without embedding them in controller code or recompiling. It reuses the Kubeconfig external credential protocol to ease implementation.",
+  "outcome_reason": "The status history records a move to \"replaced\" on 2026-06-23, but the provided sources do not say what replaced it or why. No replacing KEP is named in the sources.",
+  "alternatives": [
+   {
+    "option": "Alternatives section of the design document",
+    "why_not": "The excerpt names an Alternatives section but gives no content, so the alternatives considered are not stated in the sources."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP provides a standardized way to obtain credentials for Clusters when using ClusterProfile and makes it pluggable to allow the diverse ecosystem to support the multitude of ways to obtain credentials."
+   },
+   {
+    "ref": "readme",
+    "quote": "Previous attempts at writing credentials have failed and we believe that a plugin model, also reusing known flows, will help solve the \"credentials\" need for ClusterProfiles."
+   },
+   {
+    "ref": "readme",
+    "quote": "Plugins would be exec'ed by the controller so that they don't need be built-in the binary, allowing flexibility into writing their own credential plugins"
+   },
+   {
+    "ref": "readme",
+    "quote": "we propose to reuse the exec approach and protocol used for external credentials in Kubeconfig (but not the configuration part of kubeconfig)."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 2409,
+  "output": 779
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

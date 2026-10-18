@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2291",
+ "input_hash": "6848b5c31cfb5774",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2291 proposed letting Prow read optional presubmit job definitions from a prow.yaml file inside the tested repository, instead of only from the central infra-config repo. The KEP reached status implemented, stage stable.",
+  "rationale": "Presubmits lived only in the central infra-config repo, so a PR adding or changing a presubmit could not be verified in that PR, and branch copies had to be maintained by hand. The proposal makes in-repo presubmit configuration optional and opt-in, and has Prow components fetch it through a git client. Non-public test-infra repos also blocked outside collaborators from changing job configs, which this addresses.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep all presubmits in the central infra-config repository",
+    "why_not": "The readme lists this as the source of the problems: a new presubmit cannot be verified in the PR that introduces it, and branch copies must be maintained manually."
+   },
+   {
+    "option": "Configure Postsubmits or Periodics inside the tested repository as well",
+    "why_not": "The readme lists this under Non-Goals and says it may be done in a future iteration."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document proposes to change the Prow presubmit handling to optionally version some or all presubmits in the same repository that also contains the code that is being tested."
+   },
+   {
+    "ref": "readme",
+    "quote": "It is not possible to see in a Pull Request that introduces a new presubmit if that presubmit will actually pass."
+   },
+   {
+    "ref": "readme",
+    "quote": "This feature is optional and opt-in"
+   },
+   {
+    "ref": "readme",
+    "quote": "The option to configure Postsubmits or Periodics inside the tested repository. This may be done in a future iteration."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2589,
+  "output": 717
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-3335",
+ "input_hash": "0e1ad8e317f15ef7",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3335 adds a `spec.ordinals.start` field to StatefulSet so the controller manages pods for an ordinal slice [k, N+k-1] instead of always starting at 0. This lets an orchestrator split or migrate a StatefulSet across namespaces or clusters without downtime. The KEP is implemented and at stable stage.",
+  "rationale": "Migrating a StatefulSet today requires either deleting it (backup/restore, causing downtime) or orphaning pods and emulating the controller by hand. Because StatefulSets always number pods from 0 to N-1, a single pod ordinal cannot be moved to a destination StatefulSet without creating duplicate lower ordinals. A configurable start ordinal lets the source and destination each own a non-overlapping slice, and the migration can proceed one replica at a time.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Orphan pods with --cascade=orphan, migrate them, and create a new StatefulSet",
+    "why_not": "The readme says that in the case of pod eviction or failure, pods must be recreated manually, which needs constant monitoring and intervention."
+   },
+   {
+    "option": "Backup and restore the StatefulSet and its storage in a new namespace or cluster",
+    "why_not": "The readme says this approach requires the existing StatefulSet to be deleted, which results in application downtime."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The goal of this feature is to allow a StatefulSet's first ordinal to start from any natural number `k`. This enables StatefulSet ordinals from `k` to `N+k-1`"
+   },
+   {
+    "ref": "readme",
+    "quote": "If pod `N-1` is removed from the source StatefulSet, there is no mechanism to create only pod `N-1` in a destination StatefulSet without creating pods `[0, N-2]` as well."
+   },
+   {
+    "ref": "readme",
+    "quote": "Extending StatefulSet to start at an ordinal `k` (eg: `N-1`) would allow the destination StatefulSet to skip over pods `[0, N-2]` when creating pod `N-1`."
+   },
+   {
+    "ref": "readme",
+    "quote": "To control the starting and ending ordinal of each slice, a new struct `ordinals` is introduced to `StatefulSetSpec`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 3785,
+  "output": 905
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

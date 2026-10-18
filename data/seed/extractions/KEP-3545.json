@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3545",
+ "input_hash": "a8d4ca23c6dc6e94",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3545 adds a kubelet option (topology-manager-policy-options, prefer-closest-numa-nodes) so the TopologyManager favors NUMA node sets with shorter distances when comparing equal-sized sets. It was implemented and graduated to stable, with status marked implemented from 2025-02-03.",
+  "rationale": "Topology Manager policies align on a single NUMA node or the minimum number of nodes but ignore NUMA distance, which can cause performance loss when non-adjacent nodes are chosen. The design extends the manager with a policy option, following the CPUManager policy-options precedent, so that all policies can prefer closer NUMA nodes while preserving their other properties. The discussion shows the team chose this over a new policy because distance matters for both best-effort and restricted.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a new Topology Manager policy similar to best-effort that also considers NUMA distance",
+    "why_not": "NUMA distance can be an important factor not only for best-effort but also restricted policy, so a mechanism similar to CPUManagerPolicyOptions that influences multiple policies was preferred."
+   },
+   {
+    "option": "Obtain NUMA distances from cadvisor only, without a kubelet workaround",
+    "why_not": "cadvisor's distance change was merged on master but not in an official release by the time of review, so a temporary kubelet code path was kept until cadvisor is vendored (the KEP's temporary code path)."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposed enhancement is only applicable when comparing sets of NUMA nodes that are equal in size."
+   },
+   {
+    "ref": "readme",
+    "quote": "Adding new Topology Manager policy similar to `best-effort` which also takes NUMA distance into consideration."
+   },
+   {
+    "ref": "rcomment:986659980",
+    "quote": "This is merged and available on `master` branch but not in any of official releases."
+   },
+   {
+    "ref": "comment:2585948559",
+    "quote": "Now that this KEP has graduated to `stable`, could we update the KEP status in kep.yaml"
+   },
+   {
+    "ref": "comment:2638085809",
+    "quote": "Closing this KEP issue as completed, as it has graduated to `stable` and kep.yaml is marked as `implemented`."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13228,
+  "output": 900
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

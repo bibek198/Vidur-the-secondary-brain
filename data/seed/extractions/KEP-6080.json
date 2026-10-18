@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-6080",
+ "input_hash": "238b21b7f1443d17",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-6080 proposes a `derivedAttributes` field on DRA devices, where each entry is a CEL expression over a device's properties that yields an extra attribute usable in constraints such as matchAttribute. The KEP is currently provisional at alpha stage.",
+  "rationale": "Standardizing hardware attribute names in DRA is slow, so users cannot constrain on attributes that drivers do not publish under standard names. Derived attributes let users compute such attributes via CEL from existing attributes, with no driver implementation work. Reviewers agreed to keep constraints unchanged and add only the derivedAttributes field, and to keep derived attributes out of CEL device selectors for now.",
+  "outcome_reason": "The sources do not give a final reason for the provisional status. The history shows the KEP missed the enhancements freeze after the release team was asked for an exception, which the sources record as \"evaluating\" with the KEP removed from the milestone.",
+  "alternatives": [
+   {
+    "option": "Change the constraints section so derived attributes get their own matching semantics",
+    "why_not": "johnbelamaric said 'We should not change the constraints. These should just look like any other attribute to the entire constraints section. The only API addition needed should be the `derivedAttributes` field.'"
+   },
+   {
+    "option": "Use derived attributes inside CELDeviceSelector expressions (device.derivedAttributes map or injecting into device.attributes)",
+    "why_not": "gauravkghildiyal said it was 'intentionally did not include in this KEP' because it 'brings additional complexities, such as how they impact performance by forcing early evaluation'; a different KEP is suggested for that."
+   },
+   {
+    "option": "Migrate pcieRoot from a scalar to list(string) in place under the same attribute name",
+    "why_not": "gauravkghildiyal argued 'It's gonna be extremely difficult for DRA Driver to directly change pcieRoot from a single element to a list type without breaking users', and proposed a separate pcieRoots attribute instead."
+   },
+   {
+    "option": "Use a 'Option 2' FQDN-based naming for standard attributes",
+    "why_not": "aojea said Option 2 'will break existing users of the well defined pcieRoot standard attribute'; the discussion favored Option 1 (allow FQDNs) as the recommended approach."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3245110033",
+    "quote": "We should not change the constraints. These should just look like any other attribute to the entire constraints section."
+   },
+   {
+    "ref": "comment:4523831452",
+    "quote": "Forcing users to only be able to constraint match on 'standard attributes' is very limiting. The pace of defining 'standard attributes' can never keep up"
+   },
+   {
+    "ref": "rcomment:3416739786",
+    "quote": "I'd rather avoid introducing this change without more careful consideration. If this usability experience is needed in the future, a different KEP would be a perfect opportunity"
+   },
+   {
+    "ref": "comment:5058184382",
+    "quote": "This KEP has filed an exception, the release team is evaluating and will be added back to the milestone after a consensus."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11667,
+  "output": 1156
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

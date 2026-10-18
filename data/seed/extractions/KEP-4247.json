@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4247",
+ "input_hash": "bdb1438d35c4beea",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4247 introduces QueueingHint, a per-plugin callback that lets the scheduling queue decide whether a rejected Pod should be requeued after a cluster event, and whether to skip backoff. The KEP is now implemented and at stable stage.",
+  "rationale": "Plugins' EventsToRegister retried Pods on broad events, such as any Node add or update, even when those events could not make the Pod schedulable. Per-event callbacks filter these retries more finely, and letting DRA skip backoff avoids waiting for device-driver updates. The status is implemented, stage stable, which the sources confirm only in the enhancements lead's request to mark it implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Requeue by walking all unschedulable plugins' hints until all return Queue (kerthcet's proposal)",
+    "why_not": "Sanposhiho showed a scenario (issue 109437) where NodeAffinity returns QueueSkip and NodeTaint returns Queue, so the Pod is never moved to activeQ; the sources reject this as a complete approach."
+   },
+   {
+    "option": "Return a Pending or Wait status from the plugin and let the hint decide, decoupled from framework status",
+    "why_not": "The thread left this open; sanposhiho argued that tying backoff skipping to the returned status keeps the decision coupled to the past scheduling cycle, and that a clear rule and guardrail are needed to prevent misuse by custom plugins."
+   },
+   {
+    "option": "Let custom plugins return QueueImmediately from the hint even when they return Unschedulable",
+    "why_not": "Sanposhiho objected that this needs a clear rule and guardrail, since all plugins gather in the scheduler and must work together without incorrect skip-backoff usage."
+   },
+   {
+    "option": "Keep returning Queue for all cross-node and non-Node events, as today",
+    "why_not": "Sanposhiho noted that cross-node plugins would then have to return Queue for any non-Node event they register, which is not a real answer to the PodTopologySpread and custom-plugin cases."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "By introducing the callback function to filter out events more finely, the scheduler can retry scheduling of Pods which is only likely to be scheduled in the next scheduling cycle."
+   },
+   {
+    "ref": "readme",
+    "quote": "We want to improve the performance there by giving ability to plugins to skip backoff in selected cases."
+   },
+   {
+    "ref": "rcomment:1349804548",
+    "quote": "NodeAffinity returns Queue, but NodeTaint returns QueueSkip. So, the Pod isn't moved to activeQ."
+   },
+   {
+    "ref": "comment:3303429974",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`, and then close this issue?"
+   },
+   {
+    "ref": "comment:1854238250",
+    "quote": "since the feature was disabled, please update the KEP with notes on what criteria needs to be fulfilled to re-enable the feature."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11580,
+  "output": 1164
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

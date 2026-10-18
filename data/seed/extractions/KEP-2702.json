@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-2702",
+ "input_hash": "216fa55f1ced43f1",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2702 graduates the autoscaling v2beta2 HPA API to GA (stable), promoting all of v2beta2, deprecating v2beta1 immediately, and deprecating v2beta2 once v2 stable lands.",
+  "rationale": "The v2beta2 API had been used extensively and was informally treated as stable, so the KEP aims to make that formal. Graduation requires E2E tests for HPA behavior and container resource targets. Breaking changes are limited: Resource is renamed to PodResource and behavior select policy values Min/Max are renamed to MinChange/MaxChange. Scale-to-zero is excluded because APIs cannot introduce breaking changes.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Promote scale-to-zero as part of this effort",
+    "why_not": "The readme says it requires deprecating the special flag meaning of scaling subresource replicas=0, and APIs cannot introduce breaking changes, so it is a Non-Goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The v2beta2 API has been used extensively and informally treated as stable. The motivation for this KEP is to push it over the line to make it formally so."
+   },
+   {
+    "ref": "readme",
+    "quote": "Promote all of v2beta2 to stable * HPA behavior and container resource targets have E2E tests in order to meet stable requirements."
+   },
+   {
+    "ref": "readme",
+    "quote": "Rename `Resource` to `PodResource` to match new ContainerResource target"
+   },
+   {
+    "ref": "readme",
+    "quote": "However, it is not part of HPA v2 stable effort since APIs cannot introduce breaking changes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 1928,
+  "output": 697
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

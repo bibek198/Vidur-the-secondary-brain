@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5526",
+ "input_hash": "6f2154c63babdb8c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5526 extends the Topology, CPU, and Memory Managers so that pod.spec.resources can drive NUMA alignment for the whole pod (pod scope), with a partitioning scheme that carves exclusive slices for Guaranteed containers and leaves a shared pool for the rest. It also lets Guaranteed containers in a Guaranteed pod get exclusive resources under container scope. Current status: implementable, stage beta.",
+  "rationale": "The Kubelet's resource managers could not use the pod-level budget from KEP-2837 as the basis for NUMA alignment, and mixed-criticality pods (a performance-sensitive container plus sidecars) could not be aligned as one unit. The design adds pod-scope hint generation and a partition of the pod-wide allocation into exclusive slices and a shared pool. Reviewers accepted the design, with open questions about CPU quota interaction, observability, and admission of pods whose exclusive requests consume the whole budget.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Assign the entire pod-level allocation to every container in the pod",
+    "why_not": "Rejected in the KEP because it does not support mixed-criticality containers within the same pod, such as a primary application with guaranteed resources and a sidecar with shared resources."
+   },
+   {
+    "option": "Add a pod-level cpuset that all containers use directly",
+    "why_not": "A reviewer (ndixita) noted the team was not planning to use a pod-level cpuset; the chosen design uses pod-level values only for hint generation and partitions per container."
+   },
+   {
+    "option": "Release init container resources to the pod pool instead of reusing a reusable pool",
+    "why_not": "Raised as a question by ffromani; the sources do not record a decision on this alternative."
+   },
+   {
+    "option": "Surface allocation results via a new ContainerStatus field or pod events",
+    "why_not": "Deferred. The team agreed observability would go to a dedicated KEP, since the observability changes do not warrant a pod-level-resources-specific feature gate; the KEP keeps metrics and logs."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The Kubelet's key resource management components—Topology, CPU, and Memory Managers—are not yet able to use this pod-level specification as the direct basis for NUMA alignment decisions."
+   },
+   {
+    "ref": "readme",
+    "quote": "The resulting pod-wide allocation is then partitioned by the CPU and Memory managers, exclusive slices are carved out for `Guaranteed` containers, while the remainder forms a shared pool for all other containers."
+   },
+   {
+    "ref": "rcomment:2417754027",
+    "quote": "it was agreed that, given the scope of the observability improvements for the resource managers, it doesn't make sense to protect the change with a pod-level resources specific feature gate, so it's better to have a dedicated KEP for observability."
+   },
+   {
+    "ref": "comment:3404746179",
+    "quote": "The newly introduced pod scope has introduced a CPU Quota conflict issue, and the potential fix is enforcing the cpu quota for the containers sharing podSharedPool cpusets."
+   },
+   {
+    "ref": "rcomment:2403603778",
+    "quote": "If the sum of exclusive requests equals the total pod resource budget, and there is at least one container destined for the shared pool, the pod should me marked as invalid."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12396,
+  "output": 1250
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

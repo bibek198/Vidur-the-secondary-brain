@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-2887",
+ "input_hash": "ebc45603fc431c0b",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2887 adds a `+enum` marker on Go type aliases so the Kubernetes OpenAPI generator can detect and emit enum values for string-typed fields, applied to built-in types. The KEP is at stage beta with status implementable.",
+  "rationale": "Enum-like fields in the core API are plain strings, so their allowed values are documented in comments and duplicated in validation code, and UIs cannot show dropdowns. The KEP proposes a marker that the OpenAPI generator reads to deduce values from the Go type definition, with all built-in enums annotated. Reviewers raised concerns about closed-enum forward/backward compatibility and kubebuilder divergence, and the discussion records that clients should treat enums as open.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep enum types as plain strings with comment-only documentation",
+    "why_not": "The KEP states the problem: values are duplicated across the code base and tools cannot show dropdowns. The sources do not record a rejection of this option beyond that."
+   },
+   {
+    "option": "Implement the feature in OpenAPI v2 as well",
+    "why_not": "The Drawbacks section says the breaking effect on users expecting plain strings is 'the main reason for not implementing this feature in OpenAPI v2'. A reviewer also suggested the v2 improvement could be delivered separately from OpenAPI v3."
+   },
+   {
+    "option": "Require kubebuilder support for the marker before merging",
+    "why_not": "Reviewers (sttts) asked for kubebuilder support as a goal and requirement. The author responded that kubebuilder would be supported too, and the sources do not show this was made a blocking prerequisite."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes a `+enum` marker to type aliases that represent enums. The OpenAPI generator will have the capability to recognize the marker and auto-detect possible values for an enum."
+   },
+   {
+    "ref": "readme",
+    "quote": "This KEP will break any users that expect enum types to be plain strings. This is the main reason for not implementing this feature in OpenAPI v2"
+   },
+   {
+    "ref": "rcomment:705658735",
+    "quote": "They are closed from a server-side perspective (server won't allow any unknown value). Clients, for backwards compatibility reasons, should consider it open (new values are possible)."
+   },
+   {
+    "ref": "comment:1084096205",
+    "quote": "I opened https://github.com/kubernetes/kubernetes/issues/109177 to track an issue with forward-compatibility of generated clients using language-level enums."
+   },
+   {
+    "ref": "comment:2607584592",
+    "quote": "Let's hold on to GA this one for one more release while the dust settles."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9296,
+  "output": 1034
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

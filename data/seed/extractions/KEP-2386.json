@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-2386",
+ "input_hash": "5ef47043e1831b16",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2386 publishes the `kustomize build` command as `kubectl kustomize`, so users can run `kubectl kustomize <dir> | kubectl apply -f -`. The KEP is recorded as implemented at stage stable, and it replaces KEP-2377 Kustomize per kep.yaml.",
+  "rationale": "Kubectl apply and related declarative workflows lacked declarative ways to generate and transform Resource config, which pushed users toward bash scripts. The proposal exposes kustomize through kubectl as a standalone subcommand and defers deeper ResourceBuilder integration such as `kubectl apply -k` to a follow-up. The discussion says the mechanism was completed and the KEP was closed as needed for KEP migration, and that it was moved to implemented retroactively.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Deeper integration into ResourceBuilder (e.g. `kubectl apply -k <dir>`) in the same KEP",
+    "why_not": "The proposal defers it: \"Defer deeper integration into ResourceBuilder (e.g. `kubectl apply -k <dir>`) as a follow up after discussing the precise UX and technical tradeoffs.\""
+   },
+   {
+    "option": "Solving the same friction with bash scripts around kubectl",
+    "why_not": "The motivation says \"We want to discourage as a pattern teaching users to run arbitrary bash scripts from GitHub.\""
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Publish the `kustomize build` command as `kubectl kustomize`. Update documentation to demonstrate using kustomize as `kubectl kustomize <dir> | kubectl apply -f -`."
+   },
+   {
+    "ref": "readme",
+    "quote": "Defer deeper integration into ResourceBuilder (e.g. `kubectl apply -k <dir>`) as a follow up after discussing the precise UX and technical tradeoffs."
+   },
+   {
+    "ref": "comment:837254533",
+    "quote": "This was needed for KEP migration, but the mechanism is already completed. /close"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "retroactively declared this beta since that's where this ultimately ended up during 1.21. This KEP was initially declared implementable at alpha, before PRR was required."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2377",
+    "relation": "replaces",
+    "ref": "kep.yaml",
+    "quote": "KEP-2386 replaces KEP-2377 Kustomize"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 6511,
+  "output": 976
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

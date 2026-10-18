@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2317",
+ "input_hash": "f1d3819edd939807",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2317 adds a volume_mount_group field to the CSI NodeStageVolume and NodePublishVolume RPCs so CSI drivers can apply the pod's fsGroup as a mount option instead of kubelet recursively chown/chmod-ing the volume. The KEP is implemented and at stable stage.",
+  "rationale": "Some CSI drivers, such as AzureFile, do not support chown/chmod, so kubelet's recursive fsGroup ownership changes cannot work for them. Passing fsGroup explicitly lets the driver apply it at mount time, and this is a prerequisite for CSI migration of the Azure File driver and removal of the Azure cloud provider. The proposal explicitly does not treat fsGroup as a generic ownership handle for drivers.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Mount volumes with 777 permissions or run pods as root",
+    "why_not": "The readme says both alternatives are \"not great and not backward compatible.\""
+   },
+   {
+    "option": "Keep kubelet chown/chmod as the only mechanism for fsGroup",
+    "why_not": "Drivers such as AzureFile do not support chmod/chown, so the readme's motivation requires a mount-time path."
+   },
+   {
+    "option": "Treat fsGroup as a generic ownership and permissions handle for CSI drivers",
+    "why_not": "The readme says the CSI spec change deliberately avoids this, since Kubernetes permissions may be platform/OS specific and drivers should not enforce them."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This feature hence becomes a prerequisite of CSI migration of Azure file driver and removal of Azure Cloud Provider."
+   },
+   {
+    "ref": "readme",
+    "quote": "We are updating CSI specs by adding additional field called `volume_mount_group` to `NodeStageVolume` and `NodePublishVolume` RPC calls."
+   },
+   {
+    "ref": "readme",
+    "quote": "The CSI spec change is deliberately trying to avoid asking drivers to use supplied `fsGroup` as a generic handle for ownership and permissions."
+   },
+   {
+    "ref": "comment:1347542270",
+    "quote": "since this enhancement has graduated to stable can you please update https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/2317-fsgroup-on-mount/kep.yaml setting the status to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12835,
+  "output": 946
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

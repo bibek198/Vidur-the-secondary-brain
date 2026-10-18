@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5823",
+ "input_hash": "c93e2c58b950563f",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5823 proposes pod-level checkpoint/restore in Kubernetes, starting with alpha CRI changes and checkpoint support. Its status is implementable at stage alpha, and the KEP was approved for PRR and LGTM'd after the restore path was changed to go through the scheduler via node affinity rather than bypassing it with spec.nodeName.",
+  "rationale": "Reviewers raised concern that restore Pods bypassing the scheduler was the wrong layering, and that the KEP was too large for an iterative approach. The author moved restore placement to admission-injected node affinity so the scheduler selects a node that supports restore, and reviewers (dchen1107, haircommander) then approved. Scope was narrowed toward checkpoint-first CRI work with restore iterated later.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep restore bypassing the scheduler by setting spec.nodeName in admission",
+    "why_not": "Reviewer dchen1107 said bypassing the scheduler 'seems like the wrong layering', and the approval was conditional on taking the affinity suggestion instead."
+   },
+   {
+    "option": "Defer the KEP to 1.37 with preliminary API support",
+    "why_not": "Haircommander listed this as one of three options; the sources do not say it was chosen. The thread moved to 'option 4' (CRI changes first, kubelet checkpoint API in alpha 2) instead."
+   },
+   {
+    "option": "Implement kubelet checkpoint API and CRI changes, with restore CRI added later",
+    "why_not": "Haircommander listed the trade-off that kubelet checkpoint without restore is confusing; the sources do not record it as rejected outright, only that option 4 was preferred by adrianreber."
+   },
+   {
+    "option": "Make checkpointing generic to gVisor/kata rather than CRIU-specific",
+    "why_not": "Raised by fals as a request; the sources do not show it was adopted in this KEP's scope."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "rcomment:3437131324",
+    "quote": "Restore is slightly different because of the other change in this review (restore Pods no longer set `spec.nodeName`)."
+   },
+   {
+    "ref": "review:4521055746",
+    "quote": "Instead of mutating the PodSpec to inject spec.nodeName, the admission plugin should simply inject a standard Node Affinity constraint."
+   },
+   {
+    "ref": "comment:4746427054",
+    "quote": "The current PR properly addressing and resolving my concern of the risks of bypassing the scheduler and the control plane"
+   },
+   {
+    "ref": "comment:3915510436",
+    "quote": "I am leaning towards option 4 where we start with CRI changes and address kubelet API in alpha 2 for checkpoint, while also beginning to scheme ways to iterate on API pieces for both checkpoint and restore"
+   },
+   {
+    "ref": "comment:3861980035",
+    "quote": "Watching the discussions here it feels like this is already too big. Keep it smaller as discussed in the working group."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 9438,
+  "output": 1134
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

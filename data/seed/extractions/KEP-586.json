@@ -1,0 +1,26 @@
+{
+ "kep": "KEP-586",
+ "input_hash": "0ae6edfdc90b04ca",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-586 proposes adding Azure Availability Zones (AZ) support to Kubernetes. The KEP is marked implementable at alpha stage.",
+  "rationale": "The source excerpt states the goal of adding Azure Availability Zones support to Kubernetes. It gives no detailed problem statement or reasoning for the design beyond that summary. The status is implementable, stage alpha, from 2020-12-23.",
+  "outcome_reason": null,
+  "alternatives": [],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal aims to add [Azure Availability Zones (AZ)](https://azure.microsoft.com/en-us/global-infrastructure/availability-zones/) support to Kubernetes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "low"
+ },
+ "usage": {
+  "input": 1491,
+  "output": 388
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

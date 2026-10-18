@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-1729",
+ "input_hash": "03f7762b012875ee",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1729 proposes rebasing Kubernetes master and node images (core containers and addons) onto gcr.io/distroless/static:latest as the only base image, removing shell and other unsupported dependencies where needed. The KEP is in implementable status at alpha stage.",
+  "rationale": "Images based on debian/alpine or k8s.gcr.io/debian-base must be rebuilt whenever debian-base has a vulnerability, which happens a couple of times a month, so churn in image versions is high. Rebasing to distroless/static makes images thinner, safer and less vulnerable, and reduces the number of image versions to manage. The shell dependency that justified many debian/alpine bases (glog log redirection) is no longer needed since the move to klog.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep debian-base or alpine as the base image for all images",
+    "why_not": "The motivation notes that debian-base vulnerabilities force rebuilding every image, which causes the version churn the KEP aims to reduce."
+   },
+   {
+    "option": "Rebase images that have hard dependencies on non-static binaries or fluentd (e.g. hyperkube)",
+    "why_not": "These are explicitly listed as Non-Goals and are not changed by this KEP."
+   },
+   {
+    "option": "Directly change images from kubernetes incubator",
+    "why_not": "The proposal says these images won't be changed directly by this KEP; the project OWNERs decide."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Use image gcr.io/distroless/static:latest as the only base image for the following kubernetes images - Images based FROM scratch"
+   },
+   {
+    "ref": "readme",
+    "quote": "Due to the fact that many images are based on debian base and a vulnerability in debian base (a couple times a month) will result in rebuilding every image"
+   },
+   {
+    "ref": "readme",
+    "quote": "Previously, shell is widely used for redirecting glog output to a certain directory. This use case is no longer needed since we've switched from glog to klog"
+   },
+   {
+    "ref": "readme",
+    "quote": "Do not change images that have hard dependencies on non-static binaries."
+   },
+   {
+    "ref": "readme",
+    "quote": "Images from kubernetes incubator won't be changed directly by this KEP and the release plan is not estimated here."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2667,
+  "output": 895
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

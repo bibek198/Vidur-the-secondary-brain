@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5278",
+ "input_hash": "8e5c25172df19e0d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5278 lets kube-scheduler set NominatedNodeName (NNN) at the start of the binding cycle to show the expected pod placement, and narrows the feature so that in v1.35 only kube-scheduler may set it while other components treat it as read-only. The KEP is marked implementable at beta stage.",
+  "rationale": "Components such as ClusterAutoscaler and Karpenter compute placements but cannot express them to the scheduler, and external components may overwrite or conflict over NNN. The KEP narrows scope to one-way communication and removes the scheduler's clearing of NNN so that nominations for not-yet-existing nodes survive. Discussion shows the broader external-setting model was deferred because its state-machine semantics were unresolved.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Introduce a new dedicated field for external hints instead of reusing NominatedNodeName",
+    "why_not": "The KEP says no clear use case required distinguishing the source of the setting, and multiple external components would not eliminate races either; a new field could be added additively later if needed."
+   },
+   {
+    "option": "Allow other components to set NominatedNodeName in pending pods now (v1.35 scope)",
+    "why_not": "In v1.35 the feature is narrowed to one-way communication: only kube-scheduler may set it, and the KEP lists external setting as an alternative for future releases."
+   },
+   {
+    "option": "Keep clearing NNN when the nominated node is unschedulable or missing",
+    "why_not": "The KEP removes this logic because a CA-created node may not exist yet, or may have unready taints, causing the scheduler to clear a valid nomination."
+   },
+   {
+    "option": "Require the external component to track an explicit state machine (proposed vs. approved)",
+    "why_not": "The KEP states that the state machine is not needed now and could be added in an additive way later by exposing state through the API."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "In v1.35 this feature is being narrowed down to one-way communication: only kube-scheduler is allowed to set `NominatedNodeName`, while for other components this field should be read-only."
+   },
+   {
+    "ref": "readme",
+    "quote": "The scheduler only modifies `NominatedNodeName`, does not clear it in any case"
+   },
+   {
+    "ref": "readme",
+    "quote": "We may argue that as long as the decision was made by the scheduler, the exact reason and state probably isn't that important"
+   },
+   {
+    "ref": "comment:3338780669",
+    "quote": "We discussed internally and decided not to prioritize it this release. Especially because we're not 100% sure about how NNN would fit after the reservation-ish thing comes."
+   },
+   {
+    "ref": "comment:3382556560",
+    "quote": "We basically need to revert the changes that were preventing kube-scheduler from removing NNN. These were causing issues in the preemption case."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 13790,
+  "output": 1075
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

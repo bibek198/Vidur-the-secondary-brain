@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2229",
+ "input_hash": "ff181b51f6e8eb21",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2229 proposed moving kubectl's configuration directory from $HOME/.kube to $HOME/.config/kube to follow the XDG Base Directory Specification, with automatic migration. The KEP was merged as rejected, with the project deciding not to make the change.",
+  "rationale": "The proposal would break existing automation and ecosystem tools that rely on ~/.kube, and reviewers said it needed a long deprecation period or opt-in. Maintainers argued tools that generate kubeconfigs would have trouble supporting multiple Kubernetes versions. The KEP author and sig-cli agreed to record it as rejected so future contributors can see the decision was considered.",
+  "outcome_reason": "Rejected because the feedback concluded the change was too breaking. neolit123 supported not making the change, and soltysh suggested merging the KEP as rejected based on that feedback. The author agreed that the community chose to keep the existing location.",
+  "alternatives": [
+   {
+    "option": "Symlink ~/.kube to ~/.config/kube (johnbelamaric's suggestion) to avoid breaking existing tools",
+    "why_not": "The sources do not say this was adopted; the author noted users could manually move the directory and set KUBECONFIG, but no source states the symlink approach was accepted or rejected."
+   },
+   {
+    "option": "Make the new location opt-in or configurable at a system level, keeping the existing flow working (smarterclayton)",
+    "why_not": "Suggested as a mitigation in review, but the sources do not record it being adopted; the KEP was rejected overall."
+   },
+   {
+    "option": "Use the KUBECONFIG environment variable instead",
+    "why_not": "Listed as an alternative in the KEP. Reviewers said many users never set KUBECONFIG and rely on the default path, so this was not seen as a replacement."
+   },
+   {
+    "option": "Keep using $HOME/.kube with old kubectl versions and avoid XDG",
+    "why_not": "This is the status quo that the rejection effectively kept; the KEP lists it as an alternative and the project chose to stay as it is."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:826756278",
+    "quote": "I suggest we document this and merge this KEP as **rejected**, to show future us that we did consider that and based on feedback we've decided not to do it"
+   },
+   {
+    "ref": "comment:844474301",
+    "quote": "the project is driven by the community decisions and community decided to stay as it is"
+   },
+   {
+    "ref": "rcomment:555503185",
+    "quote": "This change would break the behavior of kubectl in automation (using config files) as well as the ecosystem of tools that depend on that behavior."
+   },
+   {
+    "ref": "comment:780763584",
+    "quote": "+1 for not making this change, despite not following the XDG spec. it's quite breaking and we should avoid breaking changes unless mandatory."
+   },
+   {
+    "ref": "rcomment:575023213",
+    "quote": "any tool that generates / merges a kubeconfig file needs to align on this location or break the UX of the generated config being picked up by default."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 4961,
+  "output": 1128
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

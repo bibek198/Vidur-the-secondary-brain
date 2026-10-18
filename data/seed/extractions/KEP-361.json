@@ -1,0 +1,55 @@
+{
+ "kep": "KEP-361",
+ "input_hash": "66e1581b7cbf4dec",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-361 (Local Ephemeral Storage Capacity Isolation) proposed a single API, ResourceEphemeralStorage (\"ephemeral-storage\"), to represent root-partition ephemeral storage and isolate it at pod and container levels via requests/limits and eviction. Its current status is implementable, stage stable.",
+  "rationale": "Pods had no way to know or request local ephemeral storage, and were evicted when other pods filled the node's storage. The proposal unifies this under one storage API so management is consistent with memory and CPU. Discussion around the stable-stage KEP raised concerns about kubelet failing on systems where disk usage cannot be detected (kind rootless, minikube) and about the feature being disabled on those systems, which led to a proposed opt-out kubelet config.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep separate storage APIs for root partition and runtime partition",
+    "why_not": "The proposal says: \"To reduce the confusion and complexity caused by multiple storage APIs design, we use one storage API to represent root partition only and manage its ephemeral storage isolation.\""
+   },
+   {
+    "option": "Keep the feature gate and let kubelet disable the check automatically when usage cannot be detected",
+    "why_not": "@bentheelder argued: \"I feel like it might be concerning if it turns off automatically and admins are not aware that isolation is not be respected? With a config field disabling it is explicit.\""
+   },
+   {
+    "option": "Add a kubelet config to disable the feature (proposed by jingxu97)",
+    "why_not": "@dchen1107 raised concern: \"I have a concern to introduce another kubelet config for such critical features.\" The sources do not record a final resolution of this trade-off."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To reduce the confusion and complexity caused by multiple storage APIs design, we use one storage API to represent root partition only and manage its ephemeral storage isolation."
+   },
+   {
+    "ref": "readme",
+    "quote": "Local ephemeral storage is exposed to pods via the container’s writable layer, logs directory, and EmptyDir volumes."
+   },
+   {
+    "ref": "comment:1179832614",
+    "quote": "add bool enableLocalStorageCapacityIsolation (default=true) into kubelet configuration"
+   },
+   {
+    "ref": "comment:1189392168",
+    "quote": "Without it being enabled, the cluster cannot be treated as production-ready from our earlier experience with K8s and GKE."
+   },
+   {
+    "ref": "comment:1194457546",
+    "quote": "With a config field disabling it is explicit. If there's a bug in this check it might be difficult to catch and problematic for production."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12158,
+  "output": 1028
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

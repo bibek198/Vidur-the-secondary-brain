@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5075",
+ "input_hash": "9d6c0d096037e2dc",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5075 (DRA Consumable Capacity) lets independent resource claims allocate shares of one multi-allocatable device, with scheduler-enforced capacity limits and guarantees per request. Its status is implementable, stage beta, from 2025-06-18.",
+  "rationale": "Without this KEP, devices can only be shared by pods referencing the same claim, which is exclusive or dedicated allocation. Pre-defined partitions are not viable when there would be too many of them, so the KEP adds a sharable device property, capacity requests in device requests, consumed capacity in allocation results, and share IDs to link allocations to allocated device status. The main stated drawback is added scheduler complexity.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Expose the capacity as a new consumable flag on the existing capacity field (type or boolean in the capacity value)",
+    "why_not": "Reviewer @pohly suggested this shape, but the sources record the design as settled on a separate consumable capacity field and the discussion moved toward a sharing policy. Sources do not say why the flag form was dropped."
+   },
+   {
+    "option": "Allocation mode AllowShared with implied sharing when requests are specified",
+    "why_not": "@johnbelamaric proposed it, but @sunya-ch argued that requests without capacity should not imply a whole device, and the design instead requires an explicit default in the sharing policy. Sources do not record a final resolution of the allocation-mode question."
+   },
+   {
+    "option": "Treat a request without capacity requirements as a request for the whole device",
+    "why_not": "@sunya-ch objected that a shareable network card without consumable capacity should not take a whole device, and an explicit default was added to the sharing policy instead."
+   },
+   {
+    "option": "Use an enum sharing strategy at device level",
+    "why_not": "Per the 2025-05-30 update, the strategy was moved to a possible capacity-level extension (a non-goal), and the boolean allowMultipleAllocations flag was kept."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "a method to associate the allocated device status to the allocation result in the resource claim. With those in place, a resource claim with multiple requests might allocate the same device multiple times."
+   },
+   {
+    "ref": "readme",
+    "quote": "Introduce an ability to allocate a multi-allocatable device via DRA multiple times in scenarios where pre-defined partitions are not viable, for example because there would be too many of them."
+   },
+   {
+    "ref": "comment:2921191802",
+    "quote": "shareable flag in resource slice: keep boolean flag and rename to`allowMultipleAllocations`"
+   },
+   {
+    "ref": "comment:2981036881",
+    "quote": "I think the PR is in a good enough shape to merge it. @sunya-ch is traveling this week and I'll be out starting Thursday, so let me propose merging this tomorrow"
+   },
+   {
+    "ref": "rcomment:2152728455",
+    "quote": "This seems a little fuzzy / underspecified currently. I think it's ok to figure out specifics at implementation time and update here, but they do need to be figured out"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12371,
+  "output": 1154
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

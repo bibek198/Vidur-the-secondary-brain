@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-1029",
+ "input_hash": "68a486fb21454b15",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1029 proposes using filesystem project quotas to monitor ephemeral-storage usage of pod volumes (emptyDir, logdir, writable layer) in a non-enforcing way, replacing slow du/find walks. The KEP is currently implementable at stage beta.",
+  "rationale": "The existing du/find volume walk is slow, can be evaded by holding deleted files open, and reacts only after a pod overshoots its limit. Project quotas give a kernel-based usage measurement that addresses these problems. Enforcement is out of scope for this KEP, though the design notes it as a possible future step.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Alternatives based on quotas with a different implementation",
+    "why_not": "The readme lists this as an alternative class considered but gives no reason in the excerpt for rejecting it."
+   },
+   {
+    "option": "Alternatives based on loop filesystems without quotas",
+    "why_not": "The readme lists this as an alternative class considered but gives no reason in the excerpt for rejecting it."
+   },
+   {
+    "option": "Keep the du/find-based monitoring",
+    "why_not": "The motivation section says it is slow, can be fooled by unlinked open files, and has high latency."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The current mechanism relies on periodically walking each ephemeral volume (emptydir, logdir, or container writable layer) and summing the space consumption."
+   },
+   {
+    "ref": "readme",
+    "quote": "Primary: improve performance of monitoring by using project quotas in a non-enforcing way to collect information about storage utilization of ephemeral volumes."
+   },
+   {
+    "ref": "comment:2243451090",
+    "quote": "This enhancement is now marked as `tracked for code freeze` for the 1.31 Code Freeze!"
+   },
+   {
+    "ref": "comment:1231281342",
+    "quote": "Currently, v1.25.1 and v1.26 will revert it to alpha. Only this feature is in beta only in v1.25.0."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 14189,
+  "output": 802
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

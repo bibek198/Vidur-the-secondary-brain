@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5040",
+ "input_hash": "6c296f254b7d709c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5040 proposes removing the in-tree gitRepo volume driver from kubelet while keeping gitRepo volumes in the Kubernetes API. Pods with gitRepo volumes would still be admitted by kube-apiserver, but kubelets with the GitRepoVolumeDriver gate off would fail them with an error. Status is implementable at stage disabled.",
+  "rationale": "gitRepo volumes can be exploited for remote code execution as root on nodes (CVE-2024-10220), and the driver is deprecated, unmaintained, and rarely used. Maintainers chose to disable it by default behind a feature gate first, then lock and remove it after a feedback period, rather than wait for a full removal. The discussion says this accelerated plan was chosen because disabling old code faster carries no risk of enabling untested code.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove gitRepo from the Kubernetes API as well",
+    "why_not": "Explicitly a non-goal in the KEP; pods with gitRepo volumes are still admitted by kube-apiserver and fail in kubelet."
+   },
+   {
+    "option": "Remove the driver and silently ignore gitRepo volumes",
+    "why_not": "Thockin asked whether to silently ignore or fail in kubelet; liggitt said if a pod needs this volume and the plugin is disabled, the kubelet should fail it, and the design chose failing."
+   },
+   {
+    "option": "Follow the slower path: keep the driver enabled, then lock and remove it over several releases",
+    "why_not": "Liggitt argued that a security hole stays open until the default is disabled, so the team agreed to skip ahead to off-by-default in 1.33 with an escape hatch."
+   },
+   {
+    "option": "Disable only the hooks (the attack vector) via a new field",
+    "why_not": "Mentioned only as a fallback if there is real pushback; not the chosen plan."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "kubelets with the feature-gate GitRepoVolumeDriver set to false will not run them and return an appropriate error to the user"
+   },
+   {
+    "ref": "readme",
+    "quote": "gitRepo volume types can be exploited to gain remote code execution as root on the nodes as shown in"
+   },
+   {
+    "ref": "rcomment:1915650778",
+    "quote": "since there's a security hole that doesn't get closed by default until step 2, and there's no risk of accelerating to step 2"
+   },
+   {
+    "ref": "rcomment:1916929009",
+    "quote": "I think the only bits that are urgent are 1) disabling by default with an escape hatch and 2) starting the process to drive feedback"
+   },
+   {
+    "ref": "comment:4566370844",
+    "quote": "the feature gate is deprecated and locked to false in 1.36, the only thing we need to do in 1.37 is to update the KEP to set milestone to \"stable: 1.37\""
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 13401,
+  "output": 1093
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

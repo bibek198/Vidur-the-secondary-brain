@@ -1,0 +1,66 @@
+{
+ "kep": "KEP-993",
+ "input_hash": "41c60963dc296e59",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-993 proposed extending Kustomize Transformers and Generators through exec plugins, configured via new `generators` and `transformers` fields in kustomization.yaml. Its recorded status is implemented at alpha, and kep.yaml records it as replaced by KEP-2953 Kustomize Plugin Graduation.",
+  "rationale": "Kustomize users and ecosystem tools needed a way to add their own generators and transformers without changing Kustomize itself. The design runs plugins as executables that read and write Resource Config over STDIN/STDOUT, installed under $XDG_CONFIG_HOME/kustomize/plugins. Work was repeatedly postponed across release cycles, and the 2021 PR that marked it implemented reflected a sig consensus that the KEP text had not been updated to show.",
+  "outcome_reason": "The sources do not say why the KEP was replaced by KEP-2953; they only record the replacement in kep.yaml. The stated status is implemented, stage alpha, from 2021-06-04.",
+  "alternatives": [
+   {
+    "option": "Imperatively piping generator executables to kubectl apply",
+    "why_not": "Listed in the KEP's Alternatives section; the sources do not give a reason it was rejected, and the design instead integrates generators and transformers declaratively through kustomization.yaml."
+   },
+   {
+    "option": "Create a new platform that is purely plug-in based and rebase kustomize on top of it",
+    "why_not": "Listed as an alternative in the KEP; the Non-Goals state that rewriting Kustomize on top of plugins is not a problem to solve now."
+   },
+   {
+    "option": "Support explicit ordering of plugin execution",
+    "why_not": "Listed as an alternative; the sources do not state the reason it was not chosen."
+   },
+   {
+    "option": "Allow arbitrary Transformation changes",
+    "why_not": "Listed as an alternative with the stated downside that it increases complexity and interactions and reduces readability."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Enable users to extend Kustomize *Transformers* and *Generators* through `exec` plugins."
+   },
+   {
+    "ref": "rcomment:645700302",
+    "quote": "I believe consensus was reached in the sig to move forward with this, the KEP just wasn't updated."
+   },
+   {
+    "ref": "rcomment:635673334",
+    "quote": "It has been implemented and documented, and works without any feature gates. I'm sure it will evolve in small ways like any piece of code, but there's no major work remaining afaik."
+   },
+   {
+    "ref": "comment:509696531",
+    "quote": "Since currently kubectl is moving into staging and will be eventually moved out of core. We don't plan to make this process more complicated by integrating new kustomize version into it."
+   },
+   {
+    "ref": "readme",
+    "quote": "Rewrite Kustomize on top of plugins - This should be possible, but isn't a problem we need to solve right now"
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2953",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-993 is replaced by KEP-2953 Kustomize Plugin Graduation"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 8182,
+  "output": 1169
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,50 @@
+{
+ "kep": "KEP-2438",
+ "input_hash": "b9f7dd1e92b2ef24",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2438 proposes moving the kube-apiserver to dual-stack: dual-stack --bind-address and --advertise-address, dual-stack \"kubernetes\" Service and EndpointSlices, and dual-stack rest.InClusterConfig(). Status is provisional, stage alpha.",
+  "rationale": "The initial dual-stack networking work left the apiserver as a single-stack Service, and this KEP moves it to dual-stack in dual-stack clusters. The design covers bind/advertise addresses, the \"kubernetes\" Service with RequireDualStack, and dual-stack EndpointSlices. The discussion shows the KEP missed the 1.23 and 1.24 freezes and was never marked implementable. The maintainer then closed the issue in 2025 without giving a specific reason beyond lacking time.</rationale>\n<parameter name=\"outcome_reason\">The sources say the KEP was removed from the 1.23 and 1.24 milestones for not meeting freeze criteria, and the maintainer closed the issue on 2025-11-26 saying \"I'm not going to get back to this any time soon.\" The sources do not explicitly say why it was closed beyond that, and the status is provisional as given.",
+  "alternatives": [
+   {
+    "option": "One EndpointSlice per API server instead of a shared dual-stack slice pair",
+    "why_not": "Raised as a suggestion in discussion by sftim; the sources do not record it being adopted in the KEP design or any decision to change the design."
+   },
+   {
+    "option": "Keep the apiserver single-stack and rely on the existing Endpoints",
+    "why_not": "The Summary states the single-stack apiserver Service is the problem the KEP aims to fix, so the KEP's goals reject this option; no discussion of it appears in the sources."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The initial implementation of [dual-stack networking] in Kubernetes left the apiserver as a single-stack Service. This moves it to dual-stack"
+   },
+   {
+    "ref": "readme",
+    "quote": "When configured with both dual-stack bind/advertise addresses and dual-stack service CIDRs, create the \"`kubernetes`\" service as `ipFamilyPolicy: RequireDualStack`"
+   },
+   {
+    "ref": "comment:916684813",
+    "quote": "this enhancement has not met the criteria for the freeze and has been removed from the milestone."
+   },
+   {
+    "ref": "comment:1082522183",
+    "quote": "this enhancement has not met the criteria for the freeze and has been removed from the milestone."
+   },
+   {
+    "ref": "comment:3581382607",
+    "quote": "OK, I'm not going to get back to this any time soon. Let's close it."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 4816,
+  "output": 1014
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

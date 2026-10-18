@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1043",
+ "input_hash": "706c2d1e71787e50",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1043 proposed adding a WindowsOptions field (GMSACredentialSpecName, GMSACredentialSpec, RunAsUserName) to PodSecurityContext and SecurityContext so Windows identity settings can be set as API fields instead of annotations. The KEP is recorded as implemented, stage stable.",
+  "rationale": "Alpha GMSA support required annotations for credential spec references, and the team wanted first-class fields beyond alpha. The Windows runtime already accepted a username, but no pod or container field exposed it. The KEP groups these fields in a WindowsSecurityContextOptions struct, modeled on SELinuxOptions.",
+  "outcome_reason": "The status is implemented, stage stable. The sources do not describe the reason for that status beyond the PR discussion about how the status was set. That discussion concerns process and PRR (production readiness review) gaps, not whether the API design was accepted.",
+  "alternatives": [
+   {
+    "option": "Keep using annotations for GMSA and username configuration",
+    "why_not": "The KEP says 'we do not want to continue to rely on annotations for a feature as it matures.'"
+   },
+   {
+    "option": "Embed Windows fields directly into PodSecurityContext and SecurityContext without a grouping struct",
+    "why_not": "The KEP says grouping into OS-specific structs 'will align more with potential future re-design efforts of the pod spec'."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we want the ability to specify references to GMSA credential specs directly in the pod/container specs as fields (without having to use annotations) beyond the Alpha stage"
+   },
+   {
+    "ref": "readme",
+    "quote": "In this KEP we propose a new field named `WindowsOptions` in the `PodSecurityContext` struct (associated with a pod spec) and the `SecurityContext` struct"
+   },
+   {
+    "ref": "readme",
+    "quote": "However, we do not want to continue to rely on annotations for a feature as it matures."
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "This KEP was initially declared implementable at alpha, before PRR was required. The retroactive PR incorrectly called this \"implemented\" at beta"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5954,
+  "output": 857
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

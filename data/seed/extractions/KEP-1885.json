@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-1885",
+ "input_hash": "3e15bae47a719d19",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1885 is a vendor-specific KEP that brings in-tree Azurefile volumes to CSI migration. It inherits its content from the parent CSI Migration KEP (625) and adds two feature gates. Its status is implemented, stage stable.",
+  "rationale": "The Azurefile migration is part of the overall CSI migration effort, so the KEP defers to its parent KEP for most content. Beta was reached in 1.21 and GA was targeted for 1.25. A reviewer noted that Azurefile migration should not be marked GA until the related feature (#3363) also goes GA, because without it users cannot read or write Azurefile volumes unless they are root or the volume has 777 permissions. The stable stage was set in PR #3360 for 1.26, and the KEP was then marked implemented in December 2022.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Write a standalone KEP with its own test plan and graduation criteria",
+    "why_not": "The sources say the KEP inherits all contents from its parent KEP, and the maintainers accepted this approach in earlier releases."
+   },
+   {
+    "option": "Mark Azurefile migration GA together with the parent CSI migration GA",
+    "why_not": "A reviewer asked that it not be marked GA until #3363 also goes GA, because of the file permission problem described above."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This document present as a vendor specific KEP for the parent KEP CSI Migration This inherits all the contents from its parent KEP."
+   },
+   {
+    "ref": "comment:1150200904",
+    "quote": "Please note Azurefile migration should not be marked as GA until https://github.com/kubernetes/enhancements/pull/3363 feature goes GA too."
+   },
+   {
+    "ref": "comment:1347550768",
+    "quote": "since this enhancement has graduated to stable can you please update"
+   },
+   {
+    "ref": "comment:1348032714",
+    "quote": "good catch, here is the PR: https://github.com/kubernetes/enhancements/pull/3688"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12366,
+  "output": 812
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

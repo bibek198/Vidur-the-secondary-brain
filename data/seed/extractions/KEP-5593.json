@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-5593",
+ "input_hash": "3ecce9f7cc69bcc2",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5593 splits the per-node max CrashLoopBackOff delay knob out of KEP-4603 into its own KEP. Its status is implementable at stage beta, with a per-node config `crashloopbackoff.maxSeconds` that can lower the maximum backoff down to 1s.",
+  "rationale": "The original KEP-4603 bundled a default-curve change and a configurable maximum, both in alpha. The split lets each part graduate separately, and this KEP tracks only the configurable maximum. Reviewers said the feature is stateless and that a rollback only requires updating the config and restarting kubelet. The sources do not say why the beta stage was chosen in this KEP, and a maintainer later asked whether there was enough soak time.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Create a new KEP for the configurable maximum and leave KEP-4603 at alpha with everything (the original plan)",
+    "why_not": "Sergey Kanzhelev said: \"Can we downscope the original KEP instead of creating a new one and keeping the other one in alpha already?\" The sources do not record a final decision on this alternative."
+   },
+   {
+    "option": "Also address the Success-state backoff (constant or instant backoff for Succeeded Pods)",
+    "why_not": "The KEP states: \"This proposal will NOT change: * backoff behavior for Pods transitioning from the \"Success\" state differently from those transitioning from a \"Failed\" state\"."
+   },
+   {
+    "option": "Complex heuristics in kubelet (system state, workload factors, anomaly detection)",
+    "why_not": "Non-goals: \"This effort is purposefully NOT implementing more complex heuristics by kubelet\" to focus on simpler, easily modeled changes."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP proposes providing an option to cluster operators to configure a lower maximum backoff for all containers on a specific Node, down to 1s."
+   },
+   {
+    "ref": "comment:3386863951",
+    "quote": "The PR https://github.com/kubernetes/enhancements/pull/5594 splits out those features into two separate KEPs so that we can track their graduation separately from now on."
+   },
+   {
+    "ref": "rcomment:2397091902",
+    "quote": "Risk is that a configured crashloop backoff causes the kubelet to become unstable. If that happens, a rollback just requires updating the config and restarting kubelet."
+   },
+   {
+    "ref": "comment:3769516983",
+    "quote": "do we have enough soak time? didn't it just go beta in 1.35?"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 12592,
+  "output": 989
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

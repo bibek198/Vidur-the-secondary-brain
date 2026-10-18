@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-1287",
+ "input_hash": "0abaaa2db9571495",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-1287 proposed allowing Pod resource requests and limits to be updated in place, without restarting the Pod or its Containers, by making PodSpec resources mutable and extending PodStatus to report actual applied resources. It also proposed extending the CRI UpdateContainerResources and ContainerStatus APIs. The KEP is now implemented and at stable stage.",
+  "rationale": "Changing container resources previously required recreating the Pod because PodSpec resources were immutable, which hurts low-replica, stateful, and batch workloads. The KEP makes spec resources the desired state and status the actual state, and it fixes CRI gaps: UpdateContainerResources was Linux-specific, there was no way to query applied resources, and runtime behavior was poorly defined. Discussion shows the design kept scheduling and resize handling local to the kubelet and API server, with the scheduler's role ending once a pod is bound.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Scheduler approves the resize",
+    "why_not": "The discussion says sig-node leads and the group agreed to keep everything local to the kubelet, and that once the scheduler places a pod its role ends. Scheduler-approved resize was the first prototype and was dropped for simplicity."
+   },
+   {
+    "option": "PodSpec as the checkpoint for allocated resources (spec.ResourcesAllocated / RequiredResources)",
+    "why_not": "Reviewers objected that spec represents desired state and that allocated resources are state, and that access control via RBAC on spec was the concern. The KEP lists this among the alternatives considered."
+   },
+   {
+    "option": "Resize via a dedicated subresource (/resize) and admission plugin for resourcesAllocated",
+    "why_not": "The discussion says the team prototyped an admission plugin as a working alternative that limits access to resourcesAllocated. The text does not clearly state why the subresource-only path was dropped."
+   },
+   {
+    "option": "Kubelet-local checkpointing of allocated limits",
+    "why_not": "A 2024 comment says some people argue strongly against kubelet local checkpoints, and control plane components such as ResourceQuota may need allocated limits. The thread does not record a final resolution."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This proposal aims at allowing Pod resource requests & limits to be updated in-place, without a need to restart the Pod or its Containers."
+   },
+   {
+    "ref": "readme",
+    "quote": "Currently, changing resource allocation requires the Pod to be recreated since the PodSpec's Container Resources is immutable."
+   },
+   {
+    "ref": "rcomment:1788754909",
+    "quote": "once scheduler has found a home for an unbound pod, its role ends. And all subsequent interactions such as resize is business between the API and node."
+   },
+   {
+    "ref": "rcomment:459754671",
+    "quote": "we compromised with sig-node leads and agreed to keep everything local to the kubelet, at least to start."
+   },
+   {
+    "ref": "comment:3377674712",
+    "quote": "UpdatePodSandboxResources is implemented by containerd & CRI-O"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10718,
+  "output": 1162
+ },
+ "extracted_at": "2026-10-15T22:45:54Z"
+}

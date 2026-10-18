@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-556",
+ "input_hash": "46c49d52a1092e70",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-556 proposes support for resizing CSI volumes so that CSI volumes reach feature parity with in-tree volumes. Its status is implementable at alpha, with the implementable state dated 2020-12-16.",
+  "rationale": "The motivation is that CSI volumes lacked resize support while in-tree volumes had it, and the CSI spec had just added resize. The design is limited to enabling expansion for PVCs whose plugin declares the capability, and it explicitly does not validate expansion through a CSI RPC in the admission controller. The sources show the feature was tracked across many releases (alpha in 1.14, beta from 1.16) before the KEP itself was made implementable.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Validate expansion capability by making a CSI RPC call when the user edits the PVC",
+    "why_not": "The readme lists this as a non-goal: \"existing resize admission controller will not make CSI RPC call\"."
+   },
+   {
+    "option": "Leave CSI volumes without resize support",
+    "why_not": "The summary states the goal is to bring CSI volumes to feature parity with in-tree volumes."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "To bring CSI volumes in feature parity with in-tree volumes we need to implement support for resizing of CSI volumes."
+   },
+   {
+    "ref": "readme",
+    "quote": "The expansion capability of a CSI plugin will not be validated by using CSI RPC call when user edits the PVC"
+   },
+   {
+    "ref": "comment:457791627",
+    "quote": "This feature will release as an alpha feature in 1.14. As such we weren't planning for a KEP because it does not require a major redesign in existing internals."
+   },
+   {
+    "ref": "comment:458746409",
+    "quote": "I think we'd still want a KEP - is there a testing plan for this enhancement? graduation criteria?"
+   },
+   {
+    "ref": "comment:621290823",
+    "quote": "The KEP PR must be merged in an implementable state"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 7286,
+  "output": 795
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

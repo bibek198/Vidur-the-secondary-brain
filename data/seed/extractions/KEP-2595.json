@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2595",
+ "input_hash": "d29d2d58181c5b35",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2595 proposed an ExpandedDNSConfig feature gate that raises Kubernetes' DNS search path limits: MaxDNSSearchPaths to 32 and MaxDNSSearchListChars to 2048. The KEP is now implemented and at stable stage.",
+  "rationale": "The existing limits follow obsolete criteria, while recent resolvers (glibc, musl, pure Go) accept arbitrarily many search paths. The KEP therefore has kube-apiserver and kubelet accept expanded DNS configuration. Limits stay in place; only the numeric caps are raised, and the non-goals exclude removing them entirely.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove the limitation on DNS search paths completely",
+    "why_not": "Listed as an alternative in the KEP; the non-goals state the KEP does not remove the limitation completely."
+   },
+   {
+    "option": "Make MaxDNSSearchPaths and MaxDNSSearchListChars configurable",
+    "why_not": "Listed as an alternative in the KEP; the non-goals also exclude letting administrators set an arbitrary limit. The sources give no further reason for rejecting it."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "As recent DNS resolvers allow an arbitrary number of search paths, a new feature gate `ExpandedDNSConfig` will be introduced."
+   },
+   {
+    "ref": "readme",
+    "quote": "Expand `MaxDNSSearchPaths` to 32 - Expand `MaxDNSSearchListChars` to 2048"
+   },
+   {
+    "ref": "readme",
+    "quote": "Remove limitation on DNS search paths completely - Let cluster administrators limit the number of search paths or the length of DNS search path list to an arbitrary number"
+   },
+   {
+    "ref": "comment:900514052",
+    "quote": "Fine to move forward with that change and iterate as needed. Thanks for the fixes, @spiffxp!! /lgtm /approve"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2280,
+  "output": 806
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

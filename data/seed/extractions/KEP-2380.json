@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2380",
+ "input_hash": "13643bee8350ce26",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2380 proposes publishing simple kubectl commands (single or multiple requests to a Resource or SubResource endpoint, populated from flags/args, output written from responses) as data served by the server, so the client can expand request and response templates without compiled-in commands. It requires no server-side changes. Status is provisional.",
+  "rationale": "Kubectl commands are compiled into the binary, which prevents CLI support for extension APIs and causes problems for version-skewed clients. The proposal moves simple request-based commands into server-published data that the client expands locally. The design is limited to commands without complex client-side logic and does not require a TTY.",
+  "outcome_reason": "Status is provisional. The sources do not give a reason for this status, and no final decision is recorded.",
+  "alternatives": [
+   {
+    "option": "Use plugins for these cases",
+    "why_not": "The readme says plugins still suffer from version skew, require users to download and install binaries, are hard to keep in sync with the set of Resources for each cluster, and do not support extension resources."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Publishing commands as data from the server addresses cli integration with API extensions as well as client-server version skew."
+   },
+   {
+    "ref": "readme",
+    "quote": "**Note:** No server-side changes are required for this, all Request and Response template expansion is performed on the client side."
+   },
+   {
+    "ref": "readme",
+    "quote": "Version-Skewed clients (old client) may be missing commands for new APIs or send outdated requests"
+   },
+   {
+    "ref": "readme",
+    "quote": "Allow client commands that make a single request to a specific resource and output the result to be data driven from the server."
+   },
+   {
+    "ref": "readme",
+    "quote": "Use plugins for these cases - Still suffer from version skew - Require users to download and install binaries - Hard to keep in sync with set of Resources for each cluster - Don't support cli commands for Extension Resources"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2279,
+  "output": 761
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

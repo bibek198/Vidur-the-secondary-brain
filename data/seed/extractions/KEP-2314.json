@@ -1,0 +1,39 @@
+{
+ "kep": "KEP-2314",
+ "input_hash": "5ccde76cc76627a0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2314 proposes letting the AWS Cloud Provider use custom service endpoints (for example Eucalyptus or AWS PrivateLink endpoints) by extending the CloudConfig INI file, and letting the Kubelet use custom endpoints for ECR credential retrieval. The KEP is in provisional status.",
+  "rationale": "AWS service APIs sit at fixed domain endpoints, but some deployments run them elsewhere, such as Eucalyptus or PrivateLink endpoints. The design addresses this by extending the existing CloudConfig INI file with endpoint settings for the cloud controller, and by allowing the Kubelet to use a custom endpoint for ECR credential retrieval. Status is provisional, so the design is proposed but not yet accepted as implemented.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Multi-region AWS cloud provider support",
+    "why_not": "Explicitly listed as a non-goal in the design document."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Being able to support custom endpoints enables Kubernetes users to use alternate implementations of AWS APIs such as"
+   },
+   {
+    "ref": "readme",
+    "quote": "Extend existing CloudConfig INI file to specify endpoints - Allow Kubelet to use custom endpoints for ECR credential retrieval"
+   },
+   {
+    "ref": "readme",
+    "quote": "AWS PrivateLink allows AWS users to ensure their AWS API calls do not transit the public internet."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 1810,
+  "output": 649
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

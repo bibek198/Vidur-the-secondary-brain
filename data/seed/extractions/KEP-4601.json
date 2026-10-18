@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4601",
+ "input_hash": "6139e836ecf2485d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4601 proposed extending authorization attributes with field and label selectors from List, Watch, and DeleteCollection so authorizers (webhook, SAR/SSAR, node, CEL) can use them in decisions. Status is implemented, stage stable.",
+  "rationale": "Per-node workloads need tighter security, and out-of-tree authorizers need selector information to express restrictions. The design exposes selectors as authorization attributes without adding an in-tree selector-managing authorizer or expanding audit and admission surfaces. Reviewers settled that selector requirements are ANDed server-side, so unrecognized operators can be treated safely, and that selector parse failures and unsupported verbs should error rather than silently drop the selector.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add a second, separate parsed-requirements representation alongside the raw selector string in the SAR body",
+    "why_not": "Reviewer luxas objected to the sprawl of two near-identical representations and wanted a canonical codec library instead."
+   },
+   {
+    "option": "Drop unparseable or unsupported selectors as non-limiting, as the SubjectAccessReview API does",
+    "why_not": "deads2k said leniency makes it hard to discover VAP or binding bugs, so the design errors instead; the author updated the KEP accordingly."
+   },
+   {
+    "option": "Use a separate optional interface for selector access instead of adding methods to authorizer.Attributes",
+    "why_not": "luxas disliked this option; deads2k accepted breaking implementers of the interface as an explicit way to force the semantic change."
+   },
+   {
+    "option": "Change selector combination from AND to another semantic",
+    "why_not": "liggitt argued AND lets webhooks short-circuit on known limits and safely ignore unknown operators, so changing it would break future operator expansion."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The authorization attributes will be extended to include field selectors and label selectors from List, Watch, and DeleteCollection."
+   },
+   {
+    "ref": "rcomment:1594715185",
+    "quote": "Currently every discrete requirement is AND'd when evaluated server-side. I don't see a need to change that behavior."
+   },
+   {
+    "ref": "rcomment:1610488570",
+    "quote": "This seems to make it very difficult to discovery VAP (or binding) bugs. While I can see a case that leniency makes more successes, I'd try to make it easy to discover bugs and error."
+   },
+   {
+    "ref": "rcomment:1594651058",
+    "quote": "I'm ok breaking people that integrated at this level. They should be aware of the semantic change and this is an easy way to force it."
+   },
+   {
+    "ref": "comment:3302826448",
+    "quote": "Given that this KEP has graduated to `stable`, if all the work is completed, could you please update the KEP status in `kep.yaml` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 11440,
+  "output": 1062
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

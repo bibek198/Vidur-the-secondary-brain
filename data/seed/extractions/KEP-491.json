@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-491",
+ "input_hash": "35024d7fe3c87735",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-491 covers kubectl diff, which shows how applying a configuration would change the live cluster state. The KEP is retroactive: it documents a feature implemented before the KEP process, and its status is Implemented at stable stage.",
+  "rationale": "The feature let users see how configuration changes would affect the cluster before applying them, which the design calls \"a key piece of declarative configuration management.\" The authors considered four diff variants and chose \"current live\" to \"future\" configuration because that \"describes exactly the changes that are happening on the cluster.\" The KEP's goal is stated as \"mostly retroactive, since the feature has mostly been implemented before this process existed.\"",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Diff of applied configuration (file) against live state",
+    "why_not": "The design says the combinations were considered, but the 'current live' to 'future' comparison was judged 'the most relevant' after an alpha variant was tried."
+   },
+   {
+    "option": "Diff of last-applied-configuration against live state",
+    "why_not": "Listed among the four considered variants; the source says the live-to-future comparison was found most relevant, without further detail on this option."
+   },
+   {
+    "option": "Diff of applied configuration against the future state",
+    "why_not": "Listed among the four considered variants; the source gives no specific reason beyond the live-to-future choice."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "we realized that the most relevant is actually \"current live\" configuration -> \"future\" configuration"
+   },
+   {
+    "ref": "readme",
+    "quote": "The goal of this KEP is mostly retroactive, since the feature has mostly been implemented before this process existed."
+   },
+   {
+    "ref": "comment:558844644",
+    "quote": "We're planning on promoting this feature to GA in 1.18, but this is dependent on #576."
+   },
+   {
+    "ref": "comment:602796410",
+    "quote": "since this enhancement graduated to Stable this release :rocket:, the status can now be set to be `Implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10977,
+  "output": 786
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

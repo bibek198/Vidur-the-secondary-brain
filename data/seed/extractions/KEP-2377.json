@@ -1,0 +1,58 @@
+{
+ "kep": "KEP-2377",
+ "input_hash": "7c339c19d8a4a04e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2377 proposed a declarative kustomize format to expose imperative kubectl transformation functionality (configmap/secret generation, cross-cutting labels/annotations/names, strategic-merge patches) within declarative workflows. Its status is implemented, stage stable, and kep.yaml records that it is replaced by KEP-2386 Kustomize Subcommand Integration.",
+  "rationale": "Gaps in kubectl force users to write scripts to preprocess declarative config, even though most needed transformations exist as imperative kubectl commands. The KEP addresses this by giving users a declarative format to reach those capabilities. The sources do not explain why KEP-2386 superseded it. The 2021 PR #3007 discussion about marking KEPs as implemented concerns status rules and does not address this replacement.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Users write their own bespoke scripts to generate and transform config before apply",
+    "why_not": "The design document lists this as an alternative it sets out to avoid, since users must keep scripts and sources consistent."
+   },
+   {
+    "option": "Users use or develop DSLs to interact with Kubernetes",
+    "why_not": "The Non-Goals state that providing a simpler facade on top of the Kubernetes APIs is a non-goal."
+   },
+   {
+    "option": "Expose every imperative kubectl command declaratively",
+    "why_not": "The Non-Goals limit scope to gaps that would otherwise block a purely declarative workflow; commands like kubectl run and kubectl edit are excluded."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP describes how `kustomize` addresses this problem by providing a declarative format for users to access the imperative kubectl commands"
+   },
+   {
+    "ref": "readme",
+    "quote": "Commands such as `kubectl run`, `kubectl create deployment` and `kubectl edit` are unnecessary in a declarative workflow because a Deployment can easily be managed as declarative config."
+   },
+   {
+    "ref": "rcomment:725203976",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2598 is the PR that moved this KEP to implemented. It landed after"
+   },
+   {
+    "ref": "rcomment:725206078",
+    "quote": "https://github.com/kubernetes/enhancements/pull/2867 retroactively declared this beta since that's where this ultimately ended up during 1.21."
+   }
+  ],
+  "supersession_claims": [
+   {
+    "kep": "KEP-2386",
+    "relation": "replaced_by",
+    "ref": "kep.yaml",
+    "quote": "KEP-2377 is replaced by KEP-2386 Kustomize Subcommand Integration"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5735,
+  "output": 1012
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

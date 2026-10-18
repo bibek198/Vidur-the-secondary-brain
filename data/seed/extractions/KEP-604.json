@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-604",
+ "input_hash": "63a2d899f6b75247",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-604 proposes letting the Azure cloud provider manage nodes that live in a resource group other than the one set in the cloud provider config, and on-prem nodes, by reading the node's resource group from node labels set by provisioning tools (e.g. via kubelet --node-labels). It is currently implementable at alpha stage.",
+  "rationale": "Today the Azure cloud provider only handles nodes in the configured resource group; nodes elsewhere get an InstanceNotFound error and the controller manager removes them. The proposal has provisioning tools label kubelets with their resource group, and the cloud provider reads that label to fetch node information. Annotations, extra config options, and direct Azure API queries were rejected as more cumbersome, less flexible, or too slow and rate-limit prone.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Annotations on the node",
+    "why_not": "Kubelet doesn't support registering itself with annotations, so an admin would have to annotate the node afterward, adding steps to cluster operations."
+   },
+   {
+    "option": "Additional cloud provider configuration options",
+    "why_not": "Not flexible: it needs config file updates and controller manager restarts when unknown resource groups are used for new nodes."
+   },
+   {
+    "option": "Querying node information directly from the Azure API",
+    "why_not": "It would require listing all resource groups, scale sets, and virtual machines, which is time consuming and easy to hit rate limits."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "For nodes in a different RG, Azure cloud provider reports `InstanceNotFound` error and thus they would be removed by controller manager."
+   },
+   {
+    "ref": "readme",
+    "quote": "Provisioning tools should setup kubelet with required labels (e.g. via `--node-labels`) - Azure cloud provider would fetch RG from those labels"
+   },
+   {
+    "ref": "readme",
+    "quote": "Kubelet doesn't support registering itself with annotations, so it requires admin to annotate the node afterward."
+   },
+   {
+    "ref": "readme",
+    "quote": "Cloud provider options are not flexible compared to labels and annotations."
+   },
+   {
+    "ref": "readme",
+    "quote": "Querying node information directly from Azure API is also not feasible because that would need list all resource groups, all virtual machine scale sets and all virtual machines."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 2061,
+  "output": 901
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

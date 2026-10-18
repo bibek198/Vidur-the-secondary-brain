@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-753",
+ "input_hash": "7a64f3785b389af4",
+ "model": "claude-haiku-5-5",
+ "mode": "direct",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-753 introduces sidecar containers as init containers with restartPolicy: Always, so they start in the init sequence, keep running for the pod lifetime, and do not block pod completion. The KEP reached implemented status and stable stage.",
+  "rationale": "Sidecars were hard to model: they need to start before regular containers and keep running alongside them, which init containers could not express, and Jobs could not complete while they ran. The proposal marks an init container as a sidecar via a restartPolicy field, with the kubelet waiting for startup completion (startup probe and postStart) rather than container exit. The discussion shows the API shape was contested (bool, containerLifecycle object, sidecarContainers array, runlevels) before this design was settled.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Boolean sidecar flag or containerLifecycle: Sidecar field on pod containers",
+    "why_not": "Reviewers said a bool is limiting and that sidecars running parallel to init containers under pod.spec.containers is wrong; luksa suggested an object or a separate pod.spec.sidecarContainers array."
+   },
+   {
+    "option": "Separate pod.spec.sidecarContainers collection",
+    "why_not": "The discussion says the team considered it and 'decided after much debate that it didn't add enough value to carry it's own weight'."
+   },
+   {
+    "option": "Runlevels / keystone-style stages (thockin's 2022 proposal)",
+    "why_not": "The sources say the team pivoted to a more surgical change that could make alpha, and that the runlevel approach left door open to semantic creep; the sources do not say it was rejected outright."
+   },
+   {
+    "option": "Mark the KEP as rejected and create new KEPs (joseph-irving, 2020)",
+    "why_not": "Suggested in comment 703692887 as a path if a complete rewrite was needed; the KEP was instead kept and later implemented, so this was not adopted."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "The proposal is to introduce a `restartPolicy` field to init containers and use it to indicate that an init container is a sidecar container."
+   },
+   {
+    "ref": "readme",
+    "quote": "Sidecar containers will not block Pod completion - if all regular containers complete, sidecar containers will be terminated."
+   },
+   {
+    "ref": "comment:1270508226",
+    "quote": "We pivoted the conversation back to something more \"surgical\" that could make alpha, but if I am being honest, it doesn't feel right."
+   },
+   {
+    "ref": "rcomment:1092772324",
+    "quote": "We did consider adding a whole new collection, but decided after much debate that it didn't add enough value to carry it's own weight."
+   },
+   {
+    "ref": "comment:2629309803",
+    "quote": "Two out of the three are already covered by E2E tests."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11308,
+  "output": 1057
+ },
+ "extracted_at": "2026-10-15T22:45:34Z"
+}

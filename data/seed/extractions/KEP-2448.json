@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-2448",
+ "input_hash": "821997b28ff09e1c",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2448 removes kube-proxy's implicit, automatic clean-up of proxy rules so that rules are only cleaned up when the --cleanup flag is set. The KEP is marked implemented, stage stable.",
+  "rationale": "Kube-proxy's automatic start-up clean-up could remove rules belonging to other proxy modes, and the iptables and IPVS rulesets overlap, causing connectivity issues and in the worst case flushing active iptables chains on restart. The design keeps cleanup only as an explicit user request via --cleanup and recommends a node reboot for proxy mode switches. The sources do not give a detailed account of the implementation timeline beyond the status history.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove support for cleaning up other proxy modes entirely",
+    "why_not": "The readme lists this only as an alternative: users would instead be advised to restart the worker node. It does not say why it was not chosen."
+   },
+   {
+    "option": "Keep implicit automatic clean-up and fix the overlapping-rule bugs",
+    "why_not": "The readme says doing so correctly is not trivial, since the overlapping rulesets make it difficult to fix without adding complexity or changing proxy rules incompatibly."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "kube-proxy should only attempt to clean up its proxy rules when the `--cleanup` flag is set."
+   },
+   {
+    "ref": "readme",
+    "quote": "We've learned by now that trying to automatically clean up proxy rules is prone to bugs due to the complex dependency between all the proxy modes and the Linux kernel."
+   },
+   {
+    "ref": "readme",
+    "quote": "The overlapping rulesets between the existing proxy modes makes it difficult to fix this without adding more complexity to kube-proxy or changing the proxy rules in an incompatible way."
+   },
+   {
+    "ref": "readme",
+    "quote": "The `--cleanup` flag should only be used in the event that a node reboot is not an option."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 5458,
+  "output": 803
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

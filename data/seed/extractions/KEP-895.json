@@ -1,0 +1,47 @@
+{
+ "kep": "KEP-895",
+ "input_hash": "e82e91f37ecccf82",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-895 Pod Topology Spread gives users finer control over how pods are spread across topology domains, as a hard (predicate) or soft (priority) requirement. The KEP is recorded as implemented and at stable stage.",
+  "rationale": "Existing PodAffinity can stack unlimited pods into one domain and PodAntiAffinity allows only one pod per domain, so users cannot easily spread pods evenly for high availability or cost. The design calculates spread among pods rather than per application, with hard and soft variants. The sources show it was promoted through alpha (1.15/1.16), beta (1.18) and then graduated to stable in 1.19.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Mix new fields into pod.spec.affinity as a sub-feature of Affinity (TopologySpreadConstraint on NodeAffinity, PodAffinity, PodAntiAffinity)",
+    "why_not": "The design lists its cons as 'The support on NodeAffinity is vague' and 'Current API design only supports predicate'. The sources do not say it was adopted; the chosen design is the new PodTopologySpread feature."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "for `PodAffinity`, infinite pods can be stacked onto qualifying topology domain(s); for `PodAntiAffinity`, only one pod can be scheduled onto a single topology domain."
+   },
+   {
+    "ref": "readme",
+    "quote": "Pod Topology Spread Constraints can be either a predicate (hard requirement) or a priority (soft requirement)."
+   },
+   {
+    "ref": "readme",
+    "quote": "The support on NodeAffinity is vague"
+   },
+   {
+    "ref": "comment:576816975",
+    "quote": "After discussion with the SIG, we're going to promote this to beta in 1.18."
+   },
+   {
+    "ref": "comment:691340445",
+    "quote": "As this graduated to stable in 1.19 and the underlying KEP is marked [implemented]"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 8311,
+  "output": 795
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

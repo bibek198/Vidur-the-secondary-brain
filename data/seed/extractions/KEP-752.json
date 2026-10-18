@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-752",
+ "input_hash": "c7c7afc1eaaba6d0",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-752 proposed a new EndpointSlice API to replace the Core/V1 Endpoints API for most internal consumers, including kube-proxy, splitting a service's endpoints across multiple objects. Its status is implemented, stage stable.",
+  "rationale": "In the Endpoints API a single object holds all endpoints of a service, so any single pod change rewrites and re-sends the whole object. This hits the etcd object size limit (1.5MB by default), breaks watch propagation for large services, and causes quadratic cost in large deployments. The KEP proposes EndpointSlice to support tens of thousands of endpoints per service and to leave room for future extension.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Increase the etcd size limits",
+    "why_not": "Listed as alternative 1 in the design doc; the sources give no stated reason for rejecting it beyond the KEP's chosen direction."
+   },
+   {
+    "option": "Endpoints controller batches or rate-limits changes",
+    "why_not": "Listed as alternative 2; the sources do not say why it was not chosen."
+   },
+   {
+    "option": "apiserver batches or rate-limits watch notifications",
+    "why_not": "Listed as alternative 3; the sources do not say why it was not chosen."
+   },
+   {
+    "option": "apimachinery object-level pagination",
+    "why_not": "Listed as alternative 4; the sources do not say why it was not chosen."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This doc proposes a new EndpointSlice API aiming to replace Core/V1 Endpoints API for most internal consumers, including kube-proxy."
+   },
+   {
+    "ref": "readme",
+    "quote": "Whenever a single pod in a service is added/updated/deleted, the whole Endpoints object (even when the other endpoints didn't change) is re-computed, written to storage (etcd) and sent to all watchers"
+   },
+   {
+    "ref": "readme",
+    "quote": "Support tens of thousands of backend endpoints in a single service on cluster with thousands of nodes."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 2378,
+  "output": 813
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

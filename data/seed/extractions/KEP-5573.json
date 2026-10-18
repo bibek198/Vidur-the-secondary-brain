@@ -1,0 +1,63 @@
+{
+ "kep": "KEP-5573",
+ "input_hash": "6a93c9a8548c6994",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5573 moves cgroup v1 from maintenance mode to deprecated in kubelet: beta prevents kubelet from starting on a cgroup v1 node by default (FailCgroupV1 defaults to true), with removal of the code committed to but not scheduled, and no earlier than 1.38.",
+  "rationale": "The Linux ecosystem is moving to cgroup v2: systemd deprecated v1 in v256 and removed it in v258, and the KEP cites this as the reason for the next step after KEP-4569's maintenance mode. Maintaining and testing v1 is costly, and the team wants a clear deprecation signal. Reviewers noted that many users (kind, minikube, distros) still run on v1, so the removal date was left open and the removal was tied to no earlier than 1.38.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Continue maintenance mode longer",
+    "why_not": "The readme says this was ruled out because it delays the necessary ecosystem transition and maintains technical debt."
+   },
+   {
+    "option": "Immediate removal of cgroup v1 without an unsupported phase",
+    "why_not": "The readme calls this too aggressive and says it would break existing clusters without a migration path."
+   },
+   {
+    "option": "Opt-in cgroup v2 instead of disabling v1 by default",
+    "why_not": "The readme says it gives no clear deprecation signal and slows adoption of the preferred technology."
+   },
+   {
+    "option": "Use a feature gate instead of a kubelet flag",
+    "why_not": "The readme says kubelet flags give more direct control and suit this kind of configuration change better. A reviewer also noted that kubelet config fields are now preferred over flags."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This KEP will have a phased approach where beta will prevent kubelet from starting on a cgroup v1 node."
+   },
+   {
+    "ref": "readme",
+    "quote": "We will commit to removing cgroup v1 code but there is not yet a timeline for removal. The removal will be done no earliest than 1.38"
+   },
+   {
+    "ref": "readme",
+    "quote": "systemd announced deprecation 1.5 years ago in v256 and removal. Other critical components are moving beyond cgroup v1"
+   },
+   {
+    "ref": "comment:3366927169",
+    "quote": "I updated this to focus on deprecation on first phase of this and we can leave removal of cgroup for a future release."
+   },
+   {
+    "ref": "rcomment:2399361930",
+    "quote": "it will be another year of support for cgroupv1. If we will recieve overwhelming feedback on this - we can push the removal part later."
+   },
+   {
+    "ref": "comment:3387136124",
+    "quote": "In the PR that makes this switch, please add a release-note-action-required that directs cgroupsv1 users how to prepare in advance."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12391,
+  "output": 1061
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

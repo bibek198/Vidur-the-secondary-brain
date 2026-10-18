@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4355",
+ "input_hash": "b1b71db692c55b8d",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4355 proposes an opt-in Coordinated Leader Election mechanism in which candidates declare candidacy for a lease and an election coordinator claims the lease for the best candidate (lowest version, to respect skew policy), with an end-of-term marker to preempt the current leader. The KEP is at implementable status, stage beta.",
+  "rationale": "Node-by-node control plane upgrades and rollbacks can run new-version controller managers or schedulers against old apiservers, violating the Kubernetes skew policy, because the leader is chosen by a race for the lease. Coordinated election picks the oldest compatible candidate deterministically and lets the coordinator preempt the leader at term expiry. Reviewers raised concerns about extra write load from per-candidate leases, whether the version-only ordering is too hardcoded, and the need for extensibility, which led to a strategy field and a beta re-evaluation.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Let instances race to be the election coordinator and implement selection logic in the instances",
+    "why_not": "Raised by sttts as an alternative during review (rcomment:1546626575); the sources do not record a decision against it beyond the coordinator-in-one-place preference from jefftree (rcomment:1552203565)."
+   },
+   {
+    "option": "Use a generic integer score instead of version ordering",
+    "why_not": "jefftree preferred centralized version-based ordering so clients need not update if the algorithm changes, and found versions more readable than scoring numbers (rcomment:1552203565)."
+   },
+   {
+    "option": "Use a new object type instead of Lease for election coordination",
+    "why_not": "jpbetz noted a new type would diverge from how other parts of the system use leases and make migration more complex (rcomment:1448236988); the design continues to use Lease."
+   },
+   {
+    "option": "Interactive approach where identity leases acknowledge end-of-term before re-election",
+    "why_not": "jefftree and wojtek-t identified drawbacks: slower transition on leader loss and possible infinite preemption loops with a slow-writing best candidate (rcomment:1484889581, rcomment:1486270644). The sources do not say it was rejected outright."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "Instead of a race by component instances to claim the lease, component instances declare candidacy for a lease and a election coordinator claims the lease for the best available candidate."
+   },
+   {
+    "ref": "readme",
+    "quote": "For 3 node control plane upgrade, there is about a 25% chance of a new version of the controller running while old versions of the apiserver are active, resulting in a skew violation."
+   },
+   {
+    "ref": "readme",
+    "quote": "Offer an opt-in leader election mechanism to: - Elect the candidate with the oldest version available."
+   },
+   {
+    "ref": "rcomment:1581034546",
+    "quote": "So yes - can we please add a user-story along those lines and add Beta criteria to reevaluate extensibility?"
+   },
+   {
+    "ref": "comment:2081827034",
+    "quote": "This field and available strategies will be re-evaluated for beta, but for alpha we will offer only `OldestCompatibilityVersion`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 10227,
+  "output": 1178
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

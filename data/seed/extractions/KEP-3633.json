@@ -1,0 +1,51 @@
+{
+ "kep": "KEP-3633",
+ "input_hash": "db87cefaaa6cd5aa",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-3633 adds MatchLabelKeys and MismatchLabelKeys to PodAffinityTerm so users can scope which Pods are evaluated for required and preferred Pod (anti-)affinity, typically during rolling upgrades. The KEP has reached stable and is marked implemented.",
+  "rationale": "During rolling upgrades, old and new Pod versions co-exist, and the scheduler cannot tell them apart, so PodAffinity and PodAntiAffinity can block new Pods in a full cluster or filter out valid Nodes in an idle one. The KEP lets users scope affinity evaluation using label keys whose values are set by other systems. Per the discussion, kube-apiserver folds these fields into LabelSelector, so kube-scheduler needs no new logic.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Add new operators (ExistsWithSameValue, ExistsWithDifferentValue) to the podAffinityTerm label selector",
+    "why_not": "Proposed by huang-wei in review; the sources do not record it being rejected explicitly, but the design moved on to matchLabelKeys plus notMatchLabelKeys, aligned with PodTopologySpread."
+   },
+   {
+    "option": "Keep matchLabelKeys and add notMatchLabelKeys alongside matchLabelSelectors",
+    "why_not": "Chosen direction: sanposhiho preferred it because the API field is similar to PodTopologySpread and easier for users to understand. The sources do not say the alternative was rejected in a formal vote."
+   },
+   {
+    "option": "Gate the scheduler on the feature flag by reading MatchLabelSelectors directly",
+    "why_not": "Not chosen: sanposhiho said kube-apiserver generates LabelSelector from MatchLabelSelectors, so kube-scheduler computes affinity as before and does not depend on the feature gate."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This enables users to finely control the scope where Pods are expected to co-exist (PodAffinity) or not (PodAntiAffinity), on top of the existing `LabelSelector`."
+   },
+   {
+    "ref": "rcomment:1215172340",
+    "quote": "makes both easier for users to understand instead of making a difference (matchLabelKeys vs matchLabelSelectors) between them to specify a similar thing."
+   },
+   {
+    "ref": "rcomment:1225828921",
+    "quote": "The kube-apiserver generates `LabelSelector` from `MatchLabelSelectors` and kube-scheduler computes PodAffinity/PodAntiAffinity as it does now."
+   },
+   {
+    "ref": "comment:2887659700",
+    "quote": "Given that this KEP has graduated to `stable`, once all the work is completed (including removing feature gates), could you please update the KEP status in `kep.yaml` from `implementable` to `implemented`"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 12153,
+  "output": 1096
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

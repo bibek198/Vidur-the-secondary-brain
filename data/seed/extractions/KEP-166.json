@@ -1,0 +1,43 @@
+{
+ "kep": "KEP-166",
+ "input_hash": "605e06deef22bc82",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-166 promoted Taint Based Evictions to GA (stable), enabling automatic NoExecute tainting of unready or unreachable nodes by default. Status is implemented, stage stable.",
+  "rationale": "The feature had been beta since 1.13 with no blocking issues reported, and sig-node had test coverage added (the e2e test was refactored into an integration test in 1.17). In January 2020 Huang-Wei proposed promoting it to GA in 1.18 on that basis. The KEP was then updated to meet the KEP process requirements, and the enhancement graduated to Stable in the 1.18 release.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Keep the feature in alpha or beta and do not enable it by default",
+    "why_not": "Sources do not give a reason for rejecting this in the GA decision. Earlier discussion noted that enabling by default was risky, since in the worst case it could evict all pods, and that real-user trials were lacking, but the 2020 thread cites beta since 1.13 with no blocker issues as the basis for GA."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "comment:573794421",
+    "quote": "Given that it's been beta since 1.13, and we haven't got any blocker issue. We'd like to promote it to GA in 1.18."
+   },
+   {
+    "ref": "comment:573794421",
+    "quote": "in 1.17, we refactored the TaintBasedEviction e2e test - to transform it to integration test for portability, and also fixed some flakiness"
+   },
+   {
+    "ref": "comment:602795691",
+    "quote": "since this enhancement graduated to Stable this release :rocket:, the status can now be set to be `Implemented`."
+   },
+   {
+    "ref": "comment:338019720",
+    "quote": "It's a dangerous change because in the worst case it can evict all the pods in the cluster."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11537,
+  "output": 745
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-2799",
+ "input_hash": "dd80ba0fd174d32e",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-2799 proposed stopping the Token Controller from auto-generating secret-based service account tokens and later purging unused auto-generated ones, while keeping explicitly requested secret tokens. The KEP reached implemented status at stable stage.",
+  "rationale": "BoundServiceAccountTokenVolume went GA in 1.22, so pod tokens come from the TokenRequest API and auto-generated secret tokens are no longer needed. Those secrets are less secure than bound tokens, so the KEP stops auto-creating them. Reviewers required that cleanup not break existing users, so deletion is limited to unreferenced tokens unused for a long period, with usage tracking first.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Remove or limit explicitly requested secret-based tokens too",
+    "why_not": "Non-goal in the readme: \"Removal of explicitly requested secret-based service account tokens\" is out of scope, and reviewers noted explicit tokens are part of the workload API."
+   },
+   {
+    "option": "Add per-namespace or per-service-account knobs to control auto-generated secrets",
+    "why_not": "liggitt in rcomment:705717728: \"Per-namespace or per-serviceaccount controls around auto-generated secrets expose APIs I don't think we want long-term.\""
+   },
+   {
+    "option": "Delete auto-generated tokens immediately with a single release-based cleanup",
+    "why_not": "Reviewers wanted upgrades to stay safe: \"upgrading must remain as safe and non-disruptive as possible for users\" (rcomment:706149814). Cleanup was gated on usage tracking and a sufficient period of non-use instead."
+   },
+   {
+    "option": "Use a LegacyServiceAccountTokenBehavior-style gate name",
+    "why_not": "zshihang (rcomment:675078384) argued the name \"might not describe the phase correctly\" because the gate removes TokenController from the tree."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "As BoundServiceAccountTokenVolume is GA in 1.22, pods’ service account tokens would be obtained via TokenRequest API and stored as projected volume."
+   },
+   {
+    "ref": "readme",
+    "quote": "Change the service account control loop in Token Controller to not auto-create secret for service accounts."
+   },
+   {
+    "ref": "rcomment:706149814",
+    "quote": "upgrading must remain as safe and non-disruptive as possible for users. To that end, we should only clean up auto-generated tokens which"
+   },
+   {
+    "ref": "rcomment:793136923",
+    "quote": "if LegacyServiceAccountTokenTracking is disabled, LegacyServiceAccountTokenCleanUp would not clean up tokens because it cannot determine `last-used`"
+   },
+   {
+    "ref": "rcomment:725521272",
+    "quote": "Defaulting to a 1 year period seems coherent with the extended lifetime of injected service account tokens."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11106,
+  "output": 1097
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

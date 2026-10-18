@@ -1,0 +1,54 @@
+{
+ "kep": "KEP-5589",
+ "input_hash": "e9be60b3cccefc29",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5589 proposes removing Kubernetes' runtime and generation-time dependencies on the unmaintained gogo protobuf library by defining local interfaces for the methods API machinery uses, stripping unused generated protobuf code, and moving go-to-protobuf rewrite logic into a maintained generator. Status is implementable, stage stable.",
+  "rationale": "Gogo protobuf has been unmaintained since 2021, so any future vulnerability or bug fix would require replacing it first, and its runtime references propagate to all Kubernetes module consumers. The generated code also misleadingly appears to implement standard protobuf interfaces that Kubernetes does not actually use, risking runtime panics. The KEP keeps the serialization code unchanged and leaves non-protobuf Go type behavior unchanged, while removing the gogo references.</rationale>\n<parameter name=\"outcome_reason\">null",
+  "alternatives": [
+   {
+    "option": "Switch to standard protoc/protoc-gen-go generation",
+    "why_not": "The impact on non-protobuf use of Kubernetes API Go types and the mismatch around canonical serialization and dropping of unknown fields ruled it out."
+   },
+   {
+    "option": "Switch to another non-standard generator such as vtprotobuf",
+    "why_not": "It would have required significantly more work and been harder to verify compatibility; there were no clear benefits justifying that investment."
+   },
+   {
+    "option": "Keep the ProtoMessage marker method behind a build tag for one more release",
+    "why_not": "Discussed as a mitigation for downstream consumers; the reviewers ultimately adopted it only for the marker method (kubernetes_protomessage_one_more_release tag), since go.mod ignores build tags for the wider gogo dependency and dims argued for removing bits immediately."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This dependency is unmaintained since 2021. Reliance on an unmaintained and frozen dependency for complex code generation means that addressing any future vulnerability"
+   },
+   {
+    "ref": "readme",
+    "quote": "All of these steps can be accomplished without changing non-protobuf aspects of Kubernetes API Go types, which accomplishes goal 2 of leaving the Go types unchanged from previous releases."
+   },
+   {
+    "ref": "rcomment:2395610713",
+    "quote": "I updated this with a commit describing isolating the marker ProtoMessage methods with a `kubernetes_protomessage_one_more_release` build tag"
+   },
+   {
+    "ref": "comment:4508957737",
+    "quote": "The runtime dependency work is complete and stable, but the generate-time dependency is still TBD."
+   },
+   {
+    "ref": "comment:3377413342",
+    "quote": "Plan looks reasonable and any new component reflects our actual exposure today. PRR also looks good /lgtm /approve /hold cancel"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "high"
+ },
+ "usage": {
+  "input": 14528,
+  "output": 1067
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

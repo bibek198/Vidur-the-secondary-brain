@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-5007",
+ "input_hash": "5009eba8f09fd456",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-5007 introduces BindingConditions and BindingFailureConditions so the scheduler defers Pod binding until external device resources (e.g., fabric-attached GPUs) report ready, or aborts binding on failure. The KEP is at implementable status, stage beta.",
+  "rationale": "Devices attached only after a Pod is scheduled may be unavailable at attachment time, causing Pod failures or manual intervention. The proposal lets the scheduler wait in PreBind until condition keys on the ResourceClaim are True, and abort/reschedule if a failure condition is True. Reviewers debated alternatives (PostFilter, Permit, autoscaling) and the KEP was kept on the PreBind approach, with the mechanism framed as general rather than fabric-specific.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Reschedule the Pod as unschedulable until the device is bound (proposal2)",
+    "why_not": "The discussion notes there is no good mechanism to guarantee another node won't take the node in the meantime; it would need NominatedNodeName reservation and scheduler changes."
+   },
+   {
+    "option": "Make attachment part of PostFilter/preemption, or use the Permit extension point",
+    "why_not": "Reviewers raised these as better alternatives (dom4ha, sanposhiho) but sanposhiho noted Permit failure would unassume the pod and that Permit wait is essentially the same as PreBind waiting; no decision to adopt them is recorded."
+   },
+   {
+    "option": "Device autoscaler reacting to unschedulable Pods",
+    "why_not": "The KEP says a separate device autoscaler running alongside Cluster Autoscaler may attach devices while CA adds a node with a device at the same time, wasting resources; this is listed as a possible alternative but was judged not favorable though technically acceptable."
+   },
+   {
+    "option": "Taints and tolerations, or a controller that marks Pods schedulable only when devices are ready",
+    "why_not": "The KEP lists these as alternatives: taints are less granular and harder to manage dynamically, and an external controller reduces scheduling flexibility."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "This allows for more deterministic scheduling and avoids premature binding that could lead to Pod failures or manual intervention."
+   },
+   {
+    "ref": "readme",
+    "quote": "The scheduler evaluates only the `status` field of these conditions: - All `BindingConditions` must have `status: \"True\"` to proceed with binding."
+   },
+   {
+    "ref": "rcomment:1939043441",
+    "quote": "This is what volumebinding plugin also does: https://github.com/kubernetes/kubernetes/blob/a2ab0342c8ad72768c4ca8ce998be793341563fd/pkg/scheduler/framework/plugins/volumebinding/binder.go#L471-L472"
+   },
+   {
+    "ref": "rcomment:1946769825",
+    "quote": "If you don't hear from John otherwise, then let's go with proposal 1, dedicated fields. Separate fields fit better into how Kubernetes defines and evolves APIs."
+   },
+   {
+    "ref": "comment:2652348264",
+    "quote": "But all this KEP actually contains right now is the ability to gate binding on conditions. The modification of ResourceSlices as described here is not actually part of the KEP"
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 11566,
+  "output": 1241
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}

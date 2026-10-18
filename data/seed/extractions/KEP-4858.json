@@ -1,0 +1,59 @@
+{
+ "kep": "KEP-4858",
+ "input_hash": "88315f7c12344de3",
+ "model": "claude-haiku-5-5",
+ "mode": "batch",
+ "stop_reason": "tool_use",
+ "output": {
+  "summary": "KEP-4858 proposes tightening Kubernetes API validation of IP and CIDR string fields in core types, since the existing validation accepts ambiguous strings that net.ParseIP/ParseCIDR allow. It is implementable at stage beta, with implemented from 2026-02-09 per the status history.",
+  "rationale": "Kubernetes validation of IP/CIDR fields accepts any string that net.ParseIP and net.ParseCIDR accept, and some of those strings are ambiguous and can cause security problems (CVE-2021-29923 is cited). Stricter validation was deferred so existing objects would not be invalidated, so the KEP sets a plan to tighten it behind a feature gate, with warnings first and without forcing fixes on unrelated updates. The source gives the motivation; the status history does not explain the reason for the change in stage.",
+  "outcome_reason": null,
+  "alternatives": [
+   {
+    "option": "Update netutils.ParseIPSloppy and ParseCIDRSloppy as part of this KEP",
+    "why_not": "Listed as a non-goal: \"There is a separate plan for this.\""
+   },
+   {
+    "option": "Make immutable fields fixable when they are invalid",
+    "why_not": "Listed as a non-goal: \"there was not a consensus that it was a good idea _in general_\""
+   },
+   {
+    "option": "Require canonical IPv6 form in legacy fields",
+    "why_not": "Non-goal because \"we decided against that\"; legacy non-canonical values would need forcible fix-up, and only warnings are added for them."
+   },
+   {
+    "option": "Add cluster-level warnings or events for invalid IP/CIDR values in old objects",
+    "why_not": "Originally a goal but not implemented; listed as a non-goal."
+   }
+  ],
+  "evidence": [
+   {
+    "ref": "readme",
+    "quote": "accepting any string accepted by the underlying functions (`net.ParseIP` and `net.ParseCIDR`) even though in some cases these strings had ambiguous meanings that could lead to security problems"
+   },
+   {
+    "ref": "readme",
+    "quote": "we didn't want to retroactively invalidate existing API objects. This KEP sets forth the plan for finally moving forward on that."
+   },
+   {
+    "ref": "readme",
+    "quote": "Don't require pre-existing invalid fields to be fixed on unrelated updates."
+   },
+   {
+    "ref": "readme",
+    "quote": "This will initially be behind a feature gate."
+   },
+   {
+    "ref": "readme",
+    "quote": "Before that, do a few releases where IP/CIDR values that would be invalid according to the new rules cause apiserver warnings."
+   }
+  ],
+  "supersession_claims": [],
+  "confidence": "medium"
+ },
+ "usage": {
+  "input": 3176,
+  "output": 989
+ },
+ "extracted_at": "2026-10-15T22:53:04Z"
+}
