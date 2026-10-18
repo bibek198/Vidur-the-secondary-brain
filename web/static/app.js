@@ -80,11 +80,10 @@ function renderCard(card, title, res) {
   const cited = res.citations || [];
   if (cited.length) {
     const ol = el("ol", null, "sources");
-    const n = Math.max(...cited.map((c) => c.n));
-    for (let i = 1; i <= n; i++) {
-      const c = cited.find((x) => x.n === i);
+    for (const c of [...cited].sort((a, b) => a.n - b.n)) {   // only cited sources, keeping their [n] numbers
       const li = el("li");
-      if (c) li.appendChild(link(c.url, c.url)); else li.appendChild(el("span", "(not cited)", "muted"));
+      li.value = c.n;
+      li.appendChild(link(c.url, c.url.replace(/^https:\/\/github\.com\//, "")));
       ol.appendChild(li);
     }
     card.appendChild(ol);
@@ -150,26 +149,32 @@ function renderTrace(g, b) {
 }
 
 // ---------- graph panel ----------
-const TYPE_COLOR = { Person: "#7a5af8", Team: "#0e9aa7", Subproject: "#0e9aa7", CodeArea: "#5b6b80",
-                     Component: "#5b6b80", FeatureGate: "#5b6b80" };
+const TYPE_COLOR = { Person: "#af52de", Team: "#30b0c7", Subproject: "#30b0c7", CodeArea: "#636366",
+                     Component: "#636366", FeatureGate: "#636366" };
+const NOT_ADOPTED = ["withdrawn", "rejected", "replaced", "deferred"];
 function kepColor(status) {
-  if (["implemented"].includes(status)) return "#1f9d55";
-  if (["withdrawn", "rejected", "replaced", "deferred"].includes(status)) return "#d64545";
-  return "#d99a06";
+  if (status === "implemented") return "#34c759";
+  if (NOT_ADOPTED.includes(status)) return "#ff3b30";
+  return "#ff9f0a";
 }
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 function initCy() {
   state.cy = cytoscape({
     container: $("cy"), wheelSensitivity: 0.3,
     style: [
-      { selector: "node", style: { "background-color": "data(color)", label: "data(label)", "font-size": 9,
-          "text-wrap": "ellipsis", "text-max-width": 110, width: 18, height: 18, color: "#1d2433" } },
-      { selector: "node.kep", style: { width: 26, height: 26, "font-weight": 600 } },
-      { selector: "edge", style: { width: 1.4, "line-color": "#b8c0cc", "target-arrow-color": "#b8c0cc",
-          "target-arrow-shape": "triangle", "curve-style": "bezier", label: "data(label)", "font-size": 7,
-          color: "#6b7385", "text-rotation": "autorotate" } },
+      { selector: "node", style: { "background-color": "data(color)", label: "data(label)", "font-size": 10,
+          "font-family": "-apple-system, BlinkMacSystemFont, sans-serif", "text-wrap": "ellipsis", "text-max-width": 120,
+          "text-margin-y": -4, width: 16, height: 16, color: cssVar("--ink") || "#1d1d1f",
+          "border-width": 2, "border-color": cssVar("--panel") || "#fff" } },
+      { selector: "node.kep", style: { width: 28, height: 28, "font-weight": 600, "font-size": 11 } },
+      { selector: "edge", style: { width: 1.2, "line-color": cssVar("--other") || "#aeaeb2",
+          "target-arrow-color": cssVar("--other") || "#aeaeb2", "target-arrow-shape": "triangle", "arrow-scale": 0.8,
+          "curve-style": "bezier", label: "data(label)", "font-size": 8, color: cssVar("--muted") || "#6e6e73",
+          "text-rotation": "autorotate", "text-background-color": cssVar("--soft") || "#f2f2f7", "text-background-opacity": 1,
+          "text-background-padding": 2 } },
       { selector: "edge.past", style: { "line-style": "dashed" } },
-      { selector: "node.flash", style: { "border-width": 6, "border-color": "#ffcf33" } },
-      { selector: "node:selected", style: { "border-width": 3, "border-color": "#2f6fde" } },
+      { selector: "node.flash", style: { "border-width": 7, "border-color": "#ffd60a" } },
+      { selector: "node:selected", style: { "border-width": 3, "border-color": "#0071e3" } },
     ],
   });
   state.cy.on("tap", "node", (e) => showNode(e.target.data()));
@@ -182,7 +187,7 @@ function renderPath(path) {
     data: { id: String(n.id), key: n.key, type: n.label,
             label: n.label === "KEP" ? n.key : n.label === "Decision" ? "explanation (LLM)" : (n.name || n.key),
             status: n.status, url: n.url, name: n.name,
-            color: n.label === "KEP" ? kepColor(n.status) : (TYPE_COLOR[n.label] || "#9aa4b2") },
+            color: n.label === "KEP" ? kepColor(n.status) : (TYPE_COLOR[n.label] || "#aeaeb2") },
     classes: n.label === "KEP" ? "kep" : "" }));
   edges.filter((e) => ids.has(String(e.src)) && ids.has(String(e.dst))).forEach((e) => els.push({
     data: { id: "e" + e.id, source: String(e.src), target: String(e.dst), label: e.type, props: e.props },
@@ -300,15 +305,13 @@ async function refreshHealth() {
       $("replaybanner").hidden = false;
     }
     const parts = [];
-    if (h.frozen) parts.push(`frozen snapshot at ${h.snapshot_cutoff}`);
-    if (h.last_change) {
-      parts.push(`last change ${h.last_change}`);
-      const recv = secs(h.last_change, h.last_observed);
-      if (recv !== null && Math.abs(recv) < 3600) parts.push(`received +${recv} s`);
-      if (h.lag_ms !== null && h.lag_ms !== undefined) parts.push(`applied +${(h.lag_ms / 1000).toFixed(2)} s`);
-    } else if (!h.frozen) parts.push(`snapshot ${h.snapshot_cutoff}, no live changes yet`);
+    const day = (iso) => iso ? new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "?";
+    if (h.frozen) parts.push(`Frozen snapshot, ${day(h.snapshot_cutoff)}`);
+    else if (h.last_change) {
+      parts.push(`Last change ${new Date(h.last_change).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`);
+      if (h.lag_ms !== null && h.lag_ms !== undefined) parts.push(`applied in ${(h.lag_ms / 1000).toFixed(2)} s`);
+    } else parts.push(`Snapshot ${day(h.snapshot_cutoff)}, waiting for changes`);
     parts.push(`${h.nodes.toLocaleString()} nodes`);
-    parts.push(`checked ${new Date().toLocaleTimeString()}`);
     $("fresh").textContent = parts.join(" · ");
     $("replaynext").hidden = state.graph !== "brain_demo";
     $("scenario").hidden = state.graph !== "brain_demo";
@@ -327,11 +330,21 @@ async function runAction(name, args) {
 }
 
 // ---------- setup ----------
+function setAbout(open) {
+  $("about").hidden = !open;
+  try { localStorage.setItem("db.about", open ? "open" : "closed"); } catch { /* storage may be unavailable */ }
+}
+
 async function init() {
+  let aboutPref = null;
+  try { aboutPref = localStorage.getItem("db.about"); } catch { /* ignore */ }
+  setAbout(aboutPref !== "closed");
+  $("aboutclose").onclick = () => setAbout(false);
+  $("abouttoggle").onclick = () => setAbout($("about").hidden);
   initCy();
   const h = await api("/api/health").catch(() => ({ graphs: ["brain_demo"] }));
   const pick = $("graph");
-  const labels = { brain_live: "Live (follows Kubernetes)", brain_demo: "Demo (sandbox webhook)", brain_eval: "Frozen 2026-09-15 (evaluation)" };
+  const labels = { brain_live: "Live: follows Kubernetes", brain_demo: "Demo: sandbox webhook", brain_eval: "Frozen: 15 Sep 2026" };
   (h.graphs || []).forEach((g) => { const o = el("option", labels[g] || g); o.value = g; pick.appendChild(o); });
   state.graph = (h.replay_mode || h.public_mode) ? "brain_eval"
     : ((h.graphs || []).includes("brain_demo") ? "brain_demo" : h.graphs[0]);

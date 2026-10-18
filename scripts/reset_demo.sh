@@ -14,6 +14,12 @@ if "brain_demo" in c.list_graphs():
     c.connection.execute_command("GRAPH.DELETE", "brain_demo")
 stream.reset("brain_demo")
 t = time.time()
-c.connection.execute_command("GRAPH.COPY", "brain_eval", "brain_demo")
-print(f"brain_demo reset from brain_eval in {time.time() - t:.1f}s")
+try:
+    c.connection.execute_command("GRAPH.COPY", "brain_eval", "brain_demo")
+    print(f"brain_demo reset from brain_eval in {time.time() - t:.1f}s")
+except Exception as exc:  # GRAPH.COPY forks the server and can fail for lack of memory: load the seed instead
+    import subprocess, sys
+    print(f"GRAPH.COPY failed ({exc}); loading brain_demo from data/seed instead (1-3 min)")
+    subprocess.run([sys.executable, "-m", "src.load.loader", "--graph", "brain_demo"], check=True, stdout=subprocess.DEVNULL)
+    print(f"brain_demo loaded in {time.time() - t:.1f}s")
 EOF

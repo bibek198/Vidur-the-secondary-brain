@@ -9,33 +9,58 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">Decision Brain <span class="sub">the Kubernetes project as a company · FalkorDB</span></div>
-    <label class="graphpick">Graph
-      <select id="graph"></select>
-    </label>
-    <div id="fresh" class="fresh">connecting…</div>
-    <div id="replaybanner" class="replaybanner" hidden>Replay mode: recorded answers (no API key). The graph, Cypher and live feed are real.</div>
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <span class="name">Decision Brain</span>
+      <button type="button" id="abouttoggle" class="linkbtn">About</button>
+    </div>
+    <div class="topright">
+      <label class="graphpick"><span class="muted">Graph</span>
+        <select id="graph"></select>
+      </label>
+      <div id="fresh" class="fresh">connecting…</div>
+    </div>
   </header>
 
+  <section id="about" class="about">
+    <div class="about-head">
+      <div>
+        <h1>A company brain that knows who owns what, why it was decided, and what just changed.</h1>
+        <p>Decision Brain models the Kubernetes project as a company: SIGs are teams, KEPs are decisions, issues and pull
+          requests are the conversations, and OWNERS files are code ownership. Everything lives in one FalkorDB graph that
+          updates itself as the project changes, and every answer shows its sources, its graph path and the Cypher behind it.</p>
+      </div>
+      <button type="button" id="aboutclose" class="pill">Got it</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b>Answers you can check</b><span>Claude picks graph tools; it never writes Cypher. Each fact cites a GitHub source, and a guard rejects anything uncited.</span></div>
+      <div class="tile"><b>Real time</b><span>GitHub webhooks, a poller and git diffs stream into the graph. A change is answerable in about 1 s, and earlier answers are flagged outdated.</span></div>
+      <div class="tile"><b>Time travel</b><span>Every status, lead and approver has dates, so you can ask how things stood at any past release.</span></div>
+      <div class="tile"><b>Measured honestly</b><span>49/50 correct vs 15/50 for vector-only search on the same data; 84/90 vs 32/90 while two years of changes replayed.</span></div>
+    </div>
+  </section>
+
+  <div id="replaybanner" class="notice" hidden>Replay mode: recorded answers (no API key). The graph, Cypher and live feed are real.</div>
+
   <ol id="scenario" class="scenario" hidden>
-    <li data-step="ask">1 Ask</li><li data-step="inspect">2 Inspect</li><li data-step="change">3 Change</li>
-    <li data-step="outdated">4 Outdated</li><li data-step="reask">5 Re-ask</li><li data-step="compare">6 Compare</li>
+    <li data-step="ask">Ask</li><li data-step="inspect">Inspect</li><li data-step="change">Change</li>
+    <li data-step="outdated">Outdated</li><li data-step="reask">Re-ask</li><li data-step="compare">Compare</li>
   </ol>
 
   <main class="layout">
-    <section class="left">
+    <section class="panel left">
       <form id="askform" class="askform">
-        <textarea id="question" rows="2" maxlength="500" placeholder="Ask about owners, experts, decisions, impact, what changed…"></textarea>
+        <textarea id="question" rows="2" maxlength="500" placeholder="Ask about owners, experts, decisions, impact or what changed"></textarea>
         <div class="controls">
-          <label>As of <select id="asof"></select></label>
-          <label class="check"><input type="checkbox" id="compare"> Compare with vector search</label>
-          <button type="submit" id="askbtn">Ask</button>
+          <label class="field"><span class="muted">As of</span> <select id="asof"></select></label>
+          <label class="toggle"><input type="checkbox" id="compare"><span class="track"></span> Compare with vector search</label>
+          <button type="submit" id="askbtn" class="primary">Ask</button>
         </div>
       </form>
       <details id="exbox" class="exbox" open><summary>Example questions</summary><div id="examples" class="examples"></div></details>
       <div id="outdated" class="outdated" hidden>
         <span id="outdatedtext">This answer is outdated: the graph changed after it was given.</span>
-        <button id="reask" type="button">Re-ask</button>
+        <button id="reask" type="button" class="pill danger">Re-ask</button>
       </div>
       <div id="answers" class="answers">
         <article id="graphcard" class="card" hidden></article>
@@ -43,33 +68,34 @@
       </div>
       <div id="evidence" class="evidence" hidden></div>
       <div id="actions" class="actions" hidden>
-        <button type="button" id="actbrief">Draft decision brief</button>
-        <button type="button" id="actreviewers">Suggested reviewers</button>
+        <button type="button" id="actbrief" class="pill">Draft decision brief</button>
+        <button type="button" id="actreviewers" class="pill">Suggested reviewers</button>
         <div id="actout" class="actout"></div>
       </div>
     </section>
 
-    <section class="center">
-      <div class="panelhead">Graph path behind the answer <span id="pathinfo" class="muted"></span></div>
+    <section class="panel center">
+      <div class="panelhead"><span>Graph path</span><span id="pathinfo" class="muted"></span></div>
       <div id="cy" class="cy"></div>
       <div id="nodeinfo" class="nodeinfo" hidden></div>
       <div class="legend">
-        <span class="lg kep-ok">KEP implemented</span><span class="lg kep-mid">KEP proposed/implementable</span>
-        <span class="lg kep-no">KEP not adopted</span><span class="lg person">Person</span><span class="lg team">Team</span>
-        <span class="lg code">Code / component</span><span class="lg other">Other</span><span class="lg past">past link</span>
+        <span class="lg kep-ok">Implemented</span><span class="lg kep-mid">Proposed</span>
+        <span class="lg kep-no">Not adopted</span><span class="lg person">Person</span><span class="lg team">Team</span>
+        <span class="lg code">Code</span><span class="lg other">Other</span><span class="lg past">Past link</span>
       </div>
     </section>
 
-    <section class="right">
-      <div class="panelhead">Live feed <span id="feeddot" class="dot" title="connection"></span><span id="feedstate" class="muted">connecting</span></div>
-      <button type="button" id="replaynext" class="replaynext" hidden>Replay next real change</button>
+    <section class="panel right">
+      <div class="panelhead"><span>Live feed</span><span class="status"><span id="feeddot" class="dot"></span><span id="feedstate" class="muted">connecting</span></span></div>
+      <button type="button" id="replaynext" class="pill wide" hidden>Replay next real change</button>
       <div id="replayout" class="muted small"></div>
       <ul id="feed" class="feed"></ul>
+      <p id="feedempty" class="empty muted small">Changes to the graph appear here as they happen.</p>
     </section>
   </main>
 
   <details id="drawer" class="drawer">
-    <summary>How I got this: tools and Cypher <span id="tracecount" class="muted"></span></summary>
+    <summary>How I got this <span id="tracecount" class="muted"></span></summary>
     <div id="trace" class="trace"></div>
   </details>
 

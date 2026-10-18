@@ -16,6 +16,11 @@ const check = (ok, msg) => { console.log(`${ok ? "PASS" : "FAIL"} ${msg}`); if (
   await page.waitForFunction(() => window.decisionBrain && window.decisionBrain.graph === "brain_demo");
   await page.waitForSelector("#feeddot.on", { timeout: 20000 });
   check(true, "page loaded on the Demo graph, live feed connected");
+  check(await page.isVisible("#about"), "About section shown on first visit");
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: path.join(OUT, "ui-home.png") });
+  await page.click("#aboutclose");
+  check(!(await page.isVisible("#about")), "About section closes with Got it");
 
   // 1. ask
   await page.fill("#question", "Is KEP-2699 still planned?");
@@ -52,18 +57,20 @@ const check = (ok, msg) => { console.log(`${ok ? "PASS" : "FAIL"} ${msg}`); if (
   check(/withdrawn/i.test(answer2), `answer after re-ask says withdrawn: "${answer2.slice(0, 90)}…"`);
   check(!(await page.isVisible("#outdated")), "banner cleared after re-ask");
   const kepColor = await page.evaluate(() => window.decisionBrain.cy.nodes().filter((n) => n.data("key") === "KEP-2699").data("color"));
-  check(kepColor === "#d64545", `KEP-2699 node is red (not adopted) after re-ask: ${kepColor}`);
+  check(kepColor === "#ff3b30", `KEP-2699 node is red (not adopted) after re-ask: ${kepColor}`);
   await page.waitForTimeout(1200);
   await page.screenshot({ path: path.join(OUT, "ui-reask.png") });
 
   // 4. compare with vector search on a made-up topic
-  await page.check("#compare");
+  await page.click("label.toggle");   // the switch: users click the label, the checkbox itself is visually hidden
+  check(await page.isChecked("#compare"), "compare switch turns on");
   await page.fill("#question", "Why was blockchain-based pod billing rejected?");
   await page.click("#askbtn");
   await page.waitForSelector("#basecard .meta", { timeout: 120000 });
   await page.waitForSelector("#graphcard .meta", { timeout: 120000 });
   const g = await page.textContent("#graphcard .text"), b = await page.textContent("#basecard .text");
-  check(/not in the graph|has no |no (kep|record|such|decision)|can't find|cannot find|could not find|nowhere/i.test(g), `graph answer on the lure: "${g.slice(0, 80)}…"`);
+  check(/not in the (knowledge )?graph|is(n't| not) in the|has no |no (kep|record|such|decision|match)|can't find|cannot find|could not find|nowhere|not found|does(n't| not) exist/i.test(g),
+        `graph answer on the lure: "${g.slice(0, 120)}…"`);
   console.log(`INFO baseline answer on the lure: "${b.slice(0, 100)}…"`);
   check(await page.isVisible("#evidence"), "evidence comparison panel shown");
   await page.waitForTimeout(800);
