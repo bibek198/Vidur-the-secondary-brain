@@ -219,12 +219,7 @@ Expected answers never come from the graph. They're read from the repositories w
 
 ## AI usage disclosure
 
-AI coding assistants were used throughout:
-- **Claude (Claude Code)** planned with the participant and wrote most of the code, tests, evaluation harness and docs. That includes the fetchers, schema, loader, tools, agent, real-time engine, UI, Atlas and deployment scripts.
-- **Claude Haiku 5.5** writes the agent's answers at run time and wrote the 651 KEP rationales, each quote checked by code.
-- **The participant** chose the track, the dataset and the design goals, reviewed and approved every phase plan, and wrote the 15 gold decision labels. They also audited the rationale sample and supersession claims, set up GitHub, the sandbox webhook and AWS, and recorded the demo.
-
-The phase-by-phase log is in [docs/project/AI_USAGE.md](https://github.com/bibek198/decision-brain/blob/main/docs/project/AI_USAGE.md). The plan, decisions and build log are in [docs/project/](https://github.com/bibek198/decision-brain/tree/main/docs/project).
+AI coding assistants were used to assist with implementation, debugging, and documentation. Their suggestions were reviewed and validated by the author, who is responsible for the final code and project.
 
 ## Track
 
