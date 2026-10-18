@@ -7,15 +7,18 @@ The graph itself, the tools and the live feed are always real; only the LLM step
 """
 import difflib
 import json
+import os
 import re
+import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ANSWERS = ROOT / "data" / "seed" / "replay" / "answers.jsonl"
 
 
-def key(question: str, graph_name: str) -> str:
-    return f"{graph_name}|{' '.join(re.sub(r'[^a-z0-9.-]+', ' ', question.lower()).split())}"
+def key(question: str, graph_name: str, mode: str = "graph", as_of: str | None = None) -> str:
+    q = " ".join(re.sub(r"[^a-z0-9.-]+", " ", question.lower()).split())
+    return f"{'' if mode == 'graph' else mode + '|'}{graph_name}|{q}" + (f"|as_of={as_of}" if as_of else "")
 
 
 def _load() -> dict:
@@ -24,21 +27,28 @@ def _load() -> dict:
     return {r["key"]: r for r in map(json.loads, ANSWERS.open())}
 
 
+_LOCK = threading.Lock()
+
+
 def record(out: dict) -> None:
-    rows = _load()
-    k = key(out["question"], out["graph"])
-    rows[k] = {**out, "key": k}
-    ANSWERS.parent.mkdir(parents=True, exist_ok=True)
-    ANSWERS.write_text("".join(json.dumps(r, ensure_ascii=False, default=str) + "\n" for r in rows.values()))
+    """Save one answer (graph or baseline). Locked and atomic: concurrent recorders cannot lose rows."""
+    k = key(out["question"], out["graph"], out.get("mode", "graph"), out.get("as_of_requested"))
+    with _LOCK:
+        rows = _load()
+        rows[k] = {**out, "key": k}
+        ANSWERS.parent.mkdir(parents=True, exist_ok=True)
+        tmp = ANSWERS.with_suffix(".tmp")
+        tmp.write_text("".join(json.dumps(r, ensure_ascii=False, default=str) + "\n" for r in rows.values()))
+        os.replace(tmp, ANSWERS)
 
 
 def recorded_questions(graph_name: str) -> list[str]:
-    return [r["question"] for r in _load().values() if r["graph"] == graph_name]
+    return [r["question"] for r in _load().values() if r["graph"] == graph_name and r.get("mode", "graph") == "graph"]
 
 
-def serve(question: str, graph_name: str) -> dict:
+def serve(question: str, graph_name: str, mode: str = "graph", as_of: str | None = None) -> dict:
     rows = _load()
-    hit = rows.get(key(question, graph_name))
+    hit = rows.get(key(question, graph_name, mode, as_of))
     if hit:
         return {**hit, "replayed": True}
     known = recorded_questions(graph_name)

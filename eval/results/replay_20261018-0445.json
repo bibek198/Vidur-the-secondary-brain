@@ -1,0 +1,887 @@
+{
+ "summary": {
+  "keps": [
+   554,
+   1451,
+   2043,
+   2400,
+   2558,
+   3762,
+   3857,
+   3902,
+   3962,
+   4033,
+   4193,
+   4210,
+   4369,
+   4601,
+   4706
+  ],
+  "events_replayed": 1433,
+  "median_event_to_answer_ms": 36.2,
+  "per_checkpoint": {
+   "v1.32": {
+    "graph": 14,
+    "vector_stale": 7,
+    "vector_appended": 5
+   },
+   "v1.33": {
+    "graph": 14,
+    "vector_stale": 8,
+    "vector_appended": 4
+   },
+   "v1.34": {
+    "graph": 14,
+    "vector_stale": 7,
+    "vector_appended": 5
+   },
+   "v1.35": {
+    "graph": 14,
+    "vector_stale": 3,
+    "vector_appended": 5
+   },
+   "v1.36": {
+    "graph": 14,
+    "vector_stale": 4,
+    "vector_appended": 4
+   },
+   "v1.37": {
+    "graph": 14,
+    "vector_stale": 3,
+    "vector_appended": 2
+   }
+  },
+  "totals": {
+   "graph": {
+    "correct": 84,
+    "n": 90,
+    "unknown": 6,
+    "old_status_as_current": 0
+   },
+   "vector_stale": {
+    "correct": 32,
+    "n": 90,
+    "unknown": 7,
+    "old_status_as_current": 21
+   },
+   "vector_appended": {
+    "correct": 25,
+    "n": 90,
+    "unknown": 11,
+    "old_status_as_current": 24
+   }
+  }
+ },
+ "rows": [
+  {
+   "checkpoint": "v1.32",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 2400,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 3857,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 3902,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 3962,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4033,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4193,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implemented",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4210,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4369,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4601,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.32",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "deferred",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 2400,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 3857,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 3902,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 3962,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4033,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4193,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implemented",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4210,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4369,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4601,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.33",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "deferred",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 2400,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 3857,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 3902,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "provisional",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 3962,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4033,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4193,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4210,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4369,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4601,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.34",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "implementable",
+   "vector_appended": "deferred"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 2400,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 3857,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 3902,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 3962,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4033,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4193,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4210,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implemented",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4369,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4601,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.35",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "deferred",
+   "vector_appended": "deferred"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 2400,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 3857,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 3902,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "implemented"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 3962,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4033,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4193,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4210,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4369,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "unknown",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4601,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.36",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "deferred",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 554,
+   "truth": "implemented",
+   "t0_status": "implemented",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "unknown"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 1451,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": "implementable",
+   "vector_stale": "unknown",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 2043,
+   "truth": "implementable",
+   "t0_status": "implementable",
+   "graph": null,
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 2400,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 2558,
+   "truth": "withdrawn",
+   "t0_status": "implementable",
+   "graph": "withdrawn",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 3762,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 3857,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "provisional",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 3902,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "provisional"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 3962,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4033,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4193,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implemented",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4210,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4369,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4601,
+   "truth": "implemented",
+   "t0_status": "implementable",
+   "graph": "implemented",
+   "vector_stale": "implementable",
+   "vector_appended": "implementable"
+  },
+  {
+   "checkpoint": "v1.37",
+   "kep": 4706,
+   "truth": "rejected",
+   "t0_status": "implementable",
+   "graph": "rejected",
+   "vector_stale": "deferred",
+   "vector_appended": "deferred"
+  }
+ ]
+}

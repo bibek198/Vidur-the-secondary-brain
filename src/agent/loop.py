@@ -11,8 +11,8 @@ Flow for one question:
      so the real-time engine can flag the answer as outdated when those facts change.
 The LLM never writes Cypher; it can only choose tools and fill in their arguments.
 """
-import hashlib
 import json
+import uuid
 import time
 
 import anthropic
@@ -62,6 +62,26 @@ def _strict_schema(schema: dict) -> dict:
             p = {"anyOf": [p, {"type": "null"}], "description": desc}
         props[name] = p
     return {**schema, "properties": props, "required": list(schema["properties"])}
+
+
+HISTORICAL = {name for name, spec in TOOLS.items() if "as_of" in spec["schema"]["properties"]}
+
+
+def evidence(results: list[dict]) -> list[dict]:
+    """What the graph answer rests on, one row per item: linked entities from the path, plus dated status changes."""
+    rows, seen = [], set()
+    for r in results:
+        for h in (r.get("data") or {}).get("status_history") or []:
+            key = (r["data"].get("kep"), h["status"], h["from"])
+            if key not in seen:
+                seen.add(key)
+                rows.append({"id": f"{key[0]} status {h['status']}", "type": "status change", "url": h.get("source"),
+                             "date": h["from"]})
+        for n in r["path"]["nodes"]:
+            if n.get("url") and n["key"] not in seen:
+                seen.add(n["key"])
+                rows.append({"id": n["key"], "type": n["label"], "url": n["url"], "date": None})
+    return rows
 
 
 def tool_specs() -> list[dict]:
@@ -117,11 +137,13 @@ def _merge_paths(results: list[dict]) -> dict:
 
 
 def ask(question: str, graph_name: str | None = None, model: str | None = None, remember: bool = True,
-        client=None) -> dict:
-    """Answer one question from the graph. Returns answer, citations, tool calls, path, Cypher and cost."""
+        client=None, as_of: str | None = None) -> dict:
+    """Answer one question from the graph. Returns answer, citations, tool calls, path, Cypher and cost.
+    as_of (a release like v1.30 or a date) is enforced by code: it is passed to every tool that has a
+    historical view, overriding the model, and tools without one are marked as showing the current graph."""
     from src.agent import replay
     if client is None and config.DEMO_REPLAY:
-        return replay.serve(question, graph_name or config.GRAPH_NAME)
+        return replay.serve(question, graph_name or config.GRAPH_NAME, as_of=as_of)
     client = client or anthropic.Anthropic()
     model = model or config.LLM_MODEL
     graph_name = graph_name or config.GRAPH_NAME
@@ -129,7 +151,8 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
     started = time.time()
     sources, results, calls = Sources(), [], []
     usage = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0}
-    messages = [{"role": "user", "content": question}]
+    user_turn = question + (f"\n\n(Answer as of {as_of}.)" if as_of else "")
+    messages = [{"role": "user", "content": user_turn}]
     params = {"model": model, "max_tokens": 1200, "tools": tool_specs(), "output_config": {"effort": "low"},
               "system": [{"type": "text", "text": SYSTEM, "cache_control": {"type": "ephemeral"}}]}
 
@@ -148,13 +171,19 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
             t0 = time.time()
             try:
                 args = {k: v for k, v in dict(tu.input).items() if v is not None}  # null = not given
+                if as_of and tu.name in HISTORICAL:
+                    args["as_of"] = as_of                    # the requested cutoff wins over the model's choice
                 result = call_tool(tu.name, args, graph_name=graph_name)
+                result["historical"] = tu.name in HISTORICAL
+                if as_of and not result["historical"]:
+                    result["notes"].append(f"This tool has no historical view: its result reflects the CURRENT graph, "
+                                           f"not {as_of}. Say so in the answer.")
                 results.append(result)
                 content, is_error = model_view(result, sources), False
                 found = result["found"]
             except Exception as exc:  # bad arguments or unknown tool: tell the model, keep going
                 content, is_error, found = f"Tool error: {exc}", True, None
-            calls.append({"name": tu.name, "args": {k: v for k, v in dict(tu.input).items() if v is not None}, "found": found,
+            calls.append({"name": tu.name, "args": args if not is_error else dict(tu.input), "found": found,
                           "ms": round((time.time() - t0) * 1000)})
             replies.append({"type": "tool_result", "tool_use_id": tu.id, "content": content, "is_error": is_error})
         messages.append({"role": "user", "content": replies})
@@ -162,14 +191,14 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
         answer = "I could not finish within the tool-call limit. Please ask a narrower question."
 
     status = "ok"
-    problems = guard.check(answer, sources.urls, results)
+    problems = guard.check(answer, sources.urls, results, as_of=as_of)
     if problems:
         messages.append({"role": "user", "content": "Your answer breaks these rules:\n- " + "\n- ".join(problems)
                          + "\nRewrite the answer following the rules. Do not call tools."})
         msg = client.messages.create(messages=messages, tool_choice={"type": "none"}, **params)
         _add_usage(usage, msg.usage)
         answer = "".join(b.text for b in msg.content if b.type == "text").strip()
-        problems = guard.check(answer, sources.urls, results)
+        problems = guard.check(answer, sources.urls, results, as_of=as_of)
         status = "retried"
         if problems:
             answer, status = guard.repair(answer, sources.urls), "repaired"
@@ -177,13 +206,15 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
                 answer, status = guard.fallback(results, sources.urls), "fallback"
 
     cited = sorted({int(n) for n in guard._CITE.findall(answer) if 1 <= int(n) <= len(sources.urls)})
-    as_of = sorted({r["as_of"] for r in results if r["as_of"] != "current"})
+    labels = sorted({r["as_of"] for r in results if r["as_of"] != "current"})   # what the tools applied
     out = {
-        "question": question, "answer": answer, "graph": graph_name, "model": model,
+        "mode": "graph", "question": question, "answer": answer, "graph": graph_name, "model": model,
+        "as_of_requested": as_of, "as_of_applied": [f"{r['tool']}: {r['as_of']}" for r in results if r.get("historical")],
+        "evidence": evidence(results),
         "citations": [{"n": n, "url": sources.urls[n - 1]} for n in cited], "sources": sources.urls,
         "tool_calls": calls, "path": _merge_paths(results),
         "cypher_trace": [c for r in results for c in r["cypher_trace"]],
-        "as_of": as_of[0] if len(as_of) == 1 else ("current" if not as_of else ", ".join(as_of)),
+        "as_of": labels[0] if len(labels) == 1 else ("current" if not labels else ", ".join(labels)),
         "stale_flags": [f for r in results for f in r["stale_flags"]],
         "data_as_of": results[-1]["data_as_of"] if results else None,
         "found": any(r["found"] for r in results) if results else False,
@@ -191,7 +222,7 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
         "cost_usd": round(_cost(usage), 5), "seconds": round(time.time() - started, 1),
         "asked_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
-    out["question_id"] = "q:" + hashlib.sha256(f"{question}|{out['asked_at']}".encode()).hexdigest()[:12]
+    out["question_id"] = "q:" + uuid.uuid4().hex[:12]   # unique per ask: a re-ask must never reuse an outdated id
     if remember:
         store_question(out)
     return out

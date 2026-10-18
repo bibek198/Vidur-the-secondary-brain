@@ -35,7 +35,21 @@ def _reextract_loop(graph_name: str, totals: dict) -> None:
         time.sleep(2)
 
 
+def wait_for_graph(graph_name: str) -> None:
+    """On a fresh deployment the worker starts before scripts/bootstrap.py has created its graph."""
+    from src.brain.db import client
+    while True:
+        try:
+            if graph_name in client().list_graphs():
+                return
+            print(f"waiting for graph '{graph_name}' (run scripts/bootstrap.py)", flush=True)
+        except (redis.ConnectionError, OSError):
+            print("waiting for FalkorDB", flush=True)
+        time.sleep(10)
+
+
 def run(graph_name: str, poll: bool = True, gitdiff: bool = True, once: bool = False) -> dict:
+    wait_for_graph(graph_name)
     g = graph(graph_name)
     totals = {"events": 0, "reextracted": 0}
     if not once:

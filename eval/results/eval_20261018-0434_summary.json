@@ -1,0 +1,130 @@
+{
+ "A": {
+  "graph": {
+   "correct": 6,
+   "n": 7,
+   "cost_usd": 0.0035,
+   "median_s": 4.3,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 1,
+   "n": 7,
+   "cost_usd": 0.0022,
+   "median_s": 2.5,
+   "citation_problems": 0
+  }
+ },
+ "B": {
+  "graph": {
+   "correct": 8,
+   "n": 8,
+   "cost_usd": 0.0055,
+   "median_s": 5.2,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 1,
+   "n": 8,
+   "cost_usd": 0.0037,
+   "median_s": 3.3,
+   "citation_problems": 0
+  }
+ },
+ "C": {
+  "graph": {
+   "correct": 6,
+   "n": 6,
+   "cost_usd": 0.0024,
+   "median_s": 3.5,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 2,
+   "n": 6,
+   "cost_usd": 0.0025,
+   "median_s": 3.1,
+   "citation_problems": 0
+  }
+ },
+ "D": {
+  "graph": {
+   "correct": 8,
+   "n": 8,
+   "cost_usd": 0.0043,
+   "median_s": 4.9,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 5,
+   "n": 8,
+   "cost_usd": 0.002,
+   "median_s": 2.3,
+   "citation_problems": 0
+  }
+ },
+ "E": {
+  "graph": {
+   "correct": 7,
+   "n": 7,
+   "cost_usd": 0.0044,
+   "median_s": 4.6,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 2,
+   "n": 7,
+   "cost_usd": 0.0033,
+   "median_s": 3.5,
+   "citation_problems": 0
+  }
+ },
+ "F": {
+  "graph": {
+   "correct": 7,
+   "n": 7,
+   "cost_usd": 0.0019,
+   "median_s": 2.7,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 4,
+   "n": 7,
+   "cost_usd": 0.0029,
+   "median_s": 3.0,
+   "citation_problems": 0
+  }
+ },
+ "G": {
+  "graph": {
+   "correct": 7,
+   "n": 7,
+   "cost_usd": 0.0042,
+   "median_s": 4.2,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 0,
+   "n": 7,
+   "cost_usd": 0.0018,
+   "median_s": 2.5,
+   "citation_problems": 0
+  }
+ },
+ "all": {
+  "graph": {
+   "correct": 49,
+   "n": 50,
+   "cost_usd": 0.0262,
+   "median_s": 4.3,
+   "citation_problems": 0
+  },
+  "baseline": {
+   "correct": 15,
+   "n": 50,
+   "cost_usd": 0.0185,
+   "median_s": 3.0,
+   "citation_problems": 0
+  }
+ }
+}

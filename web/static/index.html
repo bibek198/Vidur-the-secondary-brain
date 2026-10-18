@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decision Brain</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Decision Brain <span class="sub">the Kubernetes project as a company · FalkorDB</span></div>
+    <label class="graphpick">Graph
+      <select id="graph"></select>
+    </label>
+    <div id="fresh" class="fresh">connecting…</div>
+    <div id="replaybanner" class="replaybanner" hidden>Replay mode: recorded answers (no API key). The graph, Cypher and live feed are real.</div>
+  </header>
+
+  <ol id="scenario" class="scenario" hidden>
+    <li data-step="ask">1 Ask</li><li data-step="inspect">2 Inspect</li><li data-step="change">3 Change</li>
+    <li data-step="outdated">4 Outdated</li><li data-step="reask">5 Re-ask</li><li data-step="compare">6 Compare</li>
+  </ol>
+
+  <main class="layout">
+    <section class="left">
+      <form id="askform" class="askform">
+        <textarea id="question" rows="2" maxlength="500" placeholder="Ask about owners, experts, decisions, impact, what changed…"></textarea>
+        <div class="controls">
+          <label>As of <select id="asof"></select></label>
+          <label class="check"><input type="checkbox" id="compare"> Compare with vector search</label>
+          <button type="submit" id="askbtn">Ask</button>
+        </div>
+      </form>
+      <details id="exbox" class="exbox" open><summary>Example questions</summary><div id="examples" class="examples"></div></details>
+      <div id="outdated" class="outdated" hidden>
+        <span id="outdatedtext">This answer is outdated: the graph changed after it was given.</span>
+        <button id="reask" type="button">Re-ask</button>
+      </div>
+      <div id="answers" class="answers">
+        <article id="graphcard" class="card" hidden></article>
+        <article id="basecard" class="card baseline" hidden></article>
+      </div>
+      <div id="evidence" class="evidence" hidden></div>
+      <div id="actions" class="actions" hidden>
+        <button type="button" id="actbrief">Draft decision brief</button>
+        <button type="button" id="actreviewers">Suggested reviewers</button>
+        <div id="actout" class="actout"></div>
+      </div>
+    </section>
+
+    <section class="center">
+      <div class="panelhead">Graph path behind the answer <span id="pathinfo" class="muted"></span></div>
+      <div id="cy" class="cy"></div>
+      <div id="nodeinfo" class="nodeinfo" hidden></div>
+      <div class="legend">
+        <span class="lg kep-ok">KEP implemented</span><span class="lg kep-mid">KEP proposed/implementable</span>
+        <span class="lg kep-no">KEP not adopted</span><span class="lg person">Person</span><span class="lg team">Team</span>
+        <span class="lg code">Code / component</span><span class="lg other">Other</span><span class="lg past">past link</span>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="panelhead">Live feed <span id="feeddot" class="dot" title="connection"></span><span id="feedstate" class="muted">connecting</span></div>
+      <button type="button" id="replaynext" class="replaynext" hidden>Replay next real change</button>
+      <div id="replayout" class="muted small"></div>
+      <ul id="feed" class="feed"></ul>
+    </section>
+  </main>
+
+  <details id="drawer" class="drawer">
+    <summary>How I got this: tools and Cypher <span id="tracecount" class="muted"></span></summary>
+    <div id="trace" class="trace"></div>
+  </details>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

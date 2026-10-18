@@ -1,0 +1,7 @@
+# HTTPS in front of the app. DOMAIN is e.g. 13-201-5-9.sslip.io or your own name; Caddy gets the certificate.
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:8000 {
+		flush_interval -1
+	}
+}

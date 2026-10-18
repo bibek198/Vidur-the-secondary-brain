@@ -1,0 +1,9 @@
+.git
+.venv
+data/raw
+docs
+**/__pycache__
+.pytest_cache
+.env
+.env.*
+!.env.example

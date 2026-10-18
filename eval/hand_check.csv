@@ -1,0 +1,331 @@
+id,question,mode,answer,rule,rule_verdict,your_verdict (right/wrong),note
+D1,Who approved the quantum teleport scheduler?,graph,"The graph has no KEP called the quantum teleport scheduler, so I can't say who approved it. The search found no matching decision, and I can't confirm that one exists.
+
+Closest matches, not the same thing:
+- KEP-5836, Scheduler Preemption for In-Place Pod Resize
+- KEP-1819, Scheduler Extender
+- KEP-785, Scheduler Component Config API
+
+Sources: none. The search returned no source entries, so I've removed the citation I gave earlier.",must say it is not in the record,right,,
+D1,Who approved the quantum teleport scheduler?,baseline,"The passages do not contain the answer. None of them mention a ""quantum teleport scheduler,"" so I can't say who approved it.
+
+The passages do cover approvals for other scheduling KEPs:
+- A 2025 comment says SIG Scheduling approved an unnamed item in advance, pending API concerns [1].
+- A 2023 comment says SIG Scheduling approved a KEP and asks for PRR review [2].
+- A 2023 comment says a KEP was approved by SIG Scheduling and SIG Apps [8].
+
+None of these is linked to a quantum teleport scheduler.",must say it is not in the record,right,,
+D2,Why was blockchain-based pod billing rejected?,graph,"No KEP matching blockchain-based pod billing is in the graph, so I can't say why it was rejected. The search returned no matching decision, so this is not a recorded decision I can check.
+
+Closest matches, which are not the answer:
+- KEP-1314, Extended NodeRestrictions for Pods
+- KEP-1792, Configure FQDN as Hostname for Pods
+- KEP-950, Add pod-startup liveness-probe holdoff for slow-starting pods
+
+If you have a KEP number or another name for the proposal, I can check its status and recorded reasons.",must say it is not in the record,right,,
+D2,Why was blockchain-based pod billing rejected?,baseline,"The passages do not contain the answer. None of them mention blockchain-based pod billing or any decision to reject it.
+
+The passages cover unrelated topics, such as PodSecurityPolicy rollout [5], ResourceClaim device selection [3], and PodOverhead [8]. For the rejection rationale, check the original KEP or design discussion for that proposal.",must say it is not in the record,right,,
+D3,What is the status of KEP-99999?,graph,"KEP-99999 is not in the knowledge graph, so I can't give its status. I don't know of any decision with that number.
+
+Closest matches (not the same KEP): KEP-3659, KEP-85 and KEP-617. Check the KEP number, or give me the feature name and I can search again.",must say it is not in the record,right,,
+D3,What is the status of KEP-99999?,baseline,"The passages do not contain the status of KEP-99999. None of them mention that KEP number, so I can't attribute any status to it.
+
+The passages do mention KEP statuses in general, but none can be tied to KEP-99999:
+- [2] says an unnamed KEP is ""currently waiting for approval.""
+- [7] says an unnamed KEP's status was updated to ""Tracked for PRR freeze.""
+- [1] and [5] say a KEP is required to be `implementable` for the latest milestone of the current release.
+- [4] refers to a KEP that was marked as implemented in its document.",must say it is not in the record,right,,
+D4,Which SIG owns the holographic volume driver?,graph,"The holographic volume driver is not in the knowledge graph, so I can't say which SIG owns it. I found no matching component, KEP, or team.
+
+Closest matches by name, none of which is the same thing:
+- KEP-5040, ""Remove gitRepo volumes driver"" (no source number; the tool returned no sources for this result)
+- KEP-2317, ""Provide fsgroup of pod to CSI driver on mount""
+- KEP-1855, ""Service Account Token for CSI Driver""",must say it is not in the record,right,,
+D4,Which SIG owns the holographic volume driver?,baseline,"The passages do not answer this. None of them mention a ""holographic volume driver"" or say which SIG owns it.
+
+- [2] names sig-storage as owning Kubernetes volume controllers, the kubelet volume manager, and CSI sidecars, but it does not mention any holographic driver.
+- The other passages cover KEP-1682, KEP-2263, KEP-556, KEP-1495, KEP-4639, and a 2020 comment, none of which refer to this driver.",must say it is not in the record,right,,
+D5,When did KEP-4706 finish removing kustomize from kubectl?,graph,"KEP-4706 never removed kustomize from kubectl. It was rejected, so the removal was not adopted. The status changed to rejected on 2024-12-09 [9]. Kustomize stays part of kubectl [5].
+
+- The KEP proposed deprecating kustomize in alpha for v1.31, then removing it in v1.36 [5].
+- A sig-architecture discussion on Oct 17, 2024 decided not to pursue the topic further [1].
+- The main reason was the community's widespread adoption of kustomize [5].
+- Reviewers objected that removal would break many users and automation [4].","must correct the premise (status rejected or a clear negation), no adoption claim",right,,
+D5,When did KEP-4706 finish removing kustomize from kubectl?,baseline,"The passages do not say when KEP-4706 finished removing kustomize from kubectl. They indicate that the removal was not pursued. A sig-architecture discussion on October 17, 2024 decided not to pursue the topic further and to keep kustomize as part of kubectl [1].
+
+- The stated main reason was the tool's widespread community adoption, and the KEP notes that moving forward could disrupt its usage and users' trust [1].
+- The original goals were to deprecate and remove kustomize from kubectl, so that both tools could be developed separately [1].
+- Passages [2] and [3] concern unrelated KEP tracking and `kubectl debug` work, and do not address this question [2][3].","must correct the premise (status rejected or a clear negation), no adoption claim",right,,
+D6,Which release made Dynamic Audit Configuration (KEP-600) generally available?,graph,"KEP-600 (Dynamic Audit Configuration) was never made generally available. No release shipped it. Its status is withdrawn: it was marked implementable on 2020-12-22, then withdrawn on 2021-05-05 [1][2]. The sources do not record why it was withdrawn [1].
+
+- Status history: implementable (2020-12-22 to 2021-05-05), then withdrawn (2021-05-05) [2].
+- Owning team: sig-auth. Approvers: liggitt, tallclair, yliaog [2].
+- Last recorded discussion (April 2020) said sig-auth was still weighing the feature's future and no changes were planned for v1.19 [1].
+
+Sources: [1] KEP-600 discussion comments; [2] KEP-600 trace record.","must correct the premise (status withdrawn or a clear negation), no adoption claim",right,,
+D6,Which release made Dynamic Audit Configuration (KEP-600) generally available?,baseline,"The passages do not say which release made KEP-600 (Dynamic Audit Configuration) generally available.
+
+- They describe the KEP's goal: an API and objects to configure advanced auditing in kube-apiserver dynamically [1].
+- They cover motivation, summary, non-goals, user stories, and risks such as leaked resources and webhook authentication [1].
+- None of the passages mention a release version, GA date, or graduation status.","must correct the premise (status withdrawn or a clear negation), no adoption claim",wrong,,
+D7,How do I turn on HTTP/3 in the apiserver now that KEP-3156 has shipped?,graph,"KEP-3156 (HTTP3) has not shipped. Its status is deferred, so it was not adopted, and the graph has no HTTP/3 feature or flag to enable [1]. I can't give you steps to turn HTTP/3 on in the apiserver.
+
+- KEP-3156 proposed serving HTTP/3 on the kube-apiserver over UDP, plus an opt-in HTTP/3 client in client-go [1].
+- It was deferred until the Go standard library supports HTTP/3. Reviewers did not want a third-party implementation (quic-go) in apiserver and client-go [1][2].
+- The status history shows one change: deferred, from 2022-01-27 [1].
+- It is owned by sig-api-machinery, with aojea as author and lavalamp as approver [1].
+
+Your question may rest on a different KEP. If you have one in mind, give me its number and I'll check it.
+
+Sources:
+[1] https://github.com/kubernetes/enhancements/pull/3159
+[2] https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/3156-http3/README.md","must correct the premise (status deferred or a clear negation), no adoption claim",right,,
+D7,How do I turn on HTTP/3 in the apiserver now that KEP-3156 has shipped?,baseline,"The passages do not contain the answer. They don't say whether KEP-3156 has shipped or describe how to enable HTTP/3 on the apiserver.
+
+- The KEP's stated goals are to support HTTP/3 on the apiserver ""wherever is possible"" and to offer an opt-in for HTTP/3 in client-go [1].
+- The KEP's non-goals include defaulting any Kubernetes component to HTTP/3 and automatically upgrading connections to it [1].
+- Passage 1 is only the Goals/Non-Goals section, so it gives no flag, configuration, or feature-gate name.
+- Nothing in the passages confirms the release status you mention.
+
+For the actual steps, check the KEP's own document or the apiserver's release notes and documentation.","must correct the premise (status deferred or a clear negation), no adoption claim",wrong,,
+D8,When did Client Executable Proxy (KEP-2718) graduate to stable?,graph,"KEP-2718 (Client Executable Proxy) never graduated to stable. It was withdrawn at alpha on 2024-07-05, so it was not adopted [10]. Its last stage was alpha, with v1.27 as the latest milestone [1].
+
+- It moved from provisional to implementable on 2023-02-09 [9].
+- It was withdrawn on 2024-07-05 [10].
+- The graph does not record why it was withdrawn, so that reason is not well documented [1].","must correct the premise (status withdrawn or a clear negation), no adoption claim",right,,
+D8,When did Client Executable Proxy (KEP-2718) graduate to stable?,baseline,"The passages do not say when KEP-2718 (Client Executable Proxy) graduated to stable. The only material on KEP-2718 is a heading-only excerpt with ""Alternatives"" and ""Design Details"" sections and no content [1].
+
+The other passages cover different KEPs:
+- KEP-4020 (Unknown Version Interoperability Proxy) sections and a non-goal about not locking clients to versions [2].
+- KEP-1669 (Proxy Terminating Endpoints) design details [3].
+- KEP-784 (Kube Proxy component configuration updates and graduation), where the drawbacks section is just ""N/A"" [4]. This is about a different KEP and does not address KEP-2718.","must correct the premise (status withdrawn or a clear negation), no adoption claim",wrong,,
+E1,"Is KEP-993 (Kustomize Generators and Transformers) still the current approach, or was it replaced?",graph,"**KEP-993 has been replaced by KEP-2953 (Kustomize Plugin Graduation)**, which is still provisional [14]. The record for KEP-993 is inconsistent: its status field says ""implemented"" (alpha, since 2021-06-04) [8], but its metadata marks it as replaced [5]. Treat it as superseded, not as the current approach.
+
+- KEP-993 added exec plugins for Kustomize generators and transformers, configured in kustomization.yaml [4].
+- Its 2021 ""implemented"" status came from a PR where the sig agreed to proceed but the KEP text was not updated [2].
+- The graph does not say why KEP-2953 replaced it [4]. The rationale in the record was LLM-written, though its quotes were checked against sources.
+- KEP-993 is owned by sig-cli [5].",must name KEP-2953,right,,
+E1,"Is KEP-993 (Kustomize Generators and Transformers) still the current approach, or was it replaced?",baseline,"The passages do not contain the answer. None of them mention KEP-993, Kustomize Generators and Transformers, or any replacement for it.
+
+- The passages are enhancement-freeze check-in comments for v1.35 and v1.36 [1][2][5][6][7][8], plus one from the v1.23 cycle [4].
+- Those comments do not name the KEPs they track, so I can't tell whether any of them is KEP-993.
+- Nothing in them addresses Kustomize, generators, transformers, or whether an approach was superseded.
+
+To check whether KEP-993 is still current, look at its status in the kubernetes/enhancements repository and any later KEPs or SIG Cli discussions that reference it.",must name KEP-2953,wrong,,
+E2,"Is KEP-583 (Coscheduling) still the current approach, or was it replaced?",graph,"**KEP-583 was replaced.** It is replaced by KEP-4671 (Gang Scheduling) and KEP-5832 (Decouple PodGroup API), both marked implementable [12][13]. The graph still lists KEP-583's own status as ""provisional,"" meaning agreed but not implemented [1]. The graph has no record of why it was replaced [1].
+
+- KEP-583 proposed a PodGroup-based Coscheduling design, first built out of tree in kube-batch using CRDs [3].
+- Its owning team is sig-scheduling, and its approver is bsalamat [1].
+- The rationale for this summary was written by an LLM, and some of its quotes failed verification and were dropped, so treat the explanation with care [1].",must name KEP-4671 or KEP-5832,right,,
+E2,"Is KEP-583 (Coscheduling) still the current approach, or was it replaced?",baseline,"The passages do not answer this. None of them mention KEP-583 or Coscheduling by name, so I can't tell whether they refer to it or whether it was replaced.
+
+The passages that discuss a KEP's status concern an unnamed ""this KEP"":
+
+- In 2024, one comment asked for the latest implementation status of a KEP [1].
+- A later comment said no implementation work was needed and that the KEP needed updating to match merged code [3].
+- Another commenter said they were working on an update PR for that KEP [6].
+- A 2025 comment asked whether a DRA scheduling timeout belonged to #4381 or ""this KEP"" [5].
+
+To answer, you would need a source that names KEP-583 and states its current status or any successor.",must name KEP-4671 or KEP-5832,wrong,,
+E3,"Is KEP-1872 (Manifest based registration of Admission webhooks) still the current approach, or was it replaced?",graph,"**KEP-1872 was replaced by KEP-5793** (Manifest Based Admission Control Config), which is currently ""implementable"" [12]. KEP-1872 itself never moved past ""provisional"" [8], so it was not adopted.
+
+- **Status:** Provisional since 2021-01-15, with no later status change in the graph [8].
+- **Original idea:** Load admission webhooks from a manifest at kube-apiserver startup, so there is no enforcement gap at startup and the webhooks cannot be changed through the API [5].
+- **Why it stalled:** Reviewers said it did not work for other types such as CRDs and had no status reporting [4]. The maintainers named two alternative PRs as replacements, #101815 and #101762 [3].
+- **Gap:** The sources do not explain in detail how KEP-5793 differs from KEP-1872 [12].
+- **Confidence:** The rationale was written by an LLM. Its quotes were checked word for word, but its confidence is medium [5].",must name KEP-5793,right,,
+E3,"Is KEP-1872 (Manifest based registration of Admission webhooks) still the current approach, or was it replaced?",baseline,"The passages do not say whether KEP-1872 is still current or was replaced. They describe its design but contain no status or superseding statement.
+
+- KEP-1872 proposes registering admission webhooks from manifest files at kube-apiserver start-up, so there is no gap before webhooks are active [1].
+- Its manifests are not API-visible objects, so API users cannot modify them [1].
+- Its stated drawback is reduced visibility for users who want to list all active admission webhooks [1].
+- KEP-5793, ""Manifest Based Admission Control Config,"" appears in the passages, but only its title and an empty ""Alternatives"" heading are given. Nothing links it to KEP-1872 [2].
+- KEP-6060 (""API Server Authentication to Admission Webhooks"") also appears only as a heading with no content [3].",must name KEP-5793,right,,
+E4,"Is KEP-536 (Topology-aware service routing) still the current approach, or was it replaced?",graph,"**KEP-536 was replaced, not kept.** It was replaced by KEP-2433 (Topology Aware Hints), which is currently implementable [7]. KEP-536 was never adopted, so it should not be described as implemented.
+
+- KEP-536 was marked implementable on 2021-05-04 and replaced on 2021-05-04 [4][5].
+- The graph records KEP-2433 as its replacement, but does not say why [1].
+- The rationale is LLM-written with medium confidence; its quotes were checked against the source [1].",must name KEP-2433,right,,
+E4,"Is KEP-536 (Topology-aware service routing) still the current approach, or was it replaced?",baseline,"The passages do not say whether KEP-536 is still current or has been formally replaced. They only show that KEP-2433 considered KEP-536's node-level approach as an alternative and did not adopt it.
+
+- KEP-536 is described as a generic way to route services by node labels across topological domains such as node, rack, zone, and region [1].
+- KEP-2433 (Topology Aware Hints) lists conducting routing at node level with specified topology keys, referring to the ""previous Topology Aware Routing KEP,"" as an alternative. It says this still needs API and controller additions and cannot offer an easy service-level policy decision [2].
+- KEP-2433 also considered EndpointSlice subsetting and rejected it because it produced weaker results for both subsetting and topology-aware routing [2].
+- The passages do not state KEP-536's status, and they do not say that KEP-2433 superseded it.",must name KEP-2433,right,,
+E5,"Is KEP-2451 (Service Account Token Volumes) still the current approach, or was it replaced?",graph,"**KEP-2451 was replaced, not kept.** It was replaced by KEP-1205 (Bound Service Account Tokens), which is now implemented [9]. KEP-2451 itself was never adopted as the approach. It was marked implemented briefly in 2021, then changed to replaced on 2021-05-07 [7].
+
+- The issue was closed as ""replaced by"" issue #542, the Bound Service Account Tokens work, once the replacing KEP was merged [1].
+- The rationale comes from an LLM summary. Its quotes were checked against the sources, but the graph rates confidence as medium and gives no detailed technical reason beyond the replacement [3].
+- Reviewers asked for a README note linking to the replacing work [2].",must name KEP-1205,right,,
+E5,"Is KEP-2451 (Service Account Token Volumes) still the current approach, or was it replaced?",baseline,"The passages do not answer this question. They do not mention KEP-2451 or say whether it was replaced.
+
+They cover two other KEPs, which I can't connect to KEP-2451:
+- KEP-4193 (bound service account token improvements) has sections on Motivation, Proposal, Alternatives, and Drawbacks, which is marked ""TBC"" [1].
+- KEP-2799 (Reduction of Secret-based Service Account Tokens) has sections on User Stories, Design Details, Alternatives, and Drawbacks [2].
+
+The excerpts show only section headings, with no content, so they don't establish what either KEP says about KEP-2451. To answer, you would need a passage that covers KEP-2451's status or a successor KEP that references it.",must name KEP-1205,wrong,,
+E6,"Is KEP-5832 (Decouple PodGroup API) still the current approach, or was it replaced?",graph,"**KEP-5832 is recorded as replaced by KEP-4671 (Gang Scheduling).** Its own status is still ""implementable"" (alpha, targeting v1.36), so the graph is not fully consistent on this point [1][2].
+
+- The graph lists KEP-4671 as the replacement, and KEP-4671 is also ""implementable"" [2].
+- KEP-5832 proposes standalone PodGroup objects. The embedded PodGroup design in KEP-4671 is described as the status quo it moves away from [1].
+- The rationale was written by an LLM from the sources. Its quotes were checked word for word, but confidence is medium [1].
+- An issue comment from May 2026 says the enhancement was merged with #5558 and the issue was closed [3]. I could not confirm from the graph what that means for the design.
+
+Check the KEP-4671 and KEP-5832 pages directly before relying on this, since the graph's status fields conflict.
+
+Sources:
+[1] https://github.com/kubernetes/enhancements/pull/5833#discussion_r2764126960
+[2] https://github.com/kubernetes/enhancements/tree/master/keps/sig-scheduling/4671-gang-scheduling
+[3] https://github.com/kubernetes/enhancements/issues/5832#issuecomment-4482983238",must name KEP-4671,right,,
+E6,"Is KEP-5832 (Decouple PodGroup API) still the current approach, or was it replaced?",baseline,"The passages do not say whether KEP-5832 is still current or was replaced.
+
+- The KEP-5832 passages describe its goals: decoupling the `PodGroup` lifecycle from the `Workload` lifecycle and giving `PodGroup` its own status [1].
+- They also list non-goals, such as not changing pod creation responsibility or the gang-scheduler algorithm [1].
+- The KEP-5832 Alternatives passage compares keeping embedded `PodGroups` with supporting both embedded and standalone `PodGroups` [1]. It does not say either option replaced the decoupling proposal.
+- A separate KEP-6012 (CompositePodGroup API) appears in the passages, but its sections are empty, so nothing links it to KEP-5832 as a replacement [2].",must name KEP-4671,wrong,,
+E7,"Is KEP-3130 (KMS Observability) still the current approach, or was it replaced?",graph,"**KEP-3130 was replaced and is not the current approach.** It was superseded by KEP-3299, ""KMS v2 Improvements,"" which is marked implemented [1][11]. KEP-3130 was never adopted: its status is ""replaced,"" and it was last at alpha with a v1.24 milestone [7].
+
+- KEP-3130 proposed passing a kube-apiserver-generated transaction UID through the kms-plugin interface so that API server, plugin, and KMS calls could be correlated in logs [3].
+- The status changed from implementable to replaced on 2022-06-17 [7].
+- The original author, aramase, closed the issue in January 2023 as ""no longer active,"" pointing to KEP-3299 [1].
+- The graph does not record why it was replaced. Discussion on the KEP-3302 PR shows the UID was kept as part of the KMS v2 design [2].
+- The rationale summary in the graph was written by an LLM, though its quotes were checked against the sources [3].",must name KEP-3299,right,,
+E7,"Is KEP-3130 (KMS Observability) still the current approach, or was it replaced?",baseline,"The passages do not say whether KEP-3130 (KMS Observability) was replaced. None of them mention KEP-3130 or KMS observability.
+
+- [1] is a 2024 enhancements check-in for an alpha v1.30 KEP. It says a replacement KEP would be opened, citing a comment on PR 3963, but it does not name the KEP's topic or identify the replacement.
+- The other passages concern different KEPs, such as mutating admission policies [7] and memory manager hugepages verification [4], and none links them to KEP-3130.
+
+To answer this, you would need the KEP-3130 page itself or its status history in the enhancements repository.",must name KEP-3299,wrong,,
+B2,"What was decided about KEP-600 (Dynamic Audit Configuration), and was it adopted?",graph,"**KEP-600 (Dynamic Audit Configuration) was not adopted.** It was withdrawn on 2021-05-05, after being marked implementable from 2020-12-22 [7][8].
+
+- **Proposal:** Let advanced audit configuration change through an API after cluster setup, without restarting kube-apiserver [6].
+- **Reason for withdrawal:** The graph does not record why it was withdrawn. Its latest discussion, from April 2020, says sig-auth was still deciding the feature's future and no changes were planned for v1.19 [1][2].
+- **Caveat:** The rationale summary was written by an LLM. Some of its quotes failed verification and were dropped, so treat the explanation with care [3].
+- **Owner and people:** sig-auth owns it. Authored by pbarker; approved by liggitt, tallclair, and yliaog [4].",must state status withdrawn or that it was not adopted,right,,
+B2,"What was decided about KEP-600 (Dynamic Audit Configuration), and was it adopted?",baseline,"The passages do not say whether KEP-600 was adopted or what final decision was made. They describe its goals and proposal, and a risks note that is conditional rather than a decision.
+
+- **Goal:** provide an API and set of objects to configure advanced auditing in kube-apiserver dynamically [1].
+- **Motivation:** advanced auditing is hard to configure and often requires an apiserver restart on each change [1].
+- **Non-goals:** a generic interface for all kube-apiserver flags, non-webhook backends, audit output formatting, and authorization of audit output [1].
+- **Risks:** the feature is gated by opt-in feature flags, which would allow it to move to alpha, but its concerns must be tested and reconciled before it progresses to beta [1].",must state status withdrawn or that it was not adopted,wrong,,
+A5,Who knows the most about Recover from volume expansion failure?,graph,"**msau42** knows the most about this topic, with the highest score (22.4) across the related KEPs. **jsafrane** (14.2) and **xing-yang** (14.0) are next. [1][2][3][4][5][6]
+
+- msau42 reviewed and approved KEP-1845, KEP-3751, KEP-5030 and KEP-5943. [2][4][5][3]
+- jsafrane reviewed and approved KEP-1845 and KEP-5030, and reviewed KEP-1790 and KEP-5855. [4][5][1][6]
+- xing-yang reviewed and approved KEP-1790 and KEP-5943, and approved KEP-3751. KEP-1790 is the core ""recover resize failure"" KEP. [1][3][2]
+- haircommander (7.2) is mainly tied to KEP-5855, which looks only loosely related to this topic. [6]
+- gnufied (5.4) authored KEP-5030 and commented on KEP-1790. [5][1]","must name an author, approver or reviewer",right,,
+A5,Who knows the most about Recover from volume expansion failure?,baseline,"The passages do not say who knows the most about this topic. They describe the KEP-1790 design but name no owners, authors, or experts.
+
+- The design-doc passages [1] cover the KEP's goals, non-goals, risks, and quota handling, but include no names or roles.
+- The comment [2] is dated 2024-10-08 and addresses @msau42, but it does not identify its own author or establish that either person is the top expert.
+- The comment [2] reflects detailed familiarity with expansion failures and the proposed reset feature, but the passages don't state who wrote it or whether that person is the most knowledgeable.","must name an author, approver or reviewer",right,,
+C2,Which Kubernetes components does KEP-4006 (Transition from SPDY to Websockets) affect?,graph,"KEP-4006 affects three components: kubectl, kube-apiserver, and kubelet [1].
+
+- **kubectl**: via the KUBECTL_REMOTE_COMMAND_WEBSOCKETS and KUBECTL_PORT_FORWARD_WEBSOCKETS gates. Code lives in pkg/kubectl and the kubectl repo [1].
+- **kube-apiserver**: via four gates (TranslateStreamCloseWebsocketRequests, PortForwardWebsockets, AuthorizePodWebsocketUpgradeCreatePermission, ExtendWebSocketsToKubelet). Code lives in staging/src/k8s.io/apiserver, pkg/kubeapiserver and cmd/kube-apiserver [1].
+- **kubelet**: via the ExtendWebSocketsToKubelet gate. Code lives in pkg/kubelet and cmd/kubelet [1].
+- Owning team is sig-api-machinery, with sig-cli participating [1][2][3].","must name half of ['kube-apiserver', 'kubectl', 'kubelet']",right,,
+C2,Which Kubernetes components does KEP-4006 (Transition from SPDY to Websockets) affect?,baseline,"KEP-4006 affects `kubectl`, the API Server, and the Kubelet. The container runtime is the final SPDY endpoint and is not itself changed by the KEP.
+
+- **kubectl:** Modified to request WebSocket streaming for `exec`, `attach`, `cp`, and `port-forward`, using a new `WebSocketExecutor` and a `FallbackExecutor` [1].
+- **API Server:** Modified to translate or tunnel the WebSocket stream to a SPDY upstream connection in the first phase [1]. In the second phase, its handlers check the target node and pass WebSocket connections through to the Kubelet [1].
+- **Kubelet:** The second phase extends WebSocket support to the Kubelet, controlled by the `ExtendWebSocketsToKubelet` feature gate. The Kubelet advertises this capability in the `declaredFeatures` field of `Node.Status`, which depends on the `NodeDeclaredFeatures` feature gate [1].
+- **Container runtime (e.g., containerd or CRI-O):** Not changed. It is where the streams currently terminate, and the Kubelet's `StreamTunnelingProxy` for `port-forward` still sends SPDY to it [1].","must name half of ['kube-apiserver', 'kubectl', 'kubelet']",right,,
+B1,"What was decided about KEP-281 (Dynamic Kubelet Configuration), and was it adopted?",graph,"**Decision:** KEP-281 was not adopted. Its status is **withdrawn**, with stage ""removed"" [8]. It was marked implemented from 2021-05-12 until 2022-10-10 [7], then withdrawn. Current status is withdrawn, so it should not be described as implemented.
+
+- **Deprecation:** The design doc says the feature was deprecated at v1.22 due to lack of interest in promoting it to stable [4]. Enhancements-team comments from 2022 say it was deprecated in 1.24 [10][11]. The graph does not resolve this conflict.
+- **Reasons given:** The approach exposed the kubelet's whole config, and many fields don't make sense to change dynamically [2]. Maintainers said their focus was on stabilizing the ComponentConfig APIs [3].
+- **Preferred alternative:** The design doc names updating the kubelet config file and restarting kubelet as the preferred path [4].
+- **Closure:** The issue was closed on 2022-11-10 as being on the deprecation track [1].
+- **Owners:** sig-node. Approvers were dchen1107 and derekwaynecarr; the author was mtaufen [8].
+
+The rationale behind this answer was written by an LLM. Its quotes were checked against the sources, but the summary is not a formal record.",must state status withdrawn or that it was not adopted,right,,
+B1,"What was decided about KEP-281 (Dynamic Kubelet Configuration), and was it adopted?",baseline,"**Answer:** KEP-281 (Dynamic Kubelet Configuration) was deprecated at v1.22 because there was a lack of interest in promoting it to stable [1]. The passages do not explicitly say it was adopted, but a deprecation with no promotion to stable indicates it did not move forward as a supported feature.
+
+- The design doc says the feature predates the current KEP process and that its motivation, goals, and design are in the archived community design-proposals repository [1].
+- The stated drawback of deprecating it is the potential use the feature could have had [1].
+- The alternative the doc prefers is updating the kubelet configuration file and restarting the kubelet, which the doc says improves reliability and simplifies kubelet code [1].
+- A comment says a KEP was rejected at a sig-node meeting and won't be implemented [2]. That comment discusses image digest comparison, CRI behavior, and ""fallback to local,"" which do not match KEP-281's subject, so it likely refers to a different KEP. I would not use it as KEP-281's decision.",must state status withdrawn or that it was not adopted,wrong,,
+C1,Which Kubernetes components does KEP-5055 (DRA: device taints and tolerations) affect?,graph,"KEP-5055 affects three control-plane components: kube-scheduler, kube-controller-manager, and kube-apiserver. It is owned by sig-scheduling [4].
+
+- **kube-scheduler** (code in pkg/scheduler and cmd/kube-scheduler), gated by DRADeviceTaints and DRADeviceTaintRules [1]
+- **kube-controller-manager** (cmd/kube-controller-manager), gated by the same two feature gates [1]
+- **kube-apiserver** (apiserver staging code, pkg/kubeapiserver, cmd/kube-apiserver), gated by the same two feature gates [1]
+
+Related KEPs: KEP-5027 (admin-controlled device attributes, provisional) [2] and KEP-4381 (DRA Structured Parameters, implemented) [3].","must name half of ['kube-apiserver', 'kube-controller-manager', 'kube-scheduler']",right,,
+C1,Which Kubernetes components does KEP-5055 (DRA: device taints and tolerations) affect?,baseline,"The passages don't give a formal list of affected components, but the KEP-5055 design details name three: a new controller, the kubelet, and the ResourceClaim controller [1].
+
+- **New controller:** Watches tainted devices and deletes pods that use them unless the pods tolerate the taint. It is modeled on the taint-eviction-controller [1].
+- **Kubelet:** Stops running containers and marks the evicted pod as completed [1].
+- **ResourceClaim controller:** Removes the completed pod from the claim's `ReservedFor` and deallocates the claim once it has no consumers [1].
+- **Pods and finalizers:** A running pod or one with finalizers gets a `DeletionTimestamp` rather than being removed immediately [1].
+- **Non-goal:** A kubectl command for managing device taints is not part of this KEP [1].","must name half of ['kube-apiserver', 'kube-controller-manager', 'kube-scheduler']",wrong,,
+F4,Which SIG owns KEP-1965 (kube-apiserver identity)?,graph,"SIG API Machinery owns KEP-1965 (kube-apiserver identity). Its KEP approvers are deads2k and lavalamp [2]. The SIG's chairs are deads2k and fedebongio, and its tech leads are deads2k, sttts and jpbetz [1].",must name ['sig-api-machinery'],right,,
+F4,Which SIG owns KEP-1965 (kube-apiserver identity)?,baseline,"The passages do not contain the answer. None of them mention KEP-1965 or kube-apiserver identity, so I can't say which SIG owns it.
+
+- The passages are enhancement-freeze check-in comments for v1.35 and v1.36 KEPs.
+- The only SIG path mentioned is `keps/sig-node/5759-memory-manager-hugepages-verification` for a different KEP [4].
+- That path does not identify the owner of KEP-1965.",must name ['sig-api-machinery'],wrong,,
+B8,"What was decided about KEP-1040 (Priority and Fairness for API Server Requests), and was it adopted?",graph,"**KEP-1040 was adopted.** It is marked implemented and stable, with v1.30 as its latest milestone [2][5][6]. Its status moved from implementable to implemented on 2024-01-22 [6].
+
+The decision was to replace the old max-in-flight request limits with Priority and Fairness. Requests are sorted into priority levels and queues, each level has its own concurrency pool, and there is fair dispatch among queues [2].
+
+- **Problem:** The old limits only split requests into mutating and readonly, so one kind of load could crowd out others [2].
+- **Goals, in order:** overload protection, then fairness, then throughput [2].
+- **Non-goals:** no auto-tuning of capacity limits, and no coordination across apiservers or with a load balancer. Admins configure each apiserver [2].
+- **Owner and approvers:** sig-api-machinery; approved by deads2k and lavalamp [2][4].
+
+The rationale was written by an LLM, but its quotes were checked word for word against the sources [2].",must state status implemented,right,,
+B8,"What was decided about KEP-1040 (Priority and Fairness for API Server Requests), and was it adopted?",baseline,"The passages do not say whether KEP-1040 was adopted or what final decision was made. They describe the proposal and its scope, not an outcome.
+
+The passages describe the proposal as follows:
+
+- **Proposal:** Generalize the existing max-in-flight request handler by categorizing each request into a priority level and queue, with fair queuing within each level [1].
+- **Goals:** Fairness across tenants, Prometheus metrics, easy access controls for the new configuration objects, and reasonable defaults [1].
+- **Non-goals:** No coordination between apiservers or with a load balancer, no precise fairness requirement, CONNECT requests out of scope, and only CPU and memory protection [1].
+- **Drawbacks:** More operator configuration burden, more complex code, and higher runtime cost [1].",must state status implemented,wrong,,
+G3,What was the status of KEP-3521 (Pod Scheduling Readiness) at release v1.30?,graph,"**Answer:** At v1.30 (as of 2024-04-17), KEP-3521 was **implementable**, not yet implemented. It was at the stable stage, targeting v1.30 [6][11]. It was not marked implemented until 2024-06-03, after v1.30 [7].
+
+- The status stayed ""implementable"" from 2022-10-06 until 2024-06-03 [6][7].
+- The feature graduated to GA in v1.30, but the KEP's status field was still ""implementable"" at that release. The 1.31 enhancements lead asked for the change to ""implemented"" in May 2024 [11].
+- The owning team is sig-scheduling, and the author is huang-wei [12].
+- The rationale comes from an LLM and was checked against its sources, with medium confidence [3].",must state status implementable,right,,
+G3,What was the status of KEP-3521 (Pod Scheduling Readiness) at release v1.30?,baseline,"The passages do not contain the answer. They include only section headings for KEP-3521 (Design Details and Drawbacks) [1], with no text about its status at v1.30.
+
+- The passages contain no release status information for KEP-3521 or any other KEP.
+- The other passages cover unrelated KEPs (3838, 950, 1287, 5554) and also lack status details [2][3][4][5].
+
+Note: vector search cannot reconstruct past status; design-doc passages may be newer than the requested date.",must state status implementable,wrong,,
+C6,Which Kubernetes components does KEP-1490 (In-tree Storage Plugin to CSI Migration - Azuredisk) affect?,graph,"KEP-1490 affects three components: kube-scheduler, kube-controller-manager, and kubelet. All three are tied to the feature gates CSIMigrationAzureDisk and InTreePluginAzureDiskUnregister [1].
+
+- **kube-scheduler:** code areas pkg/scheduler and cmd/kube-scheduler [1].
+- **kube-controller-manager:** code area cmd/kube-controller-manager [1].
+- **kubelet:** code areas pkg/kubelet and cmd/kubelet [1].
+- **Teams:** sig-storage owns the KEP, and sig-cluster-lifecycle participates [1].","must name half of ['kube-controller-manager', 'kube-scheduler', 'kubelet']",right,,
+C6,Which Kubernetes components does KEP-1490 (In-tree Storage Plugin to CSI Migration - Azuredisk) affect?,baseline,"The passages do not directly list the Kubernetes components that KEP-1490 affects.
+
+- KEP-1490 is a vendor-specific KEP for Azuredisk that inherits all content from its parent KEP, CSI Migration [3].
+- It introduces two new feature gates, used as described in the parent KEP, but the passage does not name them [3].
+- For all other content, the KEP refers to the parent KEP [3].
+- The parent KEP (KEP-625) sets general goals, such as keeping as little code as possible in the Kubernetes repo and leaving the in-tree plugin API untouched [4]. It does not name specific components in these passages.","must name half of ['kube-controller-manager', 'kube-scheduler', 'kubelet']",wrong,,
+B6,"What was decided about KEP-753 (Sidecar Containers), and was it adopted?",graph,"**Decision:** KEP-753 introduced a `restartPolicy` field on init containers to mark them as sidecars. Sidecars start in the init sequence, keep running for the pod's lifetime, and don't block pod completion [4]. The team considered a separate `sidecarContainers` collection but decided it ""didn't add enough value to carry it's own weight"" [3].
+
+**Adopted?** Yes. The KEP is marked implemented and stable, with v1.33 as its latest milestone [9][10].
+
+- Status history: provisional (2020), then implementable (Feb 2023), then implemented (Feb 4, 2025) [7][8][9].
+- Its owning team is sig-node. Approvers are thockin and mrunalp.
+- Graduation to stable was tracked for v1.33, and the enhancements lead closed the tracking issue in May 2025 after the status was set to implemented [10][11].
+
+**Caveats:**
+- The rationale was written by an LLM from the sources. Its quotes were checked word for word, but the confidence is only medium [1].
+- The API shape was contested before settling. Alternatives discussed included a boolean flag, a containerLifecycle object, and runlevels [1].
+- Graduation was questioned in March 2025, with a suggestion to delay until a related fix merged [12]. The graph does not show whether that delay happened.",must state status implemented,right,,
+B6,"What was decided about KEP-753 (Sidecar Containers), and was it adopted?",baseline,"The passages describe KEP-753's intended design and a decision to give it its own feature gate, but they do not explicitly say whether it was formally adopted, merged, or graduated.
+
+- **Design:** Sidecar containers are a new container type that start among the init containers, run through the Pod's lifecycle, and don't block Pod termination. Kubelet makes a best effort to keep them running while other containers run [1].
+- **Goals:** Make sidecars first-class citizens in a Pod, solve Job completion when sidecars must run continuously, allow mixing init containers and sidecars for a choreographed startup, and allow easy sidecar injection. Guaranteeing sidecars run longer than regular containers was to be evaluated after alpha [1].
+- **Separate feature gate:** The KEP-4438 passage says introducing KEP-753 together with restart during Pod termination would have required significant kubelet and Pod lifecycle refactoring, with a risk of disruption. The project therefore decided to introduce a separate feature gate for the sidecar containers feature [2].
+- **Decoupling:** KEP-4438 proposes a new feature gate for the sidecar containers KEP so users can use sidecars without that refactoring [2].
+- **Adoption:** The passages refer to the sidecar feature and its feature gate as exist",must state status implemented,wrong,,

@@ -5,6 +5,7 @@ Problems it catches (each one is a reason to retry once, then to repair):
 - a raw URL that no tool returned (the model may only cite graph sources)
 - facts asserted although every tool said found=false (the answer must say it is not in the graph)
 - a KEP that was NOT adopted (withdrawn, rejected, replaced, deferred) described as implemented or adopted
+- a question as of a past date answered with a tool that only sees the current graph, without saying so
 
 repair() strips bad citations and URLs. If a false claim survives (not-found facts or a not-adopted KEP
 called adopted), fallback() replaces the whole answer with plain facts taken from the tool data.
@@ -27,9 +28,15 @@ def _urls(text: str) -> list[str]:
     return [u.rstrip(".,;:") for u in _URL.findall(text)]
 
 
-def check(answer: str, sources: list[str], results: list[dict]) -> list[str]:
-    """List of problems; empty means the answer passes."""
+_CURRENT = re.compile(r"\b(current|currently|today|now|latest|present)\b", re.I)
+
+
+def check(answer: str, sources: list[str], results: list[dict], as_of: str | None = None) -> list[str]:
+    """List of problems; empty means the answer passes. Pure: it never changes the answer."""
     problems = []
+    if as_of and any(r.get("historical") is False for r in results) and not _CURRENT.search(answer):
+        problems.append(f"a tool without a historical view was used for a question as of {as_of}: say that part "
+                        "of the answer reflects the current graph, not that date")
     bad = sorted({int(n) for n in _CITE.findall(answer) if not 1 <= int(n) <= len(sources)})
     if bad:
         problems.append(f"citations {bad} do not exist; only [1]..[{len(sources)}] are valid")
