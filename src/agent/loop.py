@@ -48,7 +48,9 @@ Rules:
 8. For what a design document or a discussion says (goals, concerns, arguments, details, one issue or PR), use
    search, read_kep or read_thread. Answer only with what the returned passages say, quote short phrases, and
    cite each. If the passages do not answer the question, say that the documents and discussions in the graph
-   do not cover it."""
+   do not cover it.
+9. For what was asked or concluded before, use recall. Give each earlier answer's date, and say clearly if a
+   later change made it outdated."""
 
 
 def _strict_schema(schema: dict) -> dict:
@@ -196,17 +198,17 @@ def ask(question: str, graph_name: str | None = None, model: str | None = None, 
         answer = "I could not finish within the tool-call limit. Please ask a narrower question."
 
     status = "ok"
-    problems = guard.check(answer, sources.urls, results, as_of=as_of)
+    problems = guard.check(answer, sources.urls, results, as_of=as_of, question=question)
     if problems:
         messages.append({"role": "user", "content": "Your answer breaks these rules:\n- " + "\n- ".join(problems)
                          + "\nRewrite the answer following the rules. Do not call tools."})
         msg = client.messages.create(messages=messages, tool_choice={"type": "none"}, **params)
         _add_usage(usage, msg.usage)
         answer = "".join(b.text for b in msg.content if b.type == "text").strip()
-        problems = guard.check(answer, sources.urls, results, as_of=as_of)
+        problems = guard.check(answer, sources.urls, results, as_of=as_of, question=question)
         status = "retried"
         if problems:
-            answer, status = guard.repair(answer, sources.urls), "repaired"
+            answer, status = guard.repair(answer, sources.urls, results, question), "repaired"
             if any(guard.is_claim_problem(p) for p in problems):
                 answer, status = guard.fallback(results, sources.urls), "fallback"
 

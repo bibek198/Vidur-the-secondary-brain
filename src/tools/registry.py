@@ -136,6 +136,16 @@ TOOLS = {
             "section": {"type": "string", "description": "Optional section name, e.g. goals, non-goals, risks"}},
             "required": ["kep"], "additionalProperties": False},
     },
+    "recall": {
+        "fn": read.recall,
+        "description": (
+            "Use for MEMORY questions: what was asked, answered or concluded BEFORE about a KEP, team, person or "
+            "component (earlier answers with their dates, whether a later change made them outdated, drafts and "
+            "watches). Example: {\"entity\": \"KEP-2699\"}. Present results as earlier answers with dates, not as "
+            "current facts."),
+        "schema": {"type": "object", "properties": {"entity": {"type": "string"}},
+                   "required": ["entity"], "additionalProperties": False},
+    },
     "resolve": {
         "fn": read.resolve,
         "description": (

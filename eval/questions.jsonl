@@ -46,3 +46,4 @@
 {"id": "J6", "split": "docs", "category": "discussion", "question": "What concerns were raised about swap support on Linux nodes?", "expected_tools": ["search", "read_kep"]}
 {"id": "J7", "split": "docs", "category": "document", "question": "What risks does the user namespaces KEP list?", "expected_tools": ["read_kep"]}
 {"id": "J8", "split": "docs", "category": "lure", "question": "What did reviewers say about the holographic volume driver proposal?", "expected_tools": ["search", "read_thread", "trace_decision", "resolve"], "lure": true}
+{"id": "J9", "split": "docs", "category": "memory", "question": "What did we conclude about KEP-2699 before?", "expected_tools": ["recall"]}

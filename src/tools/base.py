@@ -34,9 +34,10 @@ def reset_trace() -> None:
     _TRACE.set([])
 
 
-def run(g, cypher: str, params: dict | None = None, tool: str = ""):
-    """Execute a parameterized query and record it in the trace."""
-    result = g.query(cypher, params or {})
+def run(g, cypher: str, params: dict | None = None, tool: str = "", write: bool = False):
+    """Execute a parameterized query and record it in the trace. Reads go through ro_query, so the database
+    itself refuses any write from a read tool; only the action tools' memory writes pass write=True."""
+    result = g.query(cypher, params or {}) if write else g.ro_query(cypher, params or {})
     trace().append({"tool": tool, "cypher": " ".join(cypher.split()), "params": _short(params or {}),
                     "rows": len(result.result_set), "ms": round(result.run_time_ms, 2)})
     return result
@@ -144,7 +145,7 @@ def valid_at(alias: str, as_of: int | None) -> str:
 
 def data_as_of(g) -> dict:
     """How current the graph is: its snapshot cutoff and, if the real-time engine runs, the last applied change."""
-    rows = g.query("""OPTIONAL MATCH (s:Meta {key:'snapshot'}) OPTIONAL MATCH (f:Meta {key:'freshness'})
+    rows = g.ro_query("""OPTIONAL MATCH (s:Meta {key:'snapshot'}) OPTIONAL MATCH (f:Meta {key:'freshness'})
                       RETURN s.cutoff, f.last_event_at, f.last_applied_at""").result_set
     cutoff, last_event, applied = rows[0] if rows else (None, None, None)
     return {"snapshot": cutoff, "last_change": last_event, "applied_at": applied}
@@ -170,8 +171,8 @@ class ToolCall:
         self.stale: list[str] = []
         self.as_of_label = "current"
 
-    def q(self, cypher: str, params: dict | None = None, collect: bool = True):
-        result = run(self.g, cypher, params, self.name)
+    def q(self, cypher: str, params: dict | None = None, collect: bool = True, write: bool = False):
+        result = run(self.g, cypher, params, self.name, write)
         if collect:
             self.path.add_rows(result.result_set)
         return result.result_set

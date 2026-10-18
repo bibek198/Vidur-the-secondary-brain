@@ -42,6 +42,9 @@ from src.realtime import stream
 from src.realtime.events import Event, now_iso
 
 DEMO_GRAPH = os.getenv("DEMO_GRAPH", "brain_demo")
+# When set, only someone with this token (header X-Demo-Token, from opening the page with ?demo=<token>) can
+# replay the demo change, so a visitor cannot use up the demo before it is presented. Unset: open, as in dev.
+DEMO_TOKEN = os.getenv("DEMO_TOKEN", "")
 _KEP = re.compile(r"\bKEP[- ]?(\d{1,5})\b", re.I)
 
 STATIC = Path(__file__).resolve().parent / "static"
@@ -199,11 +202,13 @@ def act(name: str, body: dict, graph_name: str | None = None):
 
 
 @app.post("/api/demo/replay-next")
-def replay_next(graph_name: str | None = None):
+def replay_next(request: Request, graph_name: str | None = None):
     """Camera fallback: put the next real post-cutoff status change on the demo graph's stream (KEP-2699's
     withdrawal first, the demo scenario; then the others in time order). Deterministic event ids: replaying
     an already applied change is a no-op."""
     from src.realtime.inject import feed_events
+    if DEMO_TOKEN and not hmac.compare_digest(request.headers.get("X-Demo-Token", ""), DEMO_TOKEN):
+        raise HTTPException(403, "replaying the demo change needs the presenter's demo token")
     graph_name = checked_graph(graph_name or DEMO_GRAPH)
     if graph_name != DEMO_GRAPH:
         raise HTTPException(403, "replayed changes only go to the demo graph")
@@ -233,6 +238,7 @@ def health(graph_name: str | None = None):
     counts = g.query("MATCH (n) RETURN count(n)").result_set[0][0], g.query("MATCH ()-[r]->() RETURN count(r)").result_set[0][0]
     return {"graph": name, "graphs": GRAPHS, "frozen": not writable(name), "now": now_iso(),
             "replay_mode": config.DEMO_REPLAY, "public_mode": PUBLIC, "live_per_ip_hour": LIVE_PER_IP_HOUR,
+            "demo_locked": bool(DEMO_TOKEN),
             # three different moments: when it happened, when the brain received it, when it was written
             "last_change": f.get("last_event_at"), "last_observed": f.get("last_observed_at"),
             "last_applied": f.get("last_applied_at"), "lag_ms": f.get("lag_ms"), "events_applied": f.get("events"),

@@ -770,3 +770,41 @@ def read_kep(kep: str, section: str | None = None, as_of: str | None = None, gra
         call.notes.append("This section is empty in the document (only sub-sections or a heading).")
     call.source(url)
     return call.result(data)
+
+
+# ---------- memory: what earlier sessions concluded ----------
+
+def recall(entity: str, graph_name: str | None = None) -> dict:
+    """Earlier answers about a KEP, team, person or component (Question memory nodes), newest first, each with
+    the date it was given and whether a later change made it outdated; plus drafts and watches about it."""
+    from src.brain.schema import NODE_KEYS
+    call = ToolCall("recall", graph_name)
+    best, cands = _resolve_one(call, entity, ["KEP", "Team", "Person", "Component"])
+    if best is None:
+        return call.result({"query": entity, "closest": cands[:3]}, found=False)
+    label, prop = best["label"], NODE_KEYS[best["label"]]
+    p = {"key": best["key"]}
+    answers = call.q(f"""MATCH (q:Question)-[a:ASKED_ABOUT]->(x:{label} {{{prop}:$key}}) WHERE q.answer IS NOT NULL
+                         OPTIONAL MATCH (q)-[:OUTDATED_BY]->(e:Event)
+                         WITH q, a, x, collect(e) AS changes
+                         RETURN q.text, q.answer, q.asked_at, q.as_of,
+                                [c IN changes | c.summary][..3], [c IN changes | c.url][..3], size(changes), q, a, x
+                         ORDER BY q.asked_at DESC LIMIT 5""", p)
+    drafts = call.q(f"""MATCH (d:Draft)-[:ABOUT]->(x:{label} {{{prop}:$key}})
+                        RETURN d.id, d.kind, d.created_at ORDER BY d.created_at DESC LIMIT 3""", p, False)
+    watches = call.q(f"MATCH (w:Watch)-[:WATCHES]->(x:{label} {{{prop}:$key}}) RETURN count(w)", p, False)[0][0]
+    data = {"entity": best["key"], "label": label,
+            "earlier_answers": [{"question": a[0], "answer": (a[1] or "")[:600], "answered_at": a[2],
+                                 "as_of": a[3], "outdated": a[6] > 0, "outdated_by": a[4]} for a in answers],
+            "drafts": [{"id": d[0], "kind": d[1], "created_at": d[2]} for d in drafts], "watchers": watches}
+    for a in answers:
+        call.source(a[5])
+    if any(x["outdated"] for x in data["earlier_answers"]):
+        call.notes.append("Some earlier answers are outdated: the graph changed after they were given. Say so, "
+                          "and offer to answer again from the current graph.")
+    if not answers and not drafts:
+        call.notes.append(f"Nothing was asked or concluded about {best['key']} before in this graph. (The frozen "
+                          "evaluation graph keeps no memory; the live and demo graphs do.)")
+    else:
+        call.notes.append("These are earlier answers, not current facts: give each one's date.")
+    return call.result(data, found=bool(answers or drafts))

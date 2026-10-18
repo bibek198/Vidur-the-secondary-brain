@@ -98,8 +98,12 @@ def read_kep(kep: str, section: str | None = None) -> dict:
     return _run("read_kep", kep=kep, section=section)
 
 
+def recall(entity: str) -> dict:
+    return _run("recall", entity=entity)
+
+
 WRAPPERS = {f.__name__: f for f in (trace_decision, who_owns, who_knows, impact_of, timeline, what_changed,
-                                     connect, influence, search, read_thread, read_kep, resolve,
+                                     connect, influence, search, read_thread, read_kep, recall, resolve,
                                      recommend_reviewers, draft_decision_brief,
                                      route_question, watch)}
 assert set(WRAPPERS) == set(TOOLS), "every registry tool needs an MCP wrapper"

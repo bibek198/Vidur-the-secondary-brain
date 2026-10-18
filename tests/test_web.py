@@ -159,6 +159,18 @@ def test_frozen_graph_is_never_written(web, monkeypatch):
     assert counts("brain_eval") == before
 
 
+def test_replay_next_needs_the_demo_token_when_one_is_set(web, monkeypatch):
+    monkeypatch.setattr(web, "DEMO_TOKEN", "s3cret")
+    tc = TestClient(web.app)
+    denied = tc.post("/api/demo/replay-next?graph_name=brain_demo")
+    assert denied.status_code == 403 and "demo token" in denied.json()["detail"]
+    wrong = tc.post("/api/demo/replay-next?graph_name=brain_demo", headers={"X-Demo-Token": "nope"})
+    assert wrong.status_code == 403
+    # the right token passes the token check (brain_eval is then refused for being frozen, so nothing is written)
+    ok = tc.post("/api/demo/replay-next?graph_name=brain_eval", headers={"X-Demo-Token": "s3cret"})
+    assert ok.status_code == 403 and "demo graph" in ok.json()["detail"]
+
+
 # ---------- demo graph: replay-next and the outdated-answer lifecycle (throwaway copy) ----------
 
 @pytest.fixture

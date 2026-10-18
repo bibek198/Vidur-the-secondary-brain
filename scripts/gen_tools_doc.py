@@ -25,6 +25,7 @@ EXAMPLES = {
     "search": {"query": "graceful termination order of sidecars", "kep": "KEP-753"},
     "read_thread": {"ref": "#4255"},
     "read_kep": {"kep": "KEP-753", "section": "non-goals"},
+    "recall": {"entity": "KEP-2699"},
     "resolve": {"text": "graceful node shutdown"},
     "recommend_reviewers": {"kep_or_path": "KEP-4381"},
     "draft_decision_brief": {"kep": "KEP-3063"},

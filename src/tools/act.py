@@ -149,7 +149,7 @@ def draft_decision_brief(kep: str, graph_name: str | None = None) -> dict:
               MERGE (d:Draft {id:$id}) SET d.kind = 'decision_brief', d.markdown = $md, d.created_at = $at
               MERGE (d)-[:ABOUT]->(k)""",
            {"kep": d["kep"], "id": draft_id, "md": markdown, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
-           False)
+           False, write=True)
     call.notes.append(f"Saved as Draft {draft_id} in the graph. Show the markdown to the user; nothing was posted.")
     return call.result({"draft_id": draft_id, "kep": d["kep"], "markdown": markdown})
 
@@ -181,10 +181,10 @@ def route_question(question: str, topic: str, graph_name: str | None = None) -> 
               WITH q UNWIND $route AS r
               MATCH (p:Person {login: r.login}) MERGE (q)-[e:ROUTED_TO]->(p) SET e.reason = r.reason""",
            {"id": qid, "text": question, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "route": route},
-           False)
+           False, write=True)
     label_key = {"KEP": "id", "Component": "name", "CodeArea": "id", "Team": "id", "FeatureGate": "name"}[best["label"]]
     call.q(f"MATCH (q:Question {{id:$id}}), (x:{best['label']} {{{label_key}:$key}}) MERGE (q)-[:ASKED_ABOUT]->(x)",
-           {"id": qid, "key": best["key"]}, False)
+           {"id": qid, "key": best["key"]}, False, write=True)
     call.notes.append(f"Recorded as Question {qid}, routed to {', '.join(r['login'] for r in route) or 'nobody'}. "
                       "Nothing was sent to anyone.")
     return call.result({"question_id": qid, "topic": best, "ask": route}, found=bool(route))
@@ -204,6 +204,6 @@ def watch(entity: str, graph_name: str | None = None) -> dict:
     call.q(f"""MATCH (x:{best['label']} {{{key}:$key}})
                MERGE (w:Watch {{id:$id}}) SET w.target = $key, w.created_at = coalesce(w.created_at, $at)
                MERGE (w)-[r:WATCHES]->(x) RETURN w, r, x""",
-           {"key": best["key"], "id": wid, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+           {"key": best["key"], "id": wid, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, write=True)
     call.notes.append(f"Now watching {best['label']} {best['key']}. Changes appear in the live feed.")
     return call.result({"watch_id": wid, "target": best})

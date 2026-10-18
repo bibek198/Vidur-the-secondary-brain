@@ -88,7 +88,8 @@ def answer_baseline(question: str, graph_name: str | None = None, as_of: str | N
     answer = "".join(b.text for b in msg.content if b.type == "text").strip()
     if as_of:
         answer += "\n\n" + DISCLOSURE
-    problems = guard.check(answer, sources, [])          # report only: never repaired
+    # report only, never repaired; names count as known when a retrieved passage or the question contains them
+    problems = guard.check(answer, sources, [{"data": passages}], question=question)
     cited = sorted({int(n) for n in guard._CITE.findall(answer) if 1 <= int(n) <= len(sources)})
     asked_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     return {

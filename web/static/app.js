@@ -47,6 +47,14 @@ async function api(path, opts = {}) {
   if (!r.ok) throw new Error(body.detail || `HTTP ${r.status}`);
   return body;
 }
+// The presenter opens the page once with ?demo=<token>; the token is kept for this tab only.
+function demoToken() {
+  const fromUrl = new URLSearchParams(location.search).get("demo");
+  try {
+    if (fromUrl) sessionStorage.setItem("db.demo", fromUrl);
+    return fromUrl || sessionStorage.getItem("db.demo") || "";
+  } catch { return fromUrl || ""; }
+}
 function fmtTime(iso) { return iso ? new Date(iso).toLocaleString() : "?"; }
 function relTime(iso) {
   if (!iso) return "time unknown";
@@ -593,7 +601,7 @@ async function refreshHealth() {
     const detail = [h.last_change && `last change ${fmtTime(h.last_change)}`, h.snapshot_cutoff && `snapshot ${fmtTime(h.snapshot_cutoff)}`,
                     h.now && `checked ${fmtTime(h.now)}`].filter(Boolean).join(" · ");
     setFresh(kind, parts.join(" · "), detail);
-    $("replaynext").hidden = state.graph !== "brain_demo";
+    $("replaynext").hidden = state.graph !== "brain_demo" || (h.demo_locked && !demoToken());
     $("democtl").hidden = state.graph !== "brain_demo";
     $("scenario").hidden = state.graph !== "brain_demo";
   } catch (err) { setFresh("danger", "Freshness unavailable", `Health check failed: ${err.message}`); }
@@ -753,7 +761,8 @@ async function init() {
     b.disabled = true; b.setAttribute("aria-busy", "true");
     $("replayout").textContent = "Publishing the next real change…";
     try {
-      const r = await api(`/api/demo/replay-next?graph_name=${encodeURIComponent(state.graph)}`, { method: "POST" });
+      const r = await api(`/api/demo/replay-next?graph_name=${encodeURIComponent(state.graph)}`,
+                          { method: "POST", headers: { "X-Demo-Token": demoToken() } });
       $("replayout").textContent = r.published ? `Replayed real change: ${r.published.kep} ${r.published.from} → ${r.published.to} (${r.remaining} left)` : r.note;
     } catch (err) { $("replayout").textContent = `Replay failed: ${err.message}`; }
     finally { b.disabled = false; b.removeAttribute("aria-busy"); }

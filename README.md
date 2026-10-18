@@ -16,6 +16,7 @@ A Company Brain agent on FalkorDB. It models the Kubernetes project as a company
 | *What does KEP-4381 affect?* | KEP → feature gates → components → code areas → the people who must know |
 | *What changed in sig-node since August?* | Change events written by the real-time engine |
 | *What are the non-goals of KEP-753? What did reviewers say on PR #4255?* | Reads the design-doc section or the thread, and quotes it with links |
+| *What did we conclude about KEP-2699 before?* | Answered from memory: earlier answers with their dates, and whether a later change made them outdated |
 | *Who approved the quantum teleport scheduler?* | "Not in the graph". Invented things are never answered |
 
 **Why a graph:** on the same 50 questions with the same model and data, the graph agent scored **49/50**, while vector-only search over the same documents scored **15/50**. While two years of real changes streamed in, the graph stayed right on **84/90** checks against **32/90**. See [Evaluation](#evaluation).
@@ -26,7 +27,7 @@ A Company Brain agent on FalkorDB. It models the Kubernetes project as a company
 
 ## Quick start
 
-**Use the live demo.** Example questions are served from recorded answers. Other questions run live, limited to 10 per hour per visitor.
+**Use the live demo.** Example questions are served from recorded answers. Other questions run live, limited to 10 per hour per visitor. The demo graph's "Replay next real change" button is for the presenter (`DEMO_TOKEN`), so visitors can't use up the demo.
 
 **Run it locally** (Docker and Python 3.10+). No GitHub token is needed: the normalized data is committed in `data/seed`.
 ```bash
@@ -44,7 +45,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 DEMO_REPLAY=1 .venv/bin/python -m src.agent.cli "Who owns the kubelet?"     # recorded answer, no API key needed
 ```
 
-**Use the same tools from Claude Desktop or any MCP client.** All 16 tools (12 read tools, 4 actions) are served over MCP:
+**Use the same tools from Claude Desktop or any MCP client.** All 17 tools (13 read tools, 4 actions) are served over MCP:
 ```bash
 npx @modelcontextprotocol/inspector .venv/bin/python -m src.mcp_server
 ```
@@ -73,7 +74,7 @@ flowchart LR
   WH & P[poller 60 s] & GD[git diff 5 min] --> S[Redis Stream<br/>event log]
   S --> W[worker<br/>same handlers as the loader] --> F
   W --> R[effects: outdated answers,<br/>watch alerts, re-extraction]
-  F --> T[16 fixed Cypher tools]
+  F --> T[17 fixed Cypher tools]
   T --> A[Claude agent<br/>+ citation guard]
   T --> M[MCP server]
   A --> U[Web UI, SSE live feed, Atlas]
@@ -81,6 +82,7 @@ flowchart LR
 
 - **One write path.** History is loaded by replaying git events through the same handlers the live worker uses, so a backfilled change and a live change get the same event id and the same result.
 - **The model never writes Cypher.** It picks from a fixed, validated tool catalogue ([src/tools/registry.py](src/tools/registry.py)). Each tool resolves names against the graph first, returns the path and a Cypher trace, and returns `found=false` instead of guessing.
+- **Read tools can't write.** They run through FalkorDB's `ro_query`, so the database itself refuses a write. Only the 4 action tools write, and only memory nodes (Draft, Question, Watch).
 - **Everything is in FalkorDB:** the graph, the vector index (384-d, local fastembed), the full-text indexes and the event stream (Redis Streams in FalkorDB's own Redis).
 
 ## Graph data model
@@ -143,6 +145,7 @@ RETURN o.id, o.title, o.status, min(length(path)) AS hops ORDER BY hops LIMIT 15
 | `influence` | most influential reviewers, bridges | `algo.pageRank`, `algo.betweenness` on REVIEWED_FOR |
 | `search` | what was said about a topic | vector index + full-text, scoped by KEP |
 | `read_kep`, `read_thread` | a design-doc section, one issue or PR | KEP → doc at the snapshot commit; thread → comments → people |
+| `recall` | what was asked or concluded before | Question memory nodes → what they touched, OUTDATED_BY events |
 | `resolve` | which entity a name means | full-text + vector |
 | `recommend_reviewers`, `draft_decision_brief`, `route_question`, `watch` | actions (write only Draft, Question and Watch nodes) | composed from the read tools |
 
@@ -176,10 +179,11 @@ The graph follows the project as it changes:
 
 - **Agent:** Claude Haiku 5.5 with strict tool schemas picks tools and writes the answer from tool results only. A code **citation guard** rejects:
   - citations that don't exist, and URLs the tools didn't return
+  - any KEP id, `@login` or SIG name that no tool returned and the question didn't mention (an invented name)
   - facts stated after every tool said "not found"
   - a not-adopted KEP described as adopted
 
-  The model gets one rewrite. After that, the guard repairs the answer or replaces it with plain facts.
+  The model gets one rewrite. After that, the guard removes the sentences with invented names or citations, or replaces the answer with plain facts.
 - **Honesty about the unknown:** a distinctive word that appears nowhere in the graph means "not found" (for example "holographic", "teleport"), and close matches are labelled as such.
 - **Rationales:** the LLM writes the *why* for 651 KEPs and must quote its evidence. Code checked every quote word for word, and **96.8%** were found. A human audited 35 rationales, and **35/35 were right**. The outcome itself always comes from `kep.yaml` history, never from the LLM. LLM-proposed "replaced by" links count only after a person confirms them.
 - **Total LLM spend for building and evaluating:** about **$0.75**.
@@ -202,9 +206,9 @@ Expected answers never come from the graph. They're read from the repositories w
 - **Staying correct while the company changes:** the graph was loaded as of 2024-09-15, then 1,433 real changes were streamed through the live pipeline. At each release from v1.32 to v1.37, the graph was right on **84/90** status checks. Vector search scored 32/90 with its index frozen, and 25/90 with new text appended. It reported old statuses as current 21–24 times; the graph never did.
 - **Agent routing:**
   - 30/30 development questions and 10/10 held-out questions chose the right tool.
-  - On the new document and thread questions, 8/8 chose the right tool.
+  - On the new document, thread and memory questions, 9/9 chose the right tool.
   - Invented lures are refused.
-- **Tests:** 108 automated tests (`pytest -q`) cover the loader, tools, agent guard, real-time engine, web API and Atlas.
+- **Tests:** 112 automated tests (`pytest -q`) cover the loader, tools, agent guard, real-time engine, web API and Atlas.
 
 ## Limitations and future work
 
@@ -215,7 +219,12 @@ Expected answers never come from the graph. They're read from the repositories w
 
 ## AI usage disclosure
 
-AI coding assistants were used to assist with implementation, debugging, and documentation. Their suggestions were reviewed and validated by the author, who is responsible for the final code and project.
+AI coding assistants were used throughout:
+- **Claude (Claude Code)** planned with the participant and wrote most of the code, tests, evaluation harness and docs. That includes the fetchers, schema, loader, tools, agent, real-time engine, UI, Atlas and deployment scripts.
+- **Claude Haiku 5.5** writes the agent's answers at run time and wrote the 651 KEP rationales, each quote checked by code.
+- **The participant** chose the track, the dataset and the design goals, reviewed and approved every phase plan, and wrote the 15 gold decision labels. They also audited the rationale sample and supersession claims, set up GitHub, the sandbox webhook and AWS, and recorded the demo.
+
+The phase-by-phase log is in [docs/project/AI_USAGE.md](https://github.com/bibek198/decision-brain/blob/main/docs/project/AI_USAGE.md). The plan, decisions and build log are in [docs/project/](https://github.com/bibek198/decision-brain/tree/main/docs/project).
 
 ## Track
 

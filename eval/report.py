@@ -100,7 +100,7 @@ def main() -> None:
         if docs_path.exists():
             docs = list(map(json.loads, docs_path.open()))
             lures = [r for r in docs if "lure_honest" in r]
-            lines += [f"- Document and thread questions (search, read_kep, read_thread; added for the final version): "
+            lines += [f"- Document, thread and memory questions (search, read_kep, read_thread, recall; added for the final version): "
                       f"{sum(r['tool_ok'] for r in docs)}/{len(docs)} chose an expected tool, lure answered honestly "
                       f"{sum(r['lure_honest'] for r in lures)}/{len(lures)}, citation guard passed first time "
                       f"{sum(r['guard'] == 'ok' for r in docs)}/{len(docs)}. Answers: `eval/results/tool_choice_docs.jsonl`."]

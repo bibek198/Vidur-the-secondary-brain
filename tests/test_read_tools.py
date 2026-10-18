@@ -80,3 +80,34 @@ def test_strict_tool_schemas_stay_within_the_union_limit():
     from src.agent.loop import tool_specs
     unions = sum(1 for spec in tool_specs() for p in spec["input_schema"]["properties"].values() if "anyOf" in p)
     assert unions <= 16, unions
+
+
+@needs_graph
+def test_read_path_is_read_only():
+    """Tools query through ro_query: the database itself refuses a write from a read tool."""
+    from src.brain.db import graph
+    from src.tools.base import run
+    with pytest.raises(Exception, match="read-only"):
+        run(graph("brain_eval"), "CREATE (:Probe {x: 1})")
+    assert graph("brain_eval").query("MATCH (p:Probe) RETURN count(p)").result_set[0][0] == 0
+
+
+def test_name_guard_flags_invented_kep_login_and_team():
+    from src.agent import guard
+    res = [{"tool": "trace_decision", "found": True, "notes": [], "path": {"nodes": []},
+            "data": {"kep": "KEP-753", "team": "sig-node", "approvers": ["mrunalp"]}}]
+    assert guard.invented_names("KEP-753 is owned by sig-node; @mrunalp approved it.", res) == []
+    assert guard.invented_names("Replaced by KEP-4438, approved by @thockin in sig-scheduling.", res) == \
+        ["@thockin", "KEP-4438", "sig-scheduling"]
+    assert guard.invented_names("KEP-99999 is not in the graph.", res, question="Status of KEP-99999?") == []
+    problems = guard.check("It was replaced by KEP-4438 [1].", ["u"], res)
+    assert problems and "not in any tool result" in problems[0]
+    fixed = guard.repair("KEP-753 is implemented [1]. It was replaced by KEP-4438. Owned by sig-node.", ["u"], res)
+    assert "KEP-4438" not in fixed and "KEP-753 is implemented [1]." in fixed and "sig-node" in fixed
+
+
+@needs_graph
+def test_recall_on_a_graph_without_memory_says_so():
+    r = run("recall", entity="KEP-753")          # brain_eval is frozen: it never stores questions
+    assert not r["found"] and "Nothing was asked" in r["notes"][0]
+    assert not run("recall", entity="holographic volume driver")["found"]
