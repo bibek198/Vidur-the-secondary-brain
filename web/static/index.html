@@ -3,102 +3,191 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Decision Brain</title>
+  <script src="/static/theme.js"></script>
   <link rel="stylesheet" href="/static/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
 </head>
 <body>
+  <a class="skip" href="#question">Skip to the question</a>
+
+  <!-- icon sprite: 16px line icons, used as <svg><use href="#i-name"/></svg> -->
+  <svg xmlns="http://www.w3.org/2000/svg" hidden>
+    <symbol id="i-mark" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="17.5" r="3.2"/><path d="M8.2 8.4l2.4 6.3M15.9 7.8l-2.6 7M8.5 7l7-.8" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7.2v4M8 4.8v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 16 16"><path d="M8 2.2 14.3 13H1.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.3v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="m3.5 8.3 3 3 6-6.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.5-3.55M13 2.5v3h-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 16 16"><path d="M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+        <symbol id="i-target" viewBox="0 0 16 16"><rect x="2.25" y="2.25" width="11.5" height="11.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-collapse" viewBox="0 0 16 16"><path d="M6 2.5V6H2.5M13.5 6H10V2.5M10 13.5V10h3.5M2.5 10H6v3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 16 16"><path d="M13.2 10.1A5.6 5.6 0 0 1 5.9 2.8a5.6 5.6 0 1 0 7.3 7.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-system" viewBox="0 0 16 16"><rect x="1.75" y="2.75" width="12.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 13.75h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 16 16"><path d="M5 3.5v9l7-4.5z" fill="currentColor"/></symbol>
+  </svg>
+
   <header class="topbar">
     <div class="brand">
-      <span class="logo" aria-hidden="true"></span>
-      <span class="name">Decision Brain</span>
-      <button type="button" id="abouttoggle" class="linkbtn">About</button>
+      <svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg>
+      <h1 class="name">Decision Brain</h1>
+      <span class="tagline">Kubernetes, modelled as a company</span>
     </div>
     <div class="topright">
-      <label class="graphpick"><span class="muted">Graph</span>
+      <label class="graphpick"><span class="lbl">Graph</span>
         <select id="graph"></select>
       </label>
-      <div id="fresh" class="fresh">connecting…</div>
+      <div id="fresh" class="fresh" role="status" title="Data freshness">
+        <span class="fdot" aria-hidden="true"></span><span id="freshtext">Connecting…</span>
+      </div>
+      <fieldset id="themepick" class="seg" title="Appearance">
+        <legend class="sr-only">Appearance</legend>
+        <label title="Light"><input type="radio" name="theme" value="light"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg><span class="sr-only">Light</span></label>
+        <label title="Follow system"><input type="radio" name="theme" value="system"><svg class="icon" aria-hidden="true"><use href="#i-system"/></svg><span class="sr-only">System</span></label>
+        <label title="Dark"><input type="radio" name="theme" value="dark"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg><span class="sr-only">Dark</span></label>
+      </fieldset>
+      <button type="button" id="abouttoggle" class="btn ghost" aria-controls="about" aria-expanded="true">
+        <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>About</span>
+      </button>
     </div>
   </header>
 
-  <section id="about" class="about">
+  <section id="about" class="about" aria-labelledby="abouttitle">
     <div class="about-head">
       <div>
-        <h1>A company brain that knows who owns what, why it was decided, and what just changed.</h1>
+        <h2 id="abouttitle">A company brain that knows who owns what, why it was decided, and what just changed.</h2>
         <p>Decision Brain models the Kubernetes project as a company: SIGs are teams, KEPs are decisions, issues and pull
           requests are the conversations, and OWNERS files are code ownership. Everything lives in one FalkorDB graph that
           updates itself as the project changes, and every answer shows its sources, its graph path and the Cypher behind it.</p>
       </div>
-      <button type="button" id="aboutclose" class="pill">Got it</button>
+      <button type="button" id="aboutclose" class="btn">Got it</button>
     </div>
-    <div class="tiles">
-      <div class="tile"><b>Answers you can check</b><span>Claude picks graph tools; it never writes Cypher. Each fact cites a GitHub source, and a guard rejects anything uncited.</span></div>
-      <div class="tile"><b>Real time</b><span>GitHub webhooks, a poller and git diffs stream into the graph. A change is answerable in about 1 s, and earlier answers are flagged outdated.</span></div>
-      <div class="tile"><b>Time travel</b><span>Every status, lead and approver has dates, so you can ask how things stood at any past release.</span></div>
-      <div class="tile"><b>Measured honestly</b><span>49/50 correct vs 15/50 for vector-only search on the same data; 84/90 vs 32/90 while two years of changes replayed.</span></div>
-    </div>
+    <ul class="tiles">
+      <li class="tile"><b>Answers you can check</b><span>Claude picks graph tools; it never writes Cypher. Each fact cites a GitHub source, and a guard rejects anything uncited.</span></li>
+      <li class="tile"><b>Real time</b><span>GitHub webhooks, a poller and git diffs stream into the graph. A change is answerable in about 1 s, and earlier answers are flagged outdated.</span></li>
+      <li class="tile"><b>Time travel</b><span>Every status, lead and approver has dates, so you can ask how things stood at any past release.</span></li>
+      <li class="tile"><b>Measured honestly</b><span>49/50 correct vs 15/50 for vector-only search on the same data; 84/90 vs 32/90 while two years of changes replayed.</span></li>
+    </ul>
   </section>
 
-  <div id="replaybanner" class="notice" hidden>Replay mode: recorded answers (no API key). The graph, Cypher and live feed are real.</div>
+  <div id="replaybanner" class="notice" role="note" hidden>Replay mode: recorded answers (no API key). The graph, Cypher and live feed are real.</div>
 
-  <ol id="scenario" class="scenario" hidden>
-    <li data-step="ask">Ask</li><li data-step="inspect">Inspect</li><li data-step="change">Change</li>
-    <li data-step="outdated">Outdated</li><li data-step="reask">Re-ask</li><li data-step="compare">Compare</li>
-  </ol>
+  <nav id="scenario" class="scenario" aria-label="Demo walkthrough" hidden>
+    <ol>
+      <li data-step="ask"><span class="num">1</span><span>Ask</span></li>
+      <li data-step="inspect"><span class="num">2</span><span>Inspect</span></li>
+      <li data-step="change"><span class="num">3</span><span>Change</span></li>
+      <li data-step="outdated"><span class="num">4</span><span>Outdated</span></li>
+      <li data-step="reask"><span class="num">5</span><span>Re-ask</span></li>
+      <li data-step="compare"><span class="num">6</span><span>Compare</span></li>
+    </ol>
+    <p id="scenariohint" class="hint">Start by asking a question, or pick one of the examples.</p>
+  </nav>
 
-  <main class="layout">
-    <section class="panel left">
-      <form id="askform" class="askform">
-        <textarea id="question" rows="2" maxlength="500" placeholder="Ask about owners, experts, decisions, impact or what changed"></textarea>
+  <div class="tabs" role="tablist" aria-label="Workspace">
+    <button type="button" role="tab" id="tab-answer" data-view="answer" aria-controls="panel-answer" aria-selected="true">Answer</button>
+    <button type="button" role="tab" id="tab-graph" data-view="graph" aria-controls="panel-graph" aria-selected="false" tabindex="-1">Graph</button>
+    <button type="button" role="tab" id="tab-live" data-view="live" aria-controls="panel-live" aria-selected="false" tabindex="-1">Live <span id="livebadge" class="badge" hidden></span></button>
+  </div>
+
+  <main id="main" class="layout" data-view="answer">
+    <section id="panel-answer" class="panel left" aria-labelledby="tab-answer">
+      <h2 class="sr-only">Question and answer</h2>
+      <form id="askform" class="askform" novalidate>
+        <label for="question" class="flabel">Question</label>
+        <textarea id="question" rows="2" maxlength="500" aria-describedby="askhint askerr"
+                  placeholder="Ask about owners, experts, decisions, impact or what changed"></textarea>
         <div class="controls">
-          <label class="field"><span class="muted">As of</span> <select id="asof"></select></label>
-          <label class="toggle"><input type="checkbox" id="compare"><span class="track"></span> Compare with vector search</label>
-          <button type="submit" id="askbtn" class="primary">Ask</button>
+          <label class="field"><span class="lbl">As of</span> <select id="asof"></select></label>
+          <label class="toggle"><input type="checkbox" id="compare"><span class="track" aria-hidden="true"></span><span>Compare with vector search</span></label>
+          <button type="submit" id="askbtn" class="btn primary"><span class="spin" aria-hidden="true"></span><span id="asklabel">Ask</span></button>
         </div>
+        <p id="askhint" class="hint">Enter to ask · Shift+Enter for a new line</p>
+        <p id="askerr" class="field-error" hidden>Type a question first.</p>
       </form>
+
       <details id="exbox" class="exbox" open><summary>Example questions</summary><div id="examples" class="examples"></div></details>
-      <div id="outdated" class="outdated" hidden>
+
+      <div id="outdated" class="banner warn" hidden>
+        <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
         <span id="outdatedtext">This answer is outdated: the graph changed after it was given.</span>
-        <button id="reask" type="button" class="pill danger">Re-ask</button>
+        <button id="reask" type="button" class="btn warnbtn"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg><span>Re-ask</span></button>
       </div>
+
       <div id="answers" class="answers">
+        <div id="answersempty" class="emptystate">
+          <p class="emptytitle">No question yet</p>
+          <p>Every answer comes with its sources, the graph path it used and the Cypher behind it.</p>
+        </div>
         <article id="graphcard" class="card" hidden></article>
         <article id="basecard" class="card baseline" hidden></article>
       </div>
+
+      <details id="prevanswer" class="prev" hidden>
+        <summary>Previous answer <span class="chip warn">Outdated</span></summary>
+        <div id="prevtext" class="text"></div>
+      </details>
+
       <div id="evidence" class="evidence" hidden></div>
+
+      <details id="drawer" class="drawer" hidden>
+        <summary>How I got this <span id="tracecount" class="muted"></span></summary>
+        <div id="trace" class="trace"></div>
+      </details>
+
       <div id="actions" class="actions" hidden>
-        <button type="button" id="actbrief" class="pill">Draft decision brief</button>
-        <button type="button" id="actreviewers" class="pill">Suggested reviewers</button>
-        <div id="actout" class="actout"></div>
+        <h3>Next steps for <span id="actkep" class="mono"></span></h3>
+        <div class="row">
+          <button type="button" id="actbrief" class="btn">Draft decision brief</button>
+          <button type="button" id="actreviewers" class="btn">Suggested reviewers</button>
+        </div>
+        <div id="actout" class="actout" role="status" aria-live="polite"></div>
       </div>
     </section>
 
-    <section class="panel center">
-      <div class="panelhead"><span>Graph path</span><span id="pathinfo" class="muted"></span></div>
-      <div id="cy" class="cy"></div>
+    <section id="panel-graph" class="panel center" aria-labelledby="graphtitle">
+      <div class="panelhead">
+        <h2 id="graphtitle">Graph path</h2>
+        <span id="pathinfo" class="muted"></span>
+        <div class="tools">
+          <button type="button" id="zoomin" class="iconbtn" aria-label="Zoom in" title="Zoom in"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <button type="button" id="zoomout" class="iconbtn" aria-label="Zoom out" title="Zoom out"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg></button>
+          <button type="button" id="zoomfit" class="iconbtn" aria-label="Fit graph to view" title="Fit graph to view"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg></button>
+          <button type="button" id="graphmax" class="iconbtn" aria-label="Full screen" title="Full screen" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-expand"/></svg></button>
+        </div>
+      </div>
+      <div class="cywrap">
+        <div id="cy" class="cy" role="img" aria-label="Graph path used by the current answer. A text version is under the legend."></div>
+        <p id="cyempty" class="cyempty">Ask a question to see the graph path it used.</p>
+      </div>
       <div id="nodeinfo" class="nodeinfo" hidden></div>
-      <div class="legend">
+      <div class="legend" aria-label="Legend">
         <span class="lg kep-ok">Implemented</span><span class="lg kep-mid">Proposed</span>
         <span class="lg kep-no">Not adopted</span><span class="lg person">Person</span><span class="lg team">Team</span>
         <span class="lg code">Code</span><span class="lg other">Other</span><span class="lg past">Past link</span>
       </div>
+      <details id="pathtext" class="pathtext" hidden><summary>Path as text</summary><ul id="pathlist"></ul></details>
     </section>
 
-    <section class="panel right">
-      <div class="panelhead"><span>Live feed</span><span class="status"><span id="feeddot" class="dot"></span><span id="feedstate" class="muted">connecting</span></span></div>
-      <button type="button" id="replaynext" class="pill wide" hidden>Replay next real change</button>
-      <div id="replayout" class="muted small"></div>
+    <section id="panel-live" class="panel right" aria-labelledby="livetitle">
+      <div class="panelhead">
+        <h2 id="livetitle">Live feed</h2>
+        <span class="status"><span id="feeddot" class="dot" aria-hidden="true"></span><span id="feedstate" class="muted">connecting</span></span>
+      </div>
+      <div id="democtl" class="democtl" hidden>
+        <button type="button" id="replaynext" class="btn wide" hidden><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><span>Replay next real change</span></button>
+        <p id="replayout" class="small muted" role="status"></p>
+      </div>
       <ul id="feed" class="feed"></ul>
-      <p id="feedempty" class="empty muted small">Changes to the graph appear here as they happen.</p>
+      <p id="feedempty" class="empty muted small">No changes yet. Changes to the graph appear here as they are applied.</p>
     </section>
   </main>
 
-  <details id="drawer" class="drawer">
-    <summary>How I got this <span id="tracecount" class="muted"></span></summary>
-    <div id="trace" class="trace"></div>
-  </details>
-
+  <div id="announcer" class="sr-only" aria-live="polite"></div>
   <script src="/static/app.js"></script>
 </body>
 </html>

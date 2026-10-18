@@ -1,4 +1,5 @@
-// Browser check of the demo flow at 1366x768 (Playwright, headless Chromium). Saves screenshots to docs/img/.
+// Browser check of the demo flow at 1366x768 (Playwright, headless Chromium), then the theme switch and the layout at
+// 1440/1024/768/390 px in light and dark. Saves screenshots to docs/img/.
 // Needs: the web app on :8000, the brain_demo worker running, brain_demo freshly reset (scripts/reset_demo.sh).
 // Run: NODE_PATH=<dir with node_modules/playwright> node scripts/ui_check.cjs
 const { chromium } = require("playwright");
@@ -12,6 +13,7 @@ const check = (ok, msg) => { console.log(`${ok ? "PASS" : "FAIL"} ${msg}`); if (
   const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (m) => { if (m.type() === "error") errors.push(`console: ${m.text()}`); });
   await page.goto(URL);
   await page.waitForFunction(() => window.decisionBrain && window.decisionBrain.graph === "brain_demo");
   await page.waitForSelector("#feeddot.on", { timeout: 20000 });
@@ -36,6 +38,9 @@ const check = (ok, msg) => { console.log(`${ok ? "PASS" : "FAIL"} ${msg}`); if (
   await page.click("#drawer summary");
   const queries = await page.$$eval("#trace pre", (p) => p.length);
   check(queries > 0, `Cypher drawer lists ${queries} queries`);
+  await page.click("#pathtext summary");
+  await page.click("#pathlist button");
+  check(await page.isVisible("#nodeinfo dl"), "node inspector opens from the path-as-text list");
   await page.waitForTimeout(1200);
   await page.screenshot({ path: path.join(OUT, "ui-answer.png") });
   await page.click("#drawer summary");
@@ -76,6 +81,43 @@ const check = (ok, msg) => { console.log(`${ok ? "PASS" : "FAIL"} ${msg}`); if (
   await page.waitForTimeout(800);
   await page.screenshot({ path: path.join(OUT, "ui-compare.png") });
 
-  check(errors.length === 0, `no page errors${errors.length ? ": " + errors.join(" | ") : ""}`);
+  // 5. trace drawer is reachable in the answer column
+  check(await page.isVisible("#drawer summary"), "“How I got this” sits under the answer");
+
+  // 6. appearance: explicit dark restyles the page and the graph, survives a reload, System clears it
+  const labelColor = () => page.evaluate(() => window.decisionBrain.cy.style().json().find((r) => r.selector === "node").style.color);
+  const lightLabel = await labelColor();
+  await page.click("#themepick label[title='Dark']");
+  check(await page.getAttribute("html", "data-theme") === "dark", "dark theme applied");
+  const darkLabel = await labelColor();
+  check(darkLabel !== lightLabel, `graph labels restyled for dark: ${lightLabel} → ${darkLabel}`);
+  await page.screenshot({ path: path.join(OUT, "ui-dark.png") });
+  await page.reload();
+  await page.waitForFunction(() => window.decisionBrain && window.decisionBrain.graph);
+  check(await page.getAttribute("html", "data-theme") === "dark" && await page.isChecked("#themepick input[value=dark]"),
+        "dark theme persists across reload");
+  await page.click("#themepick label[title='Follow system']");
+  check(await page.getAttribute("html", "data-theme") === null, "System removes the explicit theme");
+
+  // 7. layout at four widths, both schemes: no horizontal scroll; tabs replace the columns on phones
+  for (const scheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme: scheme });
+    for (const [w, h] of [[1440, 900], [1024, 768], [768, 1024], [390, 844]]) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.waitForTimeout(250);
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(over <= 0, `${scheme} ${w}px: no horizontal overflow (${over})`);
+      await page.screenshot({ path: path.join(OUT, `ui-${scheme}-${w}.png`) });
+    }
+  }
+  await page.emulateMedia({ colorScheme: "light" });
+  check(await page.isVisible(".tabs") && !(await page.isVisible("#panel-graph")), "390px: tab bar shown, one panel at a time");
+  await page.click("#tab-graph");
+  await page.waitForTimeout(300);
+  const cyW = await page.evaluate(() => window.decisionBrain.cy.width());
+  check(await page.isVisible("#panel-graph") && !(await page.isVisible("#panel-answer")) && cyW > 0, `390px: Graph tab shows the graph (${cyW}px wide)`);
+  await page.screenshot({ path: path.join(OUT, "ui-390-graph.png") });
+
+  check(errors.length === 0, `no page or console errors${errors.length ? ": " + errors.join(" | ") : ""}`);
   await browser.close();
 })().catch((e) => { console.error("FAIL", e.message); process.exit(1); });
