@@ -4,6 +4,7 @@
   POST /api/ask                 {question, graph, mode: graph|baseline|both, as_of?} -> both answers, each with
                                 its own status (one failing never hides the other)
   GET  /api/examples            example questions (eval/questions.jsonl)
+  GET  /api/atlas?graph_name=   the whole-graph skeleton for the Atlas view (src/atlas.py), cached 5 min
   POST /api/act/{name}          draft_decision_brief | recommend_reviewers | watch (not on the frozen graph)
   POST /api/demo/replay-next    camera fallback: the next real post-cutoff status change, demo graph only
   GET  /api/stream?graph=       Server-Sent Events: live feed notices, "answer outdated", watch alerts
@@ -160,6 +161,25 @@ def _assemble(body: Ask, graph_name: str, modes: list[str], results: list[dict])
 def examples():
     rows = [json.loads(line) for line in (Path(__file__).resolve().parents[1] / "eval" / "questions.jsonl").open()]
     return [{"id": r["id"], "category": r["category"], "question": r["question"]} for r in rows]
+
+
+ATLAS_TTL_S = 300
+_atlas_cache: dict[str, tuple[float, str | None, dict]] = {}
+
+
+@app.get("/api/atlas")
+def atlas(graph_name: str | None = None):
+    """Cached per graph for 5 min, and rebuilt at once when the real-time engine has applied a newer change."""
+    from src.atlas import build_atlas
+    graph_name = checked_graph(graph_name)
+    g = graph(graph_name)
+    applied = g.query("OPTIONAL MATCH (m:Meta {key:'freshness'}) RETURN m.last_applied_at").result_set[0][0]
+    hit = _atlas_cache.get(graph_name)
+    if hit and hit[1] == applied and time.time() - hit[0] < ATLAS_TTL_S:
+        return hit[2]
+    out = build_atlas(g)
+    _atlas_cache[graph_name] = (time.time(), applied, out)
+    return out
 
 
 @app.post("/api/act/{name}")

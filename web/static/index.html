@@ -29,6 +29,8 @@
     <symbol id="i-moon" viewBox="0 0 16 16"><path d="M13.2 10.1A5.6 5.6 0 0 1 5.9 2.8a5.6 5.6 0 1 0 7.3 7.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
     <symbol id="i-system" viewBox="0 0 16 16"><rect x="1.75" y="2.75" width="12.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 13.75h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
     <symbol id="i-play" viewBox="0 0 16 16"><path d="M5 3.5v9l7-4.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 16 16"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 16 16"><path d="M2.5 8c1.2-2.4 2.4-2.4 3.6 0s2.4 2.4 3.6 0 2.4-2.4 3.8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
   </svg>
 
   <header class="topbar">
@@ -38,6 +40,11 @@
       <span class="tagline">Kubernetes, modelled as a company</span>
     </div>
     <div class="topright">
+      <fieldset id="viewpick" class="seg text" title="View">
+        <legend class="sr-only">View</legend>
+        <label><input type="radio" name="mode" value="workspace" checked><span>Workspace</span></label>
+        <label><input type="radio" name="mode" value="atlas"><span>Atlas</span></label>
+      </fieldset>
       <label class="graphpick"><span class="lbl">Graph</span>
         <select id="graph"></select>
       </label>
@@ -187,7 +194,57 @@
     </section>
   </main>
 
+  <section id="atlas" class="atlas" aria-labelledby="atlastitle" hidden>
+    <div id="atlascanvas" class="atlascanvas" role="img"
+         aria-label="The whole graph: teams, KEPs, code areas and people as linked dots. Use the search box to find one."></div>
+    <p id="atlasstatus" class="atlas-status" role="status">Loading the graph…</p>
+
+    <details id="atlasctl" class="atlas-panel atlas-controls" open>
+      <summary><h2 id="atlastitle">Atlas</h2><span id="atlascount" class="muted"></span></summary>
+      <div class="atlas-body">
+        <input id="atlassearch" class="atlas-search" type="search" list="atlaslist" autocomplete="off"
+               placeholder="Find a KEP, person or team" aria-label="Find a node">
+        <datalist id="atlaslist"></datalist>
+        <fieldset class="atlas-layers"><legend class="lbl">Show</legend>
+          <label><input type="checkbox" data-type="Team" checked><i class="sw sw-team"></i>Teams <span class="muted" data-count="Team"></span></label>
+          <label><input type="checkbox" data-type="KEP" checked><i class="sw sw-kep"></i>KEPs <span class="muted" data-count="KEP"></span></label>
+          <label><input type="checkbox" data-type="CodeArea" checked><i class="sw sw-code"></i>Code areas <span class="muted" data-count="CodeArea"></span></label>
+          <label><input type="checkbox" data-type="Person" checked><i class="sw sw-person"></i>People <span class="muted" data-count="Person"></span></label>
+        </fieldset>
+        <div class="atlas-row">
+          <span class="lbl">Colour by</span>
+          <fieldset id="atlascolour" class="seg text small">
+            <legend class="sr-only">Colour by</legend>
+            <label><input type="radio" name="atlascolour" value="team" checked><span>Team</span></label>
+            <label><input type="radio" name="atlascolour" value="status"><span>Status</span></label>
+          </fieldset>
+        </div>
+        <div id="atlaslegend" class="legend"></div>
+        <div class="atlas-row tools">
+          <button type="button" id="atlasfit" class="btn small"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span>Fit</span></button>
+          <button type="button" id="atlasshake" class="btn small" title="Stir the layout"><svg class="icon" aria-hidden="true"><use href="#i-shake"/></svg><span>Shake</span></button>
+        </div>
+        <p class="hint">Hover to see connections, drag to pull, click for details.</p>
+      </div>
+    </details>
+
+    <div class="atlas-panel atlas-time">
+      <button type="button" id="atlasplay" class="iconbtn" aria-label="Play history" title="Play history">
+        <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+      </button>
+      <div class="atlas-slider">
+        <input id="atlastime" type="range" min="0" max="1" value="1" step="1" aria-label="Show the graph as of a date">
+        <div id="atlasticks" class="atlas-ticks" aria-hidden="true"></div>
+      </div>
+      <output id="atlasdate" for="atlastime" class="atlas-date">Now</output>
+    </div>
+
+    <aside id="atlascard" class="atlas-panel atlas-card" aria-live="polite" hidden></aside>
+  </section>
+
   <div id="announcer" class="sr-only" aria-live="polite"></div>
-  <script src="/static/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/force-graph@1.51.5/dist/force-graph.min.js" defer></script>
+  <script src="/static/atlas.js" defer></script>
+  <script src="/static/app.js" defer></script>
 </body>
 </html>

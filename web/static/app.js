@@ -5,8 +5,9 @@
 const $ = (id) => document.getElementById(id);
 const state = { graph: null, frozen: false, replayMode: false, lastQuestion: null, lastAsOf: null,
                 questionId: null, seen: new Set(), cy: null, es: null, lastPing: 0, kep: null,
-                busy: false, view: "answer", unread: 0 };
+                busy: false, view: "answer", unread: 0, mode: "workspace" };
 window.decisionBrain = state;   // read-only handle for the browser check (scripts/ui_check.cjs)
+window.DB = { ask: (question) => { setMode("workspace"); ask(question, ""); } };   // used by the Atlas
 const RELEASES = ["v1.37", "v1.36", "v1.35", "v1.34", "v1.33", "v1.32", "v1.31", "v1.30", "v1.29", "v1.28",
                   "v1.27", "v1.26", "v1.25", "v1.24", "v1.23", "v1.22", "v1.21", "v1.20"];
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -520,6 +521,7 @@ function markOutdated(summary) {
 }
 function addFeedRow(n) {
   if (n.event_id) { if (state.seen.has(n.event_id)) return; state.seen.add(n.event_id); }
+  if (window.Atlas) window.Atlas.onNotice(n);
   const li = el("li", null, "new");
   if (n.type === "rationale_updated") {
     li.appendChild(el("span", "llm", "src"));
@@ -636,7 +638,25 @@ function setTheme(t) {
   try { localStorage.setItem("db.theme", t); } catch { /* storage may be unavailable */ }
   restyleGraph();
 }
-function restyleGraph() { if (state.cy) state.cy.style(buildCyStyle()); }
+function restyleGraph() {
+  if (state.cy) state.cy.style(buildCyStyle());
+  if (window.Atlas) window.Atlas.restyle();
+}
+
+// Workspace (ask, path, live feed) or Atlas (the whole graph, web/static/atlas.js). #atlas in the URL opens the Atlas.
+function setMode(mode) {
+  mode = mode === "atlas" && window.Atlas ? "atlas" : "workspace";
+  state.mode = mode;
+  document.body.dataset.mode = mode;
+  document.querySelectorAll("#viewpick input").forEach((r) => { r.checked = r.value === mode; });
+  const url = location.pathname + location.search + (mode === "atlas" ? "#atlas" : "");
+  if (location.href !== new URL(url, location.href).href) history.replaceState(null, "", url);
+  if (mode === "atlas") window.Atlas.show(state.graph);
+  else {
+    if (window.Atlas) window.Atlas.hide();
+    if (state.cy) requestAnimationFrame(() => state.cy.resize());
+  }
+}
 
 function setAbout(open) {
   $("about").hidden = !open;
@@ -706,7 +726,13 @@ async function init() {
   state.graph = (h.replay_mode || h.public_mode) ? "brain_eval"
     : ((h.graphs || []).includes("brain_demo") ? "brain_demo" : h.graphs[0]);
   pick.value = state.graph;
-  pick.onchange = () => { state.graph = pick.value; state.seen.clear(); $("feed").replaceChildren(); connectFeed(); refreshHealth(); };
+  pick.onchange = () => {
+    state.graph = pick.value; state.seen.clear(); $("feed").replaceChildren(); connectFeed(); refreshHealth();
+    if (window.Atlas) window.Atlas.reload(state.graph);
+  };
+  document.querySelectorAll("#viewpick input").forEach((r) => { r.onchange = () => { if (r.checked) setMode(r.value); }; });
+  window.addEventListener("hashchange", () => setMode(location.hash === "#atlas" ? "atlas" : "workspace"));
+  setMode(location.hash === "#atlas" ? "atlas" : "workspace");
   const asof = $("asof");
   [["", "now"], ...RELEASES.map((r) => [r, r])].forEach(([v, t]) => { const o = el("option", t); o.value = v; asof.appendChild(o); });
   try {
