@@ -38,3 +38,11 @@
 {"id": "I4", "split": "dev", "category": "action", "question": "Notify me when anything changes on KEP-2699.", "expected_tools": ["watch"]}
 {"id": "I5", "split": "holdout", "category": "action", "question": "Suggest reviewers for a pull request touching pkg/kubelet.", "expected_tools": ["recommend_reviewers"]}
 {"id": "I6", "split": "holdout", "category": "action", "question": "Draft a memo explaining the status of Gang Scheduling for leadership.", "expected_tools": ["draft_decision_brief"]}
+{"id": "J1", "split": "docs", "category": "thread", "question": "What did reviewers say on PR #4255?", "expected_tools": ["read_thread"]}
+{"id": "J2", "split": "docs", "category": "document", "question": "What are the non-goals of KEP-753?", "expected_tools": ["read_kep"]}
+{"id": "J3", "split": "docs", "category": "document", "question": "What alternatives were considered in the in-place pod resize KEP?", "expected_tools": ["read_kep", "search"]}
+{"id": "J4", "split": "docs", "category": "thread", "question": "Who opened the tracking issue for KEP-3063, and how much discussion did it get?", "expected_tools": ["read_thread"]}
+{"id": "J5", "split": "docs", "category": "discussion", "question": "Where did people discuss the termination order of sidecar containers?", "expected_tools": ["search"]}
+{"id": "J6", "split": "docs", "category": "discussion", "question": "What concerns were raised about swap support on Linux nodes?", "expected_tools": ["search", "read_kep"]}
+{"id": "J7", "split": "docs", "category": "document", "question": "What risks does the user namespaces KEP list?", "expected_tools": ["read_kep"]}
+{"id": "J8", "split": "docs", "category": "lure", "question": "What did reviewers say about the holographic volume driver proposal?", "expected_tools": ["search", "read_thread", "trace_decision", "resolve"], "lure": true}

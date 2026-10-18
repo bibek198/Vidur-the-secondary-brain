@@ -24,7 +24,7 @@ from src.tools.registry import TOOLS, call_tool  # noqa: E402
 
 server = MCPServer("decision-brain", instructions=(
     "Decision Brain: a knowledge graph of the Kubernetes project as a company (teams, people, code ownership, "
-    "decisions/KEPs and their history). Answer only from tool results, cite the returned source URLs, and say "
+    "decisions/KEPs and their history, design docs and issue/PR discussions). Answer only from tool results, cite the returned source URLs, and say "
     "'not in the graph' when a tool returns found=false."))
 
 
@@ -86,8 +86,21 @@ def watch(entity: str) -> dict:
     return _run("watch", entity=entity)
 
 
+def search(query: str, kep: str | None = None, kind: str | None = None, as_of: str | None = None) -> dict:
+    return _run("search", query=query, kep=kep, kind=kind, as_of=as_of)
+
+
+def read_thread(ref: str) -> dict:
+    return _run("read_thread", ref=ref)
+
+
+def read_kep(kep: str, section: str | None = None) -> dict:
+    return _run("read_kep", kep=kep, section=section)
+
+
 WRAPPERS = {f.__name__: f for f in (trace_decision, who_owns, who_knows, impact_of, timeline, what_changed,
-                                     connect, influence, resolve, recommend_reviewers, draft_decision_brief,
+                                     connect, influence, search, read_thread, read_kep, resolve,
+                                     recommend_reviewers, draft_decision_brief,
                                      route_question, watch)}
 assert set(WRAPPERS) == set(TOOLS), "every registry tool needs an MCP wrapper"
 for name, fn in WRAPPERS.items():

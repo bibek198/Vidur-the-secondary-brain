@@ -531,3 +531,242 @@ def influence(team: str | None = None, metric: str = "pagerank", limit: int = 10
         call.source(f"https://github.com/{r[0]}")
     return call.result({"metric": metric, "team": team, "people": [{"login": r[0], "score": round(r[1], 6)} for r in rows]},
                        found=bool(rows))
+
+
+# ---------- documents and threads: what was written, not only how things are linked ----------
+
+PASSAGE_MAX, BODY_MAX, COMMENT_MAX, SECTION_MAX = 700, 3000, 800, 6000
+# words almost every passage contains: they cannot show that a passage is about the question's topic
+GENERIC = set("""pod pods container containers node nodes cluster clusters api apis user users support supported
+rejected withdrawn approved accepted merged discussed discussion discuss said say says reviewer reviewers comment
+comments design doc docs issue issues pr prs""".split())
+_THREAD_URL = re.compile(r"github\.com/kubernetes/enhancements/(?:issues|pull)/(\d+)")
+
+
+def _thread_number(ref: str) -> int | None:
+    m = _THREAD_URL.search(ref or "") or re.fullmatch(r"\s*(?:enhancements)?#?(\d{1,6})\s*", ref or "")
+    return int(m.group(1)) if m else None
+
+
+def search(query: str, kep: str | None = None, kind: str | None = None, as_of: str | None = None, limit: int = 8,
+           graph_name: str | None = None) -> dict:
+    """Find passages in KEP design docs and in issue/PR discussions that talk about something.
+    kind: doc | discussion (default: both). kep narrows to one KEP's doc and its issue/PR threads."""
+    import numpy as np
+    from src.load.embed import embed_query
+    call = ToolCall("search", graph_name)
+    t, call.as_of_label = parse_as_of(call.g, as_of)
+    limit = max(1, min(int(limit or 8), 12))
+    kinds = {"doc": ["kep"], "discussion": ["comment"]}.get((kind or "").lower(), ["kep", "comment"])
+    words = _keywords(query)
+    unknown = _unknown_words(call, words)
+    if unknown:   # a distinctive word no document or comment ever uses: the topic is not in the graph
+        call.notes.append(f"{', '.join(repr(w) for w in unknown)} appears nowhere in the design docs or "
+                          "discussions, so nothing here is about this.")
+        return call.result({"query": query, "kep": kep, "passages": []}, found=False)
+    topic = [w for w in words if w.lower() not in GENERIC]
+    vec = embed_query(query)
+    hits: dict[str, dict] = {}
+
+    if kep:
+        best, cands = _resolve_one(call, kep, ["KEP"], min_score=0.6)
+        if best is None:
+            return call.result({"query": query, "kep": kep, "closest": cands[:3]}, found=False)
+        kid = best["key"]
+        # every chunk of this KEP's doc and of the comments on its tracking issue and PRs, ranked by similarity
+        rows = call.q("""MATCH (k:KEP {id:$id})
+                         OPTIONAL MATCH (d:Chunk)-[:CHUNK_OF]->(k)
+                         WITH k, collect(d) AS docs
+                         OPTIONAL MATCH (k)-[:TRACKED_BY]->(t:Ticket)
+                         OPTIONAL MATCH (p:PR)-[:CHANGES]->(k)
+                         WITH docs, collect(DISTINCT t) + collect(DISTINCT p) AS threads
+                         UNWIND threads AS th
+                         OPTIONAL MATCH (ch:Chunk)-[:CHUNK_OF]->(c:Comment)-[:ON]->(th)
+                         WHERE $as_of IS NULL OR c.at_ts <= $as_of
+                         WITH docs, collect(DISTINCT ch) AS talk
+                         UNWIND docs + talk AS x
+                         RETURN DISTINCT x.id, x.kind, x.text, x.url, x.embedding""", {"id": kid, "as_of": t}, False)
+        q = np.asarray(vec, dtype=np.float32)
+        for cid, ck, text, url, emb in rows:
+            if ck in kinds and emb is not None:
+                e = np.asarray(emb, dtype=np.float32)
+                dist = 1 - float(q @ e / (np.linalg.norm(q) * np.linalg.norm(e) + 1e-9))
+                hits[cid] = {"id": cid, "kind": ck, "text": text, "url": url, "score": dist}
+    else:
+        kid = None
+        rows = call.q("""CALL db.idx.vector.queryNodes('Chunk', 'embedding', 60, vecf32($v)) YIELD node, score
+                         RETURN node.id, node.kind, node.text, node.url, score""", {"v": vec}, False)
+        for cid, ck, text, url, dist in rows:
+            if ck in kinds:
+                hits[cid] = {"id": cid, "kind": ck, "text": text, "url": url, "score": float(dist)}
+        # exact words matter too (names, flags, error strings): add full-text matches the vectors missed
+        if words and "comment" in kinds:
+            for cid, body, url in call.q("""CALL db.idx.fulltext.queryNodes('Comment', $q) YIELD node, score
+                                            RETURN node.id, node.body, node.url ORDER BY score DESC LIMIT 6""",
+                                         {"q": _fulltext_query(words)}, False):
+                if coverage(words, body) >= 0.6:
+                    hits.setdefault(f"chunk:{cid}", {"id": f"chunk:{cid}", "kind": "comment", "text": body,
+                                                     "url": url, "score": 0.5})
+
+    ranked = sorted(hits.values(), key=lambda h: h["score"])
+    # who and when: one query for the comment passages, one for the doc passages
+    ids = [h["id"] for h in ranked[:limit * 3]]
+    meta = {r[0]: r[1:] for r in call.q("""
+        UNWIND $ids AS cid MATCH (ch:Chunk {id: cid})-[:CHUNK_OF]->(c:Comment)-[:ON]->(th)
+        OPTIONAL MATCH (p:Person)-[:WROTE]->(c)
+        RETURN cid, p.login AS who, c.at_ts AS ts, th.id AS place, th.title AS title, th AS node
+        UNION
+        UNWIND $ids AS cid MATCH (ch:Chunk {id: cid})-[:CHUNK_OF]->(k:KEP)
+        RETURN cid, null AS who, k.created_ts AS ts, k.id AS place, k.title AS title, k AS node""", {"ids": ids})}
+    passages = []
+    for h in ranked:
+        who, ts, where, title, _ = meta.get(h["id"], (None, None, None, None, None))
+        if t is not None and ts is not None and ts > t:
+            continue
+        # a design-doc chunk can be just "KEP-N Title — Heading:" with nothing under it
+        if h["kind"] == "kep" and len((h["text"] or "").split(":", 1)[-1].strip()) < 60:
+            continue
+        # similar in meaning is not enough: the passage must share most of the question's distinctive words
+        if not kid and len(topic) >= 2 and coverage(topic, h["text"]) < 0.6:
+            continue
+        passages.append({"text": (h["text"] or "")[:PASSAGE_MAX], "type": "design doc" if h["kind"] == "kep" else "discussion",
+                         "where": f"{where} {title or ''}".strip() if where else None, "by": who,
+                         "date": ts_to_date(ts) if h["kind"] == "comment" else None, "url": h["url"]})
+        if len(passages) >= limit:
+            break
+    call.source([p["url"] for p in passages])
+    if not passages:
+        call.notes.append("No passage in the design docs or discussions matches this.")
+    else:
+        call.notes.append("Passages are matched by meaning and by words; check that each one really answers the "
+                          "question before using it, and quote only what it says.")
+    return call.result({"query": query, "kep": kid, "passages": passages}, found=bool(passages))
+
+
+def read_thread(ref: str, as_of: str | None = None, graph_name: str | None = None) -> dict:
+    """One issue or pull request in kubernetes/enhancements: what it is, who opened it, and the discussion.
+    ref: '#4255', a GitHub issue/PR URL, or a KEP id (its tracking issue)."""
+    call = ToolCall("read_thread", graph_name)
+    t, call.as_of_label = parse_as_of(call.g, as_of)
+    n = _thread_number(ref)
+    if n is None:
+        best, cands = _resolve_one(call, ref, ["KEP"], min_score=0.6)
+        if best is None:
+            return call.result({"ref": ref, "closest": cands[:3]}, found=False)
+        rows = call.q("MATCH (:KEP {id:$id})-[:TRACKED_BY]->(t:Ticket) RETURN t.number", {"id": best["key"]}, False)
+        if not rows:
+            call.notes.append(f"{best['key']} has no tracking issue in the graph.")
+            return call.result({"ref": ref, "kep": best["key"]}, found=False)
+        n = rows[0][0]
+    tid = f"enhancements#{n}"
+    head = call.q("""MATCH (x) WHERE (x:Ticket OR x:PR) AND x.id = $id
+                     OPTIONAL MATCH (a:Person)-[:OPENED]->(x)
+                     OPTIONAL MATCH (x)-[:CHANGES]->(k1:KEP)
+                     OPTIONAL MATCH (k2:KEP)-[:TRACKED_BY]->(x)
+                     RETURN labels(x)[0], x.number, x.title, x.state, x.merged, x.created_ts, x.closed_ts, x.labels,
+                            x.body, x.url, a.login, collect(DISTINCT k1.id) + collect(DISTINCT k2.id), x, a""",
+                  {"id": tid})
+    if not head or (t is not None and (head[0][5] or 0) > t):
+        call.notes.append(f"Issue or PR #{n} is not in the graph"
+                          + (" at that date." if head else ". The graph holds the threads of the SIGs it covers."))
+        return call.result({"ref": ref, "number": n}, found=False)
+    label, num, title, state, merged, created, closed, labels, body, url, author, keps = head[0][:12]
+    comments = call.q("""MATCH (c:Comment)-[:ON]->(x {id:$id}) WHERE $as_of IS NULL OR c.at_ts <= $as_of
+                         OPTIONAL MATCH (p:Person)-[:WROTE]->(c)
+                         RETURN p.login, c.at_ts, c.kind, c.body, c.url ORDER BY c.at_ts""",
+                      {"id": tid, "as_of": t}, False)
+    shown = comments if len(comments) <= 16 else comments[:8] + comments[-8:]
+    data = {"thread": tid, "kind": "pull request" if label == "PR" else "issue", "number": num, "title": title,
+            "state": ("merged" if merged else state) if label == "PR" else state, "opened_by": author,
+            "opened": ts_to_date(created), "closed": ts_to_date(closed) if closed and (t is None or closed <= t) else None,
+            "labels": labels or [], "keps": sorted(k for k in keps if k), "body": (body or "")[:BODY_MAX],
+            "comments_total": len(comments),
+            "comments": [{"by": c[0], "date": ts_to_date(c[1]), "kind": c[2], "text": (c[3] or "")[:COMMENT_MAX],
+                          "url": c[4]} for c in shown]}
+    if len(comments) > len(shown):
+        data["comments_omitted"] = len(comments) - len(shown)
+        call.notes.append(f"Showing the first 8 and last 8 of {len(comments)} comments; use search with this KEP "
+                          "to find a specific point in the middle.")
+    if label == "PR":
+        reviews = call.q("""MATCH (p:Person)-[r:REVIEWED]->(:PR {id:$id}) WHERE $as_of IS NULL OR r.at <= $as_of
+                            RETURN p.login, r.state, r.at ORDER BY r.at""", {"id": tid, "as_of": t}, False)
+        verdicts = {}
+        for login, st, _ in reviews:
+            verdicts[login] = st   # the reviewer's last verdict counts
+        data["reviews"] = {s.lower(): sorted(l for l, v in verdicts.items() if v == s)
+                           for s in ("APPROVED", "CHANGES_REQUESTED", "COMMENTED") if s in verdicts.values()}
+    call.source(url, [c["url"] for c in data["comments"]])
+    return call.result(data)
+
+
+def _anchor(heading: str) -> str:
+    """GitHub's anchor for a markdown heading."""
+    return re.sub(r"[^\w\- ]", "", heading.strip().lower()).replace(" ", "-")
+
+
+def _sections(text: str) -> list[dict]:
+    out, fence = [], False
+    for i, line in enumerate(text.splitlines()):
+        if line.lstrip().startswith("```"):
+            fence = not fence
+        m = None if fence else re.match(r"^(#{1,4})\s+(.+?)\s*#*\s*$", line)
+        if m:
+            out.append({"level": len(m.group(1)), "heading": re.sub(r"[`*_]", "", m.group(2)), "line": i})
+    return out
+
+
+def read_kep(kep: str, section: str | None = None, as_of: str | None = None, graph_name: str | None = None) -> dict:
+    """A KEP's design document (README) as of the graph's snapshot: its table of contents, or one section."""
+    import difflib
+    from src.extract.prompt import ENH, cutoff_commit, readme_at
+    call = ToolCall("read_kep", graph_name)
+    t, call.as_of_label = parse_as_of(call.g, as_of)
+    best, cands = _resolve_one(call, kep, ["KEP"], min_score=0.6)
+    if best is None:
+        return call.result({"query": kep, "closest": cands[:3]}, found=False)
+    row = call.q("MATCH (k:KEP {id:$id}) RETURN k.path, k.readme_url, k.title, k.status, k", {"id": best["key"]})
+    path, readme_url, title, status = row[0][:4]
+    if not path or not (ENH / ".git").exists():
+        call.notes.append("The design document is not available on this server.")
+        return call.result({"kep": best["key"]}, found=False)
+    when = ts_to_date(t) if t is not None else snapshot_cutoff(call.g)
+    try:
+        commit = cutoff_commit(f"{when}T00:00:00Z" if when and len(when) == 10 else when)
+    except Exception:  # noqa: BLE001 - no commit before that date
+        commit = None
+    text = readme_at(commit, path) if commit else None
+    if not text:
+        call.notes.append(f"{best['key']} has no design document at that date.")
+        return call.result({"kep": best["key"]}, found=False)
+    secs = _sections(text)
+    lines = text.splitlines()
+    data = {"kep": best["key"], "title": title, "status": status, "document_as_of": (when or "")[:10]}
+    if not section:
+        data["sections"] = [("  " * (s["level"] - 2) if s["level"] > 2 else "") + s["heading"] for s in secs if s["level"] >= 2]
+        data["note"] = "Ask for one section by name to read it."
+        call.source(readme_url)
+        return call.result(data)
+    want = re.sub(r"[^a-z0-9 ]", "", section.lower()).strip()
+    names = [re.sub(r"[^a-z0-9 ]", "", s["heading"].lower()).strip() for s in secs]
+    idx = next((i for i, nm in enumerate(names) if nm == want), None)
+    if idx is None:
+        idx = next((i for i, nm in enumerate(names) if want and (nm.startswith(want) or want in nm)), None)
+    if idx is None:
+        close = difflib.get_close_matches(want, names, n=1, cutoff=0.7)
+        idx = names.index(close[0]) if close else None
+    if idx is None:
+        data["sections"] = [s["heading"] for s in secs if s["level"] >= 2]
+        call.notes.append(f"{best['key']}'s document has no section like '{section}'. Its sections are listed.")
+        call.source(readme_url)
+        return call.result(data, found=False)
+    s = secs[idx]
+    end = next((x["line"] for x in secs[idx + 1:] if x["level"] <= s["level"]), len(lines))
+    body = "\n".join(lines[s["line"] + 1:end]).strip()
+    url = f"{readme_url}#{_anchor(s['heading'])}"
+    data.update({"section": s["heading"], "text": body[:SECTION_MAX], "url": url})
+    if len(body) > SECTION_MAX:
+        call.notes.append(f"Section cut at {SECTION_MAX} of {len(body)} characters; the full text is at the source.")
+    if not body:
+        call.notes.append("This section is empty in the document (only sub-sections or a heading).")
+    call.source(url)
+    return call.result(data)

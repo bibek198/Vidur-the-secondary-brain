@@ -95,7 +95,16 @@ def main() -> None:
                   f"- Development questions: {sum(r['tool_ok'] for r in dev)}/{len(dev)} chose an expected tool.",
                   f"- Held-out questions (first and only run): {sum(r['tool_ok'] for r in hold)}/{len(hold)}; "
                   f"lure answered honestly {sum(r.get('lure_honest', False) for r in hold)}/{sum('lure_honest' in r for r in hold)} "
-                  "(the miss, 'holographic volume driver', led to the unknown-word check, D-021).", ""]
+                  "(the miss, 'holographic volume driver', led to the unknown-word check, D-021)."]
+        docs_path = RES / "tool_choice_docs.jsonl"
+        if docs_path.exists():
+            docs = list(map(json.loads, docs_path.open()))
+            lures = [r for r in docs if "lure_honest" in r]
+            lines += [f"- Document and thread questions (search, read_kep, read_thread; added for the final version): "
+                      f"{sum(r['tool_ok'] for r in docs)}/{len(docs)} chose an expected tool, lure answered honestly "
+                      f"{sum(r['lure_honest'] for r in lures)}/{len(lures)}, citation guard passed first time "
+                      f"{sum(r['guard'] == 'ok' for r in docs)}/{len(docs)}. Answers: `eval/results/tool_choice_docs.jsonl`."]
+        lines += [""]
     rep = HERE / "extraction_report.md"
     if rep.exists():
         lines += ["## LLM rationale extraction", "", "See `eval/extraction_report.md`: 96.8% of evidence quotes found word for "

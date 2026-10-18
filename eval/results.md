@@ -64,6 +64,7 @@ Raw rows: `eval/results/replay_20261018-0445.json`.
 
 - Development questions: 30/30 chose an expected tool.
 - Held-out questions (first and only run): 10/10; lure answered honestly 0/1 (the miss, 'holographic volume driver', led to the unknown-word check, D-021).
+- Document and thread questions (search, read_kep, read_thread; added for the final version): 8/8 chose an expected tool, lure answered honestly 1/1, citation guard passed first time 8/8. Answers: `eval/results/tool_choice_docs.jsonl`.
 
 ## LLM rationale extraction
 

@@ -3,6 +3,8 @@
 The agent (Claude tool calling) and the MCP server both expose exactly these tools.
 Descriptions are written as prompts: when to use, when not to, and example arguments.
 Read tools never write. Action tools (last four) only write Draft, Question and Watch nodes.
+Strict tool use allows at most 16 optional (nullable) parameters across all tools together
+(tests/test_read_tools.py checks it), so read_thread and read_kep take no as_of here.
 """
 from src.tools import act, read
 
@@ -91,6 +93,48 @@ TOOLS = {
         "schema": {"type": "object", "properties": {
             "team": {"type": "string"}, "metric": {"type": "string", "enum": ["pagerank", "betweenness"]},
             "limit": {"type": "integer", "minimum": 1, "maximum": 25}}, "additionalProperties": False},
+    },
+    "search": {
+        "fn": read.search,
+        "description": (
+            "Use for WHAT WAS SAID about a topic: finds passages in KEP design docs and in issue/PR discussions "
+            "(with author, date and link), when the question is about content, arguments, concerns, examples or "
+            "details rather than status, owners or experts. For WHY a KEP was built, decided or dropped, or its "
+            "status, use trace_decision first (it has the checked rationale). Pass kep to look only inside one "
+            "KEP's doc and threads. "
+            "Returns found=false when nothing written matches: then say it is not in the graph. Quote only what a "
+            "passage says. Examples: {\"query\": \"why sidecars need restartPolicy Always\"}, "
+            "{\"query\": \"graceful termination order\", \"kep\": \"KEP-753\"}, "
+            "{\"query\": \"memory limit decrease\", \"kind\": \"discussion\"}"),
+        "schema": {"type": "object", "properties": {
+            "query": {"type": "string", "description": "What to look for, in plain words"},
+            "kep": {"type": "string", "description": "Optional KEP id or name to search only within"},
+            "kind": {"type": "string", "enum": ["doc", "discussion"], "description": "Optional: only design docs or only discussions"},
+            "as_of": _AS_OF}, "required": ["query"], "additionalProperties": False},
+    },
+    "read_thread": {
+        "fn": read.read_thread,
+        "description": (
+            "Use for questions about ONE ISSUE OR PULL REQUEST in kubernetes/enhancements: what it is, who opened "
+            "it, its state, linked KEPs, reviewers' verdicts and what the discussion said (first and last comments). "
+            "A KEP id reads its tracking issue. Examples: {\"ref\": \"#4255\"}, "
+            "{\"ref\": \"https://github.com/kubernetes/enhancements/pull/4183\"}, {\"ref\": \"KEP-3063\"}"),
+        "schema": {"type": "object", "properties": {
+            "ref": {"type": "string", "description": "#number, issue/PR URL, or KEP id"}},
+            "required": ["ref"], "additionalProperties": False},
+    },
+    "read_kep": {
+        "fn": read.read_kep,
+        "description": (
+            "Use for WHAT A KEP'S DESIGN DOCUMENT SAYS: its goals, non-goals, proposal, risks, alternatives, test "
+            "plan or graduation criteria. Without section it lists the sections; with section it returns that "
+            "section's text. Not for why it was decided, status or history: use trace_decision. "
+            "Examples: {\"kep\": \"KEP-753\", "
+            "\"section\": \"non-goals\"}, {\"kep\": \"in-place pod resize\", \"section\": \"alternatives\"}"),
+        "schema": {"type": "object", "properties": {
+            "kep": {"type": "string", "description": "A KEP id or the feature's name"},
+            "section": {"type": "string", "description": "Optional section name, e.g. goals, non-goals, risks"}},
+            "required": ["kep"], "additionalProperties": False},
     },
     "resolve": {
         "fn": read.resolve,
